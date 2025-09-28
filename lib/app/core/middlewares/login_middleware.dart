@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/routes/route_middleware.dart';
 
+import '../../data/local/preference/preference_service.dart';
 import '../../routes/app_pages.dart';
+import '../values/app_keys.dart';
 
 class LoginMiddleware extends GetMiddleware {
   @override
@@ -13,7 +16,7 @@ class LoginMiddleware extends GetMiddleware {
     if (isLoggedIn == false) {
       return null;
     } else {
-      return const RouteSettings(name: Routes.MAIN);
+      return const RouteSettings(name: Routes.HOME);
     }
   }
 }
