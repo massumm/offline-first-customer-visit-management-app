@@ -24,15 +24,16 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_native_splash: ^2.4.6
 
 
 flutter:
   uses-material-design: true
 
 
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+     - assets/images/
+
 
   # fonts:
   #   - family: Schyler
@@ -45,3 +46,15 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+
+  # Splash Screen
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/icon-splash.png
+  color_dark: "#FFFFFF"
+  image_dark: assets/images/icon-splash.png
+
+  android_12:
+    color: "#FFFFFF"
+    image: assets/images/icon-splash.png
+    image_dark: assets/images/icon-splash.png
