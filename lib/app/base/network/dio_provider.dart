@@ -41,7 +41,7 @@ class DioProvider {
 
   static Dio? _instance;
   static const int _maxLineWidth = 500;
-  static bool _enableLogging = false;
+  static bool _enableLogging = true;
       // BuildConfig.instance.environment == Environment.DEVELOPMENT;
 
   static final BaseOptions _options = BaseOptions(

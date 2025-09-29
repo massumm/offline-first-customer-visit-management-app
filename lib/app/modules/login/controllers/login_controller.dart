@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'repository/login_repository.dart';
+
 class LoginController extends GetxController {
   final emailCtr = TextEditingController();
   final passwordCtr = TextEditingController();
@@ -10,6 +12,12 @@ class LoginController extends GetxController {
   // TextInput validation error
   var passwordError = RxnString();
   var emailError = RxnString();
+
+  //............. Repository ...........
+  final LoginRepository loginRepository = Get.find(
+    tag: (LoginRepository).toString(),
+  );
+
 
   @override
   void onClose() {
@@ -52,8 +60,7 @@ class LoginController extends GetxController {
 
     // Only proceed with login if there are no errors
     if (emailError.value == null && passwordError.value == null) {
-      // Perform login action
-      Get.snackbar("Login", "Login attempt for: ${emailCtr.text}"); // Example
+
     }
   }
 }
