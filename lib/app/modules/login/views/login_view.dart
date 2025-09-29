@@ -75,12 +75,12 @@ class LoginView extends GetView<LoginController> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         controller.obscurePassword.isFalse ?
-                         Icons.visibility: Icons.visibility_off,
+                        Icons.visibility : Icons.visibility_off,
                         color: Colors.grey,
                       ),
                       onPressed: () {
-                        controller.obscurePassword.value = !controller.obscurePassword.value;
-
+                        controller.obscurePassword.value =
+                        !controller.obscurePassword.value;
                       },
                     ),
                   ),
@@ -95,12 +95,16 @@ class LoginView extends GetView<LoginController> {
                 children: [
                   Row(
                     children: [
-                      Checkbox(
-                        value: true,
-                        onChanged: (value) {},
-                        checkColor: Colors.black,
-                        activeColor: Colors.red,
-                      ),
+                      Obx(() {
+                        return Checkbox(
+                          value: controller.rememberMe.value,
+                          onChanged: (value) {
+                            controller.rememberMe.value = value!;
+                          },
+                          checkColor: Colors.black,
+                          activeColor: Colors.red,
+                        );
+                      }),
                       Text("Remember me", style: TextStyle(color: Colors.grey)),
                     ],
                   ),
