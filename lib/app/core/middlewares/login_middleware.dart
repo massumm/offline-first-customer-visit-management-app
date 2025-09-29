@@ -15,8 +15,8 @@ class LoginMiddleware extends GetMiddleware {
   RouteSettings? redirect(String? route) {
     final isLoggedIn = StorageService.to.getString(StorageKeys.STORAGE_USER_KEY).isNotEmpty;
 
-    if (!isLoggedIn && route != Routes.SPLASH) {
-      return RouteSettings(name: Routes.HOME);
+    if (!isLoggedIn && route != Routes.LOGIN) {
+      return RouteSettings(name: Routes.LOGIN);
     }
     return null;
   }

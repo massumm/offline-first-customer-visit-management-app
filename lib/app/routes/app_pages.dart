@@ -27,7 +27,7 @@ class AppPages {
       name: _Paths.SPLASH,
       page: () => const SplashView(),
       binding: SplashBinding(),
-      middlewares: [LoginMiddleware()],
+      // middlewares: [LoginMiddleware()],
     ),
     GetPage(
       name: _Paths.LOGIN,
