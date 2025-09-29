@@ -38,34 +38,64 @@ class LoginView extends GetView<LoginController> {
               const SizedBox(height: 30),
 
               // Email
-              TextField(
-                style: TextStyle(color: Colors.white),
-                onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(
-                  hintText: "Email",
-                  hintStyle: TextStyle(color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.grey[900],
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide.none,
+              Obx(() {
+                return TextField(
+                  controller: controller.emailCtr,
+                  style: TextStyle(color: Colors.white),
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  // Add onChanged to clear error when user types
+                  onChanged: (value) {
+                    if (controller.emailError.value != null) {
+                      controller.emailError.value = null;
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Email",
+                    hintStyle: TextStyle(color: Colors.grey),
+                    labelText: 'Email',
+                    labelStyle: TextStyle(color: Colors.grey),
+                    filled: true,
+                    fillColor: Colors.grey[900],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide.none,
+                    ),
+                    // Display email error text
+                    errorText: controller.emailError.value,
+                    errorStyle: TextStyle(color: Colors.redAccent),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.redAccent, width: 1),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.redAccent, width: 2),
+                    ),
                   ),
-                ),
-              ),
+                );
+              }),
               const SizedBox(height: 15),
 
               // Password
               Obx(() {
                 return TextField(
+                  controller: controller.passwordCtr,
                   obscureText: controller.obscurePassword.value,
                   style: TextStyle(color: Colors.white),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   keyboardType: TextInputType.visiblePassword,
+                  onChanged: (value) {
+                    if (controller.passwordError.value != null) {
+                      controller.passwordError.value = null;
+                    }
+                  },
                   decoration: InputDecoration(
                     hintText: "Password",
                     hintStyle: TextStyle(color: Colors.grey),
+                    labelText: 'Password',
+                    labelStyle: TextStyle(color: Colors.grey),
                     filled: true,
                     fillColor: Colors.grey[900],
                     border: OutlineInputBorder(
@@ -82,6 +112,16 @@ class LoginView extends GetView<LoginController> {
                         controller.obscurePassword.value =
                         !controller.obscurePassword.value;
                       },
+                    ),
+                    errorText: controller.passwordError.value,
+                    errorStyle: TextStyle(color: Colors.redAccent),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.redAccent, width: 1),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: Colors.redAccent, width: 2),
                     ),
                   ),
                 );
@@ -125,7 +165,7 @@ class LoginView extends GetView<LoginController> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: controller.onLoginButtonPressed,
                 child: Text("Log in", style: TextStyle(fontSize: 16)),
               ),
 
@@ -187,4 +227,3 @@ class LoginView extends GetView<LoginController> {
     );
   }
 }
-
