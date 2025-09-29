@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../core/middlewares/login_middleware.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -31,6 +32,7 @@ class AppPages {
       name: _Paths.LOGIN,
       page: () => LoginView(),
       binding: LoginBinding(),
+      middlewares: [LoginMiddleware()],
     ),
     GetPage(
       name: _Paths.REGISTER,
