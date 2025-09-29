@@ -43,10 +43,10 @@ class RegisterView extends GetView<RegisterController> {
               // Email
               Obx(() {
                 return TextField(
-                  controller: controller.emailCtr,
+                  controller: controller.nameCtr,
                   style: TextStyle(color: Colors.white),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
                   // Add onChanged to clear error when user types
                   onChanged: (value) {
@@ -66,7 +66,7 @@ class RegisterView extends GetView<RegisterController> {
                       borderSide: BorderSide.none,
                     ),
                     // Display email error text
-                    errorText: controller.emailError.value,
+                    errorText: controller.nameError.value,
                     errorStyle: TextStyle(color: Colors.redAccent),
                     errorBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -177,9 +177,9 @@ class RegisterView extends GetView<RegisterController> {
                 children: [
                   Obx(() {
                     return Checkbox(
-                      value: controller.rememberMe.value,
+                      value: controller.agreeToService.value,
                       onChanged: (value) {
-                        controller.rememberMe.value = value!;
+                        controller.agreeToService.value = value!;
                       },
                       checkColor: Colors.black,
                       activeColor: Colors.red,
@@ -231,7 +231,10 @@ class RegisterView extends GetView<RegisterController> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: null,
+                  onPressed: controller.isLoading.isTrue
+                      || controller.agreeToService.isFalse
+                      ? null
+                      : controller.onRegisterButtonPressed,
                   child: controller.isLoading.isTrue
                       ? Padding(
                           padding: const EdgeInsets.all(4.0),
@@ -240,7 +243,7 @@ class RegisterView extends GetView<RegisterController> {
                             strokeWidth: 2,
                           ),
                         )
-                      : Text("Log in", style: TextStyle(fontSize: 16)),
+                      : Text("Register", style: TextStyle(fontSize: 16)),
                 );
               }),
 
