@@ -41,28 +41,71 @@ Exception handleDioError(DioException dioError) {
           "We couldn't connect to the server. Please ensure you have an active internet connection.");
   }
 }
-
 Exception _parseDioErrorResponse(DioException dioError) {
   final Logger logger = BuildConfig.instance.config.logger;
 
   int statusCode = dioError.response?.statusCode ?? -1;
   String? status;
-  String? code;
   String? serverMessage;
-  String? serverDescription;
+  String? serverDescription; // General description
+
+  // Specific fields for 400 error
+  List<String>? usernameErrors;
+  List<String>? emailErrors;
+  List<String>? passwordErrors;
+
 
   try {
     if (statusCode == -1 || statusCode == HttpStatus.ok) {
       statusCode = dioError.response?.data["statusCode"];
     }
     status = dioError.response?.data["status"];
-    code = dioError.response?.data["code"];
     serverMessage = dioError.response?.data["message"];
-    serverDescription = dioError.response?.data["description"];
+
+
+    // Check if the error is a 400 and try to parse specific fields
+    if (statusCode == HttpStatus.badRequest && dioError.response?.data is Map) {
+      final responseData = dioError.response?.data as Map<String, dynamic>;
+      if (responseData.containsKey("username") && responseData["username"] is List) {
+        usernameErrors = List<String>.from(responseData["username"]);
+      }
+      if (responseData.containsKey("email") && responseData["email"] is List) {
+        emailErrors = List<String>.from(responseData["email"]);
+      }
+      if (responseData.containsKey("password") && responseData["password"] is List) {
+        passwordErrors = List<String>.from(responseData["password"]);
+      }
+      // You can construct a more specific error message here if needed
+      // For example, concatenate all error messages.
+      StringBuffer detailedErrors = StringBuffer();
+      if (usernameErrors?.isNotEmpty ?? false) {
+        detailedErrors.writeln("Username errors: ${usernameErrors!.join(', ')}");
+      }
+      if (emailErrors?.isNotEmpty ?? false) {
+        detailedErrors.writeln("Email errors: ${emailErrors!.join(', ')}");
+      }
+      if (passwordErrors?.isNotEmpty ?? false) {
+        detailedErrors.writeln("Password errors: ${passwordErrors!.join(', ')}");
+      }
+      if(detailedErrors.isNotEmpty) {
+        serverDescription = detailedErrors.toString().trim();
+      } else {
+        serverDescription = dioError.response?.data["description"];
+      }
+
+    } else {
+      serverDescription = dioError.response?.data["description"];
+    }
+
   } catch (e, s) {
     logger.i("$e");
     logger.i(s.toString());
-    logger.i(code.toString());
+
+
+    // It seems 'code' is not always present, so logging it directly might cause an error
+    // if it's null. Only log it if you are sure it should be there or add a null check.
+    // logger.i(code.toString());
+
 
     serverMessage = "Something went wrong. Please try again later.";
   }
@@ -72,15 +115,25 @@ Exception _parseDioErrorResponse(DioException dioError) {
       return ServiceUnavailableException("Service Temporarily Unavailable");
     case HttpStatus.notFound:
       return NotFoundException(
-        serverMessage ?? "",
+        serverMessage ?? "Not found.", // Provide a default message
         status ?? "",
         serverDescription ?? "",
+      );
+    case HttpStatus.badRequest: // Handle 400 specifically
+    // You might want a specific Exception type for validation errors
+      return ApiException(
+        httpCode: statusCode,
+        status: status ?? "Bad Request",
+        message: serverMessage ?? "Invalid request.",
+        description: serverDescription ?? "Please check your input.",
+        // You could add the specific error fields to your ApiException if it's designed to hold them
+        // errors: { "username": usernameErrors, "email": emailErrors, "password": passwordErrors }
       );
     default:
       return ApiException(
         httpCode: statusCode,
         status: status ?? "",
-        message: serverMessage ?? "",
+        message: serverMessage ?? "An API error occurred.",
         description: serverDescription ?? "",
       );
   }
