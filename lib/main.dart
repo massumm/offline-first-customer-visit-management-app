@@ -23,7 +23,7 @@ void main() {
 
   runApp(
     GetMaterialApp(
-      title: "Icon",
+      title: BuildConfig.instance.config.appName,
       debugShowCheckedModeBanner: false,
       initialRoute: AppPages.INITIAL,
       initialBinding: InitialBindings(),
