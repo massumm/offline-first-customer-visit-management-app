@@ -15,7 +15,7 @@ abstract class AppColors {
     900: Color.fromRGBO(233, 82, 43, 1),
   });
 
-  static const Color subTextColor = Color(0xFF5C5C5C);
+  static const Color subTextColor = Color(0xFFB7B7B7);
   static const Color hintTextColor = Color(0xFF8E8E93);
   static const Color menuSubColor = Color(0xFF575757);
   static const Color authBackground = Color(0xFFF4F4FB);
