@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart'; // Import this
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
@@ -40,6 +39,7 @@ class SplashView extends GetView<SplashController> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
+                      // TODO: Implement Begin button action
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -55,16 +55,33 @@ class SplashView extends GetView<SplashController> {
                       text: 'Have an account? ',
                       style: TextStyle(color: AppColors.subTextColor),
                       children: [
-                        TextSpan(
-                          text: 'Login',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.underline,
-                            decorationColor: Colors.black,
-                            decorationThickness: 1.5,
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.baseline,
+                          baseline: TextBaseline.alphabetic,
+                          child: GestureDetector(
+                            onTap: () {
+                              controller.toLogin();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.only(bottom: 1),
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Colors.black,
+                                    width: 1.5,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w700,
+
+                                ),
+                              ),
+                            ),
                           ),
-                          recognizer: TapGestureRecognizer()..onTap = () {},
                         ),
                       ],
                     ),
