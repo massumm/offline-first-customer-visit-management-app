@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -234,6 +235,10 @@ class LoginView extends GetView<LoginController> {
                     TextSpan(
                       text: "Register",
                       style: TextStyle(color: Colors.red),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          controller.toRegister();
+                        },
                     ),
                   ],
                 ),
