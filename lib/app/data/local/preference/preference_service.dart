@@ -31,10 +31,4 @@ class StorageService extends GetxService {
   List<String> getList(String key) => _prefs.getStringList(key) ?? [];
 
   Future<bool> remove(String key) async => await _prefs.remove(key);
-
-  // Works in both main & background isolates
-  static Future<bool> isUserLoggedIn() async {
-    final prefs = await SharedPreferences.getInstance();
-    return (prefs.getString(StorageKeys.STORAGE_USER_KEY) ?? '').isNotEmpty;
-  }
 }
