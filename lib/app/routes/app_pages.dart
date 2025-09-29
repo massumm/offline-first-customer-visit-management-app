@@ -27,12 +27,12 @@ class AppPages {
       name: _Paths.SPLASH,
       page: () => const SplashView(),
       binding: SplashBinding(),
+      middlewares: [LoginMiddleware()],
     ),
     GetPage(
       name: _Paths.LOGIN,
-      page: () => LoginView(),
+      page: () => const LoginView(),
       binding: LoginBinding(),
-      middlewares: [LoginMiddleware()],
     ),
     GetPage(
       name: _Paths.REGISTER,
