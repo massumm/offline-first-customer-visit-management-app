@@ -14,7 +14,7 @@ void main() {
       initialRoute: AppPages.INITIAL,
       initialBinding: InitialBindings(),
       getPages: AppPages.routes,
-      theme: IconLightTheme.androidLightTheme,
+      theme: IconDarkTheme.androidDarkTheme,
       darkTheme: IconDarkTheme.androidDarkTheme,
     ),
   );
