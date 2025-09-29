@@ -54,7 +54,7 @@ class LoginView extends GetView<LoginController> {
                     }
                   },
                   decoration: InputDecoration(
-                    hintText: "Email",
+                    hintText: "abc@example.com",
                     hintStyle: TextStyle(color: Colors.grey),
                     labelText: 'Email',
                     labelStyle: TextStyle(color: Colors.grey),
@@ -94,7 +94,7 @@ class LoginView extends GetView<LoginController> {
                     }
                   },
                   decoration: InputDecoration(
-                    hintText: "Password",
+                    hintText: "********",
                     hintStyle: TextStyle(color: Colors.grey),
                     labelText: 'Password',
                     labelStyle: TextStyle(color: Colors.grey),
@@ -171,7 +171,8 @@ class LoginView extends GetView<LoginController> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  onPressed: controller.onLoginButtonPressed,
+                  onPressed: controller.isLoading.isTrue
+                      ? null : controller.onLoginButtonPressed,
                   child: controller.isLoading.isTrue
                       ? Padding(
                         padding: const EdgeInsets.all(4.0),

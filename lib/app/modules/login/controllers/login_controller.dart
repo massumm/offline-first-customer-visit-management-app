@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import '../../../base/widgets/custom_toast.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
@@ -75,10 +76,16 @@ class LoginController extends GetxController {
         };
 
         _loginRepository.login(requestBody).then((response){
-          UserStore.to.saveProfile(response).whenComplete(() {
-            isLoading(false);
-            Get.offAllNamed(Routes.HOME);
-          });
+          isLoading(false);
+          CustomToast.showSuccessToast('Login successful');
+          try{
+            UserStore.to.saveProfileAndToken(response).whenComplete(() {
+              Get.offAllNamed(Routes.HOME);
+            });
+          } catch (e){
+            CustomToast.showErrorToast('An unexpected error occurred');
+            "error on save profile".log();
+          }
         }, onError: (error){
           isLoading.value = false;
           CustomToast.showErrorToast('Invalid credentials');
