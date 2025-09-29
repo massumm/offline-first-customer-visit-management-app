@@ -73,7 +73,7 @@ class SplashView extends GetView<SplashController> {
                                 ),
                               ),
                               child: Text(
-                                'Login',
+                                'Log in',
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.w700,

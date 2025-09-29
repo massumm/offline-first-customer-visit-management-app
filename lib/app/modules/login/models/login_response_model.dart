@@ -1,7 +1,7 @@
 class LoginResponseModel {
   LoginResponseModel({
-    required this.refresh,
-    required this.access,
+     this.refresh,
+     this.access,
   });
 
   final String? refresh;

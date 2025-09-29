@@ -13,7 +13,6 @@ class LoginView extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
@@ -26,9 +25,11 @@ class LoginView extends GetView<LoginController> {
               Text(
                 "Let’s train smarter. Let’s be Iconic",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
               ),
               const SizedBox(height: 5),
               Text(
@@ -104,13 +105,14 @@ class LoginView extends GetView<LoginController> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        controller.obscurePassword.isFalse ?
-                        Icons.visibility : Icons.visibility_off,
+                        controller.obscurePassword.isFalse
+                            ? Icons.visibility
+                            : Icons.visibility_off,
                         color: Colors.grey,
                       ),
                       onPressed: () {
                         controller.obscurePassword.value =
-                        !controller.obscurePassword.value;
+                            !controller.obscurePassword.value;
                       },
                     ),
                     errorText: controller.passwordError.value,
@@ -150,8 +152,10 @@ class LoginView extends GetView<LoginController> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: Text("Forgot password?",
-                        style: TextStyle(color: Colors.grey)),
+                    child: Text(
+                      "Forgot password?",
+                      style: TextStyle(color: Colors.grey),
+                    ),
                   ),
                 ],
               ),
@@ -159,15 +163,25 @@ class LoginView extends GetView<LoginController> {
               const SizedBox(height: 10),
 
               // Login button
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+              Obx(() {
+                return ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
-                ),
-                onPressed: controller.onLoginButtonPressed,
-                child: Text("Log in", style: TextStyle(fontSize: 16)),
-              ),
+                  onPressed: controller.onLoginButtonPressed,
+                  child: controller.isLoading.isTrue
+                      ? Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                      : Text("Log in", style: TextStyle(fontSize: 16)),
+                );
+              }),
 
               const SizedBox(height: 20),
               Text("Or Connect With", style: TextStyle(color: Colors.grey)),
@@ -184,8 +198,10 @@ class LoginView extends GetView<LoginController> {
                   ),
                   onPressed: () {},
                   icon: Icon(FontAwesomeIcons.google, color: Colors.white),
-                  label: Text("Sign in with Google",
-                      style: TextStyle(color: Colors.white)),
+                  label: Text(
+                    "Sign in with Google",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
 
@@ -202,8 +218,10 @@ class LoginView extends GetView<LoginController> {
                   ),
                   onPressed: () {},
                   icon: Icon(Icons.apple, color: Colors.white),
-                  label: Text("Sign in with Apple",
-                      style: TextStyle(color: Colors.white)),
+                  label: Text(
+                    "Sign in with Apple",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
 
@@ -219,7 +237,7 @@ class LoginView extends GetView<LoginController> {
                     ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

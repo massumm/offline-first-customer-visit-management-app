@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../base/widgets/custom_toast.dart';
+import '../../../data/local/preference/store/user_store.dart';
+import '../../../routes/app_pages.dart';
+import '../repository/login_repository.dart';
 
-import 'repository/login_repository.dart';
 
 class LoginController extends GetxController {
   final emailCtr = TextEditingController();
@@ -12,9 +15,10 @@ class LoginController extends GetxController {
   // TextInput validation error
   var passwordError = RxnString();
   var emailError = RxnString();
+  var isLoading = false.obs;
 
   //............. Repository ...........
-  final LoginRepository loginRepository = Get.find(
+  final LoginRepository _loginRepository = Get.find(
     tag: (LoginRepository).toString(),
   );
 
@@ -54,13 +58,46 @@ class LoginController extends GetxController {
   }
 
   void onLoginButtonPressed() {
+    // Handle login loading
+    if(isLoading.isTrue) return;
+
     // Trigger validation for both email and password
     emailError.value = validateEmail(emailCtr.text);
     passwordError.value = validatePassword(passwordCtr.text);
 
     // Only proceed with login if there are no errors
     if (emailError.value == null && passwordError.value == null) {
+      try{
+        isLoading(true);
+        final requestBody = {
+          "username": emailCtr.text,
+          "password": passwordCtr.text,
+        };
 
+        _loginRepository.login(requestBody).then((response){
+          UserStore.to.saveProfile(response).whenComplete(() {
+            isLoading(false);
+            Get.offAllNamed(Routes.HOME);
+          });
+        }, onError: (error){
+          isLoading.value = false;
+          CustomToast.showErrorToast('Invalid credentials');
+        });
+
+      } catch (error) {
+        isLoading.value = false;
+        CustomToast.showErrorToast('An unexpected error occurred');
+
+
+        // // Handle different types of exceptions
+        // if (error is NotFoundException) {
+        //   CustomToast.showWarningToast((error as BaseException).description);
+        // } else if (error is ApiException) {
+        //   CustomToast.showWarningToast((error as BaseException).description);
+        // } else if (error is NetworkException) {
+        //   CustomToast.showErrorToast('Network error occurred');
+        // }
+      }
     }
   }
 }

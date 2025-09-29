@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
-import '../../../../base/models/login_response_model.dart';
 import '../../../../core/values/app_keys.dart';
+import '../../../../modules/login/models/login_response_model.dart';
 import '../preference_service.dart';
 
 class UserStore extends GetxController {
@@ -54,7 +54,7 @@ class UserStore extends GetxController {
       jsonEncode(profile),
     );
     _profile.value = profile;
-    await setToken(profile.accessToken ?? "");
+    await setToken(profile.access ?? "");
   }
 
   Future<void> onLogout() async {

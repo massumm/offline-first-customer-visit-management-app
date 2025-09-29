@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:icon/app/base/models/login_response_model.dart';
-
-import '../../../../base/base_remote_source.dart';
-import '../../../../base/network/dio_provider.dart';
+import '../../../base/base_remote_source.dart';
+import '../../../base/network/dio_provider.dart';
+import '../models/login_response_model.dart';
 import 'login_repository.dart';
 
 class LoginRepositoryImpl extends BaseRemoteSource implements LoginRepository {
