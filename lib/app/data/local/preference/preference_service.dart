@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/values/app_keys.dart';
 
 class StorageService extends GetxService {
   static StorageService get to => Get.find();

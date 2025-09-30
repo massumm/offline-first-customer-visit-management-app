@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
+import 'package:icon/app/routes/app_pages.dart';
 import 'package:icon/generated/assets.dart';
 import '../controllers/splash_controller.dart';
 
@@ -39,7 +40,7 @@ class SplashView extends GetView<SplashController> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      // TODO: Implement Begin button action
+                      Get.toNamed(Routes.ONBOARDING);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,

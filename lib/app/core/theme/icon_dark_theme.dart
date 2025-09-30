@@ -9,6 +9,15 @@ class IconDarkTheme {
     primarySwatch: AppColors.colorPrimarySwatch,
     primaryColor: AppColors.colorPrimary,
     brightness: Brightness.dark,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.colorPrimary,
+      brightness: Brightness.dark,
+      primary: AppColors.colorPrimary,
+      // secondary: AppColors.colorSecondary,
+      // error: AppColors.colorError,
+      // surface: Colors.white,
+      // background: Color(0xFFFDFDFD),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       isDense: true,

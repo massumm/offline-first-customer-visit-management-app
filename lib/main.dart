@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'app/core/binding/initial_binding.dart';
-import 'app/core/theme/message_mind_dark_theme.dart';
+
+import 'app/core/theme/icon_dark_theme.dart';
 import 'app/data/local/preference/preference_service.dart';
 import 'app/flavors/build_config.dart';
 import 'app/flavors/env_config.dart';

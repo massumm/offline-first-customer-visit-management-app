@@ -10,6 +10,15 @@ class IconLightTheme {
     primarySwatch: AppColors.colorPrimarySwatch,
     primaryColor: AppColors.colorPrimary,
     brightness: Brightness.light,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.colorPrimary,
+      brightness: Brightness.light,
+      // primary: AppColors.colorPrimary,
+      // secondary: AppColors.colorSecondary,
+      // error: AppColors.colorError,
+      // surface: Colors.white,
+      // background: Color(0xFFFDFDFD),
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       isDense: true,
