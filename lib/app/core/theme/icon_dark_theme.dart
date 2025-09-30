@@ -9,6 +9,9 @@ class IconDarkTheme {
     primarySwatch: AppColors.colorPrimarySwatch,
     primaryColor: AppColors.colorPrimary,
     brightness: Brightness.dark,
+    scaffoldBackgroundColor: const Color(0xFF121214),
+    cardColor: const Color(0xFF1A1B1E),
+    useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.colorPrimary,
       brightness: Brightness.dark,

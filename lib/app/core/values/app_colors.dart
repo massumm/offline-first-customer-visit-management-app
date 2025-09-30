@@ -16,6 +16,12 @@ abstract class AppColors {
   });
 
   static const Color subTextColor = Color(0xFFB7B7B7);
+  static const Color cardBgColor = Color(0xFF1F1F1F);
+  static const Color greenProgressColor = Color(0xFF4CB870);
+  static const Color redProgressColor = Color(0xFFFF1B1F);
+
+  //..............
+
   static const Color hintTextColor = Color(0xFF8E8E93);
   static const Color menuSubColor = Color(0xFF575757);
   static const Color authBackground = Color(0xFFF4F4FB);

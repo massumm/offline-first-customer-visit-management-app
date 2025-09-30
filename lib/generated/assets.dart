@@ -9,6 +9,9 @@ class Assets {
   static const String imagesOnboarding2 = 'assets/images/onboarding-2.png';
   static const String imagesOnboarding3 = 'assets/images/onboarding-3.png';
   static const String svgIconLogoPink = 'assets/svg/icon-logo-pink.svg';
+  static const String svgLevel7 = 'assets/svg/level-7.svg';
+  static const String svgLogo = 'assets/svg/logo.svg';
+  static const String svgMorningIcon = 'assets/svg/morning_icon.svg';
   static const String svgOnboarding1 = 'assets/svg/onboarding-1.svg';
   static const String svgOnboarding2 = 'assets/svg/onboarding-2.svg';
   static const String svgOnboarding3 = 'assets/svg/onboarding-3.svg';
