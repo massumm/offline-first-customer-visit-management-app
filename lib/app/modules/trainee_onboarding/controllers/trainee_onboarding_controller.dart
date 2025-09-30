@@ -4,8 +4,13 @@ import 'package:get/get.dart';
 class TraineeOnboardingController extends GetxController {
  // ........... Text Controllers ...............
   final TextEditingController nameCtr = TextEditingController();
+  final TextEditingController addressCtr = TextEditingController();
+  final TextEditingController cityCtr = TextEditingController();
+  final TextEditingController countryCtr = TextEditingController();
 
   final Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
+
+  final RxString selectedGender = ''.obs;
 
   Future<void> pickDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(

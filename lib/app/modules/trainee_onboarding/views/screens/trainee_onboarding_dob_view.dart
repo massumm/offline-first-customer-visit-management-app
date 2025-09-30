@@ -9,6 +9,7 @@ import 'package:intl/intl.dart'; // Import the intl package
 import '../../../../core/widgets/back_pill.dart';
 import '../../../../core/widgets/step_progresh_indicator.dart';
 import '../../controllers/trainee_onboarding_controller.dart';
+import 'trainee_onboarding_gender_view.dart';
 
 class TraineeOnboardingDOFBView extends GetView<TraineeOnboardingController> {
   const TraineeOnboardingDOFBView({super.key});
@@ -64,7 +65,9 @@ class TraineeOnboardingDOFBView extends GetView<TraineeOnboardingController> {
                 ),
               ),
               16.height,
-              ElevatedButton(onPressed: () {}, child: Text('Next')),
+              ElevatedButton(onPressed: () {
+                Get.to(() => TraineeOnboardingGenderView());
+              }, child: Text('Next')),
             ],
           ),
         ),
