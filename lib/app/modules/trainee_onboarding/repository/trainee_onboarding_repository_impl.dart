@@ -1,0 +1,38 @@
+import 'package:dio/dio.dart';
+import 'package:icon/app/base/base_remote_source.dart';
+import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_create_model.dart';
+import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_create_response_model.dart';
+
+import '../../../base/network/dio_provider.dart';
+import 'trainee_onboarding_repository.dart';
+
+class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
+    implements TraineeOnboardingRepository {
+  @override
+  Future<TraineeProfileCreateResponseModel> createTraineeProfile(
+    TraineeProfileCreateModel model,
+  ) {
+    DioProvider.setLoggingEnabled(true);
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/trainees_profile_create/";
+
+    Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: model.toJson(),
+    );
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => _parseLoginResponse(response));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  TraineeProfileCreateResponseModel _parseLoginResponse(
+    Response<dynamic> response,
+  ) {
+    return TraineeProfileCreateResponseModel.fromJson(response.data);
+  }
+}

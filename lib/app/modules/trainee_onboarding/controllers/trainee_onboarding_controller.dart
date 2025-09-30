@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../base/widgets/custom_toast.dart';
+import '../models/trainee_profile_create_model.dart';
+import '../repository/trainee_onboarding_repository.dart';
+
 class TraineeOnboardingController extends GetxController {
  // ........... Text Controllers ...............
   final TextEditingController nameCtr = TextEditingController();
@@ -11,6 +15,11 @@ class TraineeOnboardingController extends GetxController {
   final Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
 
   final RxString selectedGender = ''.obs;
+
+  //........... Repository ...............
+  final TraineeOnboardingRepository _repository = Get.find(
+    tag: (TraineeOnboardingRepository).toString(),
+  );
 
   Future<void> pickDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -24,5 +33,37 @@ class TraineeOnboardingController extends GetxController {
       selectedDate.value = pickedDate; // This is now type-safe
     }
   }
+
+  void onDoneButtonPressed() {
+    // check all are selected
+    if (nameCtr.text.isEmpty ||
+        addressCtr.text.isEmpty ||
+        cityCtr.text.isEmpty ||
+        countryCtr.text.isEmpty ||
+        selectedGender.value.isEmpty ||
+        selectedDate.value == null){
+      CustomToast.showErrorToast('Please fill all fields');
+      return;
+    }
+
+    final model = TraineeProfileCreateModel(
+      bio: nameCtr.text,
+      fullAddress: addressCtr.text,
+      city: cityCtr.text,
+      country: countryCtr.text,
+      gender: selectedGender.value,
+      dateOfBirth: selectedDate.value,
+      phoneNumber: '',
+    );
+
+    _repository.createTraineeProfile(model).then((response){
+      CustomToast.showSuccessToast('Profile created successfully');
+    }, onError: (error){
+      CustomToast.showErrorToast('An unexpected error occurred');
+    });
+
+  }
+
+
 
 }

@@ -58,7 +58,9 @@ class TraineeOnboardingAddressView
                 ],
               ),
               16.height,
-              ElevatedButton(onPressed: () {}, child: Text('Done')),
+              ElevatedButton(onPressed: () {
+                controller.onDoneButtonPressed();
+              }, child: Text('Done')),
             ],
           ),
         ),
