@@ -5,6 +5,8 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
+import '../../../core/widgets/back_pill.dart';
+
 class OnboardingIntro extends StatelessWidget {
   const OnboardingIntro({super.key});
 
@@ -20,7 +22,7 @@ class OnboardingIntro extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Back button (small rounded square)
-              _BackPill(onTap: () => Navigator.maybePop(context)),
+              BackPill(onTap: () => Navigator.maybePop(context)),
               Spacer(),
 
               // Tiny orange kicker
@@ -109,30 +111,4 @@ class OnboardingIntro extends StatelessWidget {
   }
 }
 
-class _BackPill extends StatelessWidget {
-  const _BackPill({required this.onTap});
 
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        alignment: Alignment.center,
-        child: const Icon(
-          Icons.arrow_back_ios_new_rounded,
-          size: 16,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-}

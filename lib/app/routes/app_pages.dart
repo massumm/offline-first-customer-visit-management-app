@@ -12,6 +12,8 @@ import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
+import '../modules/trainer_onboarding/bindings/trainer_onboarding_binding.dart';
+import '../modules/trainer_onboarding/views/trainer_onboarding_view.dart';
 
 part 'app_routes.dart';
 
@@ -51,6 +53,11 @@ class AppPages {
       name: _Paths.TRAINEE_ONBOARDING,
       page: () => const TraineeOnboardingView(),
       binding: TraineeOnboardingBinding(),
+    ),
+    GetPage(
+      name: _Paths.TRAINER_ONBOARDING,
+      page: () => const TrainerOnboardingView(),
+      binding: TrainerOnboardingBinding(),
     ),
   ];
 }
