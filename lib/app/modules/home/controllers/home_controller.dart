@@ -18,6 +18,8 @@ class HomeController extends BaseController {
 
   // .............. Nav ................
   var currentIndex = 3.obs;
+
+  var selectedNavIndex = 0.obs;
 }
 
 

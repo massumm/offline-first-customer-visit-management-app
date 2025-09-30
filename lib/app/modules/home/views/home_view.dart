@@ -16,7 +16,9 @@ class HomeView extends BaseView<HomeController> {
 
   @override
   Widget body(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final cs = Theme
+        .of(context)
+        .colorScheme;
 
     return Scaffold(
       body: SafeArea(
@@ -31,7 +33,7 @@ class HomeView extends BaseView<HomeController> {
               const SizedBox(height: 16),
               DailyProcressIndicators(controller: controller),
               const SizedBox(height: 16),
-              TrainerRegCard(onPressed: (){}),
+              TrainerRegCard(onPressed: () {}),
               const SizedBox(height: 16),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -75,12 +77,14 @@ class HomeView extends BaseView<HomeController> {
                       child: Row(
                         children: [
                           SizedBox(
-                            width: constraints.maxWidth * 0.8, // Example: Card takes 80% of screen width
+                            width: constraints.maxWidth * 0.8,
+                            // Example: Card takes 80% of screen width
                             child: actionCards[0],
                           ),
                           const SizedBox(width: 16),
                           SizedBox(
-                            width: constraints.maxWidth * 0.8, // Example: Card takes 80% of screen width
+                            width: constraints.maxWidth * 0.8,
+                            // Example: Card takes 80% of screen width
                             child: actionCards[1],
                           ),
                           // Add more cards here if needed, and they will scroll horizontally
@@ -100,32 +104,37 @@ class HomeView extends BaseView<HomeController> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        backgroundColor: const Color(0xFF141518),
-        selectedIndex: 0,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.favorite_outline),
-            selectedIcon: Icon(Icons.favorite),
-            label: 'Wellness',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.bar_chart_outlined),
-            selectedIcon: Icon(Icons.bar_chart),
-            label: 'Stats',
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.person_outline),
-            selectedIcon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
+      bottomNavigationBar: Obx(() {
+        return NavigationBar(
+          backgroundColor: const Color(0xFF141518),
+          selectedIndex: controller.selectedNavIndex.value,
+          onDestinationSelected: (index) {
+            controller.selectedNavIndex.value = index;
+          },
+          destinations: const [
+            NavigationDestination(
+              icon: Icon(Icons.dashboard_outlined),
+              selectedIcon: Icon(Icons.dashboard),
+              label: 'Home',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.analytics_outlined),
+              selectedIcon: Icon(Icons.analytics),
+              label: 'Analysis',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.chat_outlined),
+              selectedIcon: Icon(Icons.chat),
+              label: 'Chat',
+            ),
+            NavigationDestination(
+              icon: Icon(Icons.person_outline),
+              selectedIcon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
+        );
+      }),
     );
   }
 
@@ -165,12 +174,17 @@ class _UserHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final chipStyle = Theme.of(context).textTheme.bodyMedium;
+    final chipStyle = Theme
+        .of(context)
+        .textTheme
+        .bodyMedium;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Theme
+            .of(context)
+            .cardColor,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -181,14 +195,21 @@ class _UserHeader extends StatelessWidget {
               children: [
                 Text(
                   'Good morning,',
-                  style: Theme.of(
+                  style: Theme
+                      .of(
                     context,
-                  ).textTheme.bodyLarge!.copyWith(color: Colors.white70),
+                  )
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: Colors.white70),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   username,
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .headlineSmall,
                 ),
               ],
             ),
@@ -246,7 +267,9 @@ class DayCard extends StatelessWidget {
       width: 80,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-        color: isToday ? const Color(0xFF3A1E1E) : Theme.of(context).cardColor,
+        color: isToday ? const Color(0xFF3A1E1E) : Theme
+            .of(context)
+            .cardColor,
         borderRadius: BorderRadius.circular(16),
         border: isToday
             ? Border.all(color: const Color(0xFFE35D5D), width: 1)
@@ -367,9 +390,9 @@ class _RingPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _RingPainter old) =>
       old.value != value ||
-      old.fill != fill ||
-      old.track != track ||
-      old.thickness != thickness;
+          old.fill != fill ||
+          old.track != track ||
+          old.thickness != thickness;
 }
 
 class _Header extends StatelessWidget {
@@ -456,15 +479,23 @@ class _StatPill extends StatelessWidget {
             children: [
               Text(
                 item.value,
-                style: Theme.of(
+                style: Theme
+                    .of(
                   context,
-                ).textTheme.titleMedium!.copyWith(fontWeight: FontWeight.w700),
+                )
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(fontWeight: FontWeight.w700),
               ),
               Text(
                 item.label,
-                style: Theme.of(
+                style: Theme
+                    .of(
                   context,
-                ).textTheme.labelSmall!.copyWith(color: Colors.white70),
+                )
+                    .textTheme
+                    .labelSmall!
+                    .copyWith(color: Colors.white70),
               ),
             ],
           ),
@@ -498,17 +529,25 @@ class TrainerRegCard extends StatelessWidget {
         children: [
           Text(
             'Apply to Become a Trainer',
-            style: Theme.of(
+            style: Theme
+                .of(
               context,
-            ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700),
+            )
+                .textTheme
+                .titleLarge!
+                .copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 6),
           Text(
             'Share your passion for fitness and help others reach their goals. Join our community of certified trainers.',
             textAlign: TextAlign.center,
-            style: Theme.of(
+            style: Theme
+                .of(
               context,
-            ).textTheme.bodyMedium!.copyWith(color: Colors.white70),
+            )
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Colors.white70),
           ),
           const SizedBox(height: 12),
           FilledButton(
@@ -541,7 +580,10 @@ class _MetricCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ringColor = color ?? Theme.of(context).colorScheme.primary;
+    final ringColor = color ?? Theme
+        .of(context)
+        .colorScheme
+        .primary;
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
@@ -554,19 +596,30 @@ class _MetricCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: Theme.of(context).textTheme.labelLarge),
+                  Text(title, style: Theme
+                      .of(context)
+                      .textTheme
+                      .labelLarge),
                   const SizedBox(height: 4),
                   Text(
                     value,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleLarge!
+                        .copyWith(
                       fontWeight: FontWeight.w800,
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: Theme.of(
+                    style: Theme
+                        .of(
                       context,
-                    ).textTheme.labelSmall!.copyWith(color: Colors.white70),
+                    )
+                        .textTheme
+                        .labelSmall!
+                        .copyWith(color: Colors.white70),
                   ),
                 ],
               ),
@@ -598,14 +651,21 @@ class _GoalsCard extends StatelessWidget {
                 children: [
                   Text(
                     'Your Daily Goals',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium,
                   ),
                   const SizedBox(height: 6),
                   Text(
                     ' 2/6 (64%) complete • Keep it up!',
-                    style: Theme.of(
+                    style: Theme
+                        .of(
                       context,
-                    ).textTheme.bodySmall!.copyWith(color: Colors.white70),
+                    )
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(color: Colors.white70),
                   ),
                   const SizedBox(height: 12),
                   TextButton.icon(
@@ -698,7 +758,9 @@ class _HealthCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final cs = Theme
+        .of(context)
+        .colorScheme;
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
@@ -719,7 +781,11 @@ class _HealthCard extends StatelessWidget {
                 const Spacer(),
                 Text(
                   value,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  style: Theme
+                      .of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -737,9 +803,13 @@ class _HealthCard extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               title,
-              style: Theme.of(
+              style: Theme
+                  .of(
                 context,
-              ).textTheme.labelLarge!.copyWith(color: Colors.white70),
+              )
+                  .textTheme
+                  .labelLarge!
+                  .copyWith(color: Colors.white70),
             ),
           ],
         ),
@@ -825,16 +895,17 @@ class _ActionsCard extends StatelessWidget {
           const SizedBox(height: 12),
           // Bullet-ish lines
           ...lines.map(
-                (t) => Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Text(
-                t,
-                style: TextStyle(
-                  color: fg.withOpacity(0.92),
-                  fontSize: 13,
+                (t) =>
+                Padding(
+                  padding: const EdgeInsets.only(top: 6),
+                  child: Text(
+                    t,
+                    style: TextStyle(
+                      color: fg.withOpacity(0.92),
+                      fontSize: 13,
+                    ),
+                  ),
                 ),
-              ),
-            ),
           ),
         ],
       ),
@@ -850,7 +921,9 @@ class _CommunityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).cardColor,
+      color: Theme
+          .of(context)
+          .cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -868,16 +941,24 @@ class _CommunityCard extends StatelessWidget {
                 children: [
                   Text(
                     'Community Spotlight',
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     'Join the weekly challenge and share your progress.',
-                    style: Theme.of(
+                    style: Theme
+                        .of(
                       context,
-                    ).textTheme.bodySmall!.copyWith(color: Colors.white70),
+                    )
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(color: Colors.white70),
                   ),
                 ],
               ),
@@ -906,7 +987,9 @@ class _ProgressRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final cs = Theme
+        .of(context)
+        .colorScheme;
     final ringColor = color ?? cs.primary;
     return SizedBox(
       height: size,
@@ -926,7 +1009,10 @@ class _ProgressRing extends StatelessWidget {
           ),
           Text(
             '${(value * 100).round()}%',
-            style: Theme.of(context).textTheme.labelLarge,
+            style: Theme
+                .of(context)
+                .textTheme
+                .labelLarge,
           ),
         ],
       ),
