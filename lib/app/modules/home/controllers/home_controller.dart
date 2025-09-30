@@ -15,6 +15,9 @@ class HomeController extends BaseController {
     DayItem('Sat', 26, 0.0, false),
     DayItem('Sun', 27, 0.0, false),
   ];
+
+  // .............. Nav ................
+  var currentIndex = 3.obs;
 }
 
 

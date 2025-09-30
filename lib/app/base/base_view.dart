@@ -41,6 +41,7 @@ abstract class BaseView<Controller extends BaseController>
             backgroundColor: pageBackgroundColor(),
             appBar: appBar(context),
             floatingActionButton: floatingActionButton(),
+            floatingActionButtonLocation: floatingActionLocation,
             bottomNavigationBar: bottomNavigationBar(context),
             drawer: drawer(),
             body: Stack(
@@ -86,6 +87,8 @@ abstract class BaseView<Controller extends BaseController>
   Color statusBarColor() => AppColors.pageBackground;
 
   Widget? floatingActionButton() => null;
+
+  FloatingActionButtonLocation? get floatingActionLocation => null;
 
   Widget? bottomNavigationBar(BuildContext context) => null;
 
