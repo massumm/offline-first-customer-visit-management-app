@@ -10,6 +10,8 @@ import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
+import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
 
 part 'app_routes.dart';
 
@@ -21,7 +23,7 @@ class AppPages {
   static final routes = [
     GetPage(
       name: _Paths.HOME,
-      page: () =>  HomeView(),
+      page: () => HomeView(),
       binding: HomeBinding(),
     ),
     GetPage(
@@ -44,6 +46,11 @@ class AppPages {
       name: _Paths.ONBOARDING,
       page: () => const OnboardingView(),
       binding: OnboardingBinding(),
+    ),
+    GetPage(
+      name: _Paths.TRAINEE_ONBOARDING,
+      page: () => const TraineeOnboardingView(),
+      binding: TraineeOnboardingBinding(),
     ),
   ];
 }
