@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 class OnboardingIntro extends StatelessWidget {
   const OnboardingIntro({super.key});
@@ -89,7 +92,7 @@ class OnboardingIntro extends StatelessWidget {
                     elevation: 0,
                   ),
                   onPressed: () {
-                    // TODO: navigate to the first question
+                    Get.toNamed(Routes.TRAINEE_ONBOARDING);
                   },
                   child: const Text(
                     "Let's begin",
