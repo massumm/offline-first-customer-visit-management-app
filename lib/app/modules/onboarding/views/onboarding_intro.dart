@@ -71,7 +71,8 @@ class OnboardingIntro extends StatelessWidget {
 
               // Supporting copy
               Text(
-                "This won’t take long. Each question is just one or two taps, and you’ll see your progress as you go",
+                "This won’t take long. Each question is just one or two taps,"
+                  " and you’ll see your progress as you go",
                 style: theme.textTheme.bodyMedium!.copyWith(
                   color: AppColors.subTextColor,
                 ),
