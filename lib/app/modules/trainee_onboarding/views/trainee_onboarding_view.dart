@@ -7,6 +7,7 @@ import 'package:icon/app/core/widgets/custom_text_field.dart';
 import '../../../core/widgets/back_pill.dart';
 import '../../../core/widgets/step_progresh_indicator.dart';
 import '../controllers/trainee_onboarding_controller.dart';
+import 'screens/trainee_onboarding_dob_view.dart';
 
 class TraineeOnboardingView extends GetView<TraineeOnboardingController> {
   const TraineeOnboardingView({super.key});
@@ -35,7 +36,12 @@ class TraineeOnboardingView extends GetView<TraineeOnboardingController> {
                 hint: 'Your Name',
               ),
               16.height,
-              ElevatedButton(onPressed: () {}, child: Text('Next')),
+              ElevatedButton(
+                onPressed: () {
+                  Get.to(() => TraineeOnboardingDOFBView());
+                },
+                child: Text('Next'),
+              ),
             ],
           ),
         ),
@@ -43,7 +49,3 @@ class TraineeOnboardingView extends GetView<TraineeOnboardingController> {
     );
   }
 }
-
-
-
-
