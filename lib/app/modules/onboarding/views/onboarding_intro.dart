@@ -78,7 +78,7 @@ class OnboardingIntro extends StatelessWidget {
 
               // Bottom primary action, pinned above the safe area
               Padding(
-                padding: const EdgeInsets.only(bottom: 12, left: 4, right: 4),
+                padding: const EdgeInsets.only(bottom: 12),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.colorPrimary,

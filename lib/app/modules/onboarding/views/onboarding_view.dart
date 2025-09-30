@@ -77,7 +77,7 @@ class OnboardingView extends GetView<OnboardingController> {
                     width: controller.currentPage.value == index ? 18 : 8,
                     decoration: BoxDecoration(
                       color: controller.currentPage.value == index
-                          ? Colors.red
+                          ? AppColors.colorPrimary
                           : Colors.grey.shade700,
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -87,19 +87,22 @@ class OnboardingView extends GetView<OnboardingController> {
             ),
             const SizedBox(height: 20),
             Obx(
-              () => ElevatedButton(
-                onPressed: controller.nextPage,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              () => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: ElevatedButton(
+                  onPressed: controller.nextPage,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.colorPrimary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                ),
-                child: Text(
-                  controller.onboardingData[controller
-                      .currentPage
-                      .value]["button"]!,
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
+                  child: Text(
+                    controller.onboardingData[controller
+                        .currentPage
+                        .value]["button"]!,
+                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                  ),
                 ),
               ),
             ),
