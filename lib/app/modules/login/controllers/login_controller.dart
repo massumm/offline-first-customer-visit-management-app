@@ -4,6 +4,7 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import '../../../base/widgets/custom_toast.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
+import '../../trainee_onboarding/repository/trainee_onboarding_repository.dart';
 import '../repository/login_repository.dart';
 
 
@@ -22,6 +23,11 @@ class LoginController extends GetxController {
   final LoginRepository _loginRepository = Get.find(
     tag: (LoginRepository).toString(),
   );
+
+  final TraineeOnboardingRepository _traineeOnboardingRepository = Get.find(
+    tag: (TraineeOnboardingRepository).toString(),
+  );
+
 
 
   @override
@@ -86,6 +92,9 @@ class LoginController extends GetxController {
             CustomToast.showErrorToast('An unexpected error occurred');
             "error on save profile".log();
           }
+
+          // Create Trainee Profile
+
         }, onError: (error){
           isLoading.value = false;
           CustomToast.showErrorToast('Invalid credentials');
@@ -106,6 +115,10 @@ class LoginController extends GetxController {
         // }
       }
     }
+  }
+
+  void _createTraineeProfile() {
+
   }
 
   void toRegister() {

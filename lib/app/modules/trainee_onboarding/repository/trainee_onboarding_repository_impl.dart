@@ -5,21 +5,19 @@ import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_creat
 
 import '../../../base/network/dio_provider.dart';
 import '../../../data/local/preference/store/trainee_data_store.dart';
+import '../models/trainee_preference_create_response_model.dart';
 import 'trainee_onboarding_repository.dart';
 
 class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
     implements TraineeOnboardingRepository {
   @override
   Future<TraineeProfileCreateResponseModel> createTraineeProfile(
-    TraineeProfileCreateModel model,
+    Map<String, dynamic> model,
   ) {
     DioProvider.setLoggingEnabled(true);
     final String endpoint = "${DioProvider.baseUrl}/api/trainees/profile/";
 
-    Future<Response<dynamic>> dioCall = dioClient.post(
-      endpoint,
-      data: model.toJson(),
-    );
+    Future<Response<dynamic>> dioCall = dioClient.post(endpoint, data: model);
 
     try {
       return callApiWithErrorParser(
@@ -47,5 +45,29 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
       logger.e(e.toString());
       return Future.error(e);
     }
+  }
+
+  @override
+  Future<TraineePreferenceCreateResponseModel> createTraineePreferences(
+    Map<String, dynamic> model,
+  ) {
+    DioProvider.setLoggingEnabled(true);
+    final String endpoint = "${DioProvider.baseUrl}/api/trainees/preferences/";
+
+    Future<Response<dynamic>> dioCall = dioClient.post(endpoint, data: model);
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => _parsePreferenceResponse(response));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  TraineePreferenceCreateResponseModel _parsePreferenceResponse(
+    Response<dynamic> response,
+  ) {
+    return TraineePreferenceCreateResponseModel.fromJson(response.data);
   }
 }
