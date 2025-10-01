@@ -20,6 +20,12 @@ abstract class AppColors {
   static const Color greenProgressColor = Color(0xFF4CB870);
   static const Color redProgressColor = Color(0xFFFF1B1F);
 
+  static const Color black = Colors.black;
+  static const Color black11 = Color(0xff00d0d0d);
+  static const Color secondaryBg2Color = Color(0xFFFFEBE5);
+  static const Color screenBgColor = Color(0xFF0d0d0d);
+  static const Color greyColor1 = Color(0xFF2B2B2B);
+
   //..............
 
   static const Color hintTextColor = Color(0xFF8E8E93);
