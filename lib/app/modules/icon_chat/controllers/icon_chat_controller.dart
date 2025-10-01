@@ -1,37 +1,114 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import '../repository/icon_chat_repository_impl.dart';
+import '../../../base/network/dio_provider.dart';
+import '../../../data/local/preference/store/user_store.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'dart:convert';
+import 'package:web_socket_channel/io.dart';
 
 class IconChatController extends GetxController {
-  // List of chat messages
-  final messages = <String>[].obs;
-
-  // Chat input controller
+  final messages = <Map<String, dynamic>>[].obs;
   final textController = TextEditingController();
-
-  // Uncomment below for testing with sample messages
-  // final messages = <String>["Hello!", "How are you?", "Welcome to Icon Chat!"].obs;
-
-  void sendMessage() {
-    final text = textController.text.trim();
-    if (text.isNotEmpty) {
-      messages.add(text);
-      textController.clear();
-    }
-  }
+  late IconChatRepositoryImpl chatRepository;
+  WebSocketChannel? channel;
+  int? roomId;
+  String? roomName;
+  String? token;
+  int? traineeProfileId;
+  int? trainerProfileId;
 
   @override
   void onInit() {
     super.onInit();
+    chatRepository = IconChatRepositoryImpl();
+    token = UserStore.to.token;
+    // Get IDs from navigation arguments or user context
+    final args = Get.arguments ?? {};
+    traineeProfileId =
+        args['traineeProfileId'] ?? 1; // Replace with actual logic
+    trainerProfileId =
+        args['trainerProfileId'] ?? 1; // Replace with actual logic
+    _initChat();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  Future<void> _initChat() async {
+    if (traineeProfileId == null || trainerProfileId == null || token == null) {
+      return;
+    }
+    roomId = await chatRepository.getOrCreateRoom(
+      traineeProfileId: traineeProfileId!,
+      trainerProfileId: trainerProfileId!,
+      token: token!,
+    );
+    if (roomId != null) {
+      await _fetchMessages();
+      roomName =
+          'chat_${traineeProfileId}_$trainerProfileId'; // You may need to fetch actual room name
+      _connectWebSocket();
+    }
+  }
+
+  Future<void> _fetchMessages() async {
+    if (roomId == null || token == null) return;
+    final msgs = await chatRepository.fetchMessages(roomId!, token!);
+    messages.assignAll(msgs);
+  }
+
+  void _connectWebSocket() {
+    if (roomName == null || token == null) return;
+    String wsBaseUrl = DioProvider.baseUrl;
+    if (wsBaseUrl.startsWith('https://')) {
+      wsBaseUrl = wsBaseUrl.replaceFirst('https://', 'wss://');
+    } else if (wsBaseUrl.startsWith('http://')) {
+      wsBaseUrl = wsBaseUrl.replaceFirst('http://', 'ws://');
+    }
+    final wsUrl = '$wsBaseUrl/ws/ai_chat/$roomName/';
+    try {
+      channel = IOWebSocketChannel.connect(
+        wsUrl,
+        headers: {'Authorization': 'Bearer $token'},
+      );
+    } catch (e) {
+      channel = WebSocketChannel.connect(Uri.parse('$wsUrl?token=$token'));
+    }
+    channel!.stream.listen((data) {
+      try {
+        final decoded = jsonDecode(data);
+        // If message is from AI, user_id == 'ai', else user_id is int
+        messages.insert(0, {
+          'content': decoded['message'],
+          'user_id': decoded['user_id'],
+          'timestamp': DateTime.now().toIso8601String(),
+        });
+      } catch (_) {}
+    });
+  }
+
+  void optimisticSendMessage() async {
+    final text = textController.text.trim();
+    if (text.isEmpty || roomId == null || token == null) return;
+    // Optimistically add message to UI
+    messages.insert(0, {
+      'content': text,
+      'user_id': 'me',
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+    textController.clear();
+    // Send to WebSocket
+    try {
+      channel?.sink.add(jsonEncode({'message': text}));
+    } catch (_) {}
+    // Also send to REST API for persistence
+    try {
+      await chatRepository.sendMessage(roomId!, token!, text);
+    } catch (_) {}
   }
 
   @override
   void onClose() {
     textController.dispose();
+    channel?.sink.close();
     super.onClose();
   }
 }

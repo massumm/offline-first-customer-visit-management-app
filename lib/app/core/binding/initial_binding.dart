@@ -6,7 +6,7 @@ import '../../data/local/preference/store/user_store.dart';
 class InitialBindings implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<StorageService>(() => StorageService());
-    Get.lazyPut<UserStore>(() => UserStore(), fenix: true);
+    Get.put<StorageService>(StorageService());
+    Get.put<UserStore>(UserStore());
   }
 }
