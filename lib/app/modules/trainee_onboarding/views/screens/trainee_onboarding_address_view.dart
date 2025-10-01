@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/custom_text_field.dart';
 
 import '../../../../core/widgets/back_pill.dart';
 import '../../../../core/widgets/step_progresh_indicator.dart';
 import '../../controllers/trainee_onboarding_controller.dart';
+
+import 'trainee_onboarding__fitness_experience.dart';
 
 class TraineeOnboardingAddressView
     extends GetView<TraineeOnboardingController> {
@@ -60,6 +61,7 @@ class TraineeOnboardingAddressView
               16.height,
               ElevatedButton(onPressed: () {
                 controller.onDoneButtonPressed();
+                Get.to(() => TraineeOnboardingFitnessExperience());
               }, child: Text('Done')),
             ],
           ),

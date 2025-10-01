@@ -45,6 +45,8 @@ class CustomTextField extends StatelessWidget {
             hintStyle: const TextStyle(color: Colors.grey),
             labelText: label,
             labelStyle: const TextStyle(color: Colors.grey),
+            // Add this line
+            alignLabelWithHint: maxLines != null && maxLines! > 1 ? true : null,
             filled: true,
             fillColor: Colors.grey[900],
             border: OutlineInputBorder(

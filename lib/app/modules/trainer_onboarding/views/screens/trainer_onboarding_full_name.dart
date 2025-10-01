@@ -63,7 +63,6 @@ class Step1Screen extends GetView<TrainerOnboardingController>  {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(TrainerOnboardingController());
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
