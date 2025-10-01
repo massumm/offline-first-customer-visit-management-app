@@ -6,7 +6,8 @@ import 'package:icon/app/core/widgets/back_pill.dart';
 import 'package:icon/app/core/widgets/custom_text_field.dart';
 import 'package:icon/app/modules/trainer_onboarding/controllers/trainer_onboarding_controller.dart';
 import 'package:icon/app/modules/trainer_onboarding/views/screens/coaching_style_screen.dart';
-import 'package:icon/app/modules/trainer_onboarding/views/screens/identity_verification_full_name.dart';
+
+import 'trainer_onboarding_full_name.dart';
 
 class ExtraSupportScreen extends GetView<TrainerOnboardingController> {
   const ExtraSupportScreen({super.key});

@@ -5,7 +5,8 @@ import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/back_pill.dart';
 import 'package:icon/app/modules/trainer_onboarding/controllers/trainer_onboarding_controller.dart';
 import 'package:icon/app/modules/trainer_onboarding/views/screens/exercise_strategy_training_style_screen.dart';
-import 'package:icon/app/modules/trainer_onboarding/views/screens/identity_verification_full_name.dart';
+
+import 'trainer_onboarding_full_name.dart';
 
 class TrainingPlansScreen extends GetView<TrainerOnboardingController> {
   const TrainingPlansScreen({super.key});

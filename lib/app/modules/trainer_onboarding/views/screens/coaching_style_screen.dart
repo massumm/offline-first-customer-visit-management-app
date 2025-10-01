@@ -4,8 +4,9 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/back_pill.dart';
 import 'package:icon/app/modules/trainer_onboarding/controllers/trainer_onboarding_controller.dart';
-import 'package:icon/app/modules/trainer_onboarding/views/screens/identity_verification_full_name.dart';
 import 'package:icon/app/modules/trainer_onboarding/views/screens/tone_sliders_screen.dart';
+
+import 'trainer_onboarding_full_name.dart';
 
 class CoachingStyleScreen extends GetView<TrainerOnboardingController> {
   const CoachingStyleScreen({super.key});
