@@ -49,15 +49,18 @@ class TraineeProfileCreateModel {
     );
   }
 
+  // In your TraineeProfileCreateModel class
   Map<String, dynamic> toJson() => {
     "bio": bio,
-    "date_of_birth":
-    "${dateOfBirth?.year.toString().padLeft(4)}-${dateOfBirth?.month.toString().padLeft(2)}-${dateOfBirth?.day.toString().padLeft(2)}",
+    "date_of_birth": dateOfBirth == null
+        ? null
+        : "${dateOfBirth!.year.toString().padLeft(4, '0')}-${dateOfBirth!.month.toString().padLeft(2, '0')}-${dateOfBirth!.day.toString().padLeft(2, '0')}",
     "phone_number": phoneNumber,
     "full_address": fullAddress,
     "country": country,
     "city": city,
     "gender": gender?.toLowerCase(),
   };
+
 
 }

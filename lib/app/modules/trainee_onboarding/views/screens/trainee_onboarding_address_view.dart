@@ -59,10 +59,23 @@ class TraineeOnboardingAddressView
                 ],
               ),
               16.height,
-              ElevatedButton(onPressed: () {
-                controller.onDoneButtonPressed();
-                Get.to(() => TraineeOnboardingFitnessExperience());
-              }, child: Text('Done')),
+              Obx(() {
+                return ElevatedButton(
+                  onPressed: controller.isButtonLoading.isTrue
+                      ? null
+                      : () {
+                          controller.onDoneButtonPressed();
+                          // Get.to(() => TraineeOnboardingFitnessExperience());
+                        },
+
+                  child:  controller.isButtonLoading.isTrue
+                      ? Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: const CircularProgressIndicator.adaptive(),
+                      )
+                      : Text('Done'),
+                );
+              }),
             ],
           ),
         ),

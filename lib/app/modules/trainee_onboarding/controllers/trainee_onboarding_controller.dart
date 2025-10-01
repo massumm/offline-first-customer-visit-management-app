@@ -15,6 +15,7 @@ class TraineeOnboardingController extends GetxController {
   final Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
 
   final RxString selectedGender = ''.obs;
+  final RxBool isButtonLoading = false.obs;
 
   //........... Repository ...............
   final TraineeOnboardingRepository _repository = Get.find(
@@ -46,6 +47,8 @@ class TraineeOnboardingController extends GetxController {
       return;
     }
 
+    isButtonLoading(true);
+
     final model = TraineeProfileCreateModel(
       bio: nameCtr.text,
       fullAddress: addressCtr.text,
@@ -53,12 +56,14 @@ class TraineeOnboardingController extends GetxController {
       country: countryCtr.text,
       gender: selectedGender.value,
       dateOfBirth: selectedDate.value,
-      phoneNumber: '',
+      phoneNumber: '0123456789',
     );
 
     _repository.createTraineeProfile(model).then((response){
+      isButtonLoading(false);
       CustomToast.showSuccessToast('Profile created successfully');
     }, onError: (error){
+      isButtonLoading(false);
       CustomToast.showErrorToast('An unexpected error occurred');
     });
 
