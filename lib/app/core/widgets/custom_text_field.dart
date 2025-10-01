@@ -4,6 +4,7 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final String hint;
+  final int? maxLines;
   final ValueNotifier<String?>? errorNotifier;
   final TextInputType keyboardType;
   final TextInputAction textInputAction;
@@ -14,6 +15,7 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     required this.label,
     required this.hint,
+    this.maxLines,
     this.errorNotifier,
     this.keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.next,
@@ -31,6 +33,7 @@ class CustomTextField extends StatelessWidget {
           onTapOutside: (_) => FocusScope.of(context).unfocus(),
           keyboardType: keyboardType,
           textInputAction: textInputAction,
+          maxLines: maxLines,
           onChanged: (value) {
             if (errorNotifier != null && errorNotifier!.value != null) {
               errorNotifier!.value = null;

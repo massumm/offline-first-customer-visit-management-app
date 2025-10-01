@@ -1,0 +1,60 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/back_pill.dart';
+import 'package:icon/app/core/widgets/custom_text_field.dart';
+import 'package:icon/app/modules/trainer_onboarding/controllers/trainer_onboarding_controller.dart';
+import 'package:icon/app/modules/trainer_onboarding/views/screens/identity_verification_full_name.dart';
+import 'package:icon/app/modules/trainer_onboarding/views/screens/topic_wont_cover_screen.dart';
+
+class ShowUpOffDayScreen extends GetView<TrainerOnboardingController> {
+  const ShowUpOffDayScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = Get.put(TrainerOnboardingController());
+    return Scaffold(
+      body: Padding(
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BackPill(onTap: () => Navigator.maybePop(context)),
+              30.height,
+              const ProgressBar(currentStep: 2, stepText: "Coaching Style & Persona"),
+              400.height,
+              // Title
+              Center(
+                child: Text(
+                  "How do you show up on an off day?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white, // fixed
+                  ),
+                ),
+              ),
+              16.height,
+              CustomTextField(
+                controller: controller.descriptionController,
+                maxLines: 5,
+                label: "Description",
+                hint: "",
+              ),
+              20.height,
+              ElevatedButton(
+                onPressed: () {
+                  Get.to(() => TopicWontCoverScreen());
+                },
+                child: const Text('Next'),
+              ),
+              20.height,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
