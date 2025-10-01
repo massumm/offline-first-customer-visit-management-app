@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../data/local/preference/preference_service.dart';
+import '../../data/local/preference/store/trainee_data_store.dart';
 import '../../data/local/preference/store/user_store.dart';
 
 class InitialBindings implements Bindings {
@@ -8,5 +9,6 @@ class InitialBindings implements Bindings {
   void dependencies() {
     Get.lazyPut<StorageService>(() => StorageService());
     Get.lazyPut<UserStore>(() => UserStore(), fenix: true);
+    Get.lazyPut<TraineeDataStore>(() => TraineeDataStore(), fenix: true);
   }
 }

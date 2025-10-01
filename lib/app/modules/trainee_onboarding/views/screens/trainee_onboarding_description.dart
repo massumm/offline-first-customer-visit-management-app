@@ -30,20 +30,21 @@ class TraineeOnboardingDescriptionView extends GetView<TraineeOnboardingControll
                 stepTitle: 'Personal',
               ),
               Spacer(),
-              Text('Who inspires you the most in your fitness journey?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),),
+              Text(
+                'Who inspires you the most in your fitness journey?',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+              ),
              12.height,
               CustomTextField(
-                controller: controller.nameCtr,
+                controller: controller.descriptionCtr,
                 label: 'Description',
                 hint: 'Enter description',
                 maxLines: 5,
               ),
               16.height,
               ElevatedButton(
-                onPressed: () {
-
-                },
-                child: Text('Next'),
+                onPressed: controller.onDoneButtonPressed,
+                child: Text('Done'),
               ),
             ],
           ),

@@ -40,13 +40,13 @@ class TraineeOnboardingFitnessExperience extends GetView<TraineeOnboardingContro
               InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: () {
-                  controller.selectedGender.value = 'Beginner';
+                  controller.fitnessExperience.value = 'Beginner';
                   Future.delayed(Duration(microseconds: 300),
                           () =>  Get.to(() => TraineeOnboardingFitnessPartner()));
                 },
                 child: Obx(() {
                   final isSelected =
-                      controller.selectedGender.value == 'Beginner';
+                      controller.fitnessExperience.value == 'Beginner';
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
@@ -78,13 +78,13 @@ class TraineeOnboardingFitnessExperience extends GetView<TraineeOnboardingContro
               InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: () {
-                  controller.selectedGender.value = 'Intermediate';
+                  controller.fitnessExperience.value = 'Intermediate';
                   Future.delayed(Duration(microseconds: 300),
                           () =>  Get.to(() => TraineeOnboardingFitnessPartner()));
                 },
                 child: Obx(() {
                   final isSelected =
-                      controller.selectedGender.value == 'Intermediate';
+                      controller.fitnessExperience.value == 'Intermediate';
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
@@ -116,13 +116,13 @@ class TraineeOnboardingFitnessExperience extends GetView<TraineeOnboardingContro
               InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: () {
-                  controller.selectedGender.value = 'Advanced';
+                  controller.fitnessExperience.value = 'Advanced';
                   Future.delayed(Duration(microseconds: 300),
                           () =>  Get.to(() => TraineeOnboardingFitnessPartner()));
                 },
                 child: Obx(() {
                   final isSelected =
-                      controller.selectedGender.value == 'Advanced';
+                      controller.fitnessExperience.value == 'Advanced';
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(

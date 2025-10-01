@@ -40,13 +40,13 @@ class TraineeOnboardingFitnessPartner extends GetView<TraineeOnboardingControlle
               InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: () {
-                  controller.selectedGender.value = 'Friends';
+                  controller.selectedPartner.value = 'Friends';
                   Future.delayed(Duration(microseconds: 300),
                           () =>  Get.to(() => TraineeOnboardingDescriptionView()));
                 },
                 child: Obx(() {
                   final isSelected =
-                      controller.selectedGender.value == 'Friends';
+                      controller.selectedPartner.value == 'Friends';
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
@@ -78,13 +78,13 @@ class TraineeOnboardingFitnessPartner extends GetView<TraineeOnboardingControlle
               InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: () {
-                  controller.selectedGender.value = 'Family';
+                  controller.selectedPartner.value = 'Family';
                   Future.delayed(Duration(microseconds: 300),
                           () =>  Get.to(() => TraineeOnboardingDescriptionView()));
                 },
                 child: Obx(() {
                   final isSelected =
-                      controller.selectedGender.value == 'Family';
+                      controller.selectedPartner.value == 'Family';
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(
@@ -116,13 +116,13 @@ class TraineeOnboardingFitnessPartner extends GetView<TraineeOnboardingControlle
               InkWell(
                 borderRadius: BorderRadius.circular(8),
                 onTap: () {
-                  controller.selectedGender.value = 'Personal trainer';
+                  controller.selectedPartner.value = 'Personal trainer';
                   Future.delayed(Duration(microseconds: 300),
                           () =>  Get.to(() => TraineeOnboardingDescriptionView()));
                 },
                 child: Obx(() {
                   final isSelected =
-                      controller.selectedGender.value == 'Personal trainer';
+                      controller.selectedPartner.value == 'Personal trainer';
                   return Container(
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                     decoration: BoxDecoration(

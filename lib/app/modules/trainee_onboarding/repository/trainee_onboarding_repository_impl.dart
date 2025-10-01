@@ -4,6 +4,7 @@ import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_creat
 import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_create_response_model.dart';
 
 import '../../../base/network/dio_provider.dart';
+import '../../../data/local/preference/store/trainee_data_store.dart';
 import 'trainee_onboarding_repository.dart';
 
 class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
@@ -13,8 +14,7 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
     TraineeProfileCreateModel model,
   ) {
     DioProvider.setLoggingEnabled(true);
-    final String endpoint =
-        "${DioProvider.baseUrl}/api/trainees_profile_create/";
+    final String endpoint = "${DioProvider.baseUrl}/api/trainees/profile/";
 
     Future<Response<dynamic>> dioCall = dioClient.post(
       endpoint,
@@ -34,5 +34,18 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
     Response<dynamic> response,
   ) {
     return TraineeProfileCreateResponseModel.fromJson(response.data);
+  }
+
+  @override
+  Future<void> storeTraineeProfile(
+    TraineeProfileCreateModel traineeProfileCreateModel,
+  ) async {
+    try {
+      // Store data
+      await TraineeDataStore.to.saveTraineeModel(traineeProfileCreateModel);
+    } catch (e) {
+      logger.e(e.toString());
+      return Future.error(e);
+    }
   }
 }
