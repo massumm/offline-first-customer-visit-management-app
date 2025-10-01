@@ -10,6 +10,7 @@ abstract class Routes {
   static const ONBOARDING = _Paths.ONBOARDING;
   static const TRAINEE_ONBOARDING = _Paths.TRAINEE_ONBOARDING;
   static const TRAINER_ONBOARDING = _Paths.TRAINER_ONBOARDING;
+  static const PROFILE_CREATE_ANIMATION = _Paths.PROFILE_CREATE_ANIMATION;
 }
 
 abstract class _Paths {
@@ -21,4 +22,5 @@ abstract class _Paths {
   static const ONBOARDING = '/onboarding';
   static const TRAINEE_ONBOARDING = '/trainee-onboarding';
   static const TRAINER_ONBOARDING = '/trainer-onboarding';
+  static const PROFILE_CREATE_ANIMATION = '/profile-create-animation';
 }

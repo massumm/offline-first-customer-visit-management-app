@@ -6,6 +6,8 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/profile_create_animation/bindings/profile_create_animation_binding.dart';
+import '../modules/profile_create_animation/views/profile_create_animation_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
@@ -20,7 +22,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const String INITIAL = Routes.SPLASH;
+  static const String INITIAL = Routes.PROFILE_CREATE_ANIMATION;
 
   static final routes = [
     GetPage(
@@ -58,6 +60,11 @@ class AppPages {
       name: _Paths.TRAINER_ONBOARDING,
       page: () => const TrainerOnboardingView(),
       binding: TrainerOnboardingBinding(),
+    ),
+    GetPage(
+      name: _Paths.PROFILE_CREATE_ANIMATION,
+      page: () => const ProfileCreateAnimationView(),
+      binding: ProfileCreateAnimationBinding(),
     ),
   ];
 }

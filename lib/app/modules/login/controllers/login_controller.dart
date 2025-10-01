@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/data/local/preference/store/trainee_data_store.dart';
 import '../../../base/widgets/custom_toast.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
@@ -82,19 +83,17 @@ class LoginController extends GetxController {
         };
 
         _loginRepository.login(requestBody).then((response){
-          isLoading(false);
+
           CustomToast.showSuccessToast('Login successful');
           try{
             UserStore.to.saveProfileAndToken(response).whenComplete(() {
-              Get.offAllNamed(Routes.HOME);
+              _handleRoute();
             });
           } catch (e){
             CustomToast.showErrorToast('An unexpected error occurred');
             "error on save profile".log();
           }
-
-          // Create Trainee Profile
-
+          isLoading(false);
         }, onError: (error){
           isLoading.value = false;
           CustomToast.showErrorToast('Invalid credentials');
@@ -117,8 +116,16 @@ class LoginController extends GetxController {
     }
   }
 
-  void _createTraineeProfile() {
+  void _handleRoute() {
+    final hasProfileData = TraineeDataStore.to.traineeModel;
 
+    // Create Trainee profile
+    if(hasProfileData == null){
+      Get.toNamed(Routes.PROFILE_CREATE_ANIMATION);
+      return;
+    }
+
+    Get.offAllNamed(Routes.HOME);
   }
 
   void toRegister() {
