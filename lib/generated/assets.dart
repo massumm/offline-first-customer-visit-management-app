@@ -2,6 +2,8 @@
 class Assets {
   Assets._();
 
+  static const String imagesBodyScanner = 'assets/images/body_scanner.png';
+  static const String imagesGridlineImage = 'assets/images/gridline_image.png';
   static const String imagesIconLogo = 'assets/images/icon-logo.png';
   static const String imagesIconLogoPink = 'assets/images/icon-logo-pink.png';
   static const String imagesIconSplash = 'assets/images/icon-splash.png';

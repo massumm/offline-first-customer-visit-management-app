@@ -6,6 +6,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
@@ -33,7 +34,9 @@ class HomeView extends BaseView<HomeController> {
               const SizedBox(height: 16),
               DailyProcressIndicators(controller: controller),
               const SizedBox(height: 16),
-              TrainerRegCard(onPressed: () {}),
+              TrainerRegCard(onPressed: () {
+                Get.toNamed(Routes.TRAINER_ONBOARDING);
+              }),
               const SizedBox(height: 16),
               LayoutBuilder(
                 builder: (context, constraints) {
@@ -413,97 +416,7 @@ class _Header extends StatelessWidget {
   }
 }
 
-class _QuickStatsStrip extends StatelessWidget {
-  const _QuickStatsStrip();
 
-  @override
-  Widget build(BuildContext context) {
-    final items = <_StatItem>[
-      _StatItem(
-        icon: Icons.local_fire_department,
-        label: 'Cals',
-        value: '1420',
-      ),
-      _StatItem(icon: Icons.directions_walk, label: 'Steps', value: '8.5k'),
-      _StatItem(icon: Icons.favorite, label: 'HR', value: '72'),
-      _StatItem(icon: Icons.water_drop, label: 'H2O', value: '1.5L'),
-      _StatItem(icon: Icons.hotel, label: 'Sleep', value: '7h 20m'),
-      _StatItem(icon: Icons.fitness_center, label: 'Workouts', value: '3x'),
-    ];
-
-    return SizedBox(
-      height: 68,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: items.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
-        itemBuilder: (context, i) => _StatPill(item: items[i]),
-      ),
-    );
-  }
-}
-
-class _StatItem {
-  final IconData icon;
-  final String label;
-  final String value;
-
-  const _StatItem({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-}
-
-class _StatPill extends StatelessWidget {
-  final _StatItem item;
-
-  const _StatPill({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1A1B1E),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Row(
-        children: [
-          Icon(item.icon, size: 20),
-          const SizedBox(width: 8),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                item.value,
-                style: Theme
-                    .of(
-                  context,
-                )
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(fontWeight: FontWeight.w700),
-              ),
-              Text(
-                item.label,
-                style: Theme
-                    .of(
-                  context,
-                )
-                    .textTheme
-                    .labelSmall!
-                    .copyWith(color: Colors.white70),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class TrainerRegCard extends StatelessWidget {
   final VoidCallback onPressed;
@@ -563,73 +476,6 @@ class TrainerRegCard extends StatelessWidget {
   }
 }
 
-class _MetricCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final String subtitle;
-  final double progress;
-  final Color? color;
-
-  const _MetricCard({
-    required this.title,
-    required this.value,
-    required this.subtitle,
-    required this.progress,
-    this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final ringColor = color ?? Theme
-        .of(context)
-        .colorScheme
-        .primary;
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Row(
-          children: [
-            _ProgressRing(size: 46, value: progress, color: ringColor),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: Theme
-                      .of(context)
-                      .textTheme
-                      .labelLarge),
-                  const SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .titleLarge!
-                        .copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: Theme
-                        .of(
-                      context,
-                    )
-                        .textTheme
-                        .labelSmall!
-                        .copyWith(color: Colors.white70),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class _GoalsCard extends StatelessWidget {
   final double ringValue;
@@ -681,135 +527,7 @@ class _GoalsCard extends StatelessWidget {
               size: 74,
               value: ringValue,
               color: AppColors.greenProgressColor,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _HealthGrid extends StatelessWidget {
-  const _HealthGrid();
-
-  @override
-  Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      crossAxisSpacing: 12,
-      mainAxisSpacing: 12,
-      childAspectRatio: 1.45,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: const [
-        _HealthCard(
-          title: 'Hydration',
-          value: '1.5 L',
-          icon: Icons.water_drop,
-          progress: 0.6,
-        ),
-        _HealthCard(
-          title: 'Heart Rate',
-          value: '70 BPM',
-          icon: Icons.favorite,
-          progress: 0.7,
-        ),
-        _HealthCard(
-          title: 'Calories',
-          value: '1,420',
-          icon: Icons.local_fire_department,
-          progress: 0.5,
-        ),
-        _HealthCard(
-          title: 'Sleep',
-          value: '7h 20m',
-          icon: Icons.nightlight_round,
-          progress: 0.8,
-        ),
-        _HealthCard(
-          title: 'Protein',
-          value: '57%',
-          icon: Icons.egg,
-          progress: 0.57,
-        ),
-        _HealthCard(
-          title: 'Steps',
-          value: '8,500',
-          icon: Icons.directions_walk,
-          progress: 0.85,
-        ),
-      ],
-    );
-  }
-}
-
-class _HealthCard extends StatelessWidget {
-  final String title;
-  final String value;
-  final IconData icon;
-  final double progress;
-
-  const _HealthCard({
-    required this.title,
-    required this.value,
-    required this.icon,
-    required this.progress,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme
-        .of(context)
-        .colorScheme;
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: cs.primary.withOpacity(.12),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(icon, size: 20, color: cs.primary),
-                ),
-                const Spacer(),
-                Text(
-                  value,
-                  style: Theme
-                      .of(context)
-                      .textTheme
-                      .titleMedium!
-                      .copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-            const Spacer(),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: LinearProgressIndicator(
-                value: progress,
-                minHeight: 8,
-                backgroundColor: Colors.white10,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              style: Theme
-                  .of(
-                context,
-              )
-                  .textTheme
-                  .labelLarge!
-                  .copyWith(color: Colors.white70),
+              stroke: 4,
             ),
           ],
         ),
@@ -834,17 +552,17 @@ class _ActionsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final fg = Colors.white;
-    final bg = color.withOpacity(0.18);
-    final barBg = Colors.white.withOpacity(0.25);
+    final bg = color.withValues(alpha: 0.18);
+    final barBg = Colors.white.withValues(alpha: 0.25);
 
     return Container(
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: color.withOpacity(0.4), width: 1),
+        border: Border.all(color: color.withValues(alpha: 0.4), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.25),
+            color: Colors.black.withValues(alpha: 0.25),
             blurRadius: 16,
             offset: const Offset(0, 8),
           )
@@ -860,11 +578,11 @@ class _ActionsCard extends StatelessWidget {
             children: [
               Text(title,
                   style: TextStyle(
-                    color: fg.withOpacity(0.9),
+                    color: fg.withValues(alpha: 0.9),
                     fontWeight: FontWeight.w600,
                     fontSize: 14,
                   )),
-              Icon(Icons.arrow_outward, color: fg.withOpacity(0.9), size: 18),
+              Icon(Icons.arrow_outward, color: fg.withValues(alpha: 0.9), size: 18),
             ],
           ),
           const SizedBox(height: 10),
@@ -901,7 +619,7 @@ class _ActionsCard extends StatelessWidget {
                   child: Text(
                     t,
                     style: TextStyle(
-                      color: fg.withOpacity(0.92),
+                      color: fg.withValues(alpha: 0.92),
                       fontSize: 13,
                     ),
                   ),
@@ -978,11 +696,9 @@ class _ProgressRing extends StatelessWidget {
   final Color? color;
 
   const _ProgressRing({
-    super.key,
     required this.value,
     this.size = 72,
-    this.stroke = 8,
-    this.color,
+    this.color, required this.stroke,
   });
 
   @override
