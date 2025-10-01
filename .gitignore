@@ -119,3 +119,4 @@ app.*.symbols
 
 # FVM Version Cache
 .fvm/
+mvp_design/
