@@ -17,6 +17,8 @@ class TraineeOnboardingController extends GetxController {
 
   final Rx<DateTime?> selectedDate = Rx<DateTime?>(null);
 
+  final RxInt onboardingSteps = 1.obs;
+
   final RxString selectedGender = ''.obs;
   final RxString fitnessExperience = ''.obs;
   final RxString selectedPartner = ''.obs;

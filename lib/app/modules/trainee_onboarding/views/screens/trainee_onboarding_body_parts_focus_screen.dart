@@ -4,6 +4,7 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/back_pill.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
+import '../../../../core/widgets/step_progresh_indicator.dart';
 import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 import 'trainee_onboarding_occupation_training_screen.dart';
 
@@ -22,7 +23,12 @@ class TraineeOnboardingBodyPartsFocusScreen extends GetView<TraineeOnboardingCon
             children: [
               BackPill(onTap: () => Navigator.maybePop(context)),
               30.height,
-              const ProgressBar(currentStep: 2, stepText: "Activity"),
+              StepProgressIndicator(
+                currentStep: 16,
+                totalSteps: 22,
+                percentInStep: 0.10, // 10%
+                stepTitle: 'Activity',
+              ),
               320.height,
               Center(
                 child: Text(

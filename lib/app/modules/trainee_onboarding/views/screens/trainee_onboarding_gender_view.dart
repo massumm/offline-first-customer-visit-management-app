@@ -24,8 +24,8 @@ class TraineeOnboardingGenderView extends GetView<TraineeOnboardingController> {
               BackPill(onTap: () => Navigator.maybePop(context)),
               16.height,
               StepProgressIndicator(
-                currentStep: 1,
-                totalSteps: 6,
+                currentStep: 3,
+                totalSteps: 22,
                 percentInStep: 0.10, // 10%
                 stepTitle: 'Personal',
               ),

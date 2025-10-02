@@ -10,6 +10,7 @@ import 'package:icon/app/core/widgets/back_pill.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
 import 'package:icon/app/modules/trainee_onboarding/views/screens/trainee_onboarding_session_be_screen.dart';
 
+import '../../../../core/widgets/step_progresh_indicator.dart';
 import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 
 class TraineeOnboardingRealisticallyTrainScreen
@@ -27,7 +28,12 @@ class TraineeOnboardingRealisticallyTrainScreen
           children: [
             BackPill(onTap: () => Navigator.maybePop(context)),
             30.height,
-            const ProgressBar(currentStep: 2, stepText: "Activity"),
+            StepProgressIndicator(
+              currentStep: 11,
+              totalSteps: 22,
+              percentInStep: 0.10, // 10%
+              stepTitle: 'Activity',
+            ),
             40.height,
             Spacer(),
             Center(

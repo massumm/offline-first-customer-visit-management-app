@@ -25,7 +25,7 @@ class TraineeOnboardingView extends GetView<TraineeOnboardingController> {
               16.height,
               StepProgressIndicator(
                 currentStep: 1,
-                totalSteps: 6,
+                totalSteps: 22,
                 percentInStep: 0.10, // 10%
                 stepTitle: 'Personal',
               ),

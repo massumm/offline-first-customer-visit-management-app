@@ -24,7 +24,7 @@ class TraineeOnboardingFitnessExperience extends GetView<TraineeOnboardingContro
               BackPill(onTap: () => Navigator.maybePop(context)),
               16.height,
               StepProgressIndicator(
-                currentStep: 1,
+                currentStep: 5,
                 totalSteps: 6,
                 percentInStep: 0.10, // 10%
                 stepTitle: 'Personal',

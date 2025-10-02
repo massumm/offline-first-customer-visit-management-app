@@ -26,7 +26,7 @@ class TraineeOnboardingAddressView
               BackPill(onTap: () => Navigator.maybePop(context)),
               16.height,
               StepProgressIndicator(
-                currentStep: 1,
+                currentStep: 4,
                 totalSteps: 6,
                 percentInStep: 0.10, // 10%
                 stepTitle: 'Personal',

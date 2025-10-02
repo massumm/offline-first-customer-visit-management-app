@@ -37,49 +37,49 @@ class StepProgressIndicator extends StatelessWidget {
         const SizedBox(height: 8),
 
         // Step segments
-        Row(
-          children: List.generate(totalSteps, (i) {
-            final stepIndex = i + 1;
-            final isActive = stepIndex == currentStep;
-
-            return Expanded(
-              child: Container(
-                height: height,
-                margin: const EdgeInsets.symmetric(horizontal: 6),
-                decoration: BoxDecoration(
-                  color: backgroundColor,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: borderColor, width: 2),
-                ),
-                child: isActive
-                    ? Stack(
-                  alignment: Alignment.centerLeft,
-                  children: [
-                    // Fill based on percent
-                    FractionallySizedBox(
-                      widthFactor: percentInStep.clamp(0, 1),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: borderColor,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      ),
-                    ),
-
-                    // Percentage pill
-                    Positioned(
-                      left: 10,
-                      child: _PercentPill(
-                        percent: (percentInStep * 100).clamp(0, 100).round(),
-                      ),
-                    ),
-                  ],
-                )
-                    : null,
-              ),
-            );
-          }),
-        ),
+        // Row(
+        //   children: List.generate(totalSteps, (i) {
+        //     final stepIndex = i + 1;
+        //     final isActive = stepIndex == currentStep;
+        //
+        //     return Expanded(
+        //       child: Container(
+        //         height: height,
+        //         margin: const EdgeInsets.symmetric(horizontal: 6),
+        //         decoration: BoxDecoration(
+        //           color: backgroundColor,
+        //           borderRadius: BorderRadius.circular(8),
+        //           border: Border.all(color: borderColor, width: 2),
+        //         ),
+        //         child: isActive
+        //             ? Stack(
+        //           alignment: Alignment.centerLeft,
+        //           children: [
+        //             // Fill based on percent
+        //             FractionallySizedBox(
+        //               widthFactor: percentInStep.clamp(0, 1),
+        //               child: Container(
+        //                 decoration: BoxDecoration(
+        //                   color: borderColor,
+        //                   borderRadius: BorderRadius.circular(6),
+        //                 ),
+        //               ),
+        //             ),
+        //
+        //             // Percentage pill
+        //             Positioned(
+        //               left: 10,
+        //               child: _PercentPill(
+        //                 percent: (percentInStep * 100).clamp(0, 100).round(),
+        //               ),
+        //             ),
+        //           ],
+        //         )
+        //             : null,
+        //       ),
+        //     );
+        //   }),
+        // ),
         const SizedBox(height: 12),
 
         // Step title
