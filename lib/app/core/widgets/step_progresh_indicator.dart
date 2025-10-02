@@ -17,40 +17,13 @@ class StepProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const borderColor = Color(0xFFFF6A5E); // soft red outline
-    final fillColor = const Color(0xFFFFE5E2).withValues(alpha: 0.55); // pale pink
-    final segments = List.generate(totalSteps, (i) {
-      final isActive = (i + 1) == currentStep;
-
-      return Expanded(
-        child: Stack(
-          alignment: Alignment.centerLeft,
-          children: [
-            Container(
-              height: 28,
-              margin: const EdgeInsets.symmetric(horizontal: 6),
-              decoration: BoxDecoration(
-                color: fillColor,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: borderColor, width: 2),
-              ),
-            ),
-
-            // Little white "10%" pill only on the active segment
-            if (isActive)
-              Positioned(
-                left: 10,
-                child: _PercentPill(
-                  percent: (percentInStep * 100).clamp(0, 100).round(),
-                ),
-              ),
-          ],
-        ),
-      );
-    });
+    final backgroundColor = const Color(0xFFFFE5E2).withValues(alpha: 0.55);
+    const height = 28.0;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // Step count label
         Align(
           alignment: Alignment.centerLeft,
           child: Text(
@@ -63,18 +36,60 @@ class StepProgressIndicator extends StatelessWidget {
         ),
         const SizedBox(height: 8),
 
-        // Segments
-        Row(children: segments),
+        // Step segments
+        Row(
+          children: List.generate(totalSteps, (i) {
+            final stepIndex = i + 1;
+            final isActive = stepIndex == currentStep;
+
+            return Expanded(
+              child: Container(
+                height: height,
+                margin: const EdgeInsets.symmetric(horizontal: 6),
+                decoration: BoxDecoration(
+                  color: backgroundColor,
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: borderColor, width: 2),
+                ),
+                child: isActive
+                    ? Stack(
+                  alignment: Alignment.centerLeft,
+                  children: [
+                    // Fill based on percent
+                    FractionallySizedBox(
+                      widthFactor: percentInStep.clamp(0, 1),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: borderColor,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                      ),
+                    ),
+
+                    // Percentage pill
+                    Positioned(
+                      left: 10,
+                      child: _PercentPill(
+                        percent: (percentInStep * 100).clamp(0, 100).round(),
+                      ),
+                    ),
+                  ],
+                )
+                    : null,
+              ),
+            );
+          }),
+        ),
         const SizedBox(height: 12),
 
-        // Centered step title
+        // Step title
         Text(
           stepTitle,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 0.2,
-            color: Colors.white
+            color: Colors.white,
           ),
         ),
       ],
@@ -93,6 +108,13 @@ class _PercentPill extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(6),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 2,
+            offset: Offset(0, 1),
+          ),
+        ],
       ),
       child: Text(
         '$percent%',

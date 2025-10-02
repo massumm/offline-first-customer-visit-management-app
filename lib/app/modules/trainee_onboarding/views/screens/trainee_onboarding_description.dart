@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/custom_text_field.dart';
+import 'package:icon/app/modules/trainee_onboarding/views/screens/trainee_onboarding_usually_train_screen.dart';
 
 import '../../../../core/widgets/back_pill.dart';
 import '../../../../core/widgets/step_progresh_indicator.dart';
@@ -43,8 +44,8 @@ class TraineeOnboardingDescriptionView extends GetView<TraineeOnboardingControll
               ),
               16.height,
               ElevatedButton(
-                onPressed: controller.onDoneButtonPressed,
-                child: Text('Done'),
+                onPressed: () => Get.to(() => TraineeOnboardingUsuallyTrainScreen()),
+                child: Text('Next'),
               ),
             ],
           ),
