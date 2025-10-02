@@ -1,13 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:icon/app/base/base_remote_source.dart';
-import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_create_model.dart';
 import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_create_response_model.dart';
 
 import '../../../base/network/dio_provider.dart';
 import '../../../data/local/preference/store/trainee_data_store.dart';
 import '../../../data/local/preference/store/user_store.dart';
-import '../../login/models/login_response_model.dart';
 import '../models/trainee_preference_create_response_model.dart';
 import 'trainee_onboarding_repository.dart';
 
