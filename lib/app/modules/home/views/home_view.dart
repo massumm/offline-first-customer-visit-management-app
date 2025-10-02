@@ -42,15 +42,18 @@ class HomeView extends BaseView<HomeController> {
                 builder: (context, constraints) {
                   final isWide = constraints.maxWidth > 520;
                   final actionCards = [
-                    _ActionsCard(
-                      title: 'Activity',
-                      color: const Color(0xFF6E7416), // olive-ish
-                      percent: 0.85,
-                      lines: const [
-                        'Workouts: 2 / 4 this week',
-                        'Today: 5.3 km Run',
-                        'Record: New 5K Best Time!',
-                      ],
+                    GestureDetector(
+                      onTap: () => Get.toNamed(Routes.ACTIVITY_TRACKER),
+                      child: _ActionsCard(
+                        title: 'Activity',
+                        color: const Color(0xFF6E7416), // olive-ish
+                        percent: 0.85,
+                        lines: const [
+                          'Workouts: 2 / 4 this week',
+                          'Today: 5.3 km Run',
+                          'Record: New 5K Best Time!',
+                        ],
+                      ),
                     ),
                     _ActionsCard(
                       title: 'Recovery',
