@@ -53,7 +53,7 @@ class ProfileCreateAnimationController extends BaseController {
     } catch (e) {
       // This catch block might be hit if Future.wait itself has an issue, which is rare.
       logger.e("An unexpected error occurred during profile creation: ${e.toString()}");
-      CustomToast.showErrorToast("An unexpected error occurred.");
+      // CustomToast.showErrorToast("An unexpected error occurred.");
     } finally {
       // --- GUARANTEED NAVIGATION ---
       // This block will always execute, whether the API calls succeeded or failed.

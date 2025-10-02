@@ -64,15 +64,13 @@ class TraineeOnboardingAddressView
                   onPressed: controller.isButtonLoading.isTrue
                       ? null
                       : () {
-                           controller.onDoneButtonPressed();
-                          //  Get.to(() => TraineeOnboardingFitnessExperience());
+                          Get.to(() => TraineeOnboardingFitnessExperience());
                         },
-
-                  child:  controller.isButtonLoading.isTrue
+                  child: controller.isButtonLoading.isTrue
                       ? Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: const CircularProgressIndicator.adaptive(),
-                      )
+                          padding: const EdgeInsets.all(4.0),
+                          child: const CircularProgressIndicator.adaptive(),
+                        )
                       : Text('Done'),
                 );
               }),
