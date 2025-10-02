@@ -13,9 +13,6 @@ import 'trainee_onboarding_repository.dart';
 class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
     implements TraineeOnboardingRepository {
   final LoginResponseModel? profile = UserStore.to.profile;
-  late final Map<String, String> headers = {
-    'Authorization': "Bearer ${profile?.access ?? ''}",
-  };
 
   @override
   Future<TraineeProfileCreateResponseModel> createTraineeProfile(
@@ -23,7 +20,9 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
   ) {
     DioProvider.setLoggingEnabled(true);
     final String endpoint = "${DioProvider.baseUrl}/api/trainees/profile/";
-
+    final Map<String, String> headers = {
+      'Authorization': "Bearer ${profile?.access ?? ''}",
+    };
     Future<Response<dynamic>> dioCall = dioClient.post(
       endpoint,
       data: model,
@@ -64,7 +63,9 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
   ) {
     DioProvider.setLoggingEnabled(true);
     final String endpoint = "${DioProvider.baseUrl}/api/trainees/preferences/";
-
+    final Map<String, String> headers = {
+      'Authorization': "Bearer ${profile?.access ?? ''}",
+    };
     Future<Response<dynamic>> dioCall = dioClient.post(
       endpoint,
       data: model,
