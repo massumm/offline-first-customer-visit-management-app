@@ -13,15 +13,18 @@ class TraineeDataStore extends GetxService {
   static TraineeDataStore get to => Get.find();
 
   final Rx<TraineeProfileCreateModel?> _traineeModel =
-      Rx<TraineeProfileCreateModel?>(null);
+  Rx<TraineeProfileCreateModel?>(null);
 
   TraineeProfileCreateModel? get traineeModel => _traineeModel.value;
 
   final StorageService _storageService = Get.find<StorageService>();
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
+    await Get.isRegistered<StorageService>()
+        ? null
+        : Get.putAsync(() => StorageService().init());
     _loadModelFromStorage();
     logger.i("UserStore initialized and user data loaded (if available).");
   }

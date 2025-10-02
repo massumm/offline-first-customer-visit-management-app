@@ -11,7 +11,7 @@ import '../../trainee_onboarding/repository/trainee_onboarding_repository.dart';
 class ProfileCreateAnimationController extends BaseController {
   TraineeProfileCreateModel? traineeProfile;
 
-  final RxBool isLoading = false.obs;
+  final RxBool isLoading = true.obs;
   final TraineeOnboardingRepository _traineeOnboardingRepository = Get.find(
     tag: (TraineeOnboardingRepository).toString(),
   );

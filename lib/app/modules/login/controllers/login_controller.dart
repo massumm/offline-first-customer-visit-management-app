@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/data/local/preference/store/trainee_data_store.dart';
 import '../../../base/widgets/custom_toast.dart';
@@ -9,7 +10,7 @@ import '../../trainee_onboarding/repository/trainee_onboarding_repository.dart';
 import '../repository/login_repository.dart';
 
 
-class LoginController extends GetxController {
+class LoginController extends BaseController {
   final emailCtr = TextEditingController();
   final passwordCtr = TextEditingController();
   var obscurePassword = true.obs;
@@ -23,10 +24,6 @@ class LoginController extends GetxController {
   //............. Repository ...........
   final LoginRepository _loginRepository = Get.find(
     tag: (LoginRepository).toString(),
-  );
-
-  final TraineeOnboardingRepository _traineeOnboardingRepository = Get.find(
-    tag: (TraineeOnboardingRepository).toString(),
   );
 
 
@@ -118,6 +115,8 @@ class LoginController extends GetxController {
 
   void _handleRoute() {
     final hasProfileData = TraineeDataStore.to.traineeModel;
+
+    logger.d('hasProfileData: $hasProfileData');
 
     // Create Trainee profile
     if(hasProfileData == null){
