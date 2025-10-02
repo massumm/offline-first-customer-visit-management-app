@@ -19,8 +19,6 @@ void main() async {
 
   // Local Storage
  await Get.putAsync<StorageService>(() => StorageService().init());
-  await Get.putAsync<StorageService>(() => StorageService().init());
-  Get.put<UserStore>(UserStore());
 
   _setupEnvironment();
   _setupErrorHandling();
