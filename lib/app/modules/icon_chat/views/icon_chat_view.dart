@@ -102,6 +102,8 @@ class IconChatView extends GetView<IconChatController> {
 }
 
 class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -284,7 +286,7 @@ class _SuggestionChip extends StatelessWidget {
 class SenderMessageBubble extends StatelessWidget {
   final String text;
   final String timestamp;
-  const SenderMessageBubble({required this.text, required this.timestamp});
+  const SenderMessageBubble({super.key, required this.text, required this.timestamp});
 
   @override
   Widget build(BuildContext context) {
@@ -333,7 +335,7 @@ class SenderMessageBubble extends StatelessWidget {
 class ReceiverMessageBubble extends StatelessWidget {
   final String text;
   final String timestamp;
-  const ReceiverMessageBubble({required this.text, required this.timestamp});
+  const ReceiverMessageBubble({super.key, required this.text, required this.timestamp});
 
   @override
   Widget build(BuildContext context) {

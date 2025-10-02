@@ -41,7 +41,6 @@ flutter:
   assets:
     - assets/images/
     - assets/svg/
-    - mvp_design/
     - assets/jsons/
 
 

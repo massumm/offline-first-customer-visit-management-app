@@ -102,7 +102,7 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 16,
               children: [
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -110,7 +110,7 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     spacing: 98,
                     children: [
-                      Container(width: 24, height: 24, child: Stack()),
+                      SizedBox(width: 24, height: 24, child: Stack()),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                         decoration: ShapeDecoration(
@@ -146,7 +146,7 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
                     ],
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: double.infinity,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
