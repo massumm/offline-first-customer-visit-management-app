@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:icon/app/base/base_remote_source.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_create_model.dart';
 import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_create_response_model.dart';
 
