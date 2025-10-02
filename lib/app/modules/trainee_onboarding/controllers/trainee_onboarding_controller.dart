@@ -20,7 +20,55 @@ class TraineeOnboardingController extends GetxController {
   final RxString fitnessExperience = ''.obs;
   final RxString selectedPartner = ''.obs;
   final RxBool isButtonLoading = false.obs;
+  var selectedQualifications = <String>[].obs;
+  TextEditingController otherController = TextEditingController();
+  TextEditingController customNumberController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  RxDouble warmDirect = 5.0.obs;
+  var selectedReminder = "".obs;
+  final options = ["Gym", "Home", "Mixed"];
+  final realisticallyTrain = ["1", "2", "3", "4", "5", "6", "7",];
+  final sessionBe = ["5 min", "15 min", "30 min", "40 min", "1 hour", "1 hour+",];
+  final timePreferTrain = ["Morning", "Afternoon", "Evening", "Flexible"];
+  final occupationTraining = ["Sedentary", "Lightly active", "Moderate", "Very active"];
+  final achieveEachDay = ["2,500", "5,000", "7,500", "10,000", "12,500",];
+  final consistentlyAbility = ["Time", "Energy", "Motivation",];
 
+  final equipmentAccess = [
+    "None",
+    "Dumbbells",
+    "Barbell",
+    "Bands",
+    "Machines",
+    "Other"
+  ];
+
+  final preferredTrainingStyle = [
+    "General Training",
+    "Cardio",
+    "Sport-specific",
+    "Bodybuilding",
+    "Powerlifting",
+    "Circuit",
+    "HITT",
+    "Mixed",
+    "Other",
+  ];
+
+  final bodyPartsFocus = [
+    "Fully body",
+    "Abs",
+    "Chest",
+    "Shoulders",
+    "Arms",
+    "Back",
+    "Glutes",
+    "Other",
+    "Cardiovascular system",
+    "Glutes",
+    "Calves",
+    "Central Nervous System",
+  ];
   //........... Repository ...............
   final TraineeOnboardingRepository _repository = Get.find(
     tag: (TraineeOnboardingRepository).toString(),
@@ -36,6 +84,14 @@ class TraineeOnboardingController extends GetxController {
 
     if (pickedDate != null) {
       selectedDate.value = pickedDate; // This is now type-safe
+    }
+  }
+
+  void toggleQualification(String qualification) {
+    if (selectedQualifications.contains(qualification)) {
+      selectedQualifications.remove(qualification);
+    } else {
+      selectedQualifications.add(qualification);
     }
   }
 

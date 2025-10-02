@@ -31,7 +31,7 @@ class ProfileCreateAnimationController extends BaseController {
       if(value == false){
         CustomToast.showSuccessToast('Profile created successfully!');
         Future.delayed(Duration(seconds: 1),
-                () => Get.offAllNamed(Routes.PROFILE_CREATE_ANIMATION));
+                () => Get.offAllNamed(Routes.HOME));
       }
     });
   }

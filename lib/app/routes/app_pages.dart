@@ -22,7 +22,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const String INITIAL = Routes.PROFILE_CREATE_ANIMATION;
+  static const String INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
