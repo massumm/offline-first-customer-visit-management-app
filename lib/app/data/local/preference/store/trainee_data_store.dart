@@ -12,21 +12,27 @@ class TraineeDataStore extends GetxService {
 
   static TraineeDataStore get to => Get.find();
 
-  final Rx<TraineeProfileCreateModel?> _traineeModel =
-  Rx<TraineeProfileCreateModel?>(null);
 
-  TraineeProfileCreateModel? get traineeModel => _traineeModel.value;
+  // Keep this as the internal, private state
+  final Rx<TraineeProfileCreateModel?> _traineeModel = Rx<TraineeProfileCreateModel?>(null);
+
+  // Expose the reactive stream publicly
+  Rx<TraineeProfileCreateModel?> get traineeModel => _traineeModel;
+
+  // You can keep the old getter for non-reactive access if needed, but rename it
+  TraineeProfileCreateModel? get traineeModelValue => _traineeModel.value;
+
 
   final StorageService _storageService = Get.find<StorageService>();
 
   @override
   Future<void> onInit() async {
     super.onInit();
-    await Get.isRegistered<StorageService>()
+    Get.isRegistered<StorageService>()
         ? null
         : Get.putAsync(() => StorageService().init());
     _loadModelFromStorage();
-    logger.i("UserStore initialized and user data loaded (if available).");
+    logger.i("TraineeDataStore initialized and user data loaded (if available).");
   }
 
   void _loadModelFromStorage() {
@@ -41,13 +47,13 @@ class TraineeDataStore extends GetxService {
         _traineeModel.value = TraineeProfileCreateModel.fromJson(
           decodedJson as Map<String, dynamic>,
         );
-        logger.i("UserStore: Loaded model for trainee");
+        logger.i("TraineeDataStore: Loaded model for trainee");
       } else {
         _traineeModel.value = null;
-        logger.i("UserStore: No model found in storage.");
+        logger.i("TraineeDataStore: No model found in storage.");
       }
     } catch (e) {
-      logger.e("UserStore: Failed to load model from storage: $e");
+      logger.e("TraineeDataStore: Failed to load model from storage: $e");
       _traineeModel.value = null;
     }
   }
@@ -60,7 +66,7 @@ class TraineeDataStore extends GetxService {
         modelJson,
       );
     } catch (e) {
-      logger.e("UserStore: Error saving model: $e");
+      logger.e("TraineeDataStore: Error saving model: $e");
     }
   }
 }

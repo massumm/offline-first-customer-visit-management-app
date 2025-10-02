@@ -114,17 +114,14 @@ class LoginController extends BaseController {
   }
 
   void _handleRoute() {
-    final hasProfileData = TraineeDataStore.to.traineeModel;
+    final hasProfileData = TraineeDataStore.to.traineeModelValue;
 
-    logger.d('hasProfileData: $hasProfileData');
-
-    // Create Trainee profile
-    if(hasProfileData == null){
+    if (hasProfileData != null) {
+      // Create Trainee profile
       Get.toNamed(Routes.PROFILE_CREATE_ANIMATION);
-      return;
+    } else {
+      Get.offAllNamed(Routes.HOME);
     }
-
-    Get.offAllNamed(Routes.HOME);
   }
 
   void toRegister() {

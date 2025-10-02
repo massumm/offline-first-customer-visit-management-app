@@ -5,11 +5,18 @@ import 'package:icon/app/modules/trainee_onboarding/models/trainee_profile_creat
 
 import '../../../base/network/dio_provider.dart';
 import '../../../data/local/preference/store/trainee_data_store.dart';
+import '../../../data/local/preference/store/user_store.dart';
+import '../../login/models/login_response_model.dart';
 import '../models/trainee_preference_create_response_model.dart';
 import 'trainee_onboarding_repository.dart';
 
 class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
     implements TraineeOnboardingRepository {
+  final LoginResponseModel? profile = UserStore.to.profile;
+  late final Map<String, String> headers = {
+    'Authorization': "Bearer ${profile?.access ?? ''}",
+  };
+
   @override
   Future<TraineeProfileCreateResponseModel> createTraineeProfile(
     Map<String, dynamic> model,
@@ -17,7 +24,11 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
     DioProvider.setLoggingEnabled(true);
     final String endpoint = "${DioProvider.baseUrl}/api/trainees/profile/";
 
-    Future<Response<dynamic>> dioCall = dioClient.post(endpoint, data: model);
+    Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: model,
+      options: Options(headers: headers),
+    );
 
     try {
       return callApiWithErrorParser(
@@ -54,7 +65,11 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
     DioProvider.setLoggingEnabled(true);
     final String endpoint = "${DioProvider.baseUrl}/api/trainees/preferences/";
 
-    Future<Response<dynamic>> dioCall = dioClient.post(endpoint, data: model);
+    Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: model,
+      options: Options(headers: headers),
+    );
 
     try {
       return callApiWithErrorParser(

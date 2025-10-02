@@ -12,12 +12,12 @@ import 'app/flavors/env_config.dart';
 import 'app/flavors/environment.dart';
 import 'app/routes/app_pages.dart';
 
-void main() {
+void main() async {
   // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
 
   // Local Storage
-  Get.putAsync<StorageService>(() => StorageService().init());
+ await Get.putAsync<StorageService>(() => StorageService().init());
 
   _setupEnvironment();
   _setupErrorHandling();
