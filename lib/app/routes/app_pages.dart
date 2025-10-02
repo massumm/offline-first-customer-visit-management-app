@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../modules/home/activity_tracker/bindings/activity_tracker_binding.dart';
+import '../modules/home/activity_tracker/views/activity_tracker_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/login/bindings/login_binding.dart';
@@ -29,6 +31,13 @@ class AppPages {
       name: _Paths.HOME,
       page: () => HomeView(),
       binding: HomeBinding(),
+      children: [
+        GetPage(
+          name: _Paths.ACTIVITY_TRACKER,
+          page: () => const ActivityTrackerView(),
+          binding: ActivityTrackerBinding(),
+        ),
+      ],
     ),
     GetPage(
       name: _Paths.SPLASH,
