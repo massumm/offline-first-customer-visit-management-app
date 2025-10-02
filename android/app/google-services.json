@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "16108109483",
+    "project_id": "icontraining-51cc2",
+    "storage_bucket": "icontraining-51cc2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:16108109483:android:34396c5fdcba6a4b2981ee",
+        "android_client_info": {
+          "package_name": "app.icontraining.icon"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFsoZssi2HHOB0eWJRYqWklIxN-1zoi5Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
