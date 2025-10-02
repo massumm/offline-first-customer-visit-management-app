@@ -24,7 +24,10 @@ class TopicWontCoverScreen extends GetView<TrainerOnboardingController> {
             children: [
               BackPill(onTap: () => Navigator.maybePop(context)),
               30.height,
-              const ProgressBar(currentStep: 2, stepText: "Coaching Style & Persona"),
+              const ProgressBar(
+                currentStep: 2,
+                stepText: "Coaching Style & Persona",
+              ),
               350.height,
               // Title
               Center(
@@ -44,13 +47,19 @@ class TopicWontCoverScreen extends GetView<TrainerOnboardingController> {
                 runSpacing: 12,
                 children: controller.topicWontCover.map((q) {
                   return Obx(() {
-                    final isSelected = controller.selectedQualifications.contains(q);
+                    final isSelected = controller.selectedQualifications
+                        .contains(q);
                     return GestureDetector(
                       onTap: () => controller.toggleQualification(q),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected ? AppColors.secondaryBg2Color : AppColors.cardBgColor,
+                          color: isSelected
+                              ? AppColors.secondaryBg2Color
+                              : AppColors.cardBgColor,
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(
                             width: 1.5,
@@ -62,7 +71,9 @@ class TopicWontCoverScreen extends GetView<TrainerOnboardingController> {
                         child: Text(
                           q,
                           style: TextStyle(
-                            color: isSelected ? Colors.deepOrange : Colors.white70,
+                            color: isSelected
+                                ? Colors.deepOrange
+                                : Colors.white70,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -82,24 +93,31 @@ class TopicWontCoverScreen extends GetView<TrainerOnboardingController> {
                       hint: "",
                     ),
                   ),
-                  12.width,
+                  8.width,
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => ExerciseStrategyTrainingStyleScreen());
-                      },
+                    child: TextButton(
+                      onPressed: () {},
                       child: const Text('Add'),
                     ),
                   ),
                 ],
               ),
               16.height,
-              ElevatedButton(
-                onPressed: () {
-                  showSuccessDialog();
-                },
-                child: const Text('Next'),
-              ),
+              Obx(() {
+                return ElevatedButton(
+                  onPressed: controller.isCompleting.isTrue
+                      ? null
+                      : () {
+                          controller.onComplete();
+                        },
+                  child: controller.isCompleting.isTrue
+                      ? Padding(
+                          padding: EdgeInsets.all(4),
+                          child: CircularProgressIndicator.adaptive(),
+                        )
+                      : const Text('Complete'),
+                );
+              }),
               20.height,
             ],
           ),

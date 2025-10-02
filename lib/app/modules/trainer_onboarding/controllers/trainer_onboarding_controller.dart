@@ -1,6 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/routes/app_pages.dart';
+
+import '../../../base/widgets/custom_toast.dart';
+import '../repository/tainer_onboarding_repository.dart';
 
 class TrainerOnboardingController extends GetxController {
   //TODO: Implement TrainerOnboardingController
@@ -26,7 +30,7 @@ class TrainerOnboardingController extends GetxController {
     "Individualised",
     "Template-Based",
     "Phase-Based",
-    "Assessment Driven"
+    "Assessment Driven",
   ].obs;
 
   void reorderItems(int oldIndex, int newIndex) {
@@ -161,4 +165,45 @@ class TrainerOnboardingController extends GetxController {
     },
   ];
 
+  var selectedCoachingStyle = "".obs;
+  var selectedCoachingDescription = "".obs;
+
+  final TrainerOnboardingRepository _repository = Get.find(
+    tag: (TrainerOnboardingRepository).toString(),
+  );
+
+  final RxBool isCompleting = false.obs;
+
+  void onComplete() {
+    isCompleting(true);
+
+    final data = {
+      // "bio": "string",
+      // "date_of_birth": "2019-08-24",
+      // "phone_number": "string",
+      // "full_address": "string",
+      // "country": "string",
+      // "city": "string",
+      // "gender": "string",
+      "persona_name": nameController.text,
+      "persona_description": descriptionController.text,
+      "coaching_style_name": selectedCoachingStyle.value,
+      "coaching_style_description": selectedCoachingDescription.value,
+    };
+
+    _repository
+        .createTrainerProfile(data)
+        .then(
+          (response) {
+            CustomToast.showSuccessToast(
+              'Trainer Profile Created Successfully',
+            );
+            isCompleting(false);
+            Get.offAllNamed(Routes.HOME);
+          },
+          onError: (e) {
+            CustomToast.showErrorToast(e.toString());
+          },
+        );
+  }
 }

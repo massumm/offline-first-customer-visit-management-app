@@ -21,7 +21,10 @@ class CoachingStyleScreen extends GetView<TrainerOnboardingController> {
           children: [
             BackPill(onTap: () => Navigator.maybePop(context)),
             30.height,
-            const ProgressBar(currentStep: 2, stepText: "Coaching Style & Persona"),
+            const ProgressBar(
+              currentStep: 2,
+              stepText: "Coaching Style & Persona",
+            ),
             280.height,
             // Title
             Center(
@@ -46,6 +49,10 @@ class CoachingStyleScreen extends GetView<TrainerOnboardingController> {
                     return GestureDetector(
                       onTap: () {
                         controller.selectedIndex.value = index;
+                        controller.selectedCoachingStyle.value = style["title"]
+                            .toString();
+                        controller.selectedCoachingDescription.value =
+                            style["subtitle"].toString();
                       },
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 12),
@@ -54,7 +61,9 @@ class CoachingStyleScreen extends GetView<TrainerOnboardingController> {
                           color: AppColors.cardBgColor,
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isSelected ? Colors.deepOrange : Colors.transparent,
+                            color: isSelected
+                                ? Colors.deepOrange
+                                : Colors.transparent,
                             width: 2,
                           ),
                         ),
@@ -80,7 +89,9 @@ class CoachingStyleScreen extends GetView<TrainerOnboardingController> {
                                   Text(
                                     style["title"].toString(),
                                     style: TextStyle(
-                                      color: isSelected ? Colors.deepOrange : Colors.white,
+                                      color: isSelected
+                                          ? Colors.deepOrange
+                                          : Colors.white,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -94,7 +105,7 @@ class CoachingStyleScreen extends GetView<TrainerOnboardingController> {
                                   ),
                                 ],
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),

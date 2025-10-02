@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../base/widgets/custom_toast.dart';
+import '../../trainer_onboarding/repository/tainer_onboarding_repository.dart';
 import '../models/trainee_profile_create_model.dart';
 import '../repository/trainee_onboarding_repository.dart';
 

@@ -24,7 +24,10 @@ class ClientBestConnectScreen extends GetView<TrainerOnboardingController> {
             children: [
               BackPill(onTap: () => Navigator.maybePop(context)),
               30.height,
-              const ProgressBar(currentStep: 2, stepText: "Coaching Style & Persona"),
+              const ProgressBar(
+                currentStep: 2,
+                stepText: "Coaching Style & Persona",
+              ),
               350.height,
               // Title
               Center(
@@ -44,13 +47,19 @@ class ClientBestConnectScreen extends GetView<TrainerOnboardingController> {
                 runSpacing: 12,
                 children: controller.clientBestConnect.map((q) {
                   return Obx(() {
-                    final isSelected = controller.selectedQualifications.contains(q);
+                    final isSelected = controller.selectedQualifications
+                        .contains(q);
                     return GestureDetector(
                       onTap: () => controller.toggleQualification(q),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected ? Colors.transparent : AppColors.cardBgColor,
+                          color: isSelected
+                              ? Colors.transparent
+                              : AppColors.cardBgColor,
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(
                             width: 1.5,
@@ -62,7 +71,9 @@ class ClientBestConnectScreen extends GetView<TrainerOnboardingController> {
                         child: Text(
                           q,
                           style: TextStyle(
-                            color: isSelected ? Colors.deepOrange : Colors.white70,
+                            color: isSelected
+                                ? Colors.deepOrange
+                                : Colors.white70,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -82,12 +93,10 @@ class ClientBestConnectScreen extends GetView<TrainerOnboardingController> {
                       hint: "",
                     ),
                   ),
-                  12.width,
+                  8.width,
                   Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Get.to(() => ExerciseStrategyTrainingStyleScreen());
-                      },
+                    child: TextButton(
+                      onPressed: () {},
                       child: const Text('Add'),
                     ),
                   ),
