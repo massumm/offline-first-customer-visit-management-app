@@ -9,7 +9,9 @@ import '../../trainee_onboarding/models/trainee_profile_create_model.dart';
 import '../../trainee_onboarding/repository/trainee_onboarding_repository.dart';
 
 class ProfileCreateAnimationController extends BaseController {
-  final TraineeOnboardingRepository _repo = Get.find(tag: (TraineeOnboardingRepository).toString());
+  final TraineeOnboardingRepository _repo = Get.find(
+    tag: (TraineeOnboardingRepository).toString(),
+  );
   final RxBool _isProcessing = false.obs;
 
   /// Public method called by the View to start the profile creation process.
@@ -22,7 +24,8 @@ class ProfileCreateAnimationController extends BaseController {
   /// Manages the API calls and guarantees navigation to the home screen.
   Future<void> _createTraineeProfile() async {
     _isProcessing.value = true;
-    TraineeProfileCreateModel? traineeProfile = TraineeDataStore.to.traineeModelValue;
+    TraineeProfileCreateModel? traineeProfile =
+        TraineeDataStore.to.traineeModelValue;
 
     if (traineeProfile == null) {
       logger.e("FATAL: No trainee data found. Navigating home anyway.");
@@ -34,25 +37,28 @@ class ProfileCreateAnimationController extends BaseController {
     try {
       // Use Future.wait to run API calls in parallel.
       // `settle` ensures the Future completes even if some calls fail.
-      final results = await Future.wait([
-        _createProfile(traineeProfile),
-        _createPreference(traineeProfile),
-      ].map((f) => f.reflect()), // .reflect() helps settle the futures
+      final results = await Future.wait(
+        [
+          _createProfile(traineeProfile),
+          _createPreference(traineeProfile),
+        ].map((f) => f.reflect()), // .reflect() helps settle the futures
       );
 
       // Optional: Check results if needed for logging
       // --- FIX: Access the record's `error` property to check for success ---
       final successfulCalls = results.where((res) => res.error == null).length;
-      'Process complete. Successful calls: $successfulCalls/${results.length}'.log();
+      'Process complete. Successful calls: $successfulCalls/${results.length}'
+          .log();
       if (successfulCalls == results.length) {
         CustomToast.showSuccessToast('Profile created successfully!');
       } else {
         CustomToast.showErrorToast('Could not save all profile details.');
       }
-
     } catch (e) {
       // This catch block might be hit if Future.wait itself has an issue, which is rare.
-      logger.e("An unexpected error occurred during profile creation: ${e.toString()}");
+      logger.e(
+        "An unexpected error occurred during profile creation: ${e.toString()}",
+      );
       // CustomToast.showErrorToast("An unexpected error occurred.");
     } finally {
       // --- GUARANTEED NAVIGATION ---
@@ -93,13 +99,20 @@ class ProfileCreateAnimationController extends BaseController {
     };
     return _repo.createTraineePreferences(model);
   }
+
+  @override
+  void onClose() {
+    Future.wait([TraineeDataStore.to.cleanTraineeData()]);
+    super.onClose();
+  }
 }
 
 // Extension to help with Future.wait and error handling
 extension FutureReflect<T> on Future<T> {
   // The record is defined with named properties: `value` and `error`
   Future<({T? value, Object? error})> reflect() {
-    return then((value) => (value: value, error: null))
-        .catchError((error) => (value: null, error: error));
+    return then(
+      (value) => (value: value, error: null),
+    ).catchError((error) => (value: null, error: error));
   }
 }

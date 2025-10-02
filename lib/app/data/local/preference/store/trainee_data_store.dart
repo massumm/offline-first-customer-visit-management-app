@@ -69,4 +69,19 @@ class TraineeDataStore extends GetxService {
       logger.e("TraineeDataStore: Error saving model: $e");
     }
   }
+
+  // Clean method
+  Future<void> cleanTraineeData() async {
+    try {
+      // Clear the model from persistent storage
+      await _storageService.remove(StorageKeys.STORAGE_TRAINEE_ONBOARDING_MODEL_KEY);
+
+      // Clear the model from memory
+      _traineeModel.value = null;
+
+      logger.i("TraineeDataStore: Cleaned trainee data from storage and memory.");
+    } catch (e) {
+      logger.e("TraineeDataStore: Error cleaning trainee data: $e");
+    }
+  }
 }
