@@ -196,7 +196,7 @@ class _ProfileItem extends StatelessWidget {
             const SizedBox(height: 4),
             MediaQuery(
               data: MediaQuery.of(context).copyWith(
-                textScaleFactor: MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.2),
+                textScaler: TextScaler.linear(MediaQuery.of(context).textScaleFactor.clamp(1.0, 1.2)),
               ),
               child: Text(
                 label,

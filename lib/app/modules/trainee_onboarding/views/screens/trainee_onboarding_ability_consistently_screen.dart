@@ -6,7 +6,6 @@ import 'package:icon/app/core/widgets/back_pill.dart';
 import 'package:icon/app/core/widgets/custom_text_field.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
 import '../../../../core/widgets/step_progresh_indicator.dart';
-import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 import 'trainee_onboarding_workouts_anything_screen.dart';
 
 class TraineeOnboardingAbilityConsistentlyScreen

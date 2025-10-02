@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/get_instance.dart';
-import 'package:get/get_navigation/get_navigation.dart';
-import 'package:get/get_state_manager/src/simple/get_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/back_pill.dart';
@@ -11,7 +7,6 @@ import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboardi
 import 'package:icon/app/modules/trainee_onboarding/views/screens/trainee_onboarding_session_be_screen.dart';
 
 import '../../../../core/widgets/step_progresh_indicator.dart';
-import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 
 class TraineeOnboardingRealisticallyTrainScreen
     extends GetView<TraineeOnboardingController> {

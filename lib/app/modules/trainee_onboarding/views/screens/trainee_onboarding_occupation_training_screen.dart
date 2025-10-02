@@ -8,7 +8,6 @@ import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/back_pill.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
 import '../../../../core/widgets/step_progresh_indicator.dart';
-import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 import 'trainee_onboarding_general_lifestyle_occupation_screen.dart';
 
 class TraineeOnboardingOccupationTrainingScreen extends GetView<TraineeOnboardingController>  {

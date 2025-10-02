@@ -6,7 +6,6 @@ import 'package:icon/app/data/local/preference/store/trainee_data_store.dart';
 import '../../../base/widgets/custom_toast.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
-import '../../trainee_onboarding/repository/trainee_onboarding_repository.dart';
 import '../repository/login_repository.dart';
 
 

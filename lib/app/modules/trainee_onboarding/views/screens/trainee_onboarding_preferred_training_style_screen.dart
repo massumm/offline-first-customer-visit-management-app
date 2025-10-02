@@ -8,7 +8,6 @@ import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboardi
 import 'package:icon/app/modules/trainee_onboarding/views/screens/trainee_onboarding_equipment_access_screen.dart';
 
 import '../../../../core/widgets/step_progresh_indicator.dart';
-import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 
 class TraineeOnboardingPreferredTrainingStyleScreen
     extends GetView<TraineeOnboardingController> {
