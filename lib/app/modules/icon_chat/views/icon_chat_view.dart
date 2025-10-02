@@ -79,9 +79,9 @@ class IconChatView extends GetView<IconChatController> {
             itemCount: controller.messages.length,
             itemBuilder: (context, index) {
               final message = controller.messages[index];
-              final isMe = index % 2 == 0;
+              final senderType = message['sender_type'];
               final time = message['timestamp'] ?? '12:00';
-              if (isMe) {
+              if (senderType == 'trainee') {
                 return SenderMessageBubble(
                   text: message['content'] ?? '',
                   timestamp: time,

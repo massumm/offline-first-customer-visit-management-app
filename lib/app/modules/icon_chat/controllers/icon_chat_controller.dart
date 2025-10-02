@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../repository/icon_chat_repository_impl.dart';
@@ -55,7 +56,7 @@ class IconChatController extends GetxController {
     messages.assignAll(msgs);
   }
 
-  void _connectWebSocket() {
+  Future<void> _connectWebSocket() async {
     if (roomName == null || token == null) return;
     String wsBaseUrl = DioProvider.baseUrl;
     if (wsBaseUrl.startsWith('https://')) {
@@ -64,24 +65,28 @@ class IconChatController extends GetxController {
       wsBaseUrl = wsBaseUrl.replaceFirst('http://', 'ws://');
     }
     final wsUrl = '$wsBaseUrl/ws/ai_chat/$roomName/';
-    try {
-      channel = IOWebSocketChannel.connect(
-        wsUrl,
-        headers: {'Authorization': 'Bearer $token'},
-      );
-    } catch (e) {
-      channel = WebSocketChannel.connect(Uri.parse('$wsUrl?token=$token'));
-    }
-    channel!.stream.listen((data) {
+    channel = IOWebSocketChannel.connect(
+      wsUrl,
+      headers: {'Authorization': 'Bearer $token'},
+    );
+    await channel?.ready;
+    channel?.stream.listen((data) {
       try {
         final decoded = jsonDecode(data);
-        // If message is from AI, user_id == 'ai', else user_id is int
         messages.insert(0, {
           'content': decoded['message'],
           'user_id': decoded['user_id'],
+          'sender_type': decoded['sender_type'],
           'timestamp': DateTime.now().toIso8601String(),
         });
-      } catch (_) {}
+      } catch (e, s) {
+        log(
+          "Error decoding chats websocket message.",
+          error: e,
+          stackTrace: s,
+          name: 'icon_chat_controller',
+        );
+      }
     });
   }
 
@@ -107,6 +112,7 @@ class IconChatController extends GetxController {
 
   @override
   void onClose() {
+    print('[icon_chat] IconChatController disposed, closing WebSocket');
     textController.dispose();
     channel?.sink.close();
     super.onClose();

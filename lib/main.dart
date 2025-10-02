@@ -50,7 +50,7 @@ Future<void> _setupEnvironment() {
     shouldCollectCrashLog: true,
   );
 
-  Environment environment = Environment.DEVELOPMENT;
+  Environment environment = Environment.PRODUCTION;
 
   if (kReleaseMode) {
     environment = Environment.PRODUCTION;
