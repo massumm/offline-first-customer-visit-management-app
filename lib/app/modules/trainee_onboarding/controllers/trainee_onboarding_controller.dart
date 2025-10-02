@@ -19,12 +19,18 @@ class TraineeOnboardingController extends GetxController {
   final RxString selectedGender = ''.obs;
   final RxString fitnessExperience = ''.obs;
   final RxString selectedPartner = ''.obs;
+  final RxString selectedTrainingLocation = ''.obs;
+  final RxString selectedPreferredTrainingStyle = ''.obs;
+  final RxString selectedEquipment = ''.obs;
+  final RxString selectedDaysPerWeek = ''.obs;
+  final RxString selectedSessionLength = ''.obs;
+  final RxString selectedPreferredTimeOfDay = ''.obs;
   final RxBool isButtonLoading = false.obs;
   var selectedQualifications = <String>[].obs;
   TextEditingController otherController = TextEditingController();
   TextEditingController customNumberController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  RxDouble warmDirect = 5.0.obs;
+  RxDouble trainingIntensity = 5.0.obs;
   var selectedReminder = "".obs;
   final options = ["Gym", "Home", "Mixed"];
   final realisticallyTrain = ["1", "2", "3", "4", "5", "6", "7",];
@@ -97,15 +103,15 @@ class TraineeOnboardingController extends GetxController {
 
   void onDoneButtonPressed() {
     // check all are selected
-    if (nameCtr.text.isEmpty ||
-        addressCtr.text.isEmpty ||
-        cityCtr.text.isEmpty ||
-        countryCtr.text.isEmpty ||
-        selectedGender.value.isEmpty ||
-        selectedDate.value == null) {
-      CustomToast.showErrorToast('Please fill all fields');
-      return;
-    }
+    // if (nameCtr.text.isEmpty ||
+    //     addressCtr.text.isEmpty ||
+    //     cityCtr.text.isEmpty ||
+    //     countryCtr.text.isEmpty ||
+    //     selectedGender.value.isEmpty ||
+    //     selectedDate.value == null) {
+    //   CustomToast.showErrorToast('Please fill all fields');
+    //   return;
+    // }
 
     isButtonLoading(true);
 
@@ -122,14 +128,14 @@ class TraineeOnboardingController extends GetxController {
           experience: fitnessExperience.value,
           partner: selectedPartner.value,
           description: descriptionCtr.text,
-          trainingLocation: 'Home',
-          equipmentAccess: '',
-          preferredTrainingStyle: '',
-          daysPerWeek: null,
-          sessionLength: '',
-          trainingIntensity: null,
-          preferredTimeOfDay: '',
-          trainingReminder: null,
+          trainingLocation: selectedTrainingLocation.value,
+          equipmentAccess:  selectedEquipment.value,
+          preferredTrainingStyle: selectedPreferredTrainingStyle.value,
+          daysPerWeek: int.tryParse(selectedDaysPerWeek.value) ?? 1,
+          sessionLength: selectedSessionLength.value,
+          trainingIntensity: trainingIntensity.value.toInt(),
+          preferredTimeOfDay: selectedPreferredTimeOfDay.value,
+          trainingReminder: selectedReminder.value == "Yes",
         );
     // Store to local DB
     _repository

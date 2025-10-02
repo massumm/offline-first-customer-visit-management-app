@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -10,7 +11,8 @@ import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboardi
 import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 import 'trainee_onboarding_preferred_training_style_screen.dart';
 
-class TraineeOnboardingUsuallyTrainScreen extends GetView<TraineeOnboardingController>  {
+class TraineeOnboardingUsuallyTrainScreen
+    extends GetView<TraineeOnboardingController> {
   const TraineeOnboardingUsuallyTrainScreen({super.key});
 
   @override
@@ -30,34 +32,62 @@ class TraineeOnboardingUsuallyTrainScreen extends GetView<TraineeOnboardingContr
             Center(
               child: const Text(
                 "Where do you usually train?",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.pageBackground),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.pageBackground,
+                ),
               ),
             ),
             20.height,
-            ...controller.options.map((option) => Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.greyColor1,
-                  foregroundColor: AppColors.pageBackground,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  alignment: Alignment.centerLeft,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+            ...controller.options.map(
+              (option) => Obx(() {
+                final isSelected = controller.selectedTrainingLocation.value == option;
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.greyColor1,
+                      foregroundColor: AppColors.pageBackground,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      alignment: Alignment.centerLeft,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      side: isSelected
+                          ? BorderSide(color: AppColors.colorPrimary)
+                          : BorderSide.none,
+                    ),
+                    onPressed: () {
+                      controller.selectedTrainingLocation(option);
+                      Future.delayed(
+                        Duration(milliseconds: 100),
+                        () => Get.to(
+                          () => TraineeOnboardingPreferredTrainingStyleScreen(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          option,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: AppColors.pageBackground,
+                          ),
+                        ),
+                        Icon(
+                          Icons.arrow_forward_ios_rounded,
+                          size: 18,
+                          color: AppColors.subTextColor,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                onPressed: () {
-                  Get.to(() => TraineeOnboardingPreferredTrainingStyleScreen());
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(option, style: const TextStyle(fontSize: 16, color: AppColors.pageBackground)),
-                    Icon(Icons.arrow_forward_ios_rounded, size: 18, color: AppColors.subTextColor),
-                  ],
-                ),
-              ),
-            )),
+                );
+              }),
+            ),
             20.height,
           ],
         ),

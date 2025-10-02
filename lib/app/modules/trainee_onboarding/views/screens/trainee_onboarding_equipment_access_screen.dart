@@ -9,12 +9,12 @@ import 'package:icon/app/modules/trainee_onboarding/views/screens/trainee_onboar
 
 import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 
-class TraineeOnboardingEquipmentAccessScreen extends GetView<TraineeOnboardingController> {
+class TraineeOnboardingEquipmentAccessScreen
+    extends GetView<TraineeOnboardingController> {
   const TraineeOnboardingEquipmentAccessScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(TraineeOnboardingController());
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, top: 40),
@@ -30,7 +30,11 @@ class TraineeOnboardingEquipmentAccessScreen extends GetView<TraineeOnboardingCo
                 child: Text(
                   "What equipment do you have access to at home?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.pageBackground),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.pageBackground,
+                  ),
                 ),
               ),
               20.height,
@@ -39,13 +43,19 @@ class TraineeOnboardingEquipmentAccessScreen extends GetView<TraineeOnboardingCo
                 runSpacing: 12,
                 children: controller.equipmentAccess.map((q) {
                   return Obx(() {
-                    final isSelected = controller.selectedQualifications.contains(q);
+                    final isSelected = controller.selectedEquipment
+                        .contains(q);
                     return GestureDetector(
-                      onTap: () => controller.toggleQualification(q),
+                      onTap: () => controller.selectedEquipment(q),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected ? Colors.transparent : AppColors.cardBgColor,
+                          color: isSelected
+                              ? Colors.transparent
+                              : AppColors.cardBgColor,
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(
                             width: 1.5,
@@ -57,7 +67,9 @@ class TraineeOnboardingEquipmentAccessScreen extends GetView<TraineeOnboardingCo
                         child: Text(
                           q,
                           style: TextStyle(
-                            color: isSelected ? Colors.deepOrange : AppColors.pageBackground,
+                            color: isSelected
+                                ? Colors.deepOrange
+                                : AppColors.pageBackground,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -67,7 +79,13 @@ class TraineeOnboardingEquipmentAccessScreen extends GetView<TraineeOnboardingCo
                 }).toList(),
               ),
               50.height,
-              Text("Other equipment", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w500)),
+              Text(
+                "Other equipment",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               06.height,
               CustomTextField(
                 controller: controller.otherController,

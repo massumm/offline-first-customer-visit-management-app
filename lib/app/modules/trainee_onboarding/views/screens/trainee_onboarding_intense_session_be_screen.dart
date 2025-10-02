@@ -12,7 +12,8 @@ import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboardi
 import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 import 'trainee_onboarding_time_prefer_train_screen.dart';
 
-class TraineeOnboardingIntenseSessionBeScreen extends GetView<TraineeOnboardingController>  {
+class TraineeOnboardingIntenseSessionBeScreen
+    extends GetView<TraineeOnboardingController> {
   const TraineeOnboardingIntenseSessionBeScreen({super.key});
 
   @override
@@ -33,11 +34,15 @@ class TraineeOnboardingIntenseSessionBeScreen extends GetView<TraineeOnboardingC
               child: const Text(
                 "How intense would you like your sessions to be?",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.pageBackground),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.pageBackground,
+                ),
               ),
             ),
             20.height,
-            _buildSliderRow("Light", "Hard", controller.warmDirect),
+            _buildSliderRow("Light", "Hard", controller.trainingIntensity),
             20.height,
             ElevatedButton(
               onPressed: () {
@@ -61,37 +66,113 @@ class TraineeOnboardingIntenseSessionBeScreen extends GetView<TraineeOnboardingC
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(leftLabel, style: TextStyle(fontSize: 16, color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text(rightLabel, style: TextStyle(fontSize: 16, color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
+              Text(
+                leftLabel,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                rightLabel,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
         ),
-        Obx(() => Slider(
-          value: value.value,
-          min: 0,
-          max: 10,
-          divisions: 10,
-          label: value.value.toInt().toString(),
-          activeColor: AppColors.colorPrimary,
-          inactiveColor: Colors.white30,
-          onChanged: (newValue) => value.value = newValue,
-          padding: EdgeInsets.zero,
-        )),
+        Obx(
+          () => Slider(
+            value: value.value,
+            min: 0,
+            max: 10,
+            divisions: 10,
+            label: value.value.toInt().toString(),
+            activeColor: AppColors.colorPrimary,
+            inactiveColor: Colors.white30,
+            onChanged: (newValue) => value.value = newValue,
+            padding: EdgeInsets.zero,
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text("1", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text("2", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text("3", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text("4", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text("5", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text("6", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text("7", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text("8", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text("9", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
-              Text("10", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w600)),
+              Text(
+                "1",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                "2",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                "3",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                "4",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                "5",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                "6",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                "7",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                "8",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                "9",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              Text(
+                "10",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/get_navigation.dart';
@@ -12,7 +13,8 @@ import 'package:icon/app/modules/trainer_onboarding/views/screens/success_dialog
 
 import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 
-class TraineeOnboardingWorkoutsAnythingScreen extends GetView<TraineeOnboardingController>  {
+class TraineeOnboardingWorkoutsAnythingScreen
+    extends GetView<TraineeOnboardingController> {
   const TraineeOnboardingWorkoutsAnythingScreen({super.key});
 
   @override
@@ -33,7 +35,11 @@ class TraineeOnboardingWorkoutsAnythingScreen extends GetView<TraineeOnboardingC
               child: const Text(
                 "What kind of workouts do you most enjoy, or is there anything you want to try?",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: AppColors.pageBackground),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.pageBackground,
+                ),
               ),
             ),
             30.height,
@@ -44,12 +50,21 @@ class TraineeOnboardingWorkoutsAnythingScreen extends GetView<TraineeOnboardingC
               maxLines: 8,
             ),
             20.height,
-            ElevatedButton(
-              onPressed: () {
-                showSuccessDialog();
-              },
-              child: Text('Next'),
-            ),
+            Obx(() {
+              return ElevatedButton(
+                onPressed: controller.isButtonLoading.isTrue
+                    ? null
+                    : () {
+                        controller.onDoneButtonPressed();
+                      },
+                child: controller.isButtonLoading.isTrue
+                    ? Padding(
+                        padding: EdgeInsets.all(4),
+                        child: CircularProgressIndicator.adaptive(),
+                      )
+                    : Text('Complete'),
+              );
+            }),
             20.height,
           ],
         ),

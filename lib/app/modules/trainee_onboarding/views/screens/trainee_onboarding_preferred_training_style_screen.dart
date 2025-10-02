@@ -9,7 +9,8 @@ import 'package:icon/app/modules/trainee_onboarding/views/screens/trainee_onboar
 
 import '../../../trainer_onboarding/views/screens/trainer_onboarding_full_name.dart';
 
-class TraineeOnboardingPreferredTrainingStyleScreen extends GetView<TraineeOnboardingController> {
+class TraineeOnboardingPreferredTrainingStyleScreen
+    extends GetView<TraineeOnboardingController> {
   const TraineeOnboardingPreferredTrainingStyleScreen({super.key});
 
   @override
@@ -30,7 +31,11 @@ class TraineeOnboardingPreferredTrainingStyleScreen extends GetView<TraineeOnboa
                 child: Text(
                   "What is your preferred training style?",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600, color: AppColors.pageBackground),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.pageBackground,
+                  ),
                 ),
               ),
               20.height,
@@ -39,25 +44,35 @@ class TraineeOnboardingPreferredTrainingStyleScreen extends GetView<TraineeOnboa
                 runSpacing: 12,
                 children: controller.preferredTrainingStyle.map((q) {
                   return Obx(() {
-                    final isSelected = controller.selectedQualifications.contains(q);
+                    final isSelected = controller.selectedPreferredTrainingStyle
+                        .contains(q);
                     return GestureDetector(
-                      onTap: () => controller.toggleQualification(q),
+                      onTap: () {
+                        controller.selectedPreferredTrainingStyle(q);
+                      },
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
-                          color: isSelected ? Colors.transparent : AppColors.cardBgColor,
+                          color: isSelected
+                              ? Colors.transparent
+                              : AppColors.cardBgColor,
                           borderRadius: BorderRadius.circular(30),
                           border: Border.all(
                             width: 1.5,
                             color: isSelected
-                                ? Colors.deepOrange
+                                ? AppColors.colorPrimary
                                 : Colors.transparent,
                           ),
                         ),
                         child: Text(
                           q,
                           style: TextStyle(
-                            color: isSelected ? Colors.deepOrange : AppColors.pageBackground,
+                            color: isSelected
+                                ? Colors.deepOrange
+                                : AppColors.pageBackground,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -67,7 +82,13 @@ class TraineeOnboardingPreferredTrainingStyleScreen extends GetView<TraineeOnboa
                 }).toList(),
               ),
               50.height,
-              Text("Other equipment", style: TextStyle(color: AppColors.pageBackground, fontWeight: FontWeight.w500)),
+              Text(
+                "Other equipment",
+                style: TextStyle(
+                  color: AppColors.pageBackground,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               06.height,
               CustomTextField(
                 controller: controller.otherController,
