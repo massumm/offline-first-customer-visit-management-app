@@ -1,6 +1,6 @@
 # Icon Train Smarter
 
-An next generation healthcare app. 
+A next generation healthcare app. 
 
 ## Getting Started
 
