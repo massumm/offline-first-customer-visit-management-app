@@ -103,12 +103,20 @@ class IconLightTheme {
     primarySwatch: AppColors.colorPrimarySwatch,
     primaryColor: AppColors.colorPrimary,
     brightness: Brightness.light,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AppColors.colorPrimary,
+      brightness: Brightness.light,
+      // primary: AppColors.colorPrimary,
+      // secondary: AppColors.colorSecondary,
+      // error: AppColors.colorError,
+      // surface: Colors.white,
+      // background: Color(0xFFFDFDFD),
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF1A1B1E), // Or another dark surface color
       elevation: 0,
       foregroundColor: Colors.white, // Color for icons and title
     ),
-
     cardTheme: CardThemeData(
       elevation: 2,
       color: const Color(0xFF1A1B1E),
@@ -125,15 +133,6 @@ class IconLightTheme {
       ),
       labelColor: AppColors.colorPrimary,
       unselectedLabelColor: Colors.white.withValues(alpha: 0.7),
-    ),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.colorPrimary,
-      brightness: Brightness.light,
-      // primary: AppColors.colorPrimary,
-      // secondary: AppColors.colorSecondary,
-      // error: AppColors.colorError,
-      // surface: Colors.white,
-      // background: Color(0xFFFDFDFD),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -163,16 +162,4 @@ class IconLightTheme {
     ),
     elevatedButtonTheme: appElevatedButtonTheme,
   );
-
-  // iOS (Cupertino) Theme
-  static CupertinoThemeData iOSLightTheme = CupertinoThemeData(
-    primaryColor: AppColors.colorPrimary,
-    brightness: Brightness.light,
-    scaffoldBackgroundColor: Colors.white,
-    textTheme: const CupertinoTextThemeData(primaryColor: Colors.black),
-  );
-
-  // Bridge: Cupertino theme based on Material theme
-  static CupertinoThemeData materialBasedCupertinoTheme =
-      MaterialBasedCupertinoThemeData(materialTheme: androidLightTheme);
 }

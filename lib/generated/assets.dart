@@ -18,5 +18,4 @@ class Assets {
   static const String svgOnboarding1 = 'assets/svg/onboarding-1.svg';
   static const String svgOnboarding2 = 'assets/svg/onboarding-2.svg';
   static const String svgOnboarding3 = 'assets/svg/onboarding-3.svg';
-
 }

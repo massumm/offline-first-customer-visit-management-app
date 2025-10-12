@@ -16,9 +16,8 @@ class StepProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const borderColor = Color(0xFFFF6A5E); // soft red outline
-    final backgroundColor = const Color(0xFFFFE5E2).withValues(alpha: 0.55);
-    const height = 28.0;
+// soft red outline
+    const Color(0xFFFFE5E2).withValues(alpha: 0.55);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
