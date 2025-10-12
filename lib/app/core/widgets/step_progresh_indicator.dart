@@ -95,33 +95,3 @@ class StepProgressIndicator extends StatelessWidget {
     );
   }
 }
-
-class _PercentPill extends StatelessWidget {
-  final int percent;
-  const _PercentPill({required this.percent});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(6),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 2,
-            offset: Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Text(
-        '$percent%',
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: Colors.black87,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
-}

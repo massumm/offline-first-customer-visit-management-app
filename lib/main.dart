@@ -17,6 +17,8 @@ import 'app/flavors/env_config.dart';
 import 'app/flavors/environment.dart';
 import 'app/routes/app_pages.dart';
 
+// final String token = UserStore.to.token;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

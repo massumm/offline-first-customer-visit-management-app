@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../generated/assets.dart';
-import '../controllers/profile_create_animation_controller.dart';
 
 class ProfileCreateAnimationView
     extends StatefulWidget {
@@ -26,7 +24,7 @@ class _ProfileCreateAnimationViewState
   void initState() {
     super.initState();
     // Get the controller and start the API calls immediately.
-    Get.find<ProfileCreateAnimationController>().startProfileCreation();
+    // Get.find<ProfileCreateAnimationController>().startProfileCreation();
     // Start decoding the Lottie file.
     _composition = AssetLottie(Assets.jsonsProfileLoading).load();
   }

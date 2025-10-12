@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/data/local/preference/store/trainee_data_store.dart';
 import '../../../base/widgets/custom_toast.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
@@ -85,7 +84,7 @@ class LoginController extends BaseController {
             UserStore.to.saveProfileAndToken(response).whenComplete(() {
               _handleRoute();
             });
-          } catch (e){
+          } catch (e) {
             CustomToast.showErrorToast('An unexpected error occurred');
             "error on save profile".log();
           }
@@ -113,14 +112,18 @@ class LoginController extends BaseController {
   }
 
   void _handleRoute() {
-    final hasProfileData = TraineeDataStore.to.traineeModelValue;
+    //TODO: Handle the trainee onb.
+     final hasProfileData =  false;
+         // TraineeDataStore.to.traineeModelValue;
 
-    if (hasProfileData != null) {
-      // Create Trainee profile
-      Get.toNamed(Routes.PROFILE_CREATE_ANIMATION);
-    } else {
-      Get.offAllNamed(Routes.HOME);
-    }
+    // if (hasProfileData != null) {
+    //   // Create Trainee profile
+    //   Get.toNamed(Routes.PROFILE_CREATE_ANIMATION);
+    // } else {
+    //   Get.offAllNamed(Routes.HOME);
+    // }
+
+     Get.offAllNamed(Routes.HOME);
   }
 
   void toRegister() {

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../core/widgets/back_pill.dart';
 
@@ -94,7 +92,7 @@ class OnboardingIntro extends StatelessWidget {
                     elevation: 0,
                   ),
                   onPressed: () {
-                    Get.toNamed(Routes.TRAINEE_ONBOARDING);
+                    // Get.toNamed(Routes.TRAINEE_ONBOARDING);
                   },
                   child: const Text(
                     "Let's begin",
