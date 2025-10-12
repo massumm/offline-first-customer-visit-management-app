@@ -1,11 +1,104 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../decorations/app_elevated_button_decoration.dart';
 import '../values/app_colors.dart';
 
 class IconDarkTheme {
-  static ThemeData androidDarkTheme =  ThemeData(
-    fontFamily: 'Poppins',
+  /// Defines the text styling for the dark theme, following Material 3 typography guidelines.
+  /// This ensures a consistent look and feel for all text elements in the app.
+  static final TextTheme _darkTextTheme = TextTheme(
+    displayLarge: GoogleFonts.inter(
+      fontSize: 57,
+      fontWeight: FontWeight.w400,
+      color: Colors.white,
+    ),
+    displayMedium: GoogleFonts.inter(
+      fontSize: 45,
+      fontWeight: FontWeight.w400,
+      color: Colors.white,
+    ),
+    displaySmall: GoogleFonts.inter(
+      fontSize: 36,
+      fontWeight: FontWeight.w400,
+      color: Colors.white,
+    ),
+
+    headlineLarge: GoogleFonts.inter(
+      fontSize: 32,
+      fontWeight: FontWeight.w400,
+      color: Colors.white,
+    ),
+    headlineMedium: GoogleFonts.inter(
+      fontSize: 28,
+      fontWeight: FontWeight.w400,
+      color: Colors.white,
+    ),
+    headlineSmall: GoogleFonts.inter(
+      fontSize: 24,
+      fontWeight: FontWeight.w400,
+      color: Colors.white,
+    ),
+
+    titleLarge: GoogleFonts.inter(
+      fontSize: 22,
+      fontWeight: FontWeight.w500,
+      color: Colors.white,
+    ),
+    titleMedium: GoogleFonts.inter(
+      fontSize: 16,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.15,
+      color: Colors.white,
+    ),
+    titleSmall: GoogleFonts.inter(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.1,
+      color: Colors.white,
+    ),
+
+    bodyLarge: GoogleFonts.inter(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.5,
+      color: Colors.white.withValues(alpha: 0.9),
+    ),
+    bodyMedium: GoogleFonts.inter(
+      fontSize: 14,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.25,
+      color: Colors.white.withValues(alpha: 0.9),
+    ),
+    bodySmall: GoogleFonts.inter(
+      fontSize: 12,
+      fontWeight: FontWeight.w400,
+      letterSpacing: 0.4,
+      color: Colors.white.withValues(alpha: 0.9),
+    ),
+
+    labelLarge: GoogleFonts.inter(
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.1,
+      color: Colors.white,
+    ),
+    labelMedium: GoogleFonts.inter(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.5,
+      color: Colors.white,
+    ),
+    labelSmall: GoogleFonts.inter(
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      letterSpacing: 0.5,
+      color: Colors.white,
+    ),
+  );
+
+  static ThemeData androidDarkTheme = ThemeData(
+    textTheme: _darkTextTheme,
     primarySwatch: AppColors.colorPrimarySwatch,
     primaryColor: AppColors.colorPrimary,
     brightness: Brightness.dark,
