@@ -103,6 +103,29 @@ class IconLightTheme {
     primarySwatch: AppColors.colorPrimarySwatch,
     primaryColor: AppColors.colorPrimary,
     brightness: Brightness.light,
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Color(0xFF1A1B1E), // Or another dark surface color
+      elevation: 0,
+      foregroundColor: Colors.white, // Color for icons and title
+    ),
+
+    cardTheme: CardThemeData(
+      elevation: 2,
+      color: const Color(0xFF1A1B1E),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: const Color(0xFF1A1B1E),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
+
+    tabBarTheme: TabBarThemeData(
+      indicator: UnderlineTabIndicator(
+        borderSide: BorderSide(width: 2.0, color: AppColors.colorPrimary),
+      ),
+      labelColor: AppColors.colorPrimary,
+      unselectedLabelColor: Colors.white.withValues(alpha: 0.7),
+    ),
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.colorPrimary,
       brightness: Brightness.light,
@@ -115,7 +138,11 @@ class IconLightTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       isDense: true,
-      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      fillColor: Colors.white.withValues(alpha: 0.05),
+      // A subtle, slightly lighter fill
+      contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      // Ensure icon colors are also light
+      iconColor: Colors.white.withValues(alpha: 0.6),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
         borderSide: BorderSide(color: Color(0xFFDADEE7), width: 1),
@@ -132,7 +159,6 @@ class IconLightTheme {
         borderRadius: BorderRadius.circular(15),
         borderSide: BorderSide(color: Colors.red, width: 0.5),
       ),
-      fillColor: Colors.white,
       hintStyle: const TextStyle(color: AppColors.hintTextColor, fontSize: 14),
     ),
     elevatedButtonTheme: appElevatedButtonTheme,
