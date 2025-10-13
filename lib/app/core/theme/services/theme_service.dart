@@ -3,52 +3,65 @@ import 'package:get/get.dart';
 import 'package:icon/app/data/local/preference/preference_service.dart';
 
 class ThemeService extends GetxService {
-  final _storage = Get.find<StorageService>();
-  final _themeModeKey = 'theme_mode';
+  final _storageService = Get.find<StorageService>();
+  final _themeKey = 'theme_mode';
 
-  // Reactive variable to hold the theme mode
-  late final Rx<ThemeMode> _themeMode;
+  // An observable for the current theme mode.
+  // It's initialized with a default and updated from storage in init().
+  final _themeMode = ThemeMode.system.obs;
 
-  // Public getter to access the current theme mode
+  /// Returns the current [ThemeMode].
   ThemeMode get themeMode => _themeMode.value;
 
-  // Public getter to easily check if dark mode is enabled
+  /// Returns true if the current effective theme is dark.
+  /// This getter is now safe to call at any time, even before the app is built.
   bool get isDarkMode {
     if (_themeMode.value == ThemeMode.system) {
-      // Use platform brightness if theme is set to system
-      return Get.mediaQuery.platformBrightness == Brightness.dark;
+      // Use Get.isPlatformDarkMode, which safely checks the platform's
+      // brightness without needing a BuildContext.
+      return Get.isPlatformDarkMode;
+    } else {
+      // Otherwise, respect the user's explicit choice.
+      return _themeMode.value == ThemeMode.dark;
     }
-    return _themeMode.value == ThemeMode.dark;
   }
 
-  // Initialize the service by loading the theme from storage
+  /// Initializes the service by loading the saved theme from storage.
   Future<ThemeService> init() async {
-    _themeMode = _loadThemeFromStorage().obs;
+    final savedTheme = _storageService.getString(_themeKey);
+    _themeMode.value = _getThemeModeFromString(savedTheme);
     return this;
   }
 
-  // Load theme from local storage
-  ThemeMode _loadThemeFromStorage() {
-    final themeString = _storage.getString(_themeModeKey);
+  /// Changes the application's theme and persists the choice.
+  /// This provides more flexibility than a simple toggle.
+  void changeThemeMode(ThemeMode newThemeMode) {
+    if (_themeMode.value == newThemeMode) return;
+
+    _themeMode.value = newThemeMode;
+    _saveThemeToStorage(newThemeMode);
+  }
+
+  /// A convenience method to toggle between light and dark modes.
+  /// This will take the user out of `ThemeMode.system`.
+  void switchTheme() {
+    changeThemeMode(isDarkMode ? ThemeMode.light : ThemeMode.dark);
+  }
+
+  /// A helper to convert the stored string back to a [ThemeMode] enum.
+  ThemeMode _getThemeModeFromString(String? themeString) {
     switch (themeString) {
       case 'dark':
         return ThemeMode.dark;
       case 'light':
         return ThemeMode.light;
       default:
-        return ThemeMode.system; // Default to system theme
+        return ThemeMode.system;
     }
   }
 
-  // Save theme to local storage
+  /// A helper to save the [ThemeMode] to storage as a string.
   Future<void> _saveThemeToStorage(ThemeMode themeMode) async {
-    await _storage.setString(_themeModeKey, themeMode.name);
-  }
-
-  // Switch between light and dark themes
-  void switchTheme() {
-    final newThemeMode = isDarkMode ? ThemeMode.light : ThemeMode.dark;
-    _themeMode.value = newThemeMode;
-    _saveThemeToStorage(newThemeMode);
+    await _storageService.setString(_themeKey, themeMode.name);
   }
 }
