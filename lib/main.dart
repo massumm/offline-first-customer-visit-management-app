@@ -29,29 +29,44 @@ void main() async {
   _setupEnvironment();
   _setupErrorHandling();
 
-  final isIOS = defaultTargetPlatform == TargetPlatform.iOS;
-
   final themeService = Get.find<ThemeService>();
+  final isIOS = GetPlatform.isIOS; // from get package
 
   runApp(
     isIOS
         ? GetX<ThemeService>(
-      // Rebuilds only when theme values change.
       init: themeService,
-      builder: (ts) => GetCupertinoApp(
-        title: BuildConfig.instance.config.appName,
-        debugShowCheckedModeBanner: false,
-        initialRoute: AppPages.INITIAL,
-        initialBinding: InitialBindings(),
-        getPages: AppPages.routes,
-        theme: ts.isDarkMode
-            ? IconCupertinoTheme.darkTheme
-            : IconCupertinoTheme.lightTheme,
-      ),
+      builder: (ts) {
+        // respect ThemeMode on iOS too
+        final platformDark =
+            WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+        final useDark = ts.themeMode == ThemeMode.dark ||
+            (ts.themeMode == ThemeMode.system && platformDark);
+
+        final cupertinoTheme =
+        useDark ? IconCupertinoTheme.darkTheme : IconCupertinoTheme.lightTheme;
+
+        // Wrap with Material Theme so any Material widgets used on iOS look right
+        final materialTheme =
+        useDark ? IconDarkTheme.androidDarkTheme : IconLightTheme.androidLightTheme;
+
+        return GetCupertinoApp(
+          title: BuildConfig.instance.config.appName,
+          debugShowCheckedModeBanner: false,
+          initialRoute: AppPages.INITIAL,
+          initialBinding: InitialBindings(),
+          getPages: AppPages.routes,
+          theme: cupertinoTheme,
+          builder: (context, child) => Theme( //  material-in-cupertino
+            data: materialTheme,
+            child: child ?? const SizedBox.shrink(),
+          ),
+        );
+      },
     )
         : GetX<ThemeService>(
       init: themeService,
-      builder: (ts){
+      builder: (ts) {
         'Loaded theme: ${ts.themeMode.name}'.log();
         return GetMaterialApp(
           title: BuildConfig.instance.config.appName,
@@ -62,11 +77,17 @@ void main() async {
           theme: IconLightTheme.androidLightTheme,
           darkTheme: IconDarkTheme.androidDarkTheme,
           themeMode: ts.themeMode,
+          // Wrap with Cupertino Theme so any Cupertino widgets on Android match brand
+          builder: (context, child) => CupertinoTheme( // cupertino-in-material
+            data: IconCupertinoTheme.fromMaterial(Theme.of(context)),
+            child: child ?? const SizedBox.shrink(),
+          ),
         );
-      }
+      },
     ),
   );
 }
+
 
 
 Future<void> _setupEnvironment() {
