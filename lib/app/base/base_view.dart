@@ -34,17 +34,23 @@ abstract class BaseView<Controller extends BaseController>
 
   /// Material-only
   Widget? floatingActionButton() => null;
+
   FloatingActionButtonLocation? get floatingActionLocation => null;
+
   Widget? bottomNavigationBar(BuildContext context) => null;
+
   Widget? drawer() => null;
 
   /// Colors
   Color pageBackgroundColor() => AppColors.pageBackground;
+
   Color statusBarColor() => AppColors.pageBackground;
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS ? _buildCupertino(context) : _buildMaterial(context);
+    return Platform.isIOS
+        ? _buildCupertino(context)
+        : _buildMaterial(context);
   }
 
   /// —————————————————————
@@ -73,16 +79,23 @@ abstract class BaseView<Controller extends BaseController>
             body: Stack(
               children: [
                 SafeArea(child: body(context)),
-                Obx(() => controller.pageState == PageState.LOADING
-                    ? _showLoading()
-                    : const SizedBox.shrink()),
-                Obx(() => controller.pageState ==
-                    PageState.CHANNEL_TRANSITION_LOADING
-                    ? _showChannelSwitchLoading()
-                    : const SizedBox.shrink()),
-                Obx(() => controller.errorMessage.isNotEmpty
-                    ? _showErrorSnackBar(controller.errorMessage)
-                    : const SizedBox.shrink()),
+                Obx(
+                  () => controller.pageState == PageState.LOADING
+                      ? _showLoading()
+                      : const SizedBox.shrink(),
+                ),
+                Obx(
+                  () =>
+                      controller.pageState ==
+                          PageState.CHANNEL_TRANSITION_LOADING
+                      ? _showChannelSwitchLoading()
+                      : const SizedBox.shrink(),
+                ),
+                Obx(
+                  () => controller.errorMessage.isNotEmpty
+                      ? _showErrorSnackBar(controller.errorMessage)
+                      : const SizedBox.shrink(),
+                ),
               ],
             ),
           ),
@@ -108,24 +121,29 @@ abstract class BaseView<Controller extends BaseController>
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: overlay,
         child: CupertinoPageScaffold(
-          backgroundColor:
-          CupertinoTheme.of(context).scaffoldBackgroundColor,
+          backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
           navigationBar: cupertinoNavigationBar(context),
           child: Stack(
             children: [
               // CupertinoPageScaffold already handles top padding with a nav bar,
               // but SafeArea keeps bottom insets tidy.
               SafeArea(bottom: true, child: body(context)),
-              Obx(() => controller.pageState == PageState.LOADING
-                  ? _showCupertinoLoading()
-                  : const SizedBox.shrink()),
-              Obx(() => controller.pageState ==
-                  PageState.CHANNEL_TRANSITION_LOADING
-                  ? _showChannelSwitchLoading()
-                  : const SizedBox.shrink()),
-              Obx(() => controller.errorMessage.isNotEmpty
-                  ? _showCupertinoError(controller.errorMessage)
-                  : const SizedBox.shrink()),
+              Obx(
+                () => controller.pageState == PageState.LOADING
+                    ? _showCupertinoLoading()
+                    : const SizedBox.shrink(),
+              ),
+              Obx(
+                () =>
+                    controller.pageState == PageState.CHANNEL_TRANSITION_LOADING
+                    ? _showChannelSwitchLoading()
+                    : const SizedBox.shrink(),
+              ),
+              Obx(
+                () => controller.errorMessage.isNotEmpty
+                    ? _showCupertinoError(controller.errorMessage)
+                    : const SizedBox.shrink(),
+              ),
               // If you really want a FAB on iOS, position it manually:
               // if (floatingActionButton() != null)
               //   Positioned(
@@ -177,6 +195,7 @@ abstract class BaseView<Controller extends BaseController>
 
   /// Your existing loaders (kept)
   Widget _showLoading() => const Loading();
+
   Widget _showChannelSwitchLoading() => const ChannelTransitionLoader();
 
   /// Native iOS spinner (optional; use your Loading() if it’s platform-agnostic)

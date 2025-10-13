@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -99,16 +100,18 @@ class LoginView extends BaseView<LoginController> {
                 Row(
                   children: [
                     Obx(() {
-                      return Checkbox(
-                        value: controller.rememberMe.value,
-                        onChanged: (value) {
-                          controller.rememberMe.value = value!;
-                        },
-                        checkColor: Colors.black,
-                        activeColor: Colors.red,
+                      return Material(
+                        type: MaterialType.transparency,
+                        child: Checkbox(
+                          value: controller.rememberMe.value,
+                          onChanged: (value) {
+                            controller.rememberMe.value = value!;
+                          },
+                          // ... your other checkbox properties
+                        ),
                       );
                     }),
-                    Text("Remember me", style: TextStyle(color: Colors.grey)),
+                    Text("Remember me"),
                   ],
                 ),
                 TextButton(
@@ -120,6 +123,40 @@ class LoginView extends BaseView<LoginController> {
                 ),
               ],
             ),
+
+            // // Remember me & Forgot password
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Row(
+            //       children: [
+            //         Obx(() {
+            //           // Wrap the Checkbox with a Material widget
+            //           return Material(
+            //             // Use transparency to avoid changing the background color
+            //             type: MaterialType.transparency,
+            //             child: Checkbox(
+            //               value: controller.rememberMe.value,
+            //               onChanged: (value) {
+            //                 controller.rememberMe.value = value!;
+            //               },
+            //               checkColor: Colors.black,
+            //               activeColor: Colors.red,
+            //             ),
+            //           );
+            //         }),
+            //         Text("Remember me", style: TextStyle(color: Colors.grey)),
+            //       ],
+            //     ),
+            //     TextButton(
+            //       onPressed: () {},
+            //       child: Text(
+            //         "Forgot password?",
+            //         style: TextStyle(color: Colors.grey),
+            //       ),
+            //     ),
+            //   ],
+            // ),
 
             const SizedBox(height: 10),
 
