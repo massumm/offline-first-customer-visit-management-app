@@ -44,57 +44,57 @@ class IconLightTheme {
     titleLarge: GoogleFonts.inter(
       fontSize: 22,
       fontWeight: FontWeight.w500,
-      color: Colors.black,
+      color: AppColors.lightTextPrimaryColor,
     ),
     titleMedium: GoogleFonts.inter(
       fontSize: 16,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.15,
-      color: Colors.black,
+      color:AppColors.lightTextPrimaryColor,
     ),
     titleSmall: GoogleFonts.inter(
       fontSize: 14,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
-      color: Colors.black,
+      color: AppColors.lightTextPrimaryColor,
     ),
 
     bodyLarge: GoogleFonts.inter(
       fontSize: 16,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.5,
-      color: Colors.black.withValues(alpha: 0.9),
+      color: AppColors.lightTextSecondaryColor,
     ),
     bodyMedium: GoogleFonts.inter(
       fontSize: 14,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.25,
-      color: Colors.black.withValues(alpha: 0.9),
+      color: AppColors.lightTextSecondaryColor,
     ),
     bodySmall: GoogleFonts.inter(
       fontSize: 12,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.4,
-      color: Colors.black.withValues(alpha: 0.9),
+      color: AppColors.lightTextSecondaryColor,
     ),
 
     labelLarge: GoogleFonts.inter(
       fontSize: 14,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
-      color: Colors.black,
+      color: AppColors.lightTextSecondaryColor,
     ),
     labelMedium: GoogleFonts.inter(
       fontSize: 12,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.5,
-      color: Colors.black,
+      color: AppColors.lightTextSecondaryColor,
     ),
     labelSmall: GoogleFonts.inter(
       fontSize: 11,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.5,
-      color: Colors.black,
+      color: AppColors.lightTextSecondaryColor,
     ),
   );
 
@@ -103,19 +103,20 @@ class IconLightTheme {
     primarySwatch: AppColors.colorPrimarySwatch,
     primaryColor: AppColors.colorPrimary,
     brightness: Brightness.light,
+    scaffoldBackgroundColor: AppColors.lightBgColor,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.colorPrimary,
       brightness: Brightness.light,
-      // primary: AppColors.colorPrimary,
-      // secondary: AppColors.colorSecondary,
-      // error: AppColors.colorError,
-      // surface: Colors.white,
-      // background: Color(0xFFFDFDFD),
+      primary: AppColors.colorPrimary,
+      secondary: AppColors.greenColor,
+      tertiary: AppColors.orangeColor,
+      error: AppColors.redColor,
+      surface:  AppColors.lightBgColor,
     ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF1A1B1E), // Or another dark surface color
+    appBarTheme:  AppBarTheme(
+      backgroundColor: AppColors.lightBgColor,
       elevation: 0,
-      foregroundColor: Colors.white, // Color for icons and title
+      foregroundColor: AppColors.lightBgColor,
     ),
     cardTheme: CardThemeData(
       elevation: 2,
@@ -156,9 +157,9 @@ class IconLightTheme {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: Colors.red, width: 0.5),
+        borderSide: BorderSide(color: AppColors.redColor, width: 0.5),
       ),
-      hintStyle: const TextStyle(color: AppColors.hintTextColor, fontSize: 14),
+      hintStyle: const TextStyle(color: AppColors.lightHintTextColor, fontSize: 14),
     ),
     elevatedButtonTheme: appElevatedButtonTheme,
   );

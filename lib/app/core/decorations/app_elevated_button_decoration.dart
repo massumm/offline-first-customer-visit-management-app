@@ -7,7 +7,7 @@ final BorderRadius borderRadius = BorderRadius.circular(12);
 
 TextStyle get btnTextStyle {
   return const TextStyle(
-    fontSize: 15,
+    fontSize: 14,
     height: 24 / 16,
     fontWeight: FontWeight.w600,
     color: Colors.white,
