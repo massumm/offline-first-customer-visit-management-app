@@ -92,8 +92,10 @@ class _SuperTextFieldState extends State<SuperTextField> {
     _internalObscure = widget.isPassword;
     // Safety: if user provides controlled obscure, recommend a toggle callback.
     assert(
-    !(widget.isPassword && widget.obscureText != null && widget.onTogglePasswordVisibility == null),
-    'When using a controlled password field, provide onTogglePasswordVisibility.',
+      !(widget.isPassword &&
+          widget.obscureText != null &&
+          widget.onTogglePasswordVisibility == null),
+      'When using a controlled password field, provide onTogglePasswordVisibility.',
     );
   }
 
@@ -115,14 +117,15 @@ class _SuperTextFieldState extends State<SuperTextField> {
     // Expand constraints if we’re rendering multiple icons.
     final bool multipleSuffix =
         (widget.isPassword && widget.suffixIcon != null) ||
-            (!widget.isPassword && widget.showClearButton);
+        (!widget.isPassword && widget.showClearButton);
     final BoxConstraints suffixConstraints =
         widget.suffixIconConstraints ??
-            (multipleSuffix
-                ? const BoxConstraints.tightFor(height: 48, width: 96)
-                : const BoxConstraints.tightFor(height: 48, width: 48));
+        (multipleSuffix
+            ? const BoxConstraints.tightFor(height: 48, width: 96)
+            : const BoxConstraints.tightFor(height: 48, width: 48));
 
     return TextFormField(
+
       controller: widget.controller,
       focusNode: widget.focusNode,
       autofocus: widget.autofocus,
@@ -143,8 +146,9 @@ class _SuperTextFieldState extends State<SuperTextField> {
       obscuringCharacter: widget.obscuringCharacter,
       maxLines: effectiveMaxLines,
       minLines: effectiveMinLines,
-      onTapOutside: widget.onTapOutside ??
-              (_) => FocusManager.instance.primaryFocus?.unfocus(),
+      onTapOutside:
+          widget.onTapOutside ??
+          (_) => FocusManager.instance.primaryFocus?.unfocus(),
       decoration: InputDecoration(
         labelText: widget.labelText,
         hintText: widget.hintText,
@@ -153,31 +157,32 @@ class _SuperTextFieldState extends State<SuperTextField> {
         prefixIcon: widget.prefixIcon,
         suffixIcon: suffix,
         suffixIconConstraints: suffixConstraints,
-        contentPadding: widget.contentPadding ??
+        contentPadding:
+            widget.contentPadding ??
             const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         errorText: widget.errorText,
         // Sensible defaults if no InputDecorationTheme provided:
         filled: Theme.of(context).inputDecorationTheme.filled,
         fillColor: Theme.of(context).inputDecorationTheme.fillColor,
-        border: Theme.of(context).inputDecorationTheme.border ??
+        border:
+            Theme.of(context).inputDecorationTheme.border ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
         enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
         focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
-        errorBorder: Theme.of(context).inputDecorationTheme.errorBorder ??
+        errorBorder:
+            Theme.of(context).inputDecorationTheme.errorBorder ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide:
-              BorderSide(color: theme.colorScheme.error, width: 1),
+              borderSide: BorderSide(color: theme.colorScheme.error, width: 1),
             ),
         focusedErrorBorder:
-        Theme.of(context).inputDecorationTheme.focusedErrorBorder ??
+            Theme.of(context).inputDecorationTheme.focusedErrorBorder ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide:
-              BorderSide(color: theme.colorScheme.error, width: 2),
+              borderSide: BorderSide(color: theme.colorScheme.error, width: 2),
             ),
       ),
     );
@@ -202,12 +207,12 @@ class _SuperTextFieldState extends State<SuperTextField> {
               duration: const Duration(milliseconds: 150),
               child: hasText
                   ? IconButton(
-                key: const ValueKey('clear'),
-                splashRadius: 20,
-                icon: const Icon(Icons.clear),
-                onPressed: () => widget.controller.clear(),
-                tooltip: 'Clear',
-              )
+                      key: const ValueKey('clear'),
+                      splashRadius: 20,
+                      icon: const Icon(Icons.clear),
+                      onPressed: () => widget.controller.clear(),
+                      tooltip: 'Clear',
+                    )
                   : const SizedBox.shrink(key: ValueKey('no-clear')),
             );
           },
@@ -221,8 +226,9 @@ class _SuperTextFieldState extends State<SuperTextField> {
         IconButton(
           splashRadius: 20,
           icon: Icon(isObscured ? Icons.visibility_off : Icons.visibility),
-          onPressed: widget.onTogglePasswordVisibility ??
-                  () {
+          onPressed:
+              widget.onTogglePasswordVisibility ??
+              () {
                 if (_usesExternalObscure) {
                   // Controlled – advise user supplied callback (assert in initState)
                   widget.onTogglePasswordVisibility?.call();

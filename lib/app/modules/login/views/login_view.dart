@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:get/get.dart';
+import 'package:icon/app/core/widgets/input_widgets/adaptive_text_field.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 
 import '../../../../generated/assets.dart';
@@ -39,46 +40,63 @@ class LoginView extends GetView<LoginController> {
               ),
               const SizedBox(height: 30),
 
-              // Email
               Obx(() {
-                return TextField(
+                return AdaptiveSuperTextField(
                   controller: controller.emailCtr,
-                  style: TextStyle(color: Colors.red),
-                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  hintText: "abc@example.com",
+                  labelText: 'Email',
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  // Add onChanged to clear error when user types
+                  errorText: controller.emailError.value,
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   onChanged: (value) {
                     if (controller.emailError.value != null) {
                       controller.emailError.value = null;
                     }
                   },
-                  decoration: InputDecoration(
-                    hintText: "abc@example.com",
-                    hintStyle: TextStyle(color: Colors.grey),
-                    labelText: 'Email',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.white,
-
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    // Display email error text
-                    errorText: controller.emailError.value,
-                    errorStyle: TextStyle(color: Colors.redAccent),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.redAccent, width: 1),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.redAccent, width: 2),
-                    ),
-                  ),
                 );
               }),
+
+              // Email
+              // Obx(() {
+              //   return TextField(
+              //     controller: controller.emailCtr,
+              //     style: TextStyle(color: Colors.red),
+              //     onTapOutside: (_) => FocusScope.of(context).unfocus(),
+              //     keyboardType: TextInputType.emailAddress,
+              //     textInputAction: TextInputAction.next,
+              //     // Add onChanged to clear error when user types
+              //     onChanged: (value) {
+              //       if (controller.emailError.value != null) {
+              //         controller.emailError.value = null;
+              //       }
+              //     },
+              //     decoration: InputDecoration(
+              //       hintText: "abc@example.com",
+              //       hintStyle: TextStyle(color: Colors.grey),
+              //       labelText: 'Email',
+              //       labelStyle: TextStyle(color: Colors.grey),
+              //       filled: true,
+              //       fillColor: Colors.white,
+              //
+              //       border: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(8),
+              //         borderSide: BorderSide.none,
+              //       ),
+              //       // Display email error text
+              //       errorText: controller.emailError.value,
+              //       errorStyle: TextStyle(color: Colors.redAccent),
+              //       errorBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(8),
+              //         borderSide: BorderSide(color: Colors.redAccent, width: 1),
+              //       ),
+              //       focusedErrorBorder: OutlineInputBorder(
+              //         borderRadius: BorderRadius.circular(8),
+              //         borderSide: BorderSide(color: Colors.redAccent, width: 2),
+              //       ),
+              //     ),
+              //   );
+              // }),
               const SizedBox(height: 15),
 
               // Password
@@ -173,15 +191,16 @@ class LoginView extends GetView<LoginController> {
                     ),
                   ),
                   onPressed: controller.isLoading.isTrue
-                      ? null : controller.onLoginButtonPressed,
+                      ? null
+                      : controller.onLoginButtonPressed,
                   child: controller.isLoading.isTrue
                       ? Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
+                          padding: const EdgeInsets.all(4.0),
+                          child: const CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
                       : Text("Log in", style: TextStyle(fontSize: 16)),
                 );
               }),
