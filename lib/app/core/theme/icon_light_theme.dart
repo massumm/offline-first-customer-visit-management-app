@@ -138,18 +138,18 @@ class IconLightTheme {
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       isDense: true,
-      fillColor: Colors.white.withValues(alpha: 0.05),
+      fillColor: Colors.white,
       // A subtle, slightly lighter fill
       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       // Ensure icon colors are also light
-      iconColor: Colors.white.withValues(alpha: 0.6),
+      iconColor: Colors.black,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: Color(0xFFDADEE7), width: 1),
+        borderSide: BorderSide(color: AppColors.lightInputBorderColor, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: Color(0xFFDADEE7), width: 1),
+        borderSide: BorderSide(color: AppColors.lightInputBorderColor, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),

@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import 'app/core/binding/initial_binding.dart';
 
@@ -50,16 +51,19 @@ void main() async {
     )
         : GetX<ThemeService>(
       init: themeService,
-      builder: (ts) => GetMaterialApp(
-        title: BuildConfig.instance.config.appName,
-        debugShowCheckedModeBanner: false,
-        initialRoute: AppPages.INITIAL,
-        initialBinding: InitialBindings(),
-        getPages: AppPages.routes,
-        theme: IconLightTheme.androidLightTheme,
-        darkTheme: IconDarkTheme.androidDarkTheme,
-        themeMode: ts.themeMode,
-      ),
+      builder: (ts){
+        'Loaded theme: ${ts.themeMode.name}'.log();
+        return GetMaterialApp(
+          title: BuildConfig.instance.config.appName,
+          debugShowCheckedModeBanner: false,
+          initialRoute: AppPages.INITIAL,
+          initialBinding: InitialBindings(),
+          getPages: AppPages.routes,
+          theme: IconLightTheme.androidLightTheme,
+          darkTheme: IconDarkTheme.androidDarkTheme,
+          themeMode: ts.themeMode,
+        );
+      }
     ),
   );
 }

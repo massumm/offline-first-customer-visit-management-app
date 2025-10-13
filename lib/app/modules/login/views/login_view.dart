@@ -21,7 +21,7 @@ class LoginView extends GetView<LoginController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Logo and tagline
-              SuperImage(Assets.imagesIconLogoPink),
+              SuperImage(Assets.svgLogo),
               const SizedBox(height: 10),
               Text(
                 "Let’s train smarter. Let’s be Iconic",
@@ -43,7 +43,7 @@ class LoginView extends GetView<LoginController> {
               Obx(() {
                 return TextField(
                   controller: controller.emailCtr,
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: Colors.red),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
@@ -59,7 +59,8 @@ class LoginView extends GetView<LoginController> {
                     labelText: 'Email',
                     labelStyle: TextStyle(color: Colors.grey),
                     filled: true,
-                    fillColor: Colors.grey[900],
+                    fillColor: Colors.white,
+
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,
@@ -99,7 +100,7 @@ class LoginView extends GetView<LoginController> {
                     labelText: 'Password',
                     labelStyle: TextStyle(color: Colors.grey),
                     filled: true,
-                    fillColor: Colors.grey[900],
+                    fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: BorderSide.none,

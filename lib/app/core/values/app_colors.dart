@@ -26,7 +26,7 @@ abstract class AppColors {
   static const Color lightTextSecondaryColor = Color(0xFF5B5B5B);
   static const Color lightBgColor = Color(0xFFF2F2F2);
   static const Color lightStockColor = Color(0xFFE8E4E2);
-  static const Color lightInputBorder = Color(0xFFE8E4E2);
+  static const Color lightInputBorderColor = Color(0xFFE8E4E2);
   static const Color lightHintTextColor= Color(0xFF5B5B5B);
 
 
