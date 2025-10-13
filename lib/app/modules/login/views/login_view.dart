@@ -40,6 +40,7 @@ class LoginView extends GetView<LoginController> {
               ),
               const SizedBox(height: 30),
 
+              // Email
               Obx(() {
                 return AdaptiveSuperTextField(
                   controller: controller.emailCtr,
@@ -56,96 +57,36 @@ class LoginView extends GetView<LoginController> {
                   },
                 );
               }),
-
-              // Email
-              // Obx(() {
-              //   return TextField(
-              //     controller: controller.emailCtr,
-              //     style: TextStyle(color: Colors.red),
-              //     onTapOutside: (_) => FocusScope.of(context).unfocus(),
-              //     keyboardType: TextInputType.emailAddress,
-              //     textInputAction: TextInputAction.next,
-              //     // Add onChanged to clear error when user types
-              //     onChanged: (value) {
-              //       if (controller.emailError.value != null) {
-              //         controller.emailError.value = null;
-              //       }
-              //     },
-              //     decoration: InputDecoration(
-              //       hintText: "abc@example.com",
-              //       hintStyle: TextStyle(color: Colors.grey),
-              //       labelText: 'Email',
-              //       labelStyle: TextStyle(color: Colors.grey),
-              //       filled: true,
-              //       fillColor: Colors.white,
-              //
-              //       border: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(8),
-              //         borderSide: BorderSide.none,
-              //       ),
-              //       // Display email error text
-              //       errorText: controller.emailError.value,
-              //       errorStyle: TextStyle(color: Colors.redAccent),
-              //       errorBorder: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(8),
-              //         borderSide: BorderSide(color: Colors.redAccent, width: 1),
-              //       ),
-              //       focusedErrorBorder: OutlineInputBorder(
-              //         borderRadius: BorderRadius.circular(8),
-              //         borderSide: BorderSide(color: Colors.redAccent, width: 2),
-              //       ),
-              //     ),
-              //   );
-              // }),
               const SizedBox(height: 15),
 
               // Password
               Obx(() {
-                return TextField(
+                return AdaptiveSuperTextField(
                   controller: controller.passwordCtr,
+                  hintText: "********",
+                  labelText: 'Password',
                   obscureText: controller.obscurePassword.value,
-                  style: TextStyle(color: Colors.white),
-                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.done,
+                  errorText: controller.passwordError.value,
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      controller.obscurePassword.isFalse
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () {
+                      controller.obscurePassword.value =
+                          !controller.obscurePassword.value;
+                    },
+                  ),
                   onChanged: (value) {
                     if (controller.passwordError.value != null) {
                       controller.passwordError.value = null;
                     }
                   },
-                  decoration: InputDecoration(
-                    hintText: "********",
-                    hintStyle: TextStyle(color: Colors.grey),
-                    labelText: 'Password',
-                    labelStyle: TextStyle(color: Colors.grey),
-                    filled: true,
-                    fillColor: Colors.white,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        controller.obscurePassword.isFalse
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () {
-                        controller.obscurePassword.value =
-                            !controller.obscurePassword.value;
-                      },
-                    ),
-                    errorText: controller.passwordError.value,
-                    errorStyle: TextStyle(color: Colors.redAccent),
-                    errorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.redAccent, width: 1),
-                    ),
-                    focusedErrorBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.redAccent, width: 2),
-                    ),
-                  ),
                 );
               }),
 

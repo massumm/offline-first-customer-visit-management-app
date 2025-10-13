@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 
 /// iOS-styled version mirroring your API, with proper Cupertino behaviors:
 /// - Rounded, filled background that adapts to light/dark
@@ -181,10 +182,12 @@ class _CupertinoSuperTextFieldState extends State<CupertinoSuperTextField> {
           ),
         );
 
+        'from cupertino text the label is: ${widget.labelText}'.log();
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (widget.labelText != null && widget.hintText == null)
+            if (widget.labelText != null)
               Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Text(

@@ -39,5 +39,6 @@ class IconCupertinoTheme {
         fontFamily: '.SF Pro Display',
       ),
     ),
+    applyThemeToAll: true,
   );
 }
