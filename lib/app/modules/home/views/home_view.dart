@@ -282,7 +282,7 @@ class DayCard extends StatelessWidget {
                 trackColor: Colors.white10,
                 valueColor: isToday
                     ? AppColors.redProgressColor
-                    : AppColors.greenProgressColor,
+                    : AppColors.greenColor,
               ),
             ),
             const SizedBox(height: 10),
@@ -500,7 +500,7 @@ class _GoalsCard extends StatelessWidget {
             _ProgressRing(
               size: 74,
               value: ringValue,
-              color: AppColors.greenProgressColor,
+              color: AppColors.greenColor,
               stroke: 4,
             ),
           ],
