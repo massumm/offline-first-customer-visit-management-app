@@ -125,7 +125,6 @@ class _SuperTextFieldState extends State<SuperTextField> {
             : const BoxConstraints.tightFor(height: 48, width: 48));
 
     return TextFormField(
-
       controller: widget.controller,
       focusNode: widget.focusNode,
       autofocus: widget.autofocus,
