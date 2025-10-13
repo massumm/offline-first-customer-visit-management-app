@@ -19,7 +19,9 @@ abstract class AppColors {
   static const Color cardBgColor = Color(0xFF1F1F1F);
   static const Color greenColor = Color(0xFF0ECA36);
   static const Color orangeColor = Color(0xFFFFAB00);
-  static const Color redColor = Color(0xFFFF5630);
+  static const Color redColor =  Color(0xFFF2F2F2);
+
+  static const Color pageBackground = Colors.white;
 
   // ------------- Light Theme Colors ---------------------
   static const Color lightTextPrimaryColor = Color(0xFF241814);
@@ -38,12 +40,14 @@ abstract class AppColors {
   static const Color screenBgColor = Color(0xFF0d0d0d);
   static const Color greyColor1 = Color(0xFF2B2B2B);
 
+
+
   //..............
 
   static const Color hintTextColor = Color(0xFF8E8E93);
   static const Color menuSubColor = Color(0xFF575757);
   static const Color authBackground = Color(0xFFF4F4FB);
-  static const Color pageBackground = Colors.white;
+
   static Color elevatedContainerColorOpacity =
   Colors.grey.withAlpha(128); // 0.5 opacity
 
