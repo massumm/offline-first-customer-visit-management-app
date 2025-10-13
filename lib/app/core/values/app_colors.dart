@@ -17,11 +17,21 @@ abstract class AppColors {
 
   static const Color subTextColor = Color(0xFFB7B7B7);
   static const Color cardBgColor = Color(0xFF1F1F1F);
-  static const Color greenProgressColor = Color(0xFF4CB870);
-  static const Color redProgressColor = Color(0xFFFF1B1F);
+  static const Color greenColor = Color(0xFF0ECA36);
+  static const Color orangeColor = Color(0xFFFFAB00);
+  static const Color redColor = Color(0xFFFF5630);
 
+  // ------------- Light Theme Colors ---------------------
+  static const Color lightTextPrimaryColor = Color(0xFF241814);
+  static const Color lightTextSecondaryColor = Color(0xFF5B5B5B);
+  static const Color lightBgColor = Color(0xFFF2F2F2);
+  static const Color lightStockColor = Color(0xFFE8E4E2);
+
+
+
+  static const Color redProgressColor = Color(0xFFFF1B1F);
   static const Color black = Colors.black;
-  static const Color black11 = Color(0xff00d0d0d);
+  static const Color black11 = Colors.black26;
   static const Color secondaryBg2Color = Color(0xFFFFEBE5);
   static const Color screenBgColor = Color(0xFF0d0d0d);
   static const Color greyColor1 = Color(0xFF2B2B2B);
