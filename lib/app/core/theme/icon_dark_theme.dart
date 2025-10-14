@@ -141,6 +141,7 @@ class IconDarkTheme {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
+      fillColor: AppColors.darkShapeColor,
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
@@ -151,11 +152,11 @@ class IconDarkTheme {
       // enabledBorder color to be less prominent in a dark theme.
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: AppColors.darkShapeColor, width: 1),
+        borderSide: BorderSide(color: AppColors.darkStockColor, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: AppColors.darkShapeColor, width: 1),
+        borderSide: BorderSide(color: AppColors.darkStockColor, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
@@ -165,7 +166,7 @@ class IconDarkTheme {
         borderRadius: BorderRadius.circular(15),
         borderSide: BorderSide(color: AppColors.warningColor, width: 0.5),
       ),
-      fillColor: Colors.white,
+
     ),
     elevatedButtonTheme: appElevatedButtonTheme,
   );
