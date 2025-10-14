@@ -109,8 +109,8 @@ class IconLightTheme {
       brightness: Brightness.light,
       primary: AppColors.colorPrimary,
       secondary: AppColors.greenColor,
-      tertiary: AppColors.orangeColor,
-      error: AppColors.redColor,
+      tertiary: AppColors.informationColor,
+      error: AppColors.warningColor,
       surface:  AppColors.lightBgColor,
     ),
     appBarTheme:  AppBarTheme(
@@ -157,7 +157,7 @@ class IconLightTheme {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: AppColors.redColor, width: 0.5),
+        borderSide: BorderSide(color: AppColors.warningColor, width: 0.5),
       ),
       hintStyle: const TextStyle(color: AppColors.lightHintTextColor, fontSize: 14),
     ),

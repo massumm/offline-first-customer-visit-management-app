@@ -42,9 +42,14 @@ abstract class BaseView<Controller extends BaseController>
   Widget? drawer() => null;
 
   /// Colors
-  Color pageBackgroundColor() => AppColors.pageBackground;
+  /// The background color for the page. Defaults to the theme's scaffold color.
+  /// Override in subclasses for custom page colors.
+  Color pageBackgroundColor(BuildContext context) =>
+      Theme.of(context).scaffoldBackgroundColor;
 
-  Color statusBarColor() => AppColors.pageBackground;
+  /// The color of the system status bar. Defaults to the page background color
+  /// for a seamless look. The icon brightness is handled automatically.
+  Color statusBarColor(BuildContext context) => pageBackgroundColor(context);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +66,7 @@ abstract class BaseView<Controller extends BaseController>
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: statusBarColor(),
+          statusBarColor: statusBarColor(context),
           statusBarIconBrightness: Brightness.dark,
         ),
         child: SafeArea(
@@ -70,7 +75,7 @@ abstract class BaseView<Controller extends BaseController>
           child: Scaffold(
             key: globalKey,
             resizeToAvoidBottomInset: true,
-            backgroundColor: pageBackgroundColor(),
+            backgroundColor: pageBackgroundColor(context),
             appBar: appBar(context),
             floatingActionButton: floatingActionButton(),
             floatingActionButtonLocation: floatingActionLocation,

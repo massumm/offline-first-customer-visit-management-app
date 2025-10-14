@@ -102,11 +102,11 @@ class IconDarkTheme {
     primarySwatch: AppColors.colorPrimarySwatch,
     primaryColor: AppColors.colorPrimary,
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF121214),
-    cardColor: const Color(0xFF1A1B1E),
+    scaffoldBackgroundColor: AppColors.darkBgColor,
+    cardColor: AppColors.cardBgColor,
     useMaterial3: true,
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFF1A1B1E),
+      backgroundColor: AppColors.darkBgColor,
       elevation: 0,
       foregroundColor: Colors.white,
     ),
@@ -121,12 +121,12 @@ class IconDarkTheme {
 
     cardTheme: CardThemeData(
       elevation: 2,
-      color: const Color(0xFF1A1B1E),
+      color: AppColors.cardBgColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
 
     dialogTheme: DialogThemeData(
-      backgroundColor: const Color(0xFF1A1B1E),
+      backgroundColor: AppColors.cardBgColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
 
@@ -151,11 +151,11 @@ class IconDarkTheme {
       // enabledBorder color to be less prominent in a dark theme.
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: Color(0xFFDADEE7), width: 1),
+        borderSide: BorderSide(color: AppColors.darkShapeColor, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: Color(0xFFDADEE7), width: 1),
+        borderSide: BorderSide(color: AppColors.darkShapeColor, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
@@ -163,7 +163,7 @@ class IconDarkTheme {
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: Colors.red, width: 0.5),
+        borderSide: BorderSide(color: AppColors.warningColor, width: 0.5),
       ),
       fillColor: Colors.white,
     ),

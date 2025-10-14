@@ -16,12 +16,14 @@ abstract class AppColors {
   });
 
   static const Color subTextColor = Color(0xFFB7B7B7);
-  static const Color cardBgColor = Color(0xFF1F1F1F);
   static const Color greenColor = Color(0xFF0ECA36);
-  static const Color orangeColor = Color(0xFFFFAB00);
-  static const Color redColor =  Color(0xFFF2F2F2);
-
-  static const Color pageBackground = Colors.white;
+  static const Color informationColor = Color(0xFFFFAB00);
+  static const Color warningColor =  Color(0xFFFF5630);
+  static const Color warningBgColor =  Color(0xFFFEEFEC);
+  static const Color disableColor =  Color(0xFFABABAB);
+  static const Color disableBgColor =  Color(0xFFE5E5E5);
+  static const Color cardBgColor =  Color(0xFFFFEBE5);
+  static const Color pageBackground = Color(0xFFF2F2F2);
 
   // ------------- Light Theme Colors ---------------------
   static const Color lightTextPrimaryColor = Color(0xFF241814);
@@ -31,6 +33,13 @@ abstract class AppColors {
   static const Color lightInputBorderColor = Color(0xFFE8E4E2);
   static const Color lightHintTextColor= Color(0xFF5B5B5B);
 
+  // ----------------- Dark Theme Colors ----------------------
+
+  static const Color darkBgColor= Color(0xFF0D0D0D);
+  static const Color darkTextPrimaryColor= Color(0xFFFFFFFF);
+  static const Color darkTextSecondaryColor= Color(0xFFB7B7B7);
+  static const Color darkStockColor= Color(0xFF2B2B2B);
+  static const Color darkShapeColor= Color(0xFF1F1F1F);
 
 
   static const Color redProgressColor = Color(0xFFFF1B1F);
