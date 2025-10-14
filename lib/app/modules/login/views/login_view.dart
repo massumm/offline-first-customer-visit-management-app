@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/input_widgets/adaptive_text_field.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
@@ -32,233 +33,225 @@ class LoginView extends BaseView<LoginController> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return Center(
-      child: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo and tagline
-            controller.isDarkTheme
-                ? SuperImage(Assets.svgIconLogoDark)
-                : SuperImage(Assets.svgLogo),
-            const SizedBox(height: 10),
-            Text(
-              "Let’s train smarter. Let’s be Iconic",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 5),
-            Text(
-              "Log in to your account",
-              style: TextStyle(color: Colors.grey, fontSize: 14),
-            ),
-            const SizedBox(height: 30),
-
-            // Email
-            Obx(() {
-              return AdaptiveSuperTextField(
-                controller: controller.emailCtr,
-                hintText: "abc@example.com",
-                labelText: 'Email',
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                errorText: controller.emailError.value,
-                onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                onChanged: (value) {
-                  if (controller.emailError.value != null) {
-                    controller.emailError.value = null;
-                  }
-                },
-              );
-            }),
-            const SizedBox(height: 15),
-
-            // Password
-            Obx(() {
-              return AdaptiveSuperTextField(
-                controller: controller.passwordCtr,
-                hintText: "********",
-                labelText: 'Password',
-                // Tell the widget to behave like a password field
-                isPassword: true,
-                // Control the visibility from your controller
-                obscureText: controller.obscurePassword.value,
-                // Provide a callback to be executed when the internal icon is tapped
-                onTogglePasswordVisibility: () {
-                  // Use the GetX .toggle() method for simplicity
-                  controller.obscurePassword.toggle();
-                },
-                keyboardType: TextInputType.visiblePassword,
-                textInputAction: TextInputAction.done,
-                errorText: controller.passwordError.value,
-                onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                onChanged: (value) {
-                  if (controller.passwordError.value != null) {
-                    controller.passwordError.value = null;
-                  }
-                },
-              );
-            }),
-
-            const SizedBox(height: 10),
-
-            // Remember me & Forgot password
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return LayoutBuilder(builder: (context, constraints) {
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        // Use a ConstrainedBox to ensure the content is at least as tall as the viewport.
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            // Subtract the vertical padding from the max height.
+            minHeight: constraints.maxHeight - 32.0,
+          ),
+          // IntrinsicHeight allows the Column to expand to the parent's height,
+          // which is necessary for the Spacer to work.
+          child: IntrinsicHeight(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                78.height,
+                // Logo
+                controller.isDarkTheme
+                    ? SuperImage(Assets.svgIconLogoDark)
+                    : SuperImage(Assets.svgLogo),
+                const SizedBox(height: 10),
+                const Text(
+                  "Let’s train smarter. Let’s be Iconic",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                const Text(
+                  "Log in to your account",
+                  style: TextStyle(color: Colors.grey, fontSize: 14),
+                ),
+                const SizedBox(height: 30),
+
+                // Email
+                Obx(() {
+                  return AdaptiveSuperTextField(
+                    controller: controller.emailCtr,
+                    hintText: "abc@example.com",
+                    labelText: 'Email',
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    errorText: controller.emailError.value,
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                    onChanged: (value) {
+                      if (controller.emailError.value != null) {
+                        controller.emailError.value = null;
+                      }
+                    },
+                  );
+                }),
+                const SizedBox(height: 15),
+
+                // Password
+                Obx(() {
+                  return AdaptiveSuperTextField(
+                    controller: controller.passwordCtr,
+                    hintText: "********",
+                    labelText: 'Password',
+                    // Tell the widget to behave like a password field
+                    isPassword: true,
+                    // Control the visibility from your controller
+                    obscureText: controller.obscurePassword.value,
+                    // Provide a callback to be executed when the internal icon is tapped
+                    onTogglePasswordVisibility: () {
+                      // Use the GetX .toggle() method for simplicity
+                      controller.obscurePassword.toggle();
+                    },
+                    keyboardType: TextInputType.visiblePassword,
+                    textInputAction: TextInputAction.done,
+                    errorText: controller.passwordError.value,
+                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                    onChanged: (value) {
+                      if (controller.passwordError.value != null) {
+                        controller.passwordError.value = null;
+                      }
+                    },
+                  );
+                }),
+
+                const SizedBox(height: 10),
+
+                // Remember me & Forgot password
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Obx(() {
-                      return Material(
-                        type: MaterialType.transparency,
-                        child: Checkbox(
-                          value: controller.rememberMe.value,
-                          onChanged: (value) {
-                            controller.rememberMe.value = value!;
-                          },
-                          // ... your other checkbox properties
-                        ),
-                      );
-                    }),
-                    Text("Remember me"),
+                    Row(
+                      children: [
+                        Obx(() {
+                          return Material(
+                            type: MaterialType.transparency,
+                            child: Checkbox(
+                              value: controller.rememberMe.value,
+                              onChanged: (value) {
+                                controller.rememberMe.value = value!;
+                              },
+                              // ... your other checkbox properties
+                            ),
+                          );
+                        }),
+                        const Text("Remember me"),
+                      ],
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        "Forgot password?",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                   ],
                 ),
-                TextButton(
-                  onPressed: () {},
-                  child: Text(
-                    "Forgot password?",
-                    style: TextStyle(color: Colors.grey),
+
+                const SizedBox(height: 10),
+
+                // Login button
+                Obx(() {
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    onPressed: controller.isLoading.isTrue
+                        ? null
+                        : controller.onLoginButtonPressed,
+                    child: controller.isLoading.isTrue
+                        ? const Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                        : const Text("Log in", style: TextStyle(fontSize: 16)),
+                  );
+                }),
+
+                const SizedBox(height: 20),
+                const Center(
+                    child: Text("Or Connect With",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey))),
+                const SizedBox(height: 20),
+
+                // Google button
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.grey[800]!),
+                      backgroundColor: Colors.grey[900],
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                    ),
+                    onPressed: () {},
+                    icon:
+                    const Icon(FontAwesomeIcons.google, color: Colors.white),
+                    label: const Text(
+                      "Sign in with Google",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Apple button
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: Colors.grey[800]!),
+                      backgroundColor: Colors.grey[900],
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                    ),
+                    onPressed: () {},
+                    icon: const Icon(
+                      Icons.apple,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    label: const Text(
+                      "Sign in with Apple",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+
+                // Spacer pushes the content below it to the bottom.
+                const Spacer(),
+
+                // The "Don't have an account?" text, now at the bottom.
+                Center(
+                  child: Text.rich(
+                    TextSpan(
+                      text: "Don’t have an account? ",
+                      style: const TextStyle(color: Colors.grey),
+                      children: [
+                        TextSpan(
+                          text: "Register",
+                          style: const TextStyle(color: Colors.red),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              controller.toRegister();
+                            },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
-
-            // // Remember me & Forgot password
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Row(
-            //       children: [
-            //         Obx(() {
-            //           // Wrap the Checkbox with a Material widget
-            //           return Material(
-            //             // Use transparency to avoid changing the background color
-            //             type: MaterialType.transparency,
-            //             child: Checkbox(
-            //               value: controller.rememberMe.value,
-            //               onChanged: (value) {
-            //                 controller.rememberMe.value = value!;
-            //               },
-            //               checkColor: Colors.black,
-            //               activeColor: Colors.red,
-            //             ),
-            //           );
-            //         }),
-            //         Text("Remember me", style: TextStyle(color: Colors.grey)),
-            //       ],
-            //     ),
-            //     TextButton(
-            //       onPressed: () {},
-            //       child: Text(
-            //         "Forgot password?",
-            //         style: TextStyle(color: Colors.grey),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            const SizedBox(height: 10),
-
-            // Login button
-            Obx(() {
-              return ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                onPressed: controller.isLoading.isTrue
-                    ? null
-                    : controller.onLoginButtonPressed,
-                child: controller.isLoading.isTrue
-                    ? Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: const CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
-                    : Text("Log in", style: TextStyle(fontSize: 16)),
-              );
-            }),
-
-            const SizedBox(height: 20),
-            Text("Or Connect With", style: TextStyle(color: Colors.grey)),
-            const SizedBox(height: 20),
-
-            // Google button
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey[800]!),
-                  backgroundColor: Colors.grey[900],
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                ),
-                onPressed: () {},
-                icon: Icon(FontAwesomeIcons.google, color: Colors.white),
-                label: Text(
-                  "Sign in with Google",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 10),
-
-            // Apple button
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey[800]!),
-                  backgroundColor: Colors.grey[900],
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                ),
-                onPressed: () {},
-                icon: Icon(Icons.apple, color: Colors.white),
-                label: Text(
-                  "Sign in with Apple",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
-            Text.rich(
-              TextSpan(
-                text: "Don’t have an account? ",
-                style: TextStyle(color: Colors.grey),
-                children: [
-                  TextSpan(
-                    text: "Register",
-                    style: TextStyle(color: Colors.red),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        controller.toRegister();
-                      },
-                  ),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   @override
