@@ -47,9 +47,22 @@ abstract class BaseView<Controller extends BaseController>
   Color pageBackgroundColor(BuildContext context) =>
       Theme.of(context).scaffoldBackgroundColor;
 
-  /// The color of the system status bar. Defaults to the page background color
-  /// for a seamless look. The icon brightness is handled automatically.
-  Color statusBarColor(BuildContext context) => pageBackgroundColor(context);
+
+  /// Creates the [SystemUiOverlayStyle] for the Material page.
+  ///
+  /// It uses the [pageBackgroundColor] and automatically sets the status bar
+  /// icon brightness for optimal contrast.
+  SystemUiOverlayStyle getMaterialOverlayStyle(BuildContext context) {
+    final Color bgColor = pageBackgroundColor(context);
+    final Brightness brightness = ThemeData.estimateBrightnessForColor(bgColor);
+    final Brightness iconBrightness =
+    brightness == Brightness.dark ? Brightness.light : Brightness.dark;
+
+    return SystemUiOverlayStyle(
+      statusBarColor: bgColor,
+      statusBarIconBrightness: iconBrightness,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,10 +78,7 @@ abstract class BaseView<Controller extends BaseController>
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle(
-          statusBarColor: statusBarColor(context),
-          statusBarIconBrightness: Brightness.dark,
-        ),
+        value: getMaterialOverlayStyle(context),
         child: SafeArea(
           bottom: true,
           top: false,
