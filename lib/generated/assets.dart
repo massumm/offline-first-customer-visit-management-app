@@ -12,7 +12,7 @@ class Assets {
   static const String imagesOnboarding3 = 'assets/images/onboarding-3.png';
   static const String jsonsProfileLoading = 'assets/jsons/profile_loading.json';
   static const String svgBgGradientColor = 'assets/svg/bg-gradient-color.svg';
-  static const String svgIconDarkLogo = 'assets/svg/icon-dark-logo.svg';
+  static const String svgIconLogoDark = 'assets/svg/icon-logo-dark.svg';
   static const String svgIconLogoPink = 'assets/svg/icon-logo-pink.svg';
   static const String svgLevel7 = 'assets/svg/level-7.svg';
   static const String svgLogo = 'assets/svg/logo.svg';

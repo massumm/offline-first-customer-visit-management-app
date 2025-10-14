@@ -5,25 +5,43 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/input_widgets/adaptive_text_field.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 
 import '../../../../generated/assets.dart';
+import '../../../core/widgets/back_pill.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends BaseView<LoginController> {
-   LoginView({super.key});
+  LoginView({super.key});
 
   @override
   Widget body(BuildContext context) {
+    return Stack(
+      alignment: Alignment.topCenter,
+      children: [
+        _buildBody(context),
+        Positioned(top: 20, left: 16, child: BackPill(onTap: Get.back)),
+        //TODO: Background Effects
+        // SuperImage(
+        //   Assets.svgBgGradientColor
+        // )
+      ],
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(16),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Logo and tagline
-            SuperImage(Assets.svgLogo),
+            controller.isDarkTheme
+                ? SuperImage(Assets.svgIconLogoDark)
+                : SuperImage(Assets.svgLogo),
             const SizedBox(height: 10),
             Text(
               "Let’s train smarter. Let’s be Iconic",
@@ -153,7 +171,6 @@ class LoginView extends BaseView<LoginController> {
             //     ),
             //   ],
             // ),
-
             const SizedBox(height: 10),
 
             // Login button
@@ -169,12 +186,12 @@ class LoginView extends BaseView<LoginController> {
                     : controller.onLoginButtonPressed,
                 child: controller.isLoading.isTrue
                     ? Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: const CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                )
+                        padding: const EdgeInsets.all(4.0),
+                        child: const CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
                     : Text("Log in", style: TextStyle(fontSize: 16)),
               );
             }),

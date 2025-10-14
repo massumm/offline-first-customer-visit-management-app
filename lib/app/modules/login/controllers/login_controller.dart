@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/theme/services/theme_service.dart';
 import '../../../base/widgets/custom_toast.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
@@ -18,6 +19,17 @@ class LoginController extends BaseController {
   var passwordError = RxnString();
   var emailError = RxnString();
   var isLoading = false.obs;
+
+  // .............Theme Data...........
+  final ts = Get.find<ThemeService>();
+
+  bool  get isDarkTheme  {
+    final platformDark =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+
+    return ts.themeMode == ThemeMode.dark ||
+        (ts.themeMode == ThemeMode.system && platformDark);
+  }
 
   //............. Repository ...........
   final LoginRepository _loginRepository = Get.find(
