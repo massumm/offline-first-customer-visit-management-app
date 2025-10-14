@@ -225,17 +225,19 @@ class _SuperTextFieldState extends State<SuperTextField> {
         IconButton(
           splashRadius: 20,
           icon: Icon(isObscured ? Icons.visibility_off : Icons.visibility),
-          onPressed:
-              widget.onTogglePasswordVisibility ??
-              () {
-                if (_usesExternalObscure) {
-                  // Controlled – advise user supplied callback (assert in initState)
-                  widget.onTogglePasswordVisibility?.call();
-                } else {
-                  // Uncontrolled – toggle internally
-                  setState(() => _internalObscure = !_internalObscure);
-                }
-              },
+          onPressed: () {
+            // If the field is externally controlled, call the provided callback.
+            if (_usesExternalObscure) {
+              // The assert in initState ensures this callback is provided
+              // when obscureText is controlled.
+              widget.onTogglePasswordVisibility?.call();
+            } else {
+              // Otherwise, toggle the internal state for the uncontrolled field.
+              setState(() {
+                _internalObscure = !_internalObscure;
+              });
+            }
+          },
           tooltip: isObscured ? 'Show' : 'Hide',
         ),
       );

@@ -66,23 +66,19 @@ class LoginView extends BaseView<LoginController> {
                 controller: controller.passwordCtr,
                 hintText: "********",
                 labelText: 'Password',
+                // Tell the widget to behave like a password field
+                isPassword: true,
+                // Control the visibility from your controller
                 obscureText: controller.obscurePassword.value,
+                // Provide a callback to be executed when the internal icon is tapped
+                onTogglePasswordVisibility: () {
+                  // Use the GetX .toggle() method for simplicity
+                  controller.obscurePassword.toggle();
+                },
                 keyboardType: TextInputType.visiblePassword,
                 textInputAction: TextInputAction.done,
                 errorText: controller.passwordError.value,
                 onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    controller.obscurePassword.isFalse
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Colors.grey,
-                  ),
-                  onPressed: () {
-                    controller.obscurePassword.value =
-                    !controller.obscurePassword.value;
-                  },
-                ),
                 onChanged: (value) {
                   if (controller.passwordError.value != null) {
                     controller.passwordError.value = null;
