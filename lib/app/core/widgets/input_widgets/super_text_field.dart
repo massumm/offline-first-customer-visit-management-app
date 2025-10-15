@@ -161,24 +161,24 @@ class _SuperTextFieldState extends State<SuperTextField> {
             const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         errorText: widget.errorText,
         // Sensible defaults if no InputDecorationTheme provided:
-        filled: Theme.of(context).inputDecorationTheme.filled,
-        fillColor: Theme.of(context).inputDecorationTheme.fillColor,
+        filled: theme.inputDecorationTheme.filled,
+        fillColor: theme.inputDecorationTheme.fillColor,
         border:
-            Theme.of(context).inputDecorationTheme.border ??
+            theme.inputDecorationTheme.border ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide.none,
             ),
-        enabledBorder: Theme.of(context).inputDecorationTheme.enabledBorder,
-        focusedBorder: Theme.of(context).inputDecorationTheme.focusedBorder,
+        enabledBorder: theme.inputDecorationTheme.enabledBorder,
+        focusedBorder: theme.inputDecorationTheme.focusedBorder,
         errorBorder:
-            Theme.of(context).inputDecorationTheme.errorBorder ??
+            theme.inputDecorationTheme.errorBorder ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: theme.colorScheme.error, width: 1),
             ),
         focusedErrorBorder:
-            Theme.of(context).inputDecorationTheme.focusedErrorBorder ??
+           theme.inputDecorationTheme.focusedErrorBorder ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: theme.colorScheme.error, width: 2),

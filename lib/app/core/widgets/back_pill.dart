@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:icon/app/core/theme/services/theme_service.dart';
 
 class BackPill extends StatelessWidget {
   const BackPill({super.key, required this.onTap});
@@ -14,7 +16,7 @@ class BackPill extends StatelessWidget {
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: const Color(0xFF1A1A1A),
+          color: Theme.of(context).colorScheme.onPrimaryContainer,
           borderRadius: BorderRadius.circular(8),
         ),
         alignment: Alignment.center,

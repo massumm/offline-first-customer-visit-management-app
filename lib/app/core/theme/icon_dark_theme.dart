@@ -134,6 +134,7 @@ class IconDarkTheme {
       seedColor: AppColors.colorPrimary,
       brightness: Brightness.dark,
       primary: AppColors.colorPrimary,
+      onPrimaryContainer: AppColors.darkShapeColor,
       // secondary: AppColors.colorSecondary,
       // error: AppColors.colorError,
       // surface: Colors.white,

@@ -108,6 +108,7 @@ class IconLightTheme {
       seedColor: AppColors.colorPrimary,
       brightness: Brightness.light,
       primary: AppColors.colorPrimary,
+      onPrimaryContainer: AppColors.lightShapeColor,
       secondary: AppColors.greenColor,
       tertiary: AppColors.informationColor,
       error: AppColors.warningColor,

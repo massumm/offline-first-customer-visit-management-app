@@ -51,17 +51,12 @@ class LoginView extends BaseView<LoginController> {
                 78.height,
                 // Logo
                 controller.isDarkTheme
-                    ? SuperImage(Assets.svgIconLogoDark)
-                    : SuperImage(Assets.svgLogo),
+                    ? SuperImage(Assets.svgIconLogoDark, height: 80,)
+                    : SuperImage(Assets.svgLogo, height: 80),
                 const SizedBox(height: 10),
-                const Text(
+                 Text(
                   "Let’s train smarter. Let’s be Iconic",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
+                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 const SizedBox(height: 5),
                 const Text(
@@ -95,7 +90,6 @@ class LoginView extends BaseView<LoginController> {
                     controller: controller.passwordCtr,
                     hintText: "********",
                     labelText: 'Password',
-                    // Tell the widget to behave like a password field
                     isPassword: true,
                     // Control the visibility from your controller
                     obscureText: controller.obscurePassword.value,
