@@ -229,7 +229,7 @@ class RegisterView extends BaseView<RegisterController> {
                         padding: const EdgeInsets.symmetric(vertical: 15),
                       ),
                       onPressed: () {},
-                      icon: Icon(Icons.apple, color: Colors.white,  size: 24),
+                      icon: Icon(Icons.apple, color: Colors.white, size: 24),
                       label: Text(
                         "Sign in with Apple",
                         style: TextStyle(color: Colors.white),
@@ -246,7 +246,11 @@ class RegisterView extends BaseView<RegisterController> {
                         children: [
                           TextSpan(
                             text: "Login",
-                            style: TextStyle(color: Colors.red),
+                            style: TextStyle(
+                              color: AppColors.colorPrimary,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AppColors.colorPrimary,
+                            ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 Get.back();

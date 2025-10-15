@@ -9,6 +9,7 @@ import 'package:icon/app/core/widgets/input_widgets/adaptive_text_field.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 
 import '../../../../generated/assets.dart';
+import '../../../core/values/app_colors.dart';
 import '../../../core/widgets/back_pill.dart';
 import '../controllers/login_controller.dart';
 
@@ -238,7 +239,11 @@ class LoginView extends BaseView<LoginController> {
                         children: [
                           TextSpan(
                             text: "Register",
-                            style: const TextStyle(color: Colors.red),
+                            style: const TextStyle(
+                              color: AppColors.colorPrimary,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AppColors.colorPrimary,
+                            ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 controller.toRegister();
