@@ -16,6 +16,8 @@ import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
+import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
 import '../modules/trainer_onboarding/bindings/trainer_onboarding_binding.dart';
 import '../modules/trainer_onboarding/views/trainer_onboarding_view.dart';
 
@@ -34,7 +36,7 @@ class AppPages {
       children: [
         GetPage(
           name: _Paths.ACTIVITY_TRACKER,
-          page: () =>  ActivityTrackerView(),
+          page: () => ActivityTrackerView(),
           binding: ActivityTrackerBinding(),
         ),
       ],
@@ -52,7 +54,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.REGISTER,
-      page: () =>  RegisterView(),
+      page: () => RegisterView(),
       binding: RegisterBinding(),
     ),
     GetPage(
@@ -74,6 +76,11 @@ class AppPages {
       name: _Paths.ICON_CHAT,
       page: () => const IconChatView(),
       binding: IconChatBinding(),
+    ),
+    GetPage(
+      name: _Paths.TRAINEE_ONBOARDING,
+      page: () =>  TraineeOnboardingView(),
+      binding: TraineeOnboardingBinding(),
     ),
   ];
 }
