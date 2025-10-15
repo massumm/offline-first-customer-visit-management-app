@@ -51,37 +51,17 @@ class SplashView extends GetView<SplashController> {
                     child: Text('Begin', style: TextStyle(color: Colors.black)),
                   ),
                   8.height,
-                  RichText(
-                    text: TextSpan(
+                  Text.rich(
+                    TextSpan(
                       text: 'Have an account? ',
-                      style: TextStyle(color: AppColors.subTextColor),
+                      style: TextStyle(color: Colors.black),
                       children: [
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.baseline,
-                          baseline: TextBaseline.alphabetic,
-                          child: GestureDetector(
-                            onTap: () {
-                              controller.toLogin();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.only(bottom: 1),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  bottom: BorderSide(
-                                    color: Colors.black,
-                                    width: 1.5,
-                                  ),
-                                ),
-                              ),
-                              child: Text(
-                                'Login',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w700,
-
-                                ),
-                              ),
-                            ),
+                        TextSpan(
+                          text: 'Login',
+                          style: TextStyle(
+                            color: Colors.white,
+                            decorationColor: Colors.white,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
                       ],
