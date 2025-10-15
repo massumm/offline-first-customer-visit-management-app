@@ -5,6 +5,8 @@ import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/modules/register/repository/registration_repository.dart';
 
+import '../../../core/theme/services/theme_service.dart';
+
 class RegisterController extends BaseController {
   final emailCtr = TextEditingController();
   final passwordCtr = TextEditingController();
@@ -17,6 +19,17 @@ class RegisterController extends BaseController {
   var emailError = RxnString();
   var nameError = RxnString();
   var isLoading = false.obs;
+
+  // .............Theme Data...........
+  final ts = Get.find<ThemeService>();
+
+  bool  get isDarkTheme  {
+    final platformDark =
+        WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+
+    return ts.themeMode == ThemeMode.dark ||
+        (ts.themeMode == ThemeMode.system && platformDark);
+  }
 
   // ............ Repository .............
   final RegistrationRepository _registrationRepository = Get.find(
@@ -39,14 +52,50 @@ class RegisterController extends BaseController {
     return null; // Return null if validation passes
   }
 
-  String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
+  String? validatePassword(String? password, {String? email}) {
+    if (password == null || password.isEmpty) {
       return "Password is required";
     }
-    if (value.length < 8) {
+    if (password.length < 8) {
       return "Password must be at least 8 characters long";
     }
-    return null;
+    final numericRegex = RegExp(r'^[0-9]+$');
+    if (numericRegex.hasMatch(password)) {
+      return "Password cannot consist entirely of digits.";
+    }
+
+    // For a production app, consider using a service or a more extensive,
+    // securely stored list of common passwords.
+    const commonPasswords = {
+      '12345678',
+      'password',
+      '123456',
+      '123456789',
+      'qwerty',
+      '111111',
+      'p@ssword',
+      'admin'
+    };
+
+    if (commonPasswords.contains(password.toLowerCase())) {
+      return "Password is too common. Please choose a stronger one.";
+    }
+
+    if (email != null && email.isNotEmpty) {
+      final username = email.split('@').first;
+      // Avoid flagging short usernames that might appear in many words.
+      if (username.length > 3 && password.toLowerCase().contains(username.toLowerCase())) {
+        return "Password cannot be too similar to your email.";
+      }
+    }
+
+    return null; // Return null if validation passes
+  }
+
+  // Add this method to be called on every keystroke in the password field.
+  void onPasswordChanged(String password) {
+    // Pass the email for the similarity check.
+    passwordError.value = validatePassword(password, email: emailCtr.text);
   }
 
   String? validateName(String? value) {
