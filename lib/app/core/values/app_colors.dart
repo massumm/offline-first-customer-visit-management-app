@@ -18,7 +18,7 @@ abstract class AppColors {
   static const Color subTextColor = Color(0xFFB7B7B7);
   static const Color greenColor = Color(0xFF0ECA36);
   static const Color informationColor = Color(0xFFFFAB00);
-  static const Color warningColor =  Color(0xFFFF5630);
+  static const Color warningColor =  Color(0xFFE92B2B);
   static const Color warningBgColor =  Color(0xFFFEEFEC);
   static const Color disableColor =  Color(0xFFABABAB);
   static const Color disableBgColor =  Color(0xFFE5E5E5);

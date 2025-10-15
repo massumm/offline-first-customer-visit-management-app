@@ -62,14 +62,51 @@ class LoginController extends BaseController {
     return null; // Return null if validation passes
   }
 
-  String? validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
+  String? validatePassword(String? password, {String? email}) {
+    if (password == null || password.isEmpty) {
       return "Password is required";
     }
-    if (value.length < 8) {
+    if (password.length < 8) {
       return "Password must be at least 8 characters long";
     }
-    return null;
+    final numericRegex = RegExp(r'^[0-9]+$');
+    if (numericRegex.hasMatch(password)) {
+      return "Password cannot consist entirely of digits.";
+    }
+
+    // For a production app, consider using a service or a more extensive,
+    // securely stored list of common passwords.
+    const commonPasswords = {
+      '12345678',
+      'password',
+      '123456',
+      '123456789',
+      'qwerty',
+      '111111',
+      'p@ssword',
+      'admin'
+    };
+
+    if (commonPasswords.contains(password.toLowerCase())) {
+      return "Password is too common. Please choose a stronger one.";
+    }
+
+    if (email != null && email.isNotEmpty) {
+      final username = email.split('@').first;
+      // Avoid flagging short usernames that might appear in many words.
+      if (username.length > 3 && password.toLowerCase().contains(username.toLowerCase())) {
+        return "Password cannot be too similar to your email.";
+      }
+    }
+
+    return null; // Return null if validation passes
+  }
+
+
+// Add this method to be called on every keystroke in the password field.
+  void onPasswordChanged(String password) {
+    // Pass the email for the similarity check.
+    passwordError.value = validatePassword(password, email: emailCtr.text);
   }
 
   void onLoginButtonPressed() {

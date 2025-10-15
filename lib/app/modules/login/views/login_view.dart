@@ -33,6 +33,8 @@ class LoginView extends BaseView<LoginController> {
   }
 
   Widget _buildBody(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
     return LayoutBuilder(builder: (context, constraints) {
       return SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -103,9 +105,8 @@ class LoginView extends BaseView<LoginController> {
                     errorText: controller.passwordError.value,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     onChanged: (value) {
-                      if (controller.passwordError.value != null) {
-                        controller.passwordError.value = null;
-                      }
+                      // Call the controller method to perform validation in real time.
+                      controller.onPasswordChanged(value);
                     },
                   );
                 }),
@@ -135,9 +136,9 @@ class LoginView extends BaseView<LoginController> {
                     ),
                     TextButton(
                       onPressed: () {},
-                      child: const Text(
+                      child:  Text(
                         "Forgot password?",
-                        style: TextStyle(color: Colors.white),
+                        style: theme.textTheme.titleSmall,
                       ),
                     ),
                   ],
