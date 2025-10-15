@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
-import 'package:icon/app/core/widgets/input_widgets/adaptive_text_field.dart';
 
 import '../../icon_chat/views/icon_chat_view.dart';
 import '../controllers/trainee_onboarding_controller.dart';
+import '../models/onboarding_qa_model.dart';
+import 'widgets/message_bubble.dart';
+import 'widgets/type_bubble.dart';
 
 class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   TraineeOnboardingView({super.key});
@@ -18,34 +21,116 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   }
 
   @override
-  Widget? bottomNavigationBar(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(
-        bottom: MediaQuery.of(context).viewInsets.bottom + 8,
-        right: 8
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: AdaptiveSuperTextField(
-              controller: controller.messageTextCtr,
-              hintText: 'Type Here...',
-              onChanged: (value) {},
+  Widget body(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: Obx(() {
+            final items = controller.messages;
+            final typing = controller.isTyping.value;
+            return ListView.builder(
+              controller: controller.pageController,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              itemCount: items.length + (typing ? 1 : 0),
+              itemBuilder: (context, index) {
+                final isTypingRow = typing && index == items.length;
+                if (isTypingRow) return const TypingBubble();
+                final m = items[index];
+                return Align(
+                  alignment: m.from == Sender.user
+                      ? Alignment.centerRight
+                      : Alignment.centerLeft,
+                  child: MessageBubble(text: m.text, from: m.from),
+                );
+              },
+            );
+          }),
+        ),
+
+        /// Quick replies (only for choice-type question)
+        Obx(() {
+          final q = controller.currentQuestion;
+          if (q == null || q.type != QAType.choice) {
+            return const SizedBox.shrink();
+          }
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: q.options
+                  .map(
+                    (o) => ActionChip(
+                      label: Text(o),
+                      onPressed: () => controller.choose(o),
+                    ),
+                  )
+                  .toList(),
             ),
-          ),
-          IconButton(onPressed: () {}, icon: Icon(Icons.send)),
-        ],
-      ),
+          );
+        }),
+
+        // Input
+        SafeArea(
+          top: false,
+          child: Obx(() {
+            final isChoice = controller.isCurrentChoice;
+
+            return Row(
+              children: [
+                const SizedBox(width: 8),
+                Expanded(
+                  child: IgnorePointer(
+                    ignoring: isChoice,
+                    child: TextField(
+                      controller: controller.textController,
+                      onChanged: (t) => controller.inputText.value = t,
+                      onSubmitted: (t) {
+                        controller.send(t);
+                        controller.textController.clear();
+                      },
+                      decoration: InputDecoration(
+                        hintText: _hintFor(),
+                        border: const OutlineInputBorder(),
+                        isDense: true,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                FilledButton.icon(
+                  onPressed: () {
+                    controller.send(controller.textController.text);
+                    controller.textController.clear();
+                  },
+                  icon: const Icon(Icons.send),
+                  label: const Text("Send"),
+                ),
+                const SizedBox(width: 8),
+              ],
+            );
+          }),
+        ),
+        const SizedBox(height: 8),
+      ],
     );
   }
 
-  @override
-  Widget body(BuildContext context) {
-    return const Center(
-      child: Text(
-        'TraineeOnboardingView is working',
-        style: TextStyle(fontSize: 20),
-      ),
-    );
+  String _hintFor() {
+    final idx = controller.currentIndex.value;
+    if (idx >= 0 && idx < controller.questions.length) {
+      final q = controller.questions[idx];
+      if (q.type == QAType.choice) return "Choose an option above";
+      return q.hint ?? "Type your answer";
+    }
+    if (idx >= controller.questions.length) {
+      return "Type anything to restart";
+    }
+    return "Say hi to start";
   }
 }
