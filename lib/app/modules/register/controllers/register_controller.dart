@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/modules/register/repository/registration_repository.dart';
 
-class RegisterController extends GetxController {
+class RegisterController extends BaseController {
   final emailCtr = TextEditingController();
   final passwordCtr = TextEditingController();
   final nameCtr = TextEditingController();

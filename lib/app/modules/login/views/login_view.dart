@@ -33,7 +33,8 @@ class LoginView extends BaseView<LoginController> {
   Widget _buildBody(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    return LayoutBuilder(builder: (context, constraints) {
+    return LayoutBuilder(
+        builder: (context, constraints) {
       return SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         // Use a ConstrainedBox to ensure the content is at least as tall as the viewport.
