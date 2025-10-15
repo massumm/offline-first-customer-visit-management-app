@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
+import '../modules/forgot_password/bindings/forgot_password_binding.dart';
+import '../modules/forgot_password/views/forgot_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/icon_chat/bindings/icon_chat_binding.dart';
@@ -79,8 +81,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.TRAINEE_ONBOARDING,
-      page: () =>  TraineeOnboardingView(),
+      page: () => TraineeOnboardingView(),
       binding: TraineeOnboardingBinding(),
+    ),
+    GetPage(
+      name: _Paths.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordView(),
+      binding: ForgotPasswordBinding(),
     ),
   ];
 }

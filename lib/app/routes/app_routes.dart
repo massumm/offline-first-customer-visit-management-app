@@ -13,6 +13,7 @@ abstract class Routes {
   static const PROFILE_CREATE_ANIMATION = _Paths.PROFILE_CREATE_ANIMATION;
   static const ACTIVITY_TRACKER = _Paths.HOME + _Paths.ACTIVITY_TRACKER;
   static const TRAINEE_ONBOARDING = _Paths.TRAINEE_ONBOARDING;
+  static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
 }
 
 abstract class _Paths {
@@ -27,4 +28,5 @@ abstract class _Paths {
   static const ACTIVITY_TRACKER = '/activity-tracker';
   static const ICON_CHAT = '/icon-chat';
   static const TRAINEE_ONBOARDING = '/trainee-onboarding';
+  static const FORGOT_PASSWORD = '/forgot-password';
 }

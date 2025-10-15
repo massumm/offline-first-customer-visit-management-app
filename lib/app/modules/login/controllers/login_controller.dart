@@ -178,4 +178,8 @@ class LoginController extends BaseController {
   void toRegister() {
     Get.toNamed(Routes.REGISTER);
   }
+
+  void toForgotPassword() {
+    Get.toNamed(Routes.FORGOT_PASSWORD);
+  }
 }
