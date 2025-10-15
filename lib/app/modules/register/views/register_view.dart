@@ -4,15 +4,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/widgets/back_pill.dart';
+import '../../../core/widgets/input_widgets/adaptive_text_field.dart';
 import '../../../core/widgets/super_image.dart';
 import '../controllers/register_controller.dart';
 
 class RegisterView extends BaseView<RegisterController> {
-   RegisterView({super.key});
+  RegisterView({super.key});
 
   @override
   Widget body(BuildContext context) {
@@ -35,306 +37,231 @@ class RegisterView extends BaseView<RegisterController> {
     return LayoutBuilder(
       builder: (context, constraints) {
         return SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: constraints.maxHeight - 32.0,
-          ),
-          child: IntrinsicHeight(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Logo and tagline
-                SuperImage(Assets.imagesIconLogoPink),
-                const SizedBox(height: 10),
-                Text(
-                  "Get Started",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "Create your account now",
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-                const SizedBox(height: 30),
+          padding: const EdgeInsets.all(16),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight - 32.0,
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  78.height,
+                  // Logo
+                  controller.isDarkTheme
+                      ? SuperImage(Assets.svgIconLogoDark, height: 80)
+                      : SuperImage(Assets.svgLogo, height: 80),
 
-                // Email
-                Obx(() {
-                  return TextField(
-                    controller: controller.nameCtr,
-                    style: TextStyle(color: Colors.white),
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    // Add onChanged to clear error when user types
-                    onChanged: (value) {
-                      if (controller.emailError.value != null) {
-                        controller.emailError.value = null;
-                      }
-                    },
-                    decoration: InputDecoration(
+                  const SizedBox(height: 10),
+                  Text("Get Started", style: theme.textTheme.titleLarge),
+                  const SizedBox(height: 5),
+                  Text(
+                    "Create your account now",
+                    style: TextStyle(color: Colors.grey, fontSize: 14),
+                  ),
+                  const SizedBox(height: 30),
+
+                  // Email
+                  Obx(() {
+                    return AdaptiveSuperTextField(
+                      controller: controller.nameCtr,
                       hintText: "Name",
-                      hintStyle: TextStyle(color: Colors.grey),
                       labelText: 'Full Name',
-                      labelStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.grey[900],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                      // Display email error text
+                      keyboardType: TextInputType.text,
+                      textInputAction: TextInputAction.next,
                       errorText: controller.nameError.value,
-                      errorStyle: TextStyle(color: Colors.redAccent),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.redAccent, width: 1),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.redAccent, width: 2),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 15),
-                Obx(() {
-                  return TextField(
-                    controller: controller.emailCtr,
-                    style: TextStyle(color: Colors.white),
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    // Add onChanged to clear error when user types
-                    onChanged: (value) {
-                      if (controller.emailError.value != null) {
-                        controller.emailError.value = null;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      labelText: "Email",
-                      hintStyle: TextStyle(color: Colors.grey),
-                      hintText: 'abc@gmail.com',
-                      labelStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.grey[900],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                      // Display email error text
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      onChanged: (value) {},
+                    );
+                  }),
+                  const SizedBox(height: 15),
+                  Obx(() {
+                    return AdaptiveSuperTextField(
+                      controller: controller.emailCtr,
+                      hintText: "abc@example.com",
+                      labelText: 'Email',
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
                       errorText: controller.emailError.value,
-                      errorStyle: TextStyle(color: Colors.redAccent),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.redAccent, width: 1),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.redAccent, width: 2),
-                      ),
-                    ),
-                  );
-                }),
-                const SizedBox(height: 15),
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      onChanged: (value) {
+                        if (controller.emailError.value != null) {
+                          controller.emailError.value = null;
+                        }
+                      },
+                    );
+                  }),
+                  const SizedBox(height: 15),
 
-                // Password
-                Obx(() {
-                  return TextField(
-                    controller: controller.passwordCtr,
-                    obscureText: controller.obscurePassword.value,
-                    style: TextStyle(color: Colors.white),
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    keyboardType: TextInputType.visiblePassword,
-                    onChanged: (value) {
-                      if (controller.passwordError.value != null) {
-                        controller.passwordError.value = null;
-                      }
-                    },
-                    decoration: InputDecoration(
+                  // Password
+                  Obx(() {
+                    return AdaptiveSuperTextField(
+                      controller: controller.passwordCtr,
                       hintText: "********",
-                      hintStyle: TextStyle(color: Colors.grey),
                       labelText: 'Password',
-                      labelStyle: TextStyle(color: Colors.grey),
-                      filled: true,
-                      fillColor: Colors.grey[900],
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide.none,
-                      ),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          controller.obscurePassword.isFalse
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.grey,
-                        ),
-                        onPressed: () {
-                          controller.obscurePassword.value =
-                          !controller.obscurePassword.value;
-                        },
-                      ),
+                      isPassword: true,
+                      // Control the visibility from your controller
+                      obscureText: controller.obscurePassword.value,
+                      // Provide a callback to be executed when the internal icon is tapped
+                      onTogglePasswordVisibility: () {
+                        // Use the GetX .toggle() method for simplicity
+                        controller.obscurePassword.toggle();
+                      },
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
                       errorText: controller.passwordError.value,
-                      errorStyle: TextStyle(color: Colors.redAccent),
-                      errorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.redAccent, width: 1),
-                      ),
-                      focusedErrorBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.redAccent, width: 2),
-                      ),
-                    ),
-                  );
-                }),
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      onChanged: (value) {
+                        // Call the controller method to perform validation in real time.
+                        controller.onPasswordChanged(value);
+                      },
+                    );
+                  }),
 
-                const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
-                // Remember me & Forgot password
-                Row(
-                  children: [
-                    Obx(() {
-                      return Checkbox(
-                        value: controller.agreeToService.value,
-                        onChanged: (value) {
-                          controller.agreeToService.value = value!;
-                        },
-                        checkColor: Colors.black,
-                        activeColor: Colors.red,
-                      );
-                    }),
-                    Expanded(
-                      child: Text.rich(
-                        TextSpan(
-                          text: "By signing up, you agree with Icon’s ",
-
-                          style: TextStyle(color: AppColors.subTextColor),
-                          children: [
-                            TextSpan(
-                              text: 'Terms of Service',
-                              style: TextStyle(
-                                color: AppColors.subTextColor,
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' and ',
-                              style: TextStyle(
-                                color: AppColors.subTextColor,
-                              ),
-                            ),
-                            TextSpan(
-                              text: 'Privacy Policy',
-                              style: TextStyle(
-                                color: AppColors.subTextColor,
-                                fontWeight: FontWeight.w700,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 10),
-
-                // Login button
-                Obx(() {
-                  return ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    onPressed: controller.isLoading.isTrue
-                        || controller.agreeToService.isFalse
-                        ? null
-                        : controller.onRegisterButtonPressed,
-                    child: controller.isLoading.isTrue
-                        ? Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: const CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
-                    )
-                        : Text("Register", style: TextStyle(fontSize: 16)),
-                  );
-                }),
-
-                const SizedBox(height: 20),
-                Text("Or Connect With", style: TextStyle(color: Colors.grey)),
-                const SizedBox(height: 20),
-
-                // Google button
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.grey[800]!),
-                      backgroundColor: Colors.grey[900],
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                    ),
-                    onPressed: () {},
-                    icon: Icon(FontAwesomeIcons.google, color: Colors.white),
-                    label: Text(
-                      "Sign in with Google",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                // Apple button
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton.icon(
-                    style: OutlinedButton.styleFrom(
-                      side: BorderSide(color: Colors.grey[800]!),
-                      backgroundColor: Colors.grey[900],
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                    ),
-                    onPressed: () {},
-                    icon: Icon(Icons.apple, color: Colors.white),
-                    label: Text(
-                      "Sign in with Apple",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 20),
-                Text.rich(
-                  TextSpan(
-                    text: "Have an account? ",
-                    style: TextStyle(color: Colors.grey),
+                  // Remember me & Forgot password
+                  Row(
                     children: [
-                      TextSpan(
-                        text: "Login",
-                        style: TextStyle(color: Colors.red),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Get.back();
+                      Obx(() {
+                        return Checkbox(
+                          value: controller.agreeToService.value,
+                          onChanged: (value) {
+                            controller.agreeToService.value = value!;
                           },
+                          checkColor: Colors.black,
+                          activeColor: Colors.red,
+                        );
+                      }),
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            text: "By signing up, you agree with Icon’s ",
+
+                            style: TextStyle(color: AppColors.subTextColor),
+                            children: [
+                              TextSpan(
+                                text: 'Terms of Service',
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' and ',
+                                style: TextStyle(color: AppColors.subTextColor),
+                              ),
+                              TextSpan(
+                                text: 'Privacy Policy',
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 10),
+
+                  // Login button
+                  Obx(() {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed:
+                          controller.isLoading.isTrue ||
+                              controller.agreeToService.isFalse
+                          ? null
+                          : controller.onRegisterButtonPressed,
+                      child: controller.isLoading.isTrue
+                          ? Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: const CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : Text("Register", style: TextStyle(fontSize: 16)),
+                    );
+                  }),
+
+                  const SizedBox(height: 20),
+                  Center(
+                    child: Text(
+                      "Or Connect With",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Google button
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.grey[800]!),
+                        backgroundColor: Colors.grey[900],
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                      onPressed: () {},
+                      icon: Icon(FontAwesomeIcons.google, color: Colors.white),
+                      label: Text(
+                        "Sign in with Google",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Apple button
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.grey[800]!),
+                        backgroundColor: Colors.grey[900],
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                      ),
+                      onPressed: () {},
+                      icon: Icon(Icons.apple, color: Colors.white,  size: 24),
+                      label: Text(
+                        "Sign in with Apple",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+
+                  const Spacer(),
+                  Center(
+                    child: Text.rich(
+                      TextSpan(
+                        text: "Have an account? ",
+                        style: TextStyle(color: Colors.grey),
+                        children: [
+                          TextSpan(
+                            text: "Login",
+                            style: TextStyle(color: Colors.red),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Get.back();
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-          );
-      }
+        );
+      },
     );
   }
 }
