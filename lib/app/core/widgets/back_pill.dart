@@ -9,6 +9,7 @@ class BackPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -16,14 +17,14 @@ class BackPill extends StatelessWidget {
         width: 32,
         height: 32,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.onPrimaryContainer,
+          color: theme.colorScheme.onPrimaryContainer,
           borderRadius: BorderRadius.circular(8),
         ),
         alignment: Alignment.center,
-        child: const Icon(
+        child:  Icon(
           Icons.arrow_back_ios_new_rounded,
           size: 16,
-          color: Colors.white,
+          color: theme.iconTheme.color
         ),
       ),
     );
