@@ -22,18 +22,63 @@ class TraineeOnboardingController extends BaseController {
       hint: "Select your date of birth",
     ),
     const QAItem(
-      id: 'role',
-      question: "What are you working as?",
+      id: 'gender',
+      question: "What is your gender?",
       type: QAType.choice,
-      options: ["Student", "Engineer", "Designer", "Manager", "Other"],
+      options: ["Male", "Female", "Prefer not to say"],
     ),
     const QAItem(
-      id: 'goal',
-      question:
-      "What do you want this app to help you with? (one line is fine)",
+      id: 'address',
+      question: "Where are you located?",
       type: QAType.text,
-      hint: "e.g., manage tasks, track habits, etc.",
+      hint: "e.g., New York, USA",
     ),
+    const QAItem(
+      id: 'fitness_experience',
+      question: "What's your current fitness experience level?",
+      type: QAType.choice,
+      options: ["Beginner", "Intermediate", "Advanced", "Prefer not to say"],
+    ),
+    const QAItem(
+      id: 'accountability_partner',
+      question:
+          "Do you have an accountability partner - somebody to help you with your fitness journey?",
+      type: QAType.choice,
+      options: [
+        "Friends",
+        "Family",
+        'Personal trainer',
+        "Prefer not to say",
+        'None',
+      ],
+    ),
+    const QAItem(
+      id: 'fitness_motivation',
+      question: "Why do you want to improve your fitness right now?",
+      type: QAType.text,
+      hint: "Optional: Press send to skip",
+    ),
+    const QAItem(
+      id: 'fitness_inspiration',
+      question: "Who inspires you the most in your fitness journey?",
+      type: QAType.text,
+      hint: "Optional: Press send to skip",
+    ),
+
+
+    // const QAItem(
+    //   id: 'role',
+    //   question: "What are you working as?",
+    //   type: QAType.choice,
+    //   options: ["Student", "Engineer", "Designer", "Manager", "Other"],
+    // ),
+    // const QAItem(
+    //   id: 'goal',
+    //   question:
+    //       "What do you want this app to help you with? (one line is fine)",
+    //   type: QAType.text,
+    //   hint: "e.g., manage tasks, track habits, etc.",
+    // ),
   ];
 
   /// Reactive state
@@ -104,12 +149,13 @@ class TraineeOnboardingController extends BaseController {
   }
 
   /// Handle send from text field
+  /// Handle send from text field
   Future<void> send(String text) async {
-    if (text.trim().isEmpty) return;
+    final value = text.trim();
 
-    // If finished, restart
+    // If flow is finished, any input restarts it.
     if (currentIndex.value >= questions.length) {
-      messages.add(ChatMessage(from: Sender.user, text: text.trim()));
+      messages.add(ChatMessage(from: Sender.user, text: value));
       _scrollToBottom();
       start();
       return;
@@ -118,7 +164,18 @@ class TraineeOnboardingController extends BaseController {
     if (!_canAnswer) return;
 
     final q = questions[currentIndex.value];
-    final value = text.trim();
+
+    // Handle empty input
+    if (value.isEmpty) {
+      // Allow skipping for the optional motivation question
+      if (q.id == 'fitness_motivation') {
+        _saveUserAnswer(q, "Skipped");
+        inputText.value = '';
+        await _askNext();
+      }
+      // For all other required questions, do nothing on empty input.
+      return;
+    }
 
     // Simple validation by type
     if (q.type == QAType.number && int.tryParse(value) == null) {
@@ -133,8 +190,8 @@ class TraineeOnboardingController extends BaseController {
 
   bool get _canAnswer =>
       currentIndex.value >= 0 &&
-          currentIndex.value < questions.length &&
-          !isTyping.value;
+      currentIndex.value < questions.length &&
+      !isTyping.value;
 
   void _saveUserAnswer(QAItem q, String value) {
     messages.add(ChatMessage(from: Sender.user, text: value));
@@ -174,16 +231,15 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
-
   // Helpers for cleaner Obx use
   QAItem? get currentQuestion =>
       (currentIndex.value >= 0 && currentIndex.value < questions.length)
-          ? questions[currentIndex.value]
-          : null;
+      ? questions[currentIndex.value]
+      : null;
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
+
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
 }
-
 
 //
