@@ -57,12 +57,14 @@ class TraineeOnboardingController extends BaseController {
       question: "Why do you want to improve your fitness right now?",
       type: QAType.text,
       hint: "Optional: Press send to skip",
+      canSkip: true,
     ),
     const QAItem(
       id: 'fitness_inspiration',
       question: "Who inspires you the most in your fitness journey?",
       type: QAType.text,
       hint: "Optional: Press send to skip",
+      canSkip: true,
     ),
 
 
@@ -168,7 +170,7 @@ class TraineeOnboardingController extends BaseController {
     // Handle empty input
     if (value.isEmpty) {
       // Allow skipping for the optional motivation question
-      if (q.id == 'fitness_motivation') {
+      if (q.canSkip) {
         _saveUserAnswer(q, "Skipped");
         inputText.value = '';
         await _askNext();

@@ -8,6 +8,7 @@ class QAItem {
   final QAType type;
   final List<String> options; // used for choice type
   final String? hint;
+  final bool canSkip;
 
   const QAItem({
     required this.id,
@@ -15,6 +16,7 @@ class QAItem {
     required this.type,
     this.options = const [],
     this.hint,
+    this.canSkip = false,
   });
 }
 
