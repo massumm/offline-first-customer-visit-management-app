@@ -77,6 +77,24 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           child: Obx(() {
             final isChoice = controller.isCurrentChoice;
 
+            // When the current question is a date type, show a date picker button.
+            if (controller.isCurrentDate) {
+              return ElevatedButton(
+                onPressed: () async {
+                  final DateTime? pickedDate = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now().subtract(const Duration(days: 365 * 20)), // Sensible default
+                    firstDate: DateTime(1920),
+                    lastDate: DateTime.now(),
+                  );
+                  if (pickedDate != null) {
+                    controller.selectDate(pickedDate);
+                  }
+                },
+                child: Text(controller.currentQuestion?.hint ?? "Select Date"),
+              );
+            }
+
             return Row(
               children: [
                 const SizedBox(width: 8),

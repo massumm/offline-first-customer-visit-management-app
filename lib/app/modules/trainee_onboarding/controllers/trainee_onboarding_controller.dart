@@ -16,10 +16,10 @@ class TraineeOnboardingController extends BaseController {
       hint: "Type your name",
     ),
     const QAItem(
-      id: 'age',
-      question: "Nice to meet you. How old are you?",
-      type: QAType.number,
-      hint: "Enter a number",
+      id: 'dob',
+      question: "Nice to meet you. What's your date of birth?",
+      type: QAType.date,
+      hint: "Select your date of birth",
     ),
     const QAItem(
       id: 'role',
@@ -161,6 +161,20 @@ class TraineeOnboardingController extends BaseController {
     'timestamp': DateTime.now().toIso8601String(),
   };
 
+  /// Handle date selection from a picker
+  Future<void> selectDate(DateTime date) async {
+    if (!_canAnswer) return;
+    final q = questions[currentIndex.value];
+
+    // Format the date for storage and display (e.g., YYYY-MM-DD)
+    final formattedDate =
+        "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+
+    _saveUserAnswer(q, formattedDate);
+    await _askNext();
+  }
+
+
   // Helpers for cleaner Obx use
   QAItem? get currentQuestion =>
       (currentIndex.value >= 0 && currentIndex.value < questions.length)
@@ -168,6 +182,7 @@ class TraineeOnboardingController extends BaseController {
           : null;
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
+  bool get isCurrentDate => currentQuestion?.type == QAType.date;
 }
 
 
