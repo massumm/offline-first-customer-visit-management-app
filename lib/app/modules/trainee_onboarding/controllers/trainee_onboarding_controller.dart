@@ -506,6 +506,18 @@ class TraineeOnboardingController extends BaseController {
           hint: "This is just an estimate.",
         ),
         const QAItem(
+          id: 'body_type',
+          question: "How would you describe your body type?",
+          type: QAType.choice,
+          options: [
+            "Ectomorph (Lean)",
+            "Mesomorph (Athletic)",
+            "Endomorph (Heavyset)",
+            "Not Sure"
+          ],
+          hint: "This helps in tailoring your plan.",
+        ),
+        const QAItem(
           id: 'add_body_measurements',
           question: "Would you like to add any body measurements? (Optional)",
           type: QAType.choice,
@@ -538,6 +550,13 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'arm_measurement',
           question: "What is your arm measurement? (e.g., bicep)",
+          type: QAType.weight,
+          hint: "Optional: You can skip this",
+          canSkip: true,
+        ),
+        const QAItem(
+          id: 'thigh_measurement',
+          question: "What is your thigh measurement? (e.g., quad)",
           type: QAType.weight,
           hint: "Optional: You can skip this",
           canSkip: true,
