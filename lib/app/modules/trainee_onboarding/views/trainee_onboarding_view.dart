@@ -65,9 +65,15 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         /// Quick replies (only for choice-type question)
         Obx(() {
           final q = controller.currentQuestion;
-          if (q == null || q.type != QAType.choice) {
-            return const SizedBox.shrink();
+          // Hide quick replies if the flow is finished, paused, or not a choice question.
+          if (controller.isFinished ||
+          controller.showGroupContinuationButtons ||
+          q == null ||
+          q.type != QAType.choice) {
+          // END: Modify this condition
+          return const SizedBox.shrink();
           }
+
           return Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
@@ -90,7 +96,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         SafeArea(
           top: false,
           child: Obx(() {
-            // START: Add this new conditional block
             // When a group is finished, show Continue/Skip buttons.
             if (controller.showGroupContinuationButtons) {
               return Padding(
@@ -114,7 +119,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 ),
               );
             }
-            // END: Add this new conditional block
 
             final isChoice = controller.isCurrentChoice;
 
