@@ -340,9 +340,9 @@ class TraineeOnboardingController extends BaseController {
       ],
     ),
     // ---------- Recovery ----------
-    // ---------- Recovery ----------
     QuestionGroup(
       introduction: "Finally, let's talk about recovery.",
+      conclusion: "That's everything I need to know. Thanks for sharing!",
       questions: [
         const QAItem(
           id: 'sleep_hours',
@@ -400,6 +400,76 @@ class TraineeOnboardingController extends BaseController {
           question: "Please specify what 'Other' sources of stress you have.",
           type: QAType.text,
           hint: "Optional: e.g., Social life, personal goals",
+          canSkip: true,
+        ),
+        // START: New Injury Questions
+        const QAItem(
+          id: 'has_injuries',
+          question:
+              "Do you have any injuries or conditions that impact your fitness?",
+          type: QAType.choice,
+          options: ["Yes", "No"],
+        ),
+        // This question is asked only if the answer above is "Yes"
+        const QAItem(
+          id: 'injury_name_1',
+          question: "What is the injury or condition?",
+          type: QAType.text,
+          hint: "e.g., Lower back pain, Knee tendinitis",
+        ),
+        // This question is also asked only if the answer is "Yes"
+        const QAItem(
+          id: 'injury_description_1',
+          question: "Please briefly describe it and any limitations it causes.",
+          type: QAType.text,
+          hint: "Optional: e.g., 'Can't do heavy squats'",
+          canSkip: true,
+        ),
+        // This question is also asked only if the answer is "Yes"
+        const QAItem(
+          id: 'add_another_injury',
+          question: "Would you like to add another injury or condition?",
+          type: QAType.choice,
+          options: ["Yes", "No"],
+        ),
+        // This question is asked only if the answer above is "Yes"
+        const QAItem(
+          id: 'injury_name_2',
+          question: "What is the next injury or condition?",
+          type: QAType.text,
+          hint: "e.g., Shoulder impingement",
+        ),
+        // This question is also asked only if the answer is "Yes"
+        const QAItem(
+          id: 'injury_description_2',
+          question: "Please briefly describe this one.",
+          type: QAType.text,
+          hint: "Optional",
+          canSkip: true,
+        ),
+        // END: New Injury Questions
+        const QAItem(
+          id: 'recovery_obstacles',
+          question:
+              "What usually gets in the way of you resting and recovering properly?",
+          type: QAType.choice,
+          options: [
+            "Busy schedule / Lack of time",
+            "Stress from work/life",
+            "Difficulty switching off / Relaxing",
+            "Poor sleep environment",
+            "Family or social obligations",
+            "Nothing really",
+            "Other",
+          ],
+        ),
+
+        const QAItem(
+          id: 'recovery_obstacles_other',
+          question:
+              "Please specify what other factors get in the way of your recovery.",
+          type: QAType.text,
+          hint: "Optional: e.g., Late-night screen time",
           canSkip: true,
         ),
       ],
@@ -601,7 +671,28 @@ class TraineeOnboardingController extends BaseController {
         shouldSkip = true;
       }
 
+      // Rule 11: Skip all injury questions if user answered "No"
+      if ((questionCandidate.id == 'injury_name_1' ||
+              questionCandidate.id == 'injury_description_1' ||
+              questionCandidate.id == 'add_another_injury' ||
+              questionCandidate.id == 'injury_name_2' ||
+              questionCandidate.id == 'injury_description_2') &&
+          answers['has_injuries'] == 'No') {
+        shouldSkip = true;
+      }
 
+      // Rule 12: Skip second injury questions if user doesn't want to add more
+      if ((questionCandidate.id == 'injury_name_2' ||
+              questionCandidate.id == 'injury_description_2') &&
+          answers['add_another_injury'] != 'Yes') {
+        shouldSkip = true;
+      }
+
+      // Rule 13: Skip 'other' recovery obstacles if user didn't select 'Other'
+      if (questionCandidate.id == 'recovery_obstacles_other' &&
+          answers['recovery_obstacles'] != 'Other') {
+        shouldSkip = true;
+      }
 
       if (!shouldSkip) {
         // Found a valid question, break the loop to ask it
@@ -789,13 +880,34 @@ class TraineeOnboardingController extends BaseController {
         wasSkipped = true;
       }
 
-
-// Rule 10
+      // Rule 10
       if (questionCandidate.id == 'stress_sources_other' &&
           answers['stress_sources'] != 'Other') {
         wasSkipped = true;
       }
 
+      // Rule 11
+      if ((questionCandidate.id == 'injury_name_1' ||
+              questionCandidate.id == 'injury_description_1' ||
+              questionCandidate.id == 'add_another_injury' ||
+              questionCandidate.id == 'injury_name_2' ||
+              questionCandidate.id == 'injury_description_2') &&
+          answers['has_injuries'] == 'No') {
+        wasSkipped = true;
+      }
+
+      // Rule 12
+      if ((questionCandidate.id == 'injury_name_2' ||
+              questionCandidate.id == 'injury_description_2') &&
+          answers['add_another_injury'] != 'Yes') {
+        wasSkipped = true;
+      }
+
+      // Rule 13
+      if (questionCandidate.id == 'recovery_obstacles_other' &&
+          answers['recovery_obstacles'] != 'Other') {
+        wasSkipped = true;
+      }
 
       if (!wasSkipped) {
         // This is a valid previous question, so we break the loop.
