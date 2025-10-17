@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../routes/app_pages.dart';
 import '../models/onboarding_qa_model.dart';
 
 class TraineeOnboardingController extends BaseController {
@@ -515,7 +518,7 @@ class TraineeOnboardingController extends BaseController {
             "Ectomorph (Lean)",
             "Mesomorph (Athletic)",
             "Endomorph (Heavyset)",
-            "Not Sure"
+            "Not Sure",
           ],
           hint: "This helps in tailoring your plan.",
         ),
@@ -564,7 +567,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'upload_progress_photo',
           question:
-          "Would you like to upload a private progress photo? (Optional)",
+              "Would you like to upload a private progress photo? (Optional)",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
@@ -588,6 +591,9 @@ class TraineeOnboardingController extends BaseController {
   final isAwaitingGroupConfirmation = false.obs;
   final Map<String, String> answers = {}; // id -> answer
   final pageController = ScrollController();
+
+  // In TraineeOnboardingController, add this with your other reactive properties
+  final isAwaitingFinalContinuation = false.obs;
 
   /// True when the UI should show the "Continue" and "Skip" buttons.
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
@@ -625,14 +631,40 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
+  // Future<void> _completeOnboarding() async {
+  //   currentGroupIndex.value = questionGroups.length; // Set to "done" state
+  //   await _botSay("All set! 🎉 Thanks for the info.");
+  // final summary = answers.entries
+  //     .map((e) => "• ${e.key}: ${e.value}")
+  //     .join("\n");
+  //   await _botSay("Here's a summary of your answers:\n$summary");
+  //   await _botSay("You can now proceed, or use the ↺ button to restart.");
+  // }
+
   Future<void> _completeOnboarding() async {
-    currentGroupIndex.value = questionGroups.length; // Set to "done" state
+    currentGroupIndex.value =
+        questionGroups.length; // Mark flow as internally "done"
     await _botSay("All set! 🎉 Thanks for the info.");
-    final summary = answers.entries
-        .map((e) => "• ${e.key}: ${e.value}")
-        .join("\n");
-    await _botSay("Here's a summary of your answers:\n$summary");
-    await _botSay("You can now proceed, or use the ↺ button to restart.");
+    await _botSay("Grading and storing all your information...");
+    await _botSay(
+      "To save your progress and create your personalized profile, you'll need to create a account.",
+    );
+
+    // Set the new state to show the final "Continue" button in the UI
+    isAwaitingFinalContinuation.value = true;
+  }
+
+  // Add this new method to handle the final action
+  void proceedToSignup() {
+    // Here, you would navigate to your signup/registration page.
+    // It's a good practice to pass the collected answers along.
+    // For example, using GetX navigation:
+
+    // For demonstration, we'll just show a snackbar.
+    CustomToast.showSuccessToast( "Onboarding Complete");
+    Get.toNamed(Routes.REGISTER, arguments: toJson());
+
+    "Proceeding to signup with data: ${toJson()}".log();
   }
 
   Future<void> _botSay(String text) async {
@@ -794,7 +826,6 @@ class TraineeOnboardingController extends BaseController {
           answers['recovery_obstacles'] != 'Other') {
         shouldSkip = true;
       }
-
 
       // Rule 14: Skip body measurement questions if user answered "No"
       const measurementIds = {
@@ -1051,7 +1082,6 @@ class TraineeOnboardingController extends BaseController {
         wasSkipped = true;
       }
 
-
       if (!wasSkipped) {
         // This is a valid previous question, so we break the loop.
         break;
@@ -1140,17 +1170,14 @@ class TraineeOnboardingController extends BaseController {
     answers[q.id] = imageFile.path;
 
     // MODIFIED: Create a ChatMessage containing the image path instead of text.
-    messages.add(ChatMessage(
-      from: Sender.user,
-      imagePath: imageFile.path,
-      text: '',
-    ));
+    messages.add(
+      ChatMessage(from: Sender.user, imagePath: imageFile.path, text: ''),
+    );
     _scrollToBottom();
 
     // Proceed to the next step in the onboarding flow.
     await _askNext();
   }
-
 
   // Helpers for cleaner Obx use
   QAItem? get currentQuestion {
@@ -1172,5 +1199,4 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
 
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
-
 }

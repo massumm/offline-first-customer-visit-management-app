@@ -51,33 +51,33 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               controller: controller.pageController,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               itemCount: items.length + (typing ? 1 : 0),
-                itemBuilder: (context, index) {
-                  final isTypingRow = typing && index == items.length;
-                  if (isTypingRow) return const TypingBubble();
-                  final m = items[index];
+              itemBuilder: (context, index) {
+                final isTypingRow = typing && index == items.length;
+                if (isTypingRow) return const TypingBubble();
+                final m = items[index];
 
-                  // --- START: MODIFIED LOGIC ---
-                  // Determine alignment
-                  final alignment = m.from == Sender.user
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft;
+                // --- START: MODIFIED LOGIC ---
+                // Determine alignment
+                final alignment = m.from == Sender.user
+                    ? Alignment.centerRight
+                    : Alignment.centerLeft;
 
-                  // Conditionally build the bubble based on message content
-                  Widget bubble;
-                  if (m.imagePath != null && m.imagePath!.isNotEmpty) {
-                    // If there's an image, use the new image bubble
-                    bubble = _ImageMessageBubble(
-                        imagePath: m.imagePath!, from: m.from);
-                  } else {
-                    // Otherwise, use the existing text bubble
-                    bubble = MessageBubble(text: m.text, from: m.from);
-                  }
-
-                  return Align(
-                    alignment: alignment,
-                    child: bubble,
+                // Conditionally build the bubble based on message content
+                Widget bubble;
+                if (m.imagePath != null && m.imagePath!.isNotEmpty) {
+                  // If there's an image, use the new image bubble
+                  bubble = _ImageMessageBubble(
+                    imagePath: m.imagePath!,
+                    from: m.from,
                   );
-                });
+                } else {
+                  // Otherwise, use the existing text bubble
+                  bubble = MessageBubble(text: m.text, from: m.from);
+                }
+
+                return Align(alignment: alignment, child: bubble);
+              },
+            );
           }),
         ),
 
@@ -86,11 +86,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           final q = controller.currentQuestion;
           // Hide quick replies if the flow is finished, paused, or not a choice question.
           if (controller.isFinished ||
-          controller.showGroupContinuationButtons ||
-          q == null ||
-          q.type != QAType.choice) {
-          // END: Modify this condition
-          return const SizedBox.shrink();
+              controller.showGroupContinuationButtons ||
+              q == null ||
+              q.type != QAType.choice) {
+            // END: Modify this condition
+            return const SizedBox.shrink();
           }
 
           return Container(
@@ -102,10 +102,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               children: q.options
                   .map(
                     (o) => ActionChip(
-                  label: Text(o),
-                  onPressed: () => controller.choose(o),
-                ),
-              )
+                      label: Text(o),
+                      onPressed: () => controller.choose(o),
+                    ),
+                  )
                   .toList(),
             ),
           );
@@ -115,6 +115,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         SafeArea(
           top: false,
           child: Obx(() {
+            // ADD THIS: Check for the final continuation state first.
+            if (controller.isAwaitingFinalContinuation.isTrue) {
+              return _buildFinalContinueButton();
+            }
+
             // When a group is finished, show Continue/Skip buttons.
             if (controller.showGroupContinuationButtons) {
               return _buildContinuationButtons();
@@ -151,6 +156,21 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         ),
         const SizedBox(height: 8),
       ],
+    );
+  }
+  Widget _buildFinalContinueButton() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      child: SizedBox(
+        width: double.infinity,
+        child: FilledButton(
+          style: FilledButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+          ),
+          onPressed: controller.proceedToSignup,
+          child: const Text('Continue to Sign Up'),
+        ),
+      ),
     );
   }
 
@@ -271,6 +291,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 /// A widget for selecting height with options for cm or ft/in.
 class _HeightPicker extends StatefulWidget {
   const _HeightPicker({required this.controller});
+
   final TraineeOnboardingController controller;
 
   @override
@@ -287,8 +308,14 @@ class _HeightPickerState extends State<_HeightPicker> {
   int _selectedInches = 7;
 
   // Data for pickers
-  final List<int> _cmValues = List.generate(101, (index) => 120 + index); // 120-220 cm
-  final List<int> _feetValues = List.generate(4, (index) => 4 + index); // 4-7 ft
+  final List<int> _cmValues = List.generate(
+    101,
+    (index) => 120 + index,
+  ); // 120-220 cm
+  final List<int> _feetValues = List.generate(
+    4,
+    (index) => 4 + index,
+  ); // 4-7 ft
   final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
 
   @override
@@ -297,25 +324,23 @@ class _HeightPickerState extends State<_HeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
         children: [
           CupertinoSlidingSegmentedControl<int>(
             groupValue: _selectedUnit,
-            children: const {
-              0: Text('cm'),
-              1: Text('ft / in'),
-            },
-            onValueChanged: (value) => setState(() => _selectedUnit = value ?? 0),
+            children: const {0: Text('cm'), 1: Text('ft / in')},
+            onValueChanged: (value) =>
+                setState(() => _selectedUnit = value ?? 0),
           ),
           const SizedBox(height: 8),
           SizedBox(
             height: 150,
-            child: _selectedUnit == 0
-                ? _buildCmPicker()
-                : _buildFtInPicker(),
+            child: _selectedUnit == 0 ? _buildCmPicker() : _buildFtInPicker(),
           ),
           const SizedBox(height: 8),
           Row(
@@ -335,7 +360,10 @@ class _HeightPickerState extends State<_HeightPicker> {
                     if (_selectedUnit == 0) {
                       widget.controller.selectHeight(cm: _selectedCm);
                     } else {
-                      widget.controller.selectHeight(feet: _selectedFeet, inches: _selectedInches);
+                      widget.controller.selectHeight(
+                        feet: _selectedFeet,
+                        inches: _selectedInches,
+                      );
                     }
                   },
                   child: const Text('Confirm'),
@@ -351,8 +379,11 @@ class _HeightPickerState extends State<_HeightPicker> {
   Widget _buildCmPicker() {
     return CupertinoPicker(
       itemExtent: 32,
-      scrollController: FixedExtentScrollController(initialItem: _cmValues.indexOf(_selectedCm)),
-      onSelectedItemChanged: (index) => setState(() => _selectedCm = _cmValues[index]),
+      scrollController: FixedExtentScrollController(
+        initialItem: _cmValues.indexOf(_selectedCm),
+      ),
+      onSelectedItemChanged: (index) =>
+          setState(() => _selectedCm = _cmValues[index]),
       children: _cmValues.map((cm) => Center(child: Text('$cm cm'))).toList(),
     );
   }
@@ -363,17 +394,27 @@ class _HeightPickerState extends State<_HeightPicker> {
         Expanded(
           child: CupertinoPicker(
             itemExtent: 32,
-            scrollController: FixedExtentScrollController(initialItem: _feetValues.indexOf(_selectedFeet)),
-            onSelectedItemChanged: (index) => setState(() => _selectedFeet = _feetValues[index]),
-            children: _feetValues.map((ft) => Center(child: Text("$ft'"))).toList(),
+            scrollController: FixedExtentScrollController(
+              initialItem: _feetValues.indexOf(_selectedFeet),
+            ),
+            onSelectedItemChanged: (index) =>
+                setState(() => _selectedFeet = _feetValues[index]),
+            children: _feetValues
+                .map((ft) => Center(child: Text("$ft'")))
+                .toList(),
           ),
         ),
         Expanded(
           child: CupertinoPicker(
             itemExtent: 32,
-            scrollController: FixedExtentScrollController(initialItem: _inchValues.indexOf(_selectedInches)),
-            onSelectedItemChanged: (index) => setState(() => _selectedInches = _inchValues[index]),
-            children: _inchValues.map((inch) => Center(child: Text('$inch"'))).toList(),
+            scrollController: FixedExtentScrollController(
+              initialItem: _inchValues.indexOf(_selectedInches),
+            ),
+            onSelectedItemChanged: (index) =>
+                setState(() => _selectedInches = _inchValues[index]),
+            children: _inchValues
+                .map((inch) => Center(child: Text('$inch"')))
+                .toList(),
           ),
         ),
       ],
@@ -384,6 +425,7 @@ class _HeightPickerState extends State<_HeightPicker> {
 /// A widget for selecting weight with options for kg or lbs.
 class _WeightPicker extends StatefulWidget {
   const _WeightPicker({required this.controller});
+
   final TraineeOnboardingController controller;
 
   @override
@@ -399,8 +441,14 @@ class _WeightPickerState extends State<_WeightPicker> {
   double _selectedLbs = 154.0;
 
   // Data for pickers
-  final List<double> _kgValues = List.generate(1101, (i) => 40.0 + i * 0.1); // 40.0-150.0 kg
-  final List<double> _lbsValues = List.generate(2401, (i) => 90.0 + i * 0.1); // 90.0-330.0 lbs
+  final List<double> _kgValues = List.generate(
+    1101,
+    (i) => 40.0 + i * 0.1,
+  ); // 40.0-150.0 kg
+  final List<double> _lbsValues = List.generate(
+    2401,
+    (i) => 90.0 + i * 0.1,
+  ); // 90.0-330.0 lbs
 
   @override
   Widget build(BuildContext context) {
@@ -411,18 +459,18 @@ class _WeightPickerState extends State<_WeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
         children: [
           CupertinoSlidingSegmentedControl<int>(
             groupValue: _selectedUnit,
-            children: const {
-              0: Text('kg'),
-              1: Text('lbs'),
-            },
-            onValueChanged: (value) => setState(() => _selectedUnit = value ?? 0),
+            children: const {0: Text('kg'), 1: Text('lbs')},
+            onValueChanged: (value) =>
+                setState(() => _selectedUnit = value ?? 0),
           ),
           const SizedBox(height: 8),
           SizedBox(
@@ -431,7 +479,10 @@ class _WeightPickerState extends State<_WeightPicker> {
               itemExtent: 32,
               scrollController: FixedExtentScrollController(
                 initialItem: currentValues.indexOf(
-                  currentValues.firstWhere((v) => (v - initialValue).abs() < 0.01, orElse: () => currentValues.first),
+                  currentValues.firstWhere(
+                    (v) => (v - initialValue).abs() < 0.01,
+                    orElse: () => currentValues.first,
+                  ),
                 ),
               ),
               onSelectedItemChanged: (index) {
@@ -443,7 +494,9 @@ class _WeightPickerState extends State<_WeightPicker> {
                   }
                 });
               },
-              children: currentValues.map((w) => Center(child: Text(w.toStringAsFixed(1)))).toList(),
+              children: currentValues
+                  .map((w) => Center(child: Text(w.toStringAsFixed(1))))
+                  .toList(),
             ),
           ),
           const SizedBox(height: 8),
@@ -462,9 +515,15 @@ class _WeightPickerState extends State<_WeightPicker> {
                 child: FilledButton(
                   onPressed: () {
                     if (_selectedUnit == 0) {
-                      widget.controller.selectWeight(weight: _selectedKg, unit: 'kg');
+                      widget.controller.selectWeight(
+                        weight: _selectedKg,
+                        unit: 'kg',
+                      );
                     } else {
-                      widget.controller.selectWeight(weight: _selectedLbs, unit: 'lbs');
+                      widget.controller.selectWeight(
+                        weight: _selectedLbs,
+                        unit: 'lbs',
+                      );
                     }
                   },
                   child: const Text('Confirm'),
@@ -477,7 +536,6 @@ class _WeightPickerState extends State<_WeightPicker> {
     );
   }
 }
-
 
 /// A widget that displays an "Upload Photo" button and handles the image
 /// selection process by showing a dialog for Camera or Gallery.
@@ -547,7 +605,6 @@ class _ImagePickerInput extends StatelessWidget {
   }
 }
 
-
 ///displays an image from a local file path.
 class _ImageMessageBubble extends StatelessWidget {
   final String imagePath;
@@ -588,9 +645,9 @@ class _ImageMessageBubble extends StatelessWidget {
             // Once the frame is ready, this builder is called again and `child` is shown.
             return frame == null
                 ? const Padding(
-              padding: EdgeInsets.all(48.0),
-              child: Center(child: CircularProgressIndicator.adaptive()),
-            )
+                    padding: EdgeInsets.all(48.0),
+                    child: Center(child: CircularProgressIndicator.adaptive()),
+                  )
                 : child;
           },
           // Show an error icon if the image fails to load
