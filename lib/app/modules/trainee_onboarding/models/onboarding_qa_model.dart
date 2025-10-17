@@ -1,5 +1,5 @@
 
-enum QAType { text, number, choice, date}
+enum QAType { text, number, choice, date, time}
 
 class QuestionGroup {
   final String introduction;

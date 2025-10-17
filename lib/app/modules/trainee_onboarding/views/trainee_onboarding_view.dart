@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
 
-import '../../icon_chat/views/icon_chat_view.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
 import 'widgets/message_bubble.dart';
@@ -14,9 +13,25 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(70),
-      child: CustomAppBar(),
+    return AppBar(
+      title: const Text('Onboarding Assistant'),
+      centerTitle: true,
+      actions: [
+        Obx(
+          () => controller.canGoBack
+              ? IconButton(
+                  icon: const Icon(Icons.undo),
+                  onPressed: controller.goBack,
+                  tooltip: 'Go Back',
+                )
+              : const SizedBox.shrink(),
+        ),
+        IconButton(
+          icon: const Icon(Icons.refresh),
+          onPressed: controller.start,
+          tooltip: 'Restart',
+        ),
+      ],
     );
   }
 
@@ -62,10 +77,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               children: q.options
                   .map(
                     (o) => ActionChip(
-                  label: Text(o),
-                  onPressed: () => controller.choose(o),
-                ),
-              )
+                      label: Text(o),
+                      onPressed: () => controller.choose(o),
+                    ),
+                  )
                   .toList(),
             ),
           );
@@ -83,7 +98,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 onPressed: () async {
                   final DateTime? pickedDate = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now().subtract(const Duration(days: 365 * 20)), // Sensible default
+                    initialDate: DateTime.now().subtract(
+                      const Duration(days: 365 * 20),
+                    ), // Sensible default
                     firstDate: DateTime(1920),
                     lastDate: DateTime.now(),
                   );
@@ -95,14 +112,25 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               );
             }
 
+            // When the current question is a time type, show a time picker button.
+            if (controller.isCurrentTime) {
+              return ElevatedButton(
+                onPressed: () async {
+                  final TimeOfDay? pickedTime = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay.now(),
+                  );
+                  if (pickedTime != null) {
+                    controller.selectTime(pickedTime, context);
+                  }
+                },
+                child: Text(controller.currentQuestion?.hint ?? "Select Time"),
+              );
+            }
+
             return Row(
               children: [
-                // const SizedBox(width: 8),
-                IconButton(
-                  tooltip: "Back",
-                  onPressed: controller.canGoBack ? controller.goBack : null,
-                  icon: const Icon(Icons.arrow_back),
-                ),
+                const SizedBox(width: 8),
                 Expanded(
                   child: IgnorePointer(
                     ignoring: isChoice,

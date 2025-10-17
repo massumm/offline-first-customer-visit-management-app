@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 
@@ -64,6 +65,26 @@ class TraineeOnboardingController extends BaseController {
       ],
     ),
     QuestionGroup(
+      introduction: "Finally, let's talk about what drives you.",
+      questions: [
+        const QAItem(
+          id: 'fitness_motivation',
+          question: "Why do you want to improve your fitness right now?",
+          type: QAType.text,
+          hint: "Optional: Press send to skip",
+          canSkip: true,
+        ),
+        const QAItem(
+          id: 'fitness_inspiration',
+          question: "Who inspires you the most in your fitness journey?",
+          type: QAType.text,
+          hint: "Optional: Press send to skip",
+          canSkip: true,
+        ),
+      ],
+    ),
+    // --------- GOALS ----------
+    QuestionGroup(
       introduction: "Let's set some goals. What are you aiming for?",
       questions: [
         const QAItem(
@@ -113,22 +134,103 @@ class TraineeOnboardingController extends BaseController {
         ),
       ],
     ),
+    //-------- ACTIVITY ---------
     QuestionGroup(
-      introduction: "Finally, let's talk about what drives you.",
+      introduction: "Now, let's get into your activity habits.",
       questions: [
         const QAItem(
-          id: 'fitness_motivation',
-          question: "Why do you want to improve your fitness right now?",
+          id: 'training_location',
+          question: "Where do you usually train?",
+          type: QAType.choice,
+          options: ["At a gym", "At home", "Outdoors", "A mix", "Prefer not to say"],
+        ),
+        // This question is asked only if the answer above is "At home" or "A mix"
+        const QAItem(
+          id: 'home_equipment',
+          question: "What equipment do you have access to at home?",
+          type: QAType.choice,
+          options: ['None', 'Weights', 'Barbell', 'Bands' 'Cardio equipment', 'Both', 'Other'],
+        ),
+        // This new question is asked only if the answer above is "Other"
+        const QAItem(
+          id: 'home_equipment_other',
+          question: "Please specify what 'Other' equipment you have.",
           type: QAType.text,
-          hint: "Optional: Press send to skip",
+          hint: "e.g., Kettlebells, TRX",
           canSkip: true,
         ),
         const QAItem(
-          id: 'fitness_inspiration',
-          question: "Who inspires you the most in your fitness journey?",
+          id: 'training_style',
+          question: "What is your preferred training style?",
+          type: QAType.choice,
+          options: [
+            "Strength training",
+            "Cardio",
+            "HIIT",
+            "Yoga/Pilates",
+            "A mix",
+            "Not sure yet"
+            'Other'
+          ],
+        ),
+        // New conditional question added here
+        const QAItem(
+          id: 'training_style_other',
+          question: "Please specify your preferred training style.",
           type: QAType.text,
-          hint: "Optional: Press send to skip",
+          hint: "e.g., CrossFit, Calisthenics",
           canSkip: true,
+        ),
+        const QAItem(
+          id: 'workout_frequency',
+          question: "How many days a week do you plan to work out?",
+          type: QAType.choice,
+          options: ["1-2", "3-4", "5+", "Not sure yet"],
+        ),
+        const QAItem(
+          id: 'session_duration',
+          question: "How long would you like your sessions to be?",
+          type: QAType.choice,
+          options: [
+            "15-30 minutes",
+            "30-45 minutes",
+            "45-60 minutes",
+            "60+ minutes",
+            "Varies / Not sure"
+          ],
+        ),
+        const QAItem(
+          id: 'session_intensity',
+          question: "How intense would you like your sessions to be?",
+          type: QAType.choice,
+          options: ["Light", "Moderate", "Intense", "Varies / Not sure"],
+        ),
+        const QAItem(
+          id: 'preferred_training_time',
+          question: "What time of day do you prefer to train?",
+          type: QAType.choice,
+          options: [
+            "Morning (before 9 AM)",
+            "Late Morning (9 AM - 12 PM)",
+            "Afternoon (12 PM - 5 PM)",
+            "Evening (after 5 PM)",
+            "Anytime / Varies",
+            "Prefer not to say",
+          ],
+        ),
+        // New question: Asks to set a reminder if a specific time was chosen
+        const QAItem(
+          id: 'set_reminder',
+          question: "Would you like to set a reminder for your selected time?",
+          type: QAType.choice,
+          options: ["Yes", "No"],
+        ),
+        // New question: Asks for the time if the answer above was "Yes"
+        const QAItem(
+          id: 'reminder_time',
+          question: "Great! At what time would you like to be reminded?",
+          type: QAType.time, // Assumes a new QAType.time for a time picker
+          hint: "Select a time",
         ),
       ],
     ),
@@ -170,25 +272,84 @@ class TraineeOnboardingController extends BaseController {
 
   Future<void> _askNext() async {
     // Determine the next position
-    int nextQuestionIndex = currentQuestionIndexInGroup.value + 1;
+    int nextQuestionIndex = currentQuestionIndexInGroup.value;
     int nextGroupIndex = currentGroupIndex.value;
 
-    // Check if we need to advance to the next group
-    if (nextGroupIndex < questionGroups.length &&
-        nextQuestionIndex >= questionGroups[nextGroupIndex].questions.length) {
-      nextGroupIndex++;
-      nextQuestionIndex = 0;
-    }
+    // Loop to find the next valid, non-skipped question
+    while (true) {
+      nextQuestionIndex++;
 
-    // Check if the entire flow is finished
-    if (nextGroupIndex >= questionGroups.length) {
-      currentGroupIndex.value = questionGroups.length; // Set to "done" state
-      await _botSay("All set! 🎉 Thanks for the info.");
-      final summary =
-      answers.entries.map((e) => "• ${e.key}: ${e.value}").join("\n");
-      await _botSay("Here's a summary of your answers:\n$summary");
-      await _botSay("You can now proceed, or use the ↺ button to restart.");
-      return;
+      // Check if we need to advance to the next group
+      if (nextGroupIndex < questionGroups.length &&
+          nextQuestionIndex >= questionGroups[nextGroupIndex].questions.length) {
+        nextGroupIndex++;
+        nextQuestionIndex = 0;
+      }
+
+      // Check if the entire flow is finished
+      if (nextGroupIndex >= questionGroups.length) {
+        currentGroupIndex.value = questionGroups.length; // Set to "done" state
+        await _botSay("All set! 🎉 Thanks for the info.");
+        final summary =
+        answers.entries.map((e) => "• ${e.key}: ${e.value}").join("\n");
+        await _botSay("Here's a summary of your answers:\n$summary");
+        await _botSay("You can now proceed, or use the ↺ button to restart.");
+        return;
+      }
+
+      final questionCandidate =
+      questionGroups[nextGroupIndex].questions[nextQuestionIndex];
+
+      // --- Centralized Branching Logic ---
+      bool shouldSkip = false;
+
+      // Rule 1: Skip event questions if user answered "No"
+      if ((questionCandidate.id == 'target_event_name' ||
+          questionCandidate.id == 'target_event_date') &&
+          answers['has_target_event'] == 'No') {
+        shouldSkip = true;
+      }
+
+      // Rule 2: Skip home equipment questions if not training at home/mix
+      final trainingLocation = answers['training_location'];
+      if ((questionCandidate.id == 'home_equipment' ||
+          questionCandidate.id == 'home_equipment_other') &&
+          (trainingLocation != 'At home' && trainingLocation != 'A mix')) {
+        shouldSkip = true;
+      }
+
+      // Rule 3: Skip 'other' equipment detail if user didn't select 'Other'
+      if (questionCandidate.id == 'home_equipment_other' &&
+          answers['home_equipment'] != 'Other') {
+        shouldSkip = true;
+      }
+
+      // Rule 4: Skip 'other' training style if user didn't select 'Other'
+      if (questionCandidate.id == 'training_style_other' &&
+          answers['training_style'] != 'Other') {
+        shouldSkip = true;
+      }
+
+      // Rule 5: Skip reminder questions if no specific time was chosen.
+      final preferredTime = answers['preferred_training_time'];
+      if ((questionCandidate.id == 'set_reminder' ||
+          questionCandidate.id == 'reminder_time') &&
+          (preferredTime == 'Anytime / Varies' ||
+              preferredTime == 'Prefer not to say')) {
+        shouldSkip = true;
+      }
+
+      // Rule 6: Skip reminder time picker if user answered "No".
+      if (questionCandidate.id == 'reminder_time' &&
+          answers['set_reminder'] == 'No') {
+        shouldSkip = true;
+      }
+
+
+      if (!shouldSkip) {
+        // Found a valid question, break the loop
+        break;
+      }
     }
 
     // If we are starting a new group, show its introduction message
@@ -227,20 +388,8 @@ class TraineeOnboardingController extends BaseController {
     final q = currentQuestion!;
     _saveUserAnswer(q, option);
 
-    // If user says "No" to having a target event, skip the follow-up questions.
-    if (q.id == 'has_target_event' && option == 'No') {
-      // Find the last question in the conditional block to skip over it.
-      final currentGroup = questionGroups[currentGroupIndex.value];
-      final lastConditionalQuestionIndex =
-      currentGroup.questions.indexWhere((q) => q.id == 'target_event_date');
-
-      if (lastConditionalQuestionIndex != -1) {
-        // Set the current index to the last skipped question.
-        // The _askNext() method will then proceed to the question immediately after it.
-        currentQuestionIndexInGroup.value = lastConditionalQuestionIndex;
-      }
-    }
-
+    // The new _askNext() method now handles all branching logic,
+    // so the special cases are no longer needed here.
     await _askNext();
   }
 
@@ -313,7 +462,6 @@ class TraineeOnboardingController extends BaseController {
     while (true) {
       targetQuestionIndex--;
 
-      // If we've gone past the beginning of the current group, move to the previous group.
       if (targetQuestionIndex < 0) {
         targetGroupIndex--;
         targetQuestionIndex =
@@ -325,12 +473,48 @@ class TraineeOnboardingController extends BaseController {
 
       // Check if this candidate question should have been skipped based on previous answers.
       bool wasSkipped = false;
+      // Rule 1
       if ((questionCandidate.id == 'target_event_name' ||
           questionCandidate.id == 'target_event_date') &&
           answers['has_target_event'] == 'No') {
         wasSkipped = true;
       }
-      // Future branching logic could be added here.
+
+      // Rule 2
+      final trainingLocation = answers['training_location'];
+      if ((questionCandidate.id == 'home_equipment' ||
+          questionCandidate.id == 'home_equipment_other') &&
+          (trainingLocation != 'At home' && trainingLocation != 'A mix')) {
+        wasSkipped = true;
+      }
+
+      // Rule 3
+      if (questionCandidate.id == 'home_equipment_other' &&
+          answers['home_equipment'] != 'Other') {
+        wasSkipped = true;
+      }
+
+      // Rule 4
+      if (questionCandidate.id == 'training_style_other' &&
+          answers['training_style'] != 'Other') {
+        wasSkipped = true;
+      }
+
+
+      // Rule 5
+      final preferredTime = answers['preferred_training_time'];
+      if ((questionCandidate.id == 'set_reminder' ||
+          questionCandidate.id == 'reminder_time') &&
+          (preferredTime == 'Anytime / Varies' ||
+              preferredTime == 'Prefer not to say')) {
+        wasSkipped = true;
+      }
+
+      // Rule 6
+      if (questionCandidate.id == 'reminder_time' &&
+          answers['set_reminder'] == 'No') {
+        wasSkipped = true;
+      }
 
       if (!wasSkipped) {
         // This is a valid previous question, so we break the loop.
@@ -363,6 +547,18 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
+
+  Future<void> selectTime(TimeOfDay time, BuildContext context) async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+    final formattedTime = time.format(context);
+
+    _saveUserAnswer(q, formattedTime);
+    await _askNext();
+  }
+
+
+
   // Helpers for cleaner Obx use
   QAItem? get currentQuestion {
     if (isFinished || currentQuestionIndexInGroup.value < 0) {
@@ -375,4 +571,6 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
 
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
+
+  bool get isCurrentTime => currentQuestion?.type == QAType.time;
 }
