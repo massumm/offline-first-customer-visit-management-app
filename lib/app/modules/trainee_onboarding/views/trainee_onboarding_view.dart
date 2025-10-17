@@ -97,7 +97,12 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
             return Row(
               children: [
-                const SizedBox(width: 8),
+                // const SizedBox(width: 8),
+                IconButton(
+                  tooltip: "Back",
+                  onPressed: controller.canGoBack ? controller.goBack : null,
+                  icon: const Icon(Icons.arrow_back),
+                ),
                 Expanded(
                   child: IgnorePointer(
                     ignoring: isChoice,

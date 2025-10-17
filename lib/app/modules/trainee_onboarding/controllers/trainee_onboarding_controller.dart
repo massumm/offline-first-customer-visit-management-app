@@ -72,6 +72,45 @@ class TraineeOnboardingController extends BaseController {
           type: QAType.text,
           hint: "e.g., Lose 10 lbs, run a 5k",
         ),
+        const QAItem(
+          id: 'results_speed',
+          question: "How fast would you like to achieve results?",
+          type: QAType.choice,
+          options: [
+            "Gradual",
+            "Moderate",
+            "Fast",
+            "Not sure yet",
+          ],
+        ),
+        // 1. This is the new branching question
+        const QAItem(
+          id: 'has_target_event',
+          question: "Do you have a specific date or event you’re working toward?",
+          type: QAType.choice,
+          options: ["Yes", "No"],
+        ),
+        // This question is asked only if the answer above is "Yes"
+        const QAItem(
+          id: 'target_event_name',
+          question: "What's the name of the event?",
+          type: QAType.text,
+          hint: "e.g., Wedding, Marathon",
+        ),
+        // This question is also asked only if the answer is "Yes"
+        const QAItem(
+          id: 'target_event_date',
+          question: "And when is it?",
+          type: QAType.date,
+          hint: "Select the event date",
+        ),
+        const QAItem(
+          id: 'success_in_6_months',
+          question: "What would success look like for you in 6 months?",
+          type: QAType.text,
+          hint: "Optional: e.g., More energy, feel stronger",
+          canSkip: true,
+        ),
       ],
     ),
     QuestionGroup(
@@ -187,6 +226,21 @@ class TraineeOnboardingController extends BaseController {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     _saveUserAnswer(q, option);
+
+    // If user says "No" to having a target event, skip the follow-up questions.
+    if (q.id == 'has_target_event' && option == 'No') {
+      // Find the last question in the conditional block to skip over it.
+      final currentGroup = questionGroups[currentGroupIndex.value];
+      final lastConditionalQuestionIndex =
+      currentGroup.questions.indexWhere((q) => q.id == 'target_event_date');
+
+      if (lastConditionalQuestionIndex != -1) {
+        // Set the current index to the last skipped question.
+        // The _askNext() method will then proceed to the question immediately after it.
+        currentQuestionIndexInGroup.value = lastConditionalQuestionIndex;
+      }
+    }
+
     await _askNext();
   }
 
@@ -251,21 +305,45 @@ class TraineeOnboardingController extends BaseController {
 
     await _botSay("No problem—let's change that.");
 
-    int prevQuestionIndex = currentQuestionIndexInGroup.value - 1;
-    int prevGroupIndex = currentGroupIndex.value;
+    int targetQuestionIndex = currentQuestionIndexInGroup.value;
+    int targetGroupIndex = currentGroupIndex.value;
 
-    // If we are at the beginning of a group, go to the end of the previous one
-    if (prevQuestionIndex < 0) {
-      prevGroupIndex--;
-      prevQuestionIndex = questionGroups[prevGroupIndex].questions.length - 1;
+    // This loop finds the correct previous question to go back to,
+    // automatically handling branches that were skipped.
+    while (true) {
+      targetQuestionIndex--;
+
+      // If we've gone past the beginning of the current group, move to the previous group.
+      if (targetQuestionIndex < 0) {
+        targetGroupIndex--;
+        targetQuestionIndex =
+            questionGroups[targetGroupIndex].questions.length - 1;
+      }
+
+      final questionCandidate =
+      questionGroups[targetGroupIndex].questions[targetQuestionIndex];
+
+      // Check if this candidate question should have been skipped based on previous answers.
+      bool wasSkipped = false;
+      if ((questionCandidate.id == 'target_event_name' ||
+          questionCandidate.id == 'target_event_date') &&
+          answers['has_target_event'] == 'No') {
+        wasSkipped = true;
+      }
+      // Future branching logic could be added here.
+
+      if (!wasSkipped) {
+        // This is a valid previous question, so we break the loop.
+        break;
+      }
     }
 
-    final q = questionGroups[prevGroupIndex].questions[prevQuestionIndex];
+    final q = questionGroups[targetGroupIndex].questions[targetQuestionIndex];
     await _botSay(q.question);
 
-    // Update state to the previous position
-    currentGroupIndex.value = prevGroupIndex;
-    currentQuestionIndexInGroup.value = prevQuestionIndex;
+    // Update state to the new, correct previous position.
+    currentGroupIndex.value = targetGroupIndex;
+    currentQuestionIndexInGroup.value = targetQuestionIndex;
   }
 
   Map<String, dynamic> toJson() => {
