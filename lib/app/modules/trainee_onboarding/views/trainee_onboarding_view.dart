@@ -62,10 +62,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               children: q.options
                   .map(
                     (o) => ActionChip(
-                      label: Text(o),
-                      onPressed: () => controller.choose(o),
-                    ),
-                  )
+                  label: Text(o),
+                  onPressed: () => controller.choose(o),
+                ),
+              )
                   .toList(),
             ),
           );
@@ -140,15 +140,16 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   }
 
   String _hintFor() {
-    final idx = controller.currentIndex.value;
-    if (idx >= 0 && idx < controller.questions.length) {
-      final q = controller.questions[idx];
-      if (q.type == QAType.choice) return "Choose an option above";
-      return q.hint ?? "Type your answer";
-    }
-    if (idx >= controller.questions.length) {
+    if (controller.isFinished) {
       return "Type anything to restart";
     }
-    return "Say hi to start";
+    final q = controller.currentQuestion;
+    if (q == null) {
+      return "Say hi to start";
+    }
+    if (q.type == QAType.choice) {
+      return "Choose an option above";
+    }
+    return q.hint ?? "Type your answer";
   }
 }

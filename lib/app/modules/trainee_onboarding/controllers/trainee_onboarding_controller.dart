@@ -4,90 +4,104 @@ import 'package:icon/app/base/base_controller.dart';
 
 import '../models/onboarding_qa_model.dart';
 
+
 class TraineeOnboardingController extends BaseController {
   final textController = TextEditingController();
 
   /// Configure your flow here
-  final questions = <QAItem>[
-    const QAItem(
-      id: 'name',
-      question: "Hey! What's your name?",
-      type: QAType.text,
-      hint: "Type your name",
-    ),
-    const QAItem(
-      id: 'dob',
-      question: "Nice to meet you. What's your date of birth?",
-      type: QAType.date,
-      hint: "Select your date of birth",
-    ),
-    const QAItem(
-      id: 'gender',
-      question: "What is your gender?",
-      type: QAType.choice,
-      options: ["Male", "Female", "Prefer not to say"],
-    ),
-    const QAItem(
-      id: 'address',
-      question: "Where are you located?",
-      type: QAType.text,
-      hint: "e.g., New York, USA",
-    ),
-    const QAItem(
-      id: 'fitness_experience',
-      question: "What's your current fitness experience level?",
-      type: QAType.choice,
-      options: ["Beginner", "Intermediate", "Advanced", "Prefer not to say"],
-    ),
-    const QAItem(
-      id: 'accountability_partner',
-      question:
-      "Do you have an accountability partner - somebody to help you with your fitness journey?",
-      type: QAType.choice,
-      options: [
-        "Friends",
-        "Family",
-        'Personal trainer',
-        "Prefer not to say",
-        'None',
+  final questionGroups = <QuestionGroup>[
+    QuestionGroup(
+      introduction: "To start, let's get some personal details.",
+      questions: [
+        const QAItem(
+          id: 'name',
+          question: "Hey! What's your name?",
+          type: QAType.text,
+          hint: "Type your name",
+        ),
+        const QAItem(
+          id: 'dob',
+          question: "Nice to meet you. What's your date of birth?",
+          type: QAType.date,
+          hint: "Select your date of birth",
+        ),
+        const QAItem(
+          id: 'gender',
+          question: "What is your gender?",
+          type: QAType.choice,
+          options: ["Male", "Female", "Prefer not to say"],
+        ),
+        const QAItem(
+          id: 'address',
+          question: "Where are you located?",
+          type: QAType.text,
+          hint: "e.g., New York, USA",
+        ),
       ],
     ),
-    const QAItem(
-      id: 'fitness_motivation',
-      question: "Why do you want to improve your fitness right now?",
-      type: QAType.text,
-      hint: "Optional: Press send to skip",
-      canSkip: true,
+    QuestionGroup(
+      introduction: "Great! Now for a bit about your fitness background.",
+      questions: [
+        const QAItem(
+          id: 'fitness_experience',
+          question: "What's your current fitness experience level?",
+          type: QAType.choice,
+          options: ["Beginner", "Intermediate", "Advanced", "Prefer not to say"],
+        ),
+        const QAItem(
+          id: 'accountability_partner',
+          question:
+          "Do you have an accountability partner to help you on your journey?",
+          type: QAType.choice,
+          options: [
+            "Friends",
+            "Family",
+            'Personal trainer',
+            "Prefer not to say",
+            'None',
+          ],
+        ),
+      ],
     ),
-    const QAItem(
-      id: 'fitness_inspiration',
-      question: "Who inspires you the most in your fitness journey?",
-      type: QAType.text,
-      hint: "Optional: Press send to skip",
-      canSkip: true,
+    QuestionGroup(
+      introduction: "Let's set some goals. What are you aiming for?",
+      questions: [
+        const QAItem(
+          id: 'fitness_goals',
+          question: "What are your fitness goals right now?",
+          type: QAType.text,
+          hint: "e.g., Lose 10 lbs, run a 5k",
+        ),
+      ],
     ),
-
-
-    // const QAItem(
-    //   id: 'role',
-    //   question: "What are you working as?",
-    //   type: QAType.choice,
-    //   options: ["Student", "Engineer", "Designer", "Manager", "Other"],
-    // ),
-    // const QAItem(
-    //   id: 'goal',
-    //   question:
-    //       "What do you want this app to help you with? (one line is fine)",
-    //   type: QAType.text,
-    //   hint: "e.g., manage tasks, track habits, etc.",
-    // ),
+    QuestionGroup(
+      introduction: "Finally, let's talk about what drives you.",
+      questions: [
+        const QAItem(
+          id: 'fitness_motivation',
+          question: "Why do you want to improve your fitness right now?",
+          type: QAType.text,
+          hint: "Optional: Press send to skip",
+          canSkip: true,
+        ),
+        const QAItem(
+          id: 'fitness_inspiration',
+          question: "Who inspires you the most in your fitness journey?",
+          type: QAType.text,
+          hint: "Optional: Press send to skip",
+          canSkip: true,
+        ),
+      ],
+    ),
   ];
 
   /// Reactive state
   final messages = <ChatMessage>[].obs;
   final isTyping = false.obs;
   final inputText = ''.obs;
-  final currentIndex = (-1).obs; // <--- reactive now
+  // Replace currentIndex with group and question indices
+  final currentGroupIndex = 0.obs;
+  final currentQuestionIndexInGroup = (-1).obs;
   final Map<String, String> answers = {}; // id -> answer
   final pageController = ScrollController();
 
@@ -100,7 +114,8 @@ class TraineeOnboardingController extends BaseController {
   void start() async {
     messages.clear();
     answers.clear();
-    currentIndex.value = -1;
+    currentGroupIndex.value = 0;
+    currentQuestionIndexInGroup.value = -1; // Start before the first question
     await _botSay("Hello 👋");
     await _askNext();
   }
@@ -115,28 +130,44 @@ class TraineeOnboardingController extends BaseController {
   }
 
   Future<void> _askNext() async {
-    // Check if we are at the end of the onboarding flow.
-    if (currentIndex.value + 1 >= questions.length) {
-      currentIndex.value = questions.length; // Set to "done" state.
+    // Determine the next position
+    int nextQuestionIndex = currentQuestionIndexInGroup.value + 1;
+    int nextGroupIndex = currentGroupIndex.value;
+
+    // Check if we need to advance to the next group
+    if (nextGroupIndex < questionGroups.length &&
+        nextQuestionIndex >= questionGroups[nextGroupIndex].questions.length) {
+      nextGroupIndex++;
+      nextQuestionIndex = 0;
+    }
+
+    // Check if the entire flow is finished
+    if (nextGroupIndex >= questionGroups.length) {
+      currentGroupIndex.value = questionGroups.length; // Set to "done" state
       await _botSay("All set! 🎉 Thanks for the info.");
       final summary =
       answers.entries.map((e) => "• ${e.key}: ${e.value}").join("\n");
-      // Make the summary message more user-friendly
       await _botSay("Here's a summary of your answers:\n$summary");
       await _botSay("You can now proceed, or use the ↺ button to restart.");
       return;
     }
 
-    // Get the next question without updating the public state yet.
-    final nextIndex = currentIndex.value + 1;
-    final q = questions[nextIndex];
+    // If we are starting a new group, show its introduction message
+    final bool isNewGroup = nextQuestionIndex == 0 &&
+        (currentGroupIndex.value != nextGroupIndex ||
+            currentQuestionIndexInGroup.value == -1);
 
-    // The bot "types" and sends the question first.
+    if (isNewGroup) {
+      await _botSay(questionGroups[nextGroupIndex].introduction);
+    }
+
+    // Ask the actual question
+    final q = questionGroups[nextGroupIndex].questions[nextQuestionIndex];
     await _botSay(q.question);
 
-    // Now, after the bot has "spoken", update the current index.
-    // This will trigger the UI to show the new input controls (e.g., quick replies).
-    currentIndex.value = nextIndex;
+    // Update the state to the new position
+    currentGroupIndex.value = nextGroupIndex;
+    currentQuestionIndexInGroup.value = nextQuestionIndex;
   }
 
   void _scrollToBottom() {
@@ -154,7 +185,7 @@ class TraineeOnboardingController extends BaseController {
   /// Handle quick replies (choices)
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
-    final q = questions[currentIndex.value];
+    final q = currentQuestion!;
     _saveUserAnswer(q, option);
     await _askNext();
   }
@@ -164,7 +195,7 @@ class TraineeOnboardingController extends BaseController {
     final value = text.trim();
 
     // If flow is finished, any input restarts it.
-    if (currentIndex.value >= questions.length) {
+    if (isFinished) {
       messages.add(ChatMessage(from: Sender.user, text: value));
       _scrollToBottom();
       start();
@@ -173,21 +204,18 @@ class TraineeOnboardingController extends BaseController {
 
     if (!_canAnswer) return;
 
-    final q = questions[currentIndex.value];
+    final q = currentQuestion!;
 
-    // Handle empty input
+    // ... (rest of the send method is the same)
     if (value.isEmpty) {
-      // Allow skipping for the optional motivation question
       if (q.canSkip) {
         _saveUserAnswer(q, "Skipped");
         inputText.value = '';
         await _askNext();
       }
-      // For all other required questions, do nothing on empty input.
       return;
     }
 
-    // Simple validation by type
     if (q.type == QAType.number && int.tryParse(value) == null) {
       await _botSay("Please enter a valid number 🔢");
       return;
@@ -198,10 +226,14 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
+  // --- Updated Helper Getters and Methods ---
+
+  bool get isFinished => currentGroupIndex.value >= questionGroups.length;
+
   bool get _canAnswer =>
-      currentIndex.value >= 0 &&
-          currentIndex.value < questions.length &&
-          !isTyping.value;
+      !isFinished &&
+          !isTyping.value &&
+          currentQuestionIndexInGroup.value != -1;
 
   void _saveUserAnswer(QAItem q, String value) {
     messages.add(ChatMessage(from: Sender.user, text: value));
@@ -210,39 +242,42 @@ class TraineeOnboardingController extends BaseController {
   }
 
   bool get canGoBack =>
-      currentIndex.value > 0 && currentIndex.value < questions.length;
+      !isFinished &&
+          (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
 
   /// Go back one step (keeps prior answers)
   Future<void> goBack() async {
     if (!canGoBack) return;
 
-    // Announce the action first for a smoother experience.
     await _botSay("No problem—let's change that.");
 
-    // Get the previous question's info without updating the public state.
-    final prevIndex = currentIndex.value - 1;
-    final q = questions[prevIndex];
+    int prevQuestionIndex = currentQuestionIndexInGroup.value - 1;
+    int prevGroupIndex = currentGroupIndex.value;
 
-    // Ask the previous question again.
+    // If we are at the beginning of a group, go to the end of the previous one
+    if (prevQuestionIndex < 0) {
+      prevGroupIndex--;
+      prevQuestionIndex = questionGroups[prevGroupIndex].questions.length - 1;
+    }
+
+    final q = questionGroups[prevGroupIndex].questions[prevQuestionIndex];
     await _botSay(q.question);
 
-    // Now update the index to show the correct input controls.
-    currentIndex.value = prevIndex;
+    // Update state to the previous position
+    currentGroupIndex.value = prevGroupIndex;
+    currentQuestionIndexInGroup.value = prevQuestionIndex;
   }
 
-  /// For exporting, consider sending this map to your backend.
   Map<String, dynamic> toJson() => {
     'answers': answers,
-    'completed': currentIndex.value >= questions.length,
+    'completed': isFinished,
     'timestamp': DateTime.now().toIso8601String(),
   };
 
-  /// Handle date selection from a picker
   Future<void> selectDate(DateTime date) async {
     if (!_canAnswer) return;
-    final q = questions[currentIndex.value];
-
-    // Format the date for storage and display (e.g., YYYY-MM-DD)
+    final q = currentQuestion!;
+    // ... (rest of the method is the same)
     final formattedDate =
         "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
 
@@ -251,10 +286,13 @@ class TraineeOnboardingController extends BaseController {
   }
 
   // Helpers for cleaner Obx use
-  QAItem? get currentQuestion =>
-      (currentIndex.value >= 0 && currentIndex.value < questions.length)
-          ? questions[currentIndex.value]
-          : null;
+  QAItem? get currentQuestion {
+    if (isFinished || currentQuestionIndexInGroup.value < 0) {
+      return null;
+    }
+    return questionGroups[currentGroupIndex.value]
+        .questions[currentQuestionIndexInGroup.value];
+  }
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
 

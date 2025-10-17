@@ -1,6 +1,15 @@
-/// --- Data models -----------------------------------------------------------
 
 enum QAType { text, number, choice, date}
+
+class QuestionGroup {
+  final String introduction;
+  final List<QAItem> questions;
+
+  const QuestionGroup({
+    required this.introduction,
+    required this.questions,
+  });
+}
 
 class QAItem {
   final String id;
