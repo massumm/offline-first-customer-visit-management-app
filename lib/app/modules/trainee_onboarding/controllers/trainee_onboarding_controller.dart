@@ -474,6 +474,32 @@ class TraineeOnboardingController extends BaseController {
         ),
       ],
     ),
+    // ------------ Body Profile
+    QuestionGroup(
+      introduction: "Next, let's get some body profile details.",
+      questions: [
+        const QAItem(
+          id: 'height',
+          question: "What’s your height?",
+          // This new type will trigger a custom height picker UI
+          type: QAType.height,
+        ),
+        const QAItem(
+          id: 'current_weight',
+          question: "And your current weight?",
+          // This new type will trigger a custom weight picker UI
+          type: QAType.weight,
+        ),
+        const QAItem(
+          id: 'target_weight',
+          question: "What is your target weight?",
+          // Re-using the same weight picker UI
+          type: QAType.weight,
+          hint: "Optional: You can skip this if you're not sure",
+          canSkip: true,
+        ),
+      ],
+    ),
   ];
 
   /// Reactive state
@@ -949,6 +975,46 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
+  // handler for the height picker
+  Future<void> selectHeight({int? cm, int? feet, int? inches}) async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+    String formattedHeight;
+
+    if (cm != null) {
+      formattedHeight = "$cm cm";
+    } else if (feet != null && inches != null) {
+      formattedHeight = "$feet' $inches\"";
+    } else {
+      // This case would be triggered by a "Skip" button in the UI
+      _saveUserAnswer(q, "Skipped");
+      await _askNext();
+      return;
+    }
+
+    _saveUserAnswer(q, formattedHeight);
+    await _askNext();
+  }
+
+  // handler for the weight picker
+  Future<void> selectWeight({double? weight, String? unit}) async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+
+    if (weight == null || unit == null) {
+      // This case would be triggered by a "Skip" button in the UI
+      _saveUserAnswer(q, "Skipped");
+      await _askNext();
+      return;
+    }
+    // Format to one decimal place for consistency
+    final formattedWeight = "${weight.toStringAsFixed(1)} $unit";
+
+    _saveUserAnswer(q, formattedWeight);
+    await _askNext();
+  }
+
+
   // Helpers for cleaner Obx use
   QAItem? get currentQuestion {
     if (isFinished || currentQuestionIndexInGroup.value < 0) {
@@ -963,4 +1029,8 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
 
   bool get isCurrentTime => currentQuestion?.type == QAType.time;
+
+  bool get isCurrentHeight => currentQuestion?.type == QAType.height;
+
+  bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
 }

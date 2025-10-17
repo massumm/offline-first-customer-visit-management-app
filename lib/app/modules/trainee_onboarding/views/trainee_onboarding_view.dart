@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -98,107 +99,131 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           child: Obx(() {
             // When a group is finished, show Continue/Skip buttons.
             if (controller.showGroupContinuationButtons) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: controller.continueToNextGroup,
-                        child: const Text('Continue'),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: controller.skipToEnd,
-                        child: const Text('Skip to End'),
-                      ),
-                    ),
-                  ],
-                ),
-              );
+              return _buildContinuationButtons();
             }
-
-            final isChoice = controller.isCurrentChoice;
 
             // When the current question is a date type, show a date picker button.
             if (controller.isCurrentDate) {
-              return ElevatedButton(
-                onPressed: () async {
-                  final DateTime? pickedDate = await showDatePicker(
-                    context: context,
-                    initialDate: DateTime.now().subtract(
-                      const Duration(days: 365 * 20),
-                    ), // Sensible default
-                    firstDate: DateTime(1920),
-                    lastDate: DateTime.now(),
-                  );
-                  if (pickedDate != null) {
-                    controller.selectDate(pickedDate);
-                  }
-                },
-                child: Text(controller.currentQuestion?.hint ?? "Select Date"),
-              );
+              return _buildDatePickerButton(context);
             }
 
             // When the current question is a time type, show a time picker button.
             if (controller.isCurrentTime) {
-              return ElevatedButton(
-                onPressed: () async {
-                  final TimeOfDay? pickedTime = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay.now(),
-                  );
-                  if (pickedTime != null) {
-                    controller.selectTime(pickedTime, context);
-                  }
-                },
-                child: Text(controller.currentQuestion?.hint ?? "Select Time"),
-              );
+              return _buildTimePickerButton(context);
             }
 
+            // START: Add new conditions for height and weight pickers
+            if (controller.isCurrentHeight) {
+              return _HeightPicker(controller: controller);
+            }
+
+            if (controller.isCurrentWeight) {
+              return _WeightPicker(controller: controller);
+            }
+            // END: Add new conditions
+
             // Default input field for text/number questions.
-            return Row(
-              children: [
-                const SizedBox(width: 8),
-                Expanded(
-                  child: IgnorePointer(
-                    ignoring: isChoice,
-                    child: TextField(
-                      controller: controller.textController,
-                      onChanged: (t) => controller.inputText.value = t,
-                      onSubmitted: (t) {
-                        controller.send(t);
-                        controller.textController.clear();
-                      },
-                      decoration: InputDecoration(
-                        hintText: _hintFor(),
-                        border: const OutlineInputBorder(),
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                FilledButton.icon(
-                  onPressed: () {
-                    controller.send(controller.textController.text);
-                    controller.textController.clear();
-                  },
-                  icon: const Icon(Icons.send),
-                  label: const Text("Send"),
-                ),
-                const SizedBox(width: 8),
-              ],
-            );
+            return _buildTextInput();
           }),
         ),
         const SizedBox(height: 8),
+      ],
+    );
+  }
+
+  Widget _buildContinuationButtons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: FilledButton(
+              onPressed: controller.continueToNextGroup,
+              child: const Text('Continue'),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: OutlinedButton(
+              onPressed: controller.skipToEnd,
+              child: const Text('Skip to End'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDatePickerButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        final DateTime? pickedDate = await showDatePicker(
+          context: context,
+          initialDate: DateTime.now().subtract(
+            const Duration(days: 365 * 20),
+          ), // Sensible default
+          firstDate: DateTime(1920),
+          lastDate: DateTime.now(),
+        );
+        if (pickedDate != null) {
+          controller.selectDate(pickedDate);
+        }
+      },
+      child: Text(controller.currentQuestion?.hint ?? "Select Date"),
+    );
+  }
+
+  Widget _buildTimePickerButton(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () async {
+        final TimeOfDay? pickedTime = await showTimePicker(
+          context: context,
+          initialTime: TimeOfDay.now(),
+        );
+        if (pickedTime != null) {
+          controller.selectTime(pickedTime, context);
+        }
+      },
+      child: Text(controller.currentQuestion?.hint ?? "Select Time"),
+    );
+  }
+
+  Widget _buildTextInput() {
+    return Row(
+      children: [
+        const SizedBox(width: 8),
+        Expanded(
+          child: IgnorePointer(
+            ignoring: controller.isCurrentChoice,
+            child: TextField(
+              controller: controller.textController,
+              onChanged: (t) => controller.inputText.value = t,
+              onSubmitted: (t) {
+                controller.send(t);
+                controller.textController.clear();
+              },
+              decoration: InputDecoration(
+                hintText: _hintFor(),
+                border: const OutlineInputBorder(),
+                isDense: true,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 10,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        FilledButton.icon(
+          onPressed: () {
+            controller.send(controller.textController.text);
+            controller.textController.clear();
+          },
+          icon: const Icon(Icons.send),
+          label: const Text("Send"),
+        ),
+        const SizedBox(width: 8),
       ],
     );
   }
@@ -215,5 +240,217 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       return "Choose an option above";
     }
     return q.hint ?? "Type your answer";
+  }
+}
+
+// Add these new widgets at the end of the file
+
+/// A widget for selecting height with options for cm or ft/in.
+class _HeightPicker extends StatefulWidget {
+  const _HeightPicker({required this.controller});
+  final TraineeOnboardingController controller;
+
+  @override
+  State<_HeightPicker> createState() => _HeightPickerState();
+}
+
+class _HeightPickerState extends State<_HeightPicker> {
+  // 0 for cm, 1 for ft/in
+  int _selectedUnit = 0;
+
+  // State for pickers
+  int _selectedCm = 170;
+  int _selectedFeet = 5;
+  int _selectedInches = 7;
+
+  // Data for pickers
+  final List<int> _cmValues = List.generate(101, (index) => 120 + index); // 120-220 cm
+  final List<int> _feetValues = List.generate(4, (index) => 4 + index); // 4-7 ft
+  final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
+
+  @override
+  Widget build(BuildContext context) {
+    final canSkip = widget.controller.currentQuestion?.canSkip ?? false;
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      child: Column(
+        children: [
+          CupertinoSlidingSegmentedControl<int>(
+            groupValue: _selectedUnit,
+            children: const {
+              0: Text('cm'),
+              1: Text('ft / in'),
+            },
+            onValueChanged: (value) => setState(() => _selectedUnit = value ?? 0),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 150,
+            child: _selectedUnit == 0
+                ? _buildCmPicker()
+                : _buildFtInPicker(),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              if (canSkip) ...[
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => widget.controller.selectHeight(), // Skip
+                    child: const Text('Skip'),
+                  ),
+                ),
+                const SizedBox(width: 16),
+              ],
+              Expanded(
+                child: FilledButton(
+                  onPressed: () {
+                    if (_selectedUnit == 0) {
+                      widget.controller.selectHeight(cm: _selectedCm);
+                    } else {
+                      widget.controller.selectHeight(feet: _selectedFeet, inches: _selectedInches);
+                    }
+                  },
+                  child: const Text('Confirm'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCmPicker() {
+    return CupertinoPicker(
+      itemExtent: 32,
+      scrollController: FixedExtentScrollController(initialItem: _cmValues.indexOf(_selectedCm)),
+      onSelectedItemChanged: (index) => setState(() => _selectedCm = _cmValues[index]),
+      children: _cmValues.map((cm) => Center(child: Text('$cm cm'))).toList(),
+    );
+  }
+
+  Widget _buildFtInPicker() {
+    return Row(
+      children: [
+        Expanded(
+          child: CupertinoPicker(
+            itemExtent: 32,
+            scrollController: FixedExtentScrollController(initialItem: _feetValues.indexOf(_selectedFeet)),
+            onSelectedItemChanged: (index) => setState(() => _selectedFeet = _feetValues[index]),
+            children: _feetValues.map((ft) => Center(child: Text("$ft'"))).toList(),
+          ),
+        ),
+        Expanded(
+          child: CupertinoPicker(
+            itemExtent: 32,
+            scrollController: FixedExtentScrollController(initialItem: _inchValues.indexOf(_selectedInches)),
+            onSelectedItemChanged: (index) => setState(() => _selectedInches = _inchValues[index]),
+            children: _inchValues.map((inch) => Center(child: Text('$inch"'))).toList(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// A widget for selecting weight with options for kg or lbs.
+class _WeightPicker extends StatefulWidget {
+  const _WeightPicker({required this.controller});
+  final TraineeOnboardingController controller;
+
+  @override
+  State<_WeightPicker> createState() => _WeightPickerState();
+}
+
+class _WeightPickerState extends State<_WeightPicker> {
+  // 0 for kg, 1 for lbs
+  int _selectedUnit = 0;
+
+  // State for pickers
+  double _selectedKg = 70.0;
+  double _selectedLbs = 154.0;
+
+  // Data for pickers
+  final List<double> _kgValues = List.generate(1101, (i) => 40.0 + i * 0.1); // 40.0-150.0 kg
+  final List<double> _lbsValues = List.generate(2401, (i) => 90.0 + i * 0.1); // 90.0-330.0 lbs
+
+  @override
+  Widget build(BuildContext context) {
+    final canSkip = widget.controller.currentQuestion?.canSkip ?? false;
+    final currentValues = _selectedUnit == 0 ? _kgValues : _lbsValues;
+    final initialValue = _selectedUnit == 0 ? _selectedKg : _selectedLbs;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      child: Column(
+        children: [
+          CupertinoSlidingSegmentedControl<int>(
+            groupValue: _selectedUnit,
+            children: const {
+              0: Text('kg'),
+              1: Text('lbs'),
+            },
+            onValueChanged: (value) => setState(() => _selectedUnit = value ?? 0),
+          ),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 150,
+            child: CupertinoPicker(
+              itemExtent: 32,
+              scrollController: FixedExtentScrollController(
+                initialItem: currentValues.indexOf(
+                  currentValues.firstWhere((v) => (v - initialValue).abs() < 0.01, orElse: () => currentValues.first),
+                ),
+              ),
+              onSelectedItemChanged: (index) {
+                setState(() {
+                  if (_selectedUnit == 0) {
+                    _selectedKg = currentValues[index];
+                  } else {
+                    _selectedLbs = currentValues[index];
+                  }
+                });
+              },
+              children: currentValues.map((w) => Center(child: Text(w.toStringAsFixed(1)))).toList(),
+            ),
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              if (canSkip) ...[
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => widget.controller.selectWeight(), // Skip
+                    child: const Text('Skip'),
+                  ),
+                ),
+                const SizedBox(width: 16),
+              ],
+              Expanded(
+                child: FilledButton(
+                  onPressed: () {
+                    if (_selectedUnit == 0) {
+                      widget.controller.selectWeight(weight: _selectedKg, unit: 'kg');
+                    } else {
+                      widget.controller.selectWeight(weight: _selectedLbs, unit: 'lbs');
+                    }
+                  },
+                  child: const Text('Confirm'),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }
