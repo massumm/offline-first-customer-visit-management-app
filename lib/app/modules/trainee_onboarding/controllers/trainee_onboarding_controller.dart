@@ -330,14 +330,37 @@ class TraineeOnboardingController extends BaseController {
   // Replace currentIndex with group and question indices
   final currentGroupIndex = 0.obs;
   final currentQuestionIndexInGroup = (-1).obs;
+  final isAwaitingGroupConfirmation = false.obs;
   final Map<String, String> answers = {}; // id -> answer
   final pageController = ScrollController();
+
+  /// True when the UI should show the "Continue" and "Skip" buttons.
+  bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
 
   @override
   void onInit() {
     super.onInit();
     start();
   }
+
+  // In TraineeOnboardingController, after the onInit() method
+
+  Future<void> continueToNextGroup() async {
+    if (!isAwaitingGroupConfirmation.value) return;
+    isAwaitingGroupConfirmation.value = false;
+
+    // Advance to the next group and ask its first question
+    currentGroupIndex.value++;
+    currentQuestionIndexInGroup.value = -1;
+    await _askNext();
+  }
+
+  Future<void> skipToEnd() async {
+    if (!isAwaitingGroupConfirmation.value) return;
+    isAwaitingGroupConfirmation.value = false;
+    await _completeOnboarding();
+  }
+
 
   void start() async {
     messages.clear();
@@ -346,6 +369,15 @@ class TraineeOnboardingController extends BaseController {
     currentQuestionIndexInGroup.value = -1; // Start before the first question
     await _botSay("Hello 👋");
     await _askNext();
+  }
+
+  Future<void> _completeOnboarding() async {
+    currentGroupIndex.value = questionGroups.length; // Set to "done" state
+    await _botSay("All set! 🎉 Thanks for the info.");
+    final summary =
+    answers.entries.map((e) => "• ${e.key}: ${e.value}").join("\n");
+    await _botSay("Here's a summary of your answers:\n$summary");
+    await _botSay("You can now proceed, or use the ↺ button to restart.");
   }
 
   Future<void> _botSay(String text) async {
@@ -358,6 +390,9 @@ class TraineeOnboardingController extends BaseController {
   }
 
   Future<void> _askNext() async {
+    // If we are waiting for the user to press "Continue" or "Skip", do nothing.
+    if (isAwaitingGroupConfirmation.value) return;
+
     // Determine the next position
     int nextQuestionIndex = currentQuestionIndexInGroup.value;
     int nextGroupIndex = currentGroupIndex.value;
@@ -366,44 +401,62 @@ class TraineeOnboardingController extends BaseController {
     while (true) {
       nextQuestionIndex++;
 
-      // Check if we need to advance to the next group
+      // Check if the current group is finished
       if (nextGroupIndex < questionGroups.length &&
           nextQuestionIndex >= questionGroups[nextGroupIndex].questions.length) {
 
-        // Display the conclusion message for the group that just finished.
+        // --- START: End-of-Group Logic ---
         final finishedGroup = questionGroups[nextGroupIndex];
+
+        // 1. Show the group's conclusion message if it exists
         if (finishedGroup.conclusion != null) {
           await _botSay(finishedGroup.conclusion!);
         }
 
-        nextGroupIndex++;
-        nextQuestionIndex = 0;
+        // 2. Generate and show a summary for the just-completed group
+        final summaryLines = <String>[];
+        for (final question in finishedGroup.questions) {
+          if (answers.containsKey(question.id)) {
+            final questionText = question.question.replaceAll('?', '');
+            // Using a more readable format for the summary
+            summaryLines.add("• $questionText: **${answers[question.id]}**");
+          }
+        }
+        if (summaryLines.isNotEmpty) {
+          await _botSay(
+              "Here's a summary for this section:\n${summaryLines.join('\n')}");
+        }
+
+        // 3. If this was the VERY LAST group, complete the whole flow
+        if (nextGroupIndex >= questionGroups.length - 1) {
+          await _completeOnboarding();
+          return; // End the entire process
+        }
+
+        // 4. Otherwise, prompt the user and wait for them to Continue or Skip
+        isAwaitingGroupConfirmation.value = true;
+        await _botSay("Ready to move on to the next section?");
+        return; // IMPORTANT: Exit _askNext and wait for user action
+        // --- END: End-of-Group Logic ---
       }
 
-      // Check if the entire flow is finished
+      // This case is now handled by the logic above, but serves as a fallback.
       if (nextGroupIndex >= questionGroups.length) {
-        currentGroupIndex.value = questionGroups.length; // Set to "done" state
-        await _botSay("All set! 🎉 Thanks for the info.");
-        final summary =
-        answers.entries.map((e) => "• ${e.key}: ${e.value}").join("\n");
-        await _botSay("Here's a summary of your answers:\n$summary");
-        await _botSay("You can now proceed, or use the ↺ button to restart.");
+        await _completeOnboarding();
         return;
       }
 
       final questionCandidate =
       questionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
-      // --- Centralized Branching Logic ---
+      // --- all skip rules remain the same ---
       bool shouldSkip = false;
-
       // Rule 1: Skip event questions if user answered "No"
       if ((questionCandidate.id == 'target_event_name' ||
           questionCandidate.id == 'target_event_date') &&
           answers['has_target_event'] == 'No') {
         shouldSkip = true;
       }
-
       // Rule 2: Skip home equipment questions if not training at home/mix
       final trainingLocation = answers['training_location'];
       if ((questionCandidate.id == 'home_equipment' ||
@@ -458,7 +511,7 @@ class TraineeOnboardingController extends BaseController {
       }
 
       if (!shouldSkip) {
-        // Found a valid question, break the loop
+        // Found a valid question, break the loop to ask it
         break;
       }
     }

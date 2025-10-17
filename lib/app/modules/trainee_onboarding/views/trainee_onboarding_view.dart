@@ -77,10 +77,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               children: q.options
                   .map(
                     (o) => ActionChip(
-                      label: Text(o),
-                      onPressed: () => controller.choose(o),
-                    ),
-                  )
+                  label: Text(o),
+                  onPressed: () => controller.choose(o),
+                ),
+              )
                   .toList(),
             ),
           );
@@ -90,6 +90,32 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         SafeArea(
           top: false,
           child: Obx(() {
+            // START: Add this new conditional block
+            // When a group is finished, show Continue/Skip buttons.
+            if (controller.showGroupContinuationButtons) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: controller.continueToNextGroup,
+                        child: const Text('Continue'),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: controller.skipToEnd,
+                        child: const Text('Skip to End'),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            // END: Add this new conditional block
+
             final isChoice = controller.isCurrentChoice;
 
             // When the current question is a date type, show a date picker button.
@@ -128,6 +154,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               );
             }
 
+            // Default input field for text/number questions.
             return Row(
               children: [
                 const SizedBox(width: 8),
