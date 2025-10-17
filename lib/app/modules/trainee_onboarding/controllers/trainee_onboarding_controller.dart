@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../models/onboarding_qa_model.dart';
 
@@ -475,25 +475,27 @@ class TraineeOnboardingController extends BaseController {
       ],
     ),
     // ------------ Body Profile
+    // in lib/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart
+
+    // ------------ Body Profile
     QuestionGroup(
       introduction: "Next, let's get some body profile details.",
+      // ADDED: A conclusion message for the end of this group.
+      conclusion: "Excellent! That's all the profile information we need.",
       questions: [
         const QAItem(
           id: 'height',
           question: "What’s your height?",
-          // This new type will trigger a custom height picker UI
           type: QAType.height,
         ),
         const QAItem(
           id: 'current_weight',
           question: "And your current weight?",
-          // This new type will trigger a custom weight picker UI
           type: QAType.weight,
         ),
         const QAItem(
           id: 'target_weight',
           question: "What is your target weight?",
-          // Re-using the same weight picker UI
           type: QAType.weight,
           hint: "Optional: You can skip this if you're not sure",
           canSkip: true,
@@ -523,9 +525,6 @@ class TraineeOnboardingController extends BaseController {
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
-// START: New structured measurement questions
-// These are asked only if the answer to the above is "Yes".
-// They re-use the weight picker UI for value + unit input.
         const QAItem(
           id: 'chest_measurement',
           question: "What is your chest measurement?",
@@ -561,12 +560,18 @@ class TraineeOnboardingController extends BaseController {
           hint: "Optional: You can skip this",
           canSkip: true,
         ),
+        // REMOVED: The duplicate 'thigh_measurement' question that was here.
         const QAItem(
-          id: 'thigh_measurement',
-          question: "What is your thigh measurement? (e.g., quad)",
-          type: QAType.weight,
-          hint: "Optional: You can skip this",
-          canSkip: true,
+          id: 'upload_progress_photo',
+          question:
+          "Would you like to upload a private progress photo? (Optional)",
+          type: QAType.choice,
+          options: ["Yes", "No"],
+        ),
+        const QAItem(
+          id: 'progress_photo_picker',
+          question: "Great! Please upload your photo.",
+          type: QAType.image,
         ),
       ],
     ),
@@ -799,8 +804,16 @@ class TraineeOnboardingController extends BaseController {
         'arm_measurement',
         'thigh_measurement',
       };
+
+      // Rule 15: Skip body measurement questions if user answered "No"
       if (measurementIds.contains(questionCandidate.id) &&
           answers['add_body_measurements'] != 'Yes') {
+        shouldSkip = true;
+      }
+
+      // Rule 15: Skip the photo picker if the user answered "No"
+      if (questionCandidate.id == 'progress_photo_picker' &&
+          answers['upload_progress_photo'] != 'Yes') {
         shouldSkip = true;
       }
 
@@ -1032,6 +1045,12 @@ class TraineeOnboardingController extends BaseController {
         wasSkipped = true;
       }
 
+      // Rule 15: Skip the photo picker if the user answered "No"
+      if (questionCandidate.id == 'progress_photo_picker' &&
+          answers['upload_progress_photo'] != 'Yes') {
+        wasSkipped = true;
+      }
+
 
       if (!wasSkipped) {
         // This is a valid previous question, so we break the loop.
@@ -1112,6 +1131,23 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
+  /// The UI should call this after using image_picker to get a file.
+  Future<void> selectImage(XFile imageFile) async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+
+    // The answer map stores the file path for later use (e.g., uploading).
+    answers[q.id] = imageFile.path;
+
+    // The chat message shows a user-friendly confirmation.
+    final confirmationMessage = "Photo selected: ${imageFile.name}";
+    messages.add(ChatMessage(from: Sender.user, text: confirmationMessage));
+    _scrollToBottom();
+
+    // Proceed to the next step in the onboarding flow.
+    await _askNext();
+  }
+
 
   // Helpers for cleaner Obx use
   QAItem? get currentQuestion {
@@ -1131,4 +1167,7 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentHeight => currentQuestion?.type == QAType.height;
 
   bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
+
+  bool get isCurrentImage => currentQuestion?.type == QAType.image;
+
 }

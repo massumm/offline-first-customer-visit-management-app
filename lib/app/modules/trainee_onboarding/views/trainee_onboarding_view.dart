@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
@@ -100,6 +101,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             // When a group is finished, show Continue/Skip buttons.
             if (controller.showGroupContinuationButtons) {
               return _buildContinuationButtons();
+            }
+
+            if (controller.isCurrentImage) {
+              // NEW: Show the image picker button
+              return _ImagePickerInput(controller: controller);
             }
 
             // When the current question is a date type, show a date picker button.
@@ -452,5 +458,74 @@ class _WeightPickerState extends State<_WeightPicker> {
         ],
       ),
     );
+  }
+}
+
+
+/// A widget that displays an "Upload Photo" button and handles the image
+/// selection process by showing a dialog for Camera or Gallery.
+class _ImagePickerInput extends StatelessWidget {
+  final TraineeOnboardingController controller;
+
+  const _ImagePickerInput({required this.controller});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      child: ElevatedButton.icon(
+        icon: const Icon(Icons.camera_alt),
+        label: const Text("Upload Photo"),
+        style: ElevatedButton.styleFrom(
+          minimumSize: const Size(double.infinity, 50),
+        ),
+        onPressed: () => _showImageSourceDialog(context),
+      ),
+    );
+  }
+
+  /// Shows a dialog to let the user choose between taking a new photo
+  /// or selecting one from their gallery.
+  void _showImageSourceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text("Select Image Source"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Take Photo"),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text("Choose from Gallery"),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Uses the image_picker package to select an image and passes the
+  /// result back to the controller.
+  Future<void> _pickImage(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    // Pick an image.
+    final XFile? image = await picker.pickImage(source: source);
+
+    if (image != null) {
+      // If an image was selected, call the controller's handler method.
+      controller.selectImage(image);
+    }
   }
 }

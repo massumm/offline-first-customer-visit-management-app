@@ -1,5 +1,4 @@
-
-enum QAType { text, number, choice, date, time, height, weight}
+enum QAType { text, number, choice, date, time, height, weight, image }
 
 class QuestionGroup {
   final String introduction;
@@ -39,5 +38,5 @@ class ChatMessage {
   final DateTime at;
 
   ChatMessage({required this.from, required this.text, DateTime? at})
-      : at = at ?? DateTime.now();
+    : at = at ?? DateTime.now();
 }
