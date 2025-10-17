@@ -137,6 +137,8 @@ class TraineeOnboardingController extends BaseController {
     //-------- ACTIVITY ---------
     QuestionGroup(
       introduction: "Now, let's get into your activity habits.",
+      conclusion: "Awesome, that gives me a great picture of your activity levels!",
+
       questions: [
         const QAItem(
           id: 'training_location',
@@ -218,19 +220,104 @@ class TraineeOnboardingController extends BaseController {
             "Prefer not to say",
           ],
         ),
-        // New question: Asks to set a reminder if a specific time was chosen
+        //
         const QAItem(
           id: 'set_reminder',
           question: "Would you like to set a reminder for your selected time?",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
-        // New question: Asks for the time if the answer above was "Yes"
+        //  Asks for the time if the answer above was "Yes"
         const QAItem(
           id: 'reminder_time',
           question: "Great! At what time would you like to be reminded?",
           type: QAType.time, // Assumes a new QAType.time for a time picker
           hint: "Select a time",
+        ),
+        const QAItem(
+          id: 'focus_on_body_parts',
+          question: "Are there any specific body parts you want to focus on?",
+          type: QAType.choice,
+          options: ["Yes", "No"],
+        ),
+        // This question is asked only if the answer above is "Yes"
+        const QAItem(
+          id: 'specific_body_parts',
+          question: "Great! Which body parts are your priority?",
+          type: QAType.text,
+          hint: "e.g., Chest, Legs, Abs",
+        ),
+        const QAItem(
+          id: 'occupation_activity_level',
+          question: "Outside of training, how active is your occupation?",
+          type: QAType.choice,
+          options: [
+            "Mostly sedentary (desk job)",
+            "Lightly active (some walking)",
+            "Moderately active (on your feet)",
+            "Very active (manual labor)",
+          ],
+        ),
+        const QAItem(
+          id: 'general_lifestyle_activity',
+          question: "Outside of training and your occupation, how active is your general lifestyle?",
+          type: QAType.choice,
+          options: [
+            "Mostly sedentary (e.g., relaxing at home)",
+            "Lightly active (e.g., occasional walks, light chores)",
+            "Moderately active (e.g., regular walks, hobbies)",
+            "Very active (e.g., always on the go, active hobbies)",
+          ],
+        ),
+        const QAItem(
+          id: 'daily_step_goal',
+          question: "How many steps would you like to achieve each day?",
+          type: QAType.choice,
+          options: [
+            "5,000",
+            "8,000",
+            "10,000",
+            "12,000+",
+            'Custom number'
+            "Not sure yet",
+          ],
+        ),
+        const QAItem(
+          id: 'daily_step_goal_custom',
+          question: "What is your custom daily step goal?",
+          type: QAType.number,
+          hint: "e.g., 7500",
+        ),
+        // START: Add these new questions
+        const QAItem(
+          id: 'training_limitations',
+          question: "What limits your ability to train consistently?",
+          type: QAType.choice,
+          options: [
+            "Lack of time",
+            "Lack of motivation",
+            "Low energy levels",
+            "Access to gym/equipment",
+            "Not sure what to do",
+            "Nothing really",
+            "Other",
+          ],
+        ),
+        // This question is asked only if the answer above is "Other"
+        const QAItem(
+          id: 'training_limitations_other',
+          question: "Could you please specify what other factors limit your training?",
+          type: QAType.text,
+          hint: "e.g., Injury, travel schedule",
+          canSkip: true,
+        ),
+
+        const QAItem(
+          id: 'workout_enjoyment',
+          question: "What kind of workouts do you most enjoy, or is there anything you want to try?",
+          type: QAType.text,
+          hint: "e.g., Running, weightlifting, dance classes",
+          canSkip: true,
         ),
       ],
     ),
@@ -282,6 +369,13 @@ class TraineeOnboardingController extends BaseController {
       // Check if we need to advance to the next group
       if (nextGroupIndex < questionGroups.length &&
           nextQuestionIndex >= questionGroups[nextGroupIndex].questions.length) {
+
+        // Display the conclusion message for the group that just finished.
+        final finishedGroup = questionGroups[nextGroupIndex];
+        if (finishedGroup.conclusion != null) {
+          await _botSay(finishedGroup.conclusion!);
+        }
+
         nextGroupIndex++;
         nextQuestionIndex = 0;
       }
@@ -345,6 +439,23 @@ class TraineeOnboardingController extends BaseController {
         shouldSkip = true;
       }
 
+      // Rule 7: Skip specific body parts if user answered "No"
+      if (questionCandidate.id == 'specific_body_parts' &&
+          answers['focus_on_body_parts'] == 'No') {
+        shouldSkip = true;
+      }
+
+      // Rule 8: Skip custom step goal if user didn't select 'Custom number'
+      if (questionCandidate.id == 'daily_step_goal_custom' &&
+          answers['daily_step_goal'] != 'Custom number') {
+        shouldSkip = true;
+      }
+
+      // Rule 9: Skip 'other' limitations if user didn't select 'Other'
+      if (questionCandidate.id == 'training_limitations_other' &&
+          answers['training_limitations'] != 'Other') {
+        shouldSkip = true;
+      }
 
       if (!shouldSkip) {
         // Found a valid question, break the loop
@@ -515,6 +626,25 @@ class TraineeOnboardingController extends BaseController {
           answers['set_reminder'] == 'No') {
         wasSkipped = true;
       }
+
+      // Rule 7
+      if (questionCandidate.id == 'specific_body_parts' &&
+          answers['focus_on_body_parts'] == 'No') {
+        wasSkipped = true;
+      }
+
+      // Rule 8
+      if (questionCandidate.id == 'daily_step_goal_custom' &&
+          answers['daily_step_goal'] != 'Custom number') {
+        wasSkipped = true;
+      }
+
+      // Rule 9
+      if (questionCandidate.id == 'training_limitations_other' &&
+          answers['training_limitations'] != 'Other') {
+        wasSkipped = true;
+      }
+
 
       if (!wasSkipped) {
         // This is a valid previous question, so we break the loop.
