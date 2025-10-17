@@ -498,6 +498,57 @@ class TraineeOnboardingController extends BaseController {
           hint: "Optional: You can skip this if you're not sure",
           canSkip: true,
         ),
+        const QAItem(
+          id: 'body_fat_level',
+          question: "How would you describe your current body fat level?",
+          type: QAType.choice,
+          options: ["Lean", "Average", "High", "Not Sure"],
+          hint: "This is just an estimate.",
+        ),
+        const QAItem(
+          id: 'add_body_measurements',
+          question: "Would you like to add any body measurements? (Optional)",
+          type: QAType.choice,
+          options: ["Yes", "No"],
+        ),
+// START: New structured measurement questions
+// These are asked only if the answer to the above is "Yes".
+// They re-use the weight picker UI for value + unit input.
+        const QAItem(
+          id: 'chest_measurement',
+          question: "What is your chest measurement?",
+          type: QAType.weight,
+          hint: "Optional: You can skip this",
+          canSkip: true,
+        ),
+        const QAItem(
+          id: 'waist_measurement',
+          question: "What is your waist measurement?",
+          type: QAType.weight,
+          hint: "Optional: You can skip this",
+          canSkip: true,
+        ),
+        const QAItem(
+          id: 'hips_measurement',
+          question: "What is your hips measurement?",
+          type: QAType.weight,
+          hint: "Optional: You can skip this",
+          canSkip: true,
+        ),
+        const QAItem(
+          id: 'arm_measurement',
+          question: "What is your arm measurement? (e.g., bicep)",
+          type: QAType.weight,
+          hint: "Optional: You can skip this",
+          canSkip: true,
+        ),
+        const QAItem(
+          id: 'thigh_measurement',
+          question: "What is your thigh measurement? (e.g., quad)",
+          type: QAType.weight,
+          hint: "Optional: You can skip this",
+          canSkip: true,
+        ),
       ],
     ),
   ];
@@ -720,6 +771,20 @@ class TraineeOnboardingController extends BaseController {
         shouldSkip = true;
       }
 
+
+      // Rule 14: Skip body measurement questions if user answered "No"
+      const measurementIds = {
+        'chest_measurement',
+        'waist_measurement',
+        'hips_measurement',
+        'arm_measurement',
+        'thigh_measurement',
+      };
+      if (measurementIds.contains(questionCandidate.id) &&
+          answers['add_body_measurements'] != 'Yes') {
+        shouldSkip = true;
+      }
+
       if (!shouldSkip) {
         // Found a valid question, break the loop to ask it
         break;
@@ -934,6 +999,20 @@ class TraineeOnboardingController extends BaseController {
           answers['recovery_obstacles'] != 'Other') {
         wasSkipped = true;
       }
+
+      // Rule 14
+      const measurementIds = {
+        'chest_measurement',
+        'waist_measurement',
+        'hips_measurement',
+        'arm_measurement',
+        'thigh_measurement',
+      };
+      if (measurementIds.contains(questionCandidate.id) &&
+          answers['add_body_measurements'] != 'Yes') {
+        wasSkipped = true;
+      }
+
 
       if (!wasSkipped) {
         // This is a valid previous question, so we break the loop.
