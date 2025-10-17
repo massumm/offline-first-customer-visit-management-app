@@ -5,7 +5,6 @@ import 'package:icon/app/base/base_controller.dart';
 
 import '../models/onboarding_qa_model.dart';
 
-
 class TraineeOnboardingController extends BaseController {
   final textController = TextEditingController();
 
@@ -47,12 +46,17 @@ class TraineeOnboardingController extends BaseController {
           id: 'fitness_experience',
           question: "What's your current fitness experience level?",
           type: QAType.choice,
-          options: ["Beginner", "Intermediate", "Advanced", "Prefer not to say"],
+          options: [
+            "Beginner",
+            "Intermediate",
+            "Advanced",
+            "Prefer not to say",
+          ],
         ),
         const QAItem(
           id: 'accountability_partner',
           question:
-          "Do you have an accountability partner to help you on your journey?",
+              "Do you have an accountability partner to help you on your journey?",
           type: QAType.choice,
           options: [
             "Friends",
@@ -97,17 +101,13 @@ class TraineeOnboardingController extends BaseController {
           id: 'results_speed',
           question: "How fast would you like to achieve results?",
           type: QAType.choice,
-          options: [
-            "Gradual",
-            "Moderate",
-            "Fast",
-            "Not sure yet",
-          ],
+          options: ["Gradual", "Moderate", "Fast", "Not sure yet"],
         ),
         // 1. This is the new branching question
         const QAItem(
           id: 'has_target_event',
-          question: "Do you have a specific date or event you’re working toward?",
+          question:
+              "Do you have a specific date or event you’re working toward?",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
@@ -137,21 +137,36 @@ class TraineeOnboardingController extends BaseController {
     //-------- ACTIVITY ---------
     QuestionGroup(
       introduction: "Now, let's get into your activity habits.",
-      conclusion: "Awesome, that gives me a great picture of your activity levels!",
+      conclusion:
+          "Awesome, that gives me a great picture of your activity levels!",
 
       questions: [
         const QAItem(
           id: 'training_location',
           question: "Where do you usually train?",
           type: QAType.choice,
-          options: ["At a gym", "At home", "Outdoors", "A mix", "Prefer not to say"],
+          options: [
+            "At a gym",
+            "At home",
+            "Outdoors",
+            "A mix",
+            "Prefer not to say",
+          ],
         ),
         // This question is asked only if the answer above is "At home" or "A mix"
         const QAItem(
           id: 'home_equipment',
           question: "What equipment do you have access to at home?",
           type: QAType.choice,
-          options: ['None', 'Weights', 'Barbell', 'Bands' 'Cardio equipment', 'Both', 'Other'],
+          options: [
+            'None',
+            'Weights',
+            'Barbell',
+            'Bands'
+                'Cardio equipment',
+            'Both',
+            'Other',
+          ],
         ),
         // This new question is asked only if the answer above is "Other"
         const QAItem(
@@ -172,7 +187,7 @@ class TraineeOnboardingController extends BaseController {
             "Yoga/Pilates",
             "A mix",
             "Not sure yet"
-            'Other'
+                'Other',
           ],
         ),
         // New conditional question added here
@@ -198,7 +213,7 @@ class TraineeOnboardingController extends BaseController {
             "30-45 minutes",
             "45-60 minutes",
             "60+ minutes",
-            "Varies / Not sure"
+            "Varies / Not sure",
           ],
         ),
         const QAItem(
@@ -260,7 +275,8 @@ class TraineeOnboardingController extends BaseController {
         ),
         const QAItem(
           id: 'general_lifestyle_activity',
-          question: "Outside of training and your occupation, how active is your general lifestyle?",
+          question:
+              "Outside of training and your occupation, how active is your general lifestyle?",
           type: QAType.choice,
           options: [
             "Mostly sedentary (e.g., relaxing at home)",
@@ -279,7 +295,7 @@ class TraineeOnboardingController extends BaseController {
             "10,000",
             "12,000+",
             'Custom number'
-            "Not sure yet",
+                "Not sure yet",
           ],
         ),
         const QAItem(
@@ -306,7 +322,8 @@ class TraineeOnboardingController extends BaseController {
         // This question is asked only if the answer above is "Other"
         const QAItem(
           id: 'training_limitations_other',
-          question: "Could you please specify what other factors limit your training?",
+          question:
+              "Could you please specify what other factors limit your training?",
           type: QAType.text,
           hint: "e.g., Injury, travel schedule",
           canSkip: true,
@@ -314,9 +331,75 @@ class TraineeOnboardingController extends BaseController {
 
         const QAItem(
           id: 'workout_enjoyment',
-          question: "What kind of workouts do you most enjoy, or is there anything you want to try?",
+          question:
+              "What kind of workouts do you most enjoy, or is there anything you want to try?",
           type: QAType.text,
           hint: "e.g., Running, weightlifting, dance classes",
+          canSkip: true,
+        ),
+      ],
+    ),
+    // ---------- Recovery ----------
+    // ---------- Recovery ----------
+    QuestionGroup(
+      introduction: "Finally, let's talk about recovery.",
+      questions: [
+        const QAItem(
+          id: 'sleep_hours',
+          question: "On average, how many hours of sleep do you get per night?",
+          type: QAType.choice,
+          options: [
+            "Less than 5 hours",
+            "5-6 hours",
+            "7-8 hours",
+            "More than 8 hours",
+            "It varies a lot",
+          ],
+        ),
+        const QAItem(
+          id: 'sleep_quality',
+          question: "How would you rate your sleep quality?",
+          type: QAType.choice,
+          options: ["Excellent", "Good", "Fair", "Poor", "It varies"],
+        ),
+        const QAItem(
+          id: 'energy_levels',
+          question: "How energetic do you usually feel during the day?",
+          type: QAType.choice,
+          options: [
+            "Very energetic",
+            "Moderately energetic",
+            "A bit sluggish",
+            "Very low energy / Fatigued",
+            "It varies a lot",
+          ],
+        ),
+        const QAItem(
+          id: 'stress_levels',
+          question: "How would you rate your current stress levels?",
+          type: QAType.choice,
+          options: ["Very low", "Low", "Moderate", "High", "Very high"],
+        ),
+        const QAItem(
+          id: 'stress_sources',
+          question: "What are your biggest sources of stress?",
+          type: QAType.choice,
+          options: [
+            "Work / School",
+            "Family / Relationships",
+            "Finances",
+            "Health",
+            "A mix of factors",
+            "Other",
+            "Prefer not to say",
+          ],
+        ),
+        // This question is asked only if the answer above is "Other"
+        const QAItem(
+          id: 'stress_sources_other',
+          question: "Please specify what 'Other' sources of stress you have.",
+          type: QAType.text,
+          hint: "Optional: e.g., Social life, personal goals",
           canSkip: true,
         ),
       ],
@@ -327,6 +410,7 @@ class TraineeOnboardingController extends BaseController {
   final messages = <ChatMessage>[].obs;
   final isTyping = false.obs;
   final inputText = ''.obs;
+
   // Replace currentIndex with group and question indices
   final currentGroupIndex = 0.obs;
   final currentQuestionIndexInGroup = (-1).obs;
@@ -361,7 +445,6 @@ class TraineeOnboardingController extends BaseController {
     await _completeOnboarding();
   }
 
-
   void start() async {
     messages.clear();
     answers.clear();
@@ -374,8 +457,9 @@ class TraineeOnboardingController extends BaseController {
   Future<void> _completeOnboarding() async {
     currentGroupIndex.value = questionGroups.length; // Set to "done" state
     await _botSay("All set! 🎉 Thanks for the info.");
-    final summary =
-    answers.entries.map((e) => "• ${e.key}: ${e.value}").join("\n");
+    final summary = answers.entries
+        .map((e) => "• ${e.key}: ${e.value}")
+        .join("\n");
     await _botSay("Here's a summary of your answers:\n$summary");
     await _botSay("You can now proceed, or use the ↺ button to restart.");
   }
@@ -403,8 +487,8 @@ class TraineeOnboardingController extends BaseController {
 
       // Check if the current group is finished
       if (nextGroupIndex < questionGroups.length &&
-          nextQuestionIndex >= questionGroups[nextGroupIndex].questions.length) {
-
+          nextQuestionIndex >=
+              questionGroups[nextGroupIndex].questions.length) {
         // --- START: End-of-Group Logic ---
         final finishedGroup = questionGroups[nextGroupIndex];
 
@@ -424,7 +508,8 @@ class TraineeOnboardingController extends BaseController {
         }
         if (summaryLines.isNotEmpty) {
           await _botSay(
-              "Here's a summary for this section:\n${summaryLines.join('\n')}");
+            "Here's a summary for this section:\n${summaryLines.join('\n')}",
+          );
         }
 
         // 3. If this was the VERY LAST group, complete the whole flow
@@ -447,20 +532,20 @@ class TraineeOnboardingController extends BaseController {
       }
 
       final questionCandidate =
-      questionGroups[nextGroupIndex].questions[nextQuestionIndex];
+          questionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
       // --- all skip rules remain the same ---
       bool shouldSkip = false;
       // Rule 1: Skip event questions if user answered "No"
       if ((questionCandidate.id == 'target_event_name' ||
-          questionCandidate.id == 'target_event_date') &&
+              questionCandidate.id == 'target_event_date') &&
           answers['has_target_event'] == 'No') {
         shouldSkip = true;
       }
       // Rule 2: Skip home equipment questions if not training at home/mix
       final trainingLocation = answers['training_location'];
       if ((questionCandidate.id == 'home_equipment' ||
-          questionCandidate.id == 'home_equipment_other') &&
+              questionCandidate.id == 'home_equipment_other') &&
           (trainingLocation != 'At home' && trainingLocation != 'A mix')) {
         shouldSkip = true;
       }
@@ -480,7 +565,7 @@ class TraineeOnboardingController extends BaseController {
       // Rule 5: Skip reminder questions if no specific time was chosen.
       final preferredTime = answers['preferred_training_time'];
       if ((questionCandidate.id == 'set_reminder' ||
-          questionCandidate.id == 'reminder_time') &&
+              questionCandidate.id == 'reminder_time') &&
           (preferredTime == 'Anytime / Varies' ||
               preferredTime == 'Prefer not to say')) {
         shouldSkip = true;
@@ -510,6 +595,14 @@ class TraineeOnboardingController extends BaseController {
         shouldSkip = true;
       }
 
+      // Rule 10: Skip 'other' stress sources if user didn't select 'Other'
+      if (questionCandidate.id == 'stress_sources_other' &&
+          answers['stress_sources'] != 'Other') {
+        shouldSkip = true;
+      }
+
+
+
       if (!shouldSkip) {
         // Found a valid question, break the loop to ask it
         break;
@@ -517,7 +610,8 @@ class TraineeOnboardingController extends BaseController {
     }
 
     // If we are starting a new group, show its introduction message
-    final bool isNewGroup = nextQuestionIndex == 0 &&
+    final bool isNewGroup =
+        nextQuestionIndex == 0 &&
         (currentGroupIndex.value != nextGroupIndex ||
             currentQuestionIndexInGroup.value == -1);
 
@@ -598,9 +692,7 @@ class TraineeOnboardingController extends BaseController {
   bool get isFinished => currentGroupIndex.value >= questionGroups.length;
 
   bool get _canAnswer =>
-      !isFinished &&
-          !isTyping.value &&
-          currentQuestionIndexInGroup.value != -1;
+      !isFinished && !isTyping.value && currentQuestionIndexInGroup.value != -1;
 
   void _saveUserAnswer(QAItem q, String value) {
     messages.add(ChatMessage(from: Sender.user, text: value));
@@ -610,7 +702,7 @@ class TraineeOnboardingController extends BaseController {
 
   bool get canGoBack =>
       !isFinished &&
-          (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
+      (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
 
   /// Go back one step (keeps prior answers)
   Future<void> goBack() async {
@@ -633,13 +725,13 @@ class TraineeOnboardingController extends BaseController {
       }
 
       final questionCandidate =
-      questionGroups[targetGroupIndex].questions[targetQuestionIndex];
+          questionGroups[targetGroupIndex].questions[targetQuestionIndex];
 
       // Check if this candidate question should have been skipped based on previous answers.
       bool wasSkipped = false;
       // Rule 1
       if ((questionCandidate.id == 'target_event_name' ||
-          questionCandidate.id == 'target_event_date') &&
+              questionCandidate.id == 'target_event_date') &&
           answers['has_target_event'] == 'No') {
         wasSkipped = true;
       }
@@ -647,7 +739,7 @@ class TraineeOnboardingController extends BaseController {
       // Rule 2
       final trainingLocation = answers['training_location'];
       if ((questionCandidate.id == 'home_equipment' ||
-          questionCandidate.id == 'home_equipment_other') &&
+              questionCandidate.id == 'home_equipment_other') &&
           (trainingLocation != 'At home' && trainingLocation != 'A mix')) {
         wasSkipped = true;
       }
@@ -664,11 +756,10 @@ class TraineeOnboardingController extends BaseController {
         wasSkipped = true;
       }
 
-
       // Rule 5
       final preferredTime = answers['preferred_training_time'];
       if ((questionCandidate.id == 'set_reminder' ||
-          questionCandidate.id == 'reminder_time') &&
+              questionCandidate.id == 'reminder_time') &&
           (preferredTime == 'Anytime / Varies' ||
               preferredTime == 'Prefer not to say')) {
         wasSkipped = true;
@@ -695,6 +786,13 @@ class TraineeOnboardingController extends BaseController {
       // Rule 9
       if (questionCandidate.id == 'training_limitations_other' &&
           answers['training_limitations'] != 'Other') {
+        wasSkipped = true;
+      }
+
+
+// Rule 10
+      if (questionCandidate.id == 'stress_sources_other' &&
+          answers['stress_sources'] != 'Other') {
         wasSkipped = true;
       }
 
@@ -730,7 +828,6 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
-
   Future<void> selectTime(TimeOfDay time, BuildContext context) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
@@ -739,8 +836,6 @@ class TraineeOnboardingController extends BaseController {
     _saveUserAnswer(q, formattedTime);
     await _askNext();
   }
-
-
 
   // Helpers for cleaner Obx use
   QAItem? get currentQuestion {
