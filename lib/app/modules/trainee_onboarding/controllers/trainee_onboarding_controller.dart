@@ -42,7 +42,7 @@ class TraineeOnboardingController extends BaseController {
     const QAItem(
       id: 'accountability_partner',
       question:
-          "Do you have an accountability partner - somebody to help you with your fitness journey?",
+      "Do you have an accountability partner - somebody to help you with your fitness journey?",
       type: QAType.choice,
       options: [
         "Friends",
@@ -115,19 +115,28 @@ class TraineeOnboardingController extends BaseController {
   }
 
   Future<void> _askNext() async {
+    // Check if we are at the end of the onboarding flow.
     if (currentIndex.value + 1 >= questions.length) {
-      currentIndex.value = questions.length; // “done”
+      currentIndex.value = questions.length; // Set to "done" state.
       await _botSay("All set! 🎉 Thanks for the info.");
-      final summary = answers.entries
-          .map((e) => "• ${e.key}: ${e.value}")
-          .join("\n");
-      await _botSay("Summary:\n$summary");
-      await _botSay("Type anything to restart, or use the ↺ button.");
+      final summary =
+      answers.entries.map((e) => "• ${e.key}: ${e.value}").join("\n");
+      // Make the summary message more user-friendly
+      await _botSay("Here's a summary of your answers:\n$summary");
+      await _botSay("You can now proceed, or use the ↺ button to restart.");
       return;
     }
-    currentIndex.value++;
-    final q = questions[currentIndex.value];
+
+    // Get the next question without updating the public state yet.
+    final nextIndex = currentIndex.value + 1;
+    final q = questions[nextIndex];
+
+    // The bot "types" and sends the question first.
     await _botSay(q.question);
+
+    // Now, after the bot has "spoken", update the current index.
+    // This will trigger the UI to show the new input controls (e.g., quick replies).
+    currentIndex.value = nextIndex;
   }
 
   void _scrollToBottom() {
@@ -150,7 +159,6 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
-  /// Handle send from text field
   /// Handle send from text field
   Future<void> send(String text) async {
     final value = text.trim();
@@ -192,8 +200,8 @@ class TraineeOnboardingController extends BaseController {
 
   bool get _canAnswer =>
       currentIndex.value >= 0 &&
-      currentIndex.value < questions.length &&
-      !isTyping.value;
+          currentIndex.value < questions.length &&
+          !isTyping.value;
 
   void _saveUserAnswer(QAItem q, String value) {
     messages.add(ChatMessage(from: Sender.user, text: value));
@@ -207,10 +215,19 @@ class TraineeOnboardingController extends BaseController {
   /// Go back one step (keeps prior answers)
   Future<void> goBack() async {
     if (!canGoBack) return;
-    currentIndex.value--;
+
+    // Announce the action first for a smoother experience.
     await _botSay("No problem—let's change that.");
-    final q = questions[currentIndex.value];
+
+    // Get the previous question's info without updating the public state.
+    final prevIndex = currentIndex.value - 1;
+    final q = questions[prevIndex];
+
+    // Ask the previous question again.
     await _botSay(q.question);
+
+    // Now update the index to show the correct input controls.
+    currentIndex.value = prevIndex;
   }
 
   /// For exporting, consider sending this map to your backend.
@@ -236,12 +253,10 @@ class TraineeOnboardingController extends BaseController {
   // Helpers for cleaner Obx use
   QAItem? get currentQuestion =>
       (currentIndex.value >= 0 && currentIndex.value < questions.length)
-      ? questions[currentIndex.value]
-      : null;
+          ? questions[currentIndex.value]
+          : null;
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
 
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
 }
-
-//
