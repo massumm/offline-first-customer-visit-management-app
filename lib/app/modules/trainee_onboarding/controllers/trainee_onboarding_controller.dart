@@ -1139,9 +1139,12 @@ class TraineeOnboardingController extends BaseController {
     // The answer map stores the file path for later use (e.g., uploading).
     answers[q.id] = imageFile.path;
 
-    // The chat message shows a user-friendly confirmation.
-    final confirmationMessage = "Photo selected: ${imageFile.name}";
-    messages.add(ChatMessage(from: Sender.user, text: confirmationMessage));
+    // MODIFIED: Create a ChatMessage containing the image path instead of text.
+    messages.add(ChatMessage(
+      from: Sender.user,
+      imagePath: imageFile.path,
+      text: '',
+    ));
     _scrollToBottom();
 
     // Proceed to the next step in the onboarding flow.

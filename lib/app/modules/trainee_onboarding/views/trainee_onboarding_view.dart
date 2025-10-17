@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -49,18 +51,33 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               controller: controller.pageController,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               itemCount: items.length + (typing ? 1 : 0),
-              itemBuilder: (context, index) {
-                final isTypingRow = typing && index == items.length;
-                if (isTypingRow) return const TypingBubble();
-                final m = items[index];
-                return Align(
-                  alignment: m.from == Sender.user
+                itemBuilder: (context, index) {
+                  final isTypingRow = typing && index == items.length;
+                  if (isTypingRow) return const TypingBubble();
+                  final m = items[index];
+
+                  // --- START: MODIFIED LOGIC ---
+                  // Determine alignment
+                  final alignment = m.from == Sender.user
                       ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: MessageBubble(text: m.text, from: m.from),
-                );
-              },
-            );
+                      : Alignment.centerLeft;
+
+                  // Conditionally build the bubble based on message content
+                  Widget bubble;
+                  if (m.imagePath != null && m.imagePath!.isNotEmpty) {
+                    // If there's an image, use the new image bubble
+                    bubble = _ImageMessageBubble(
+                        imagePath: m.imagePath!, from: m.from);
+                  } else {
+                    // Otherwise, use the existing text bubble
+                    bubble = MessageBubble(text: m.text, from: m.from);
+                  }
+
+                  return Align(
+                    alignment: alignment,
+                    child: bubble,
+                  );
+                });
           }),
         ),
 
@@ -280,7 +297,7 @@ class _HeightPickerState extends State<_HeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -394,7 +411,7 @@ class _WeightPickerState extends State<_WeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -527,5 +544,64 @@ class _ImagePickerInput extends StatelessWidget {
       // If an image was selected, call the controller's handler method.
       controller.selectImage(image);
     }
+  }
+}
+
+
+///displays an image from a local file path.
+class _ImageMessageBubble extends StatelessWidget {
+  final String imagePath;
+  final Sender from;
+
+  const _ImageMessageBubble({required this.imagePath, required this.from});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isUser = from == Sender.user;
+
+    return Container(
+      constraints: BoxConstraints(
+        // Constrain the width to 70% of the screen
+        maxWidth: MediaQuery.of(context).size.width * 0.7,
+      ),
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      decoration: BoxDecoration(
+        color: isUser
+            ? theme.colorScheme.primaryContainer
+            : theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      // Clip the image to the rounded corners of the container
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Image.file(
+          File(imagePath),
+          fit: BoxFit.cover,
+          // MODIFIED: Use frameBuilder for compatibility with older Flutter versions.
+          // It provides a similar "while loading" capability.
+          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+            if (wasSynchronouslyLoaded) {
+              return child; // If loaded instantly, just show the image.
+            }
+            // If the frame is not yet available, show a loading indicator.
+            // Once the frame is ready, this builder is called again and `child` is shown.
+            return frame == null
+                ? const Padding(
+              padding: EdgeInsets.all(48.0),
+              child: Center(child: CircularProgressIndicator.adaptive()),
+            )
+                : child;
+          },
+          // Show an error icon if the image fails to load
+          errorBuilder: (context, error, stackTrace) {
+            return const Padding(
+              padding: EdgeInsets.all(32.0),
+              child: Icon(Icons.broken_image, color: Colors.red, size: 40),
+            );
+          },
+        ),
+      ),
+    );
   }
 }

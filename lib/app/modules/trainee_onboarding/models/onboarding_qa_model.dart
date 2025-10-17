@@ -35,8 +35,9 @@ enum Sender { bot, user }
 class ChatMessage {
   final Sender from;
   final String text;
+  final String? imagePath;
   final DateTime at;
 
-  ChatMessage({required this.from, required this.text, DateTime? at})
+  ChatMessage({required this.from, required this.text, this.imagePath, DateTime? at})
     : at = at ?? DateTime.now();
 }
