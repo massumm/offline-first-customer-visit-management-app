@@ -16,6 +16,8 @@ import '../modules/profile_create_animation/bindings/profile_create_animation_bi
 import '../modules/profile_create_animation/views/profile_create_animation_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/register_view.dart';
+import '../modules/register/views/two_factor_verification_page_view.dart';
+import '../modules/register/views/email_verification_otp_page_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
@@ -57,6 +59,16 @@ class AppPages {
     GetPage(
       name: _Paths.REGISTER,
       page: () => RegisterView(),
+      binding: RegisterBinding(),
+    ),
+    GetPage(
+      name: _Paths.Two_Factor_Verification,
+      page: () => TwoFactorVerificationPageView(),
+      binding: RegisterBinding(),
+    ),
+    GetPage(
+      name: _Paths.EMAIL_VERIFICATION_OTP,
+      page: () => EmailVerificationOtpPageView(),
       binding: RegisterBinding(),
     ),
     GetPage(

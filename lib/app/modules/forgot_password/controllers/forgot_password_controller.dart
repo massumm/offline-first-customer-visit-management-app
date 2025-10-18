@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/modules/forgot_password/repository/forgot_password_repository.dart';
 import 'package:icon/app/modules/forgot_password/views/choose_password_page_view.dart';
 import 'package:icon/app/modules/forgot_password/views/forgot_password_page_view.dart';
 import 'package:icon/app/modules/forgot_password/views/otp_page_view.dart';
 import 'package:icon/app/modules/forgot_password/views/password_change_success_view.dart';
 
 class ForgotPasswordController extends BaseController {
+  final _forgotPasswordRepository = Get.find<ForgotPasswordRepository>();
   final pageController = PageController();
 
   List<Widget> get pages => [
@@ -36,12 +40,17 @@ class ForgotPasswordController extends BaseController {
   bool _isTimerRunning = false;
 
   // Password Controllers
+  final resetTokenController = TextEditingController();
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final resetTokenError = RxnString();
   final newPasswordError = RxnString();
   final confirmPasswordError = RxnString();
   final isNewPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;
+  
+  // Loading state for send OTP
+  final isSendingOtp = false.obs;
 
   Widget get forgotPasswordDefaultHeight => 80.height;
 
@@ -66,6 +75,10 @@ class ForgotPasswordController extends BaseController {
       
       // Clear error if validation passes
       emailError.value = null;
+      
+      // Call password reset request API
+      sendPasswordResetRequest();
+      return;
     }
     
     if (currentPageIndex.value < pages.length - 1) {
@@ -80,6 +93,50 @@ class ForgotPasswordController extends BaseController {
         startResendTimer();
       }
     }
+  }
+  
+  void sendPasswordResetRequest() {
+    if (isSendingOtp.isTrue) return;
+    
+    isSendingOtp(true);
+    
+    final requestBody = {
+      "email": emailController.text,
+    };
+    
+    // Step 1: Request password reset
+    _forgotPasswordRepository.requestPasswordReset(requestBody).then(
+      (passwordResetResponse) {
+        // Step 2: Request OTP after password reset request succeeds
+        return _forgotPasswordRepository.requestOtp(requestBody);
+      },
+    ).then(
+      (otpResponse) {
+        isSendingOtp.value = false;
+        // Navigate to OTP page
+        pageController.nextPage(
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+        currentPageIndex.value++;
+        
+        // Start timer when reaching OTP page
+        if (!_isTimerRunning) {
+          startResendTimer();
+        }
+        
+        CustomToast.showSuccessToast(
+          otpResponse['detail'] ?? 'OTP sent.',
+        );
+      },
+    ).catchError((e) {
+      isSendingOtp.value = false;
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+        return;
+      }
+      CustomToast.showErrorToast('An unexpected error occurred');
+    });
   }
 
   void gotToPreviousPage() {
@@ -115,8 +172,37 @@ class ForgotPasswordController extends BaseController {
       return;
     }
 
-    // TODO: Implement OTP verification logic
-    gotToNextPage();
+    final requestBody = {
+      "email": emailController.text,
+      "code": otp,
+    };
+
+    _forgotPasswordRepository.verifyOtp(requestBody).then(
+      (response) {
+        // Store tokens if provided
+        if (response['access'] != null) {
+          // TODO: Store access token
+        }
+        if (response['refresh'] != null) {
+          // TODO: Store refresh token
+        }
+
+        // Navigate to next page (choose password)
+        gotToNextPage();
+        
+        CustomToast.showSuccessToast(
+          response['detail'] ?? 'OTP verified successfully.',
+        );
+      },
+      onError: (e) {
+        if (e is ApiException) {
+          otpError.value = e.description;
+          CustomToast.showErrorToast(e.description);
+          return;
+        }
+        CustomToast.showErrorToast('An unexpected error occurred');
+      },
+    );
   }
 
   void resendOtp() {
@@ -150,8 +236,15 @@ class ForgotPasswordController extends BaseController {
 
   void resetPassword() {
     // Clear previous errors
+    resetTokenError.value = null;
     newPasswordError.value = null;
     confirmPasswordError.value = null;
+
+    // Validate reset token
+    if (resetTokenController.text.isEmpty) {
+      resetTokenError.value = "Reset token is required";
+      return;
+    }
 
     // Validate new password
     if (newPasswordController.text.isEmpty) {
@@ -175,8 +268,36 @@ class ForgotPasswordController extends BaseController {
       return;
     }
 
-    // TODO: Implement password reset API call
-    gotToNextPage();
+    // Call password reset confirm API
+    final requestBody = {
+      "token": resetTokenController.text,
+      "new_password": newPasswordController.text,
+    };
+
+    _forgotPasswordRepository.resetPasswordConfirm(requestBody).then(
+      (response) {
+        // Navigate to success page
+        gotToNextPage();
+        
+        CustomToast.showSuccessToast(
+          response['detail'] ?? 'Password reset successful.',
+        );
+      },
+      onError: (e) {
+        if (e is ApiException) {
+          // Check if error is related to token
+          if (e.description.toLowerCase().contains('token') || 
+              e.description.toLowerCase().contains('uuid')) {
+            resetTokenError.value = e.description;
+          } else {
+            newPasswordError.value = e.description;
+          }
+          CustomToast.showErrorToast(e.description);
+          return;
+        }
+        CustomToast.showErrorToast('An unexpected error occurred');
+      },
+    );
   }
 
   void toggleNewPasswordVisibility() {
@@ -198,6 +319,7 @@ class ForgotPasswordController extends BaseController {
     otp4Controller.dispose();
     otp5Controller.dispose();
     otp6Controller.dispose();
+    resetTokenController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
     super.onClose();

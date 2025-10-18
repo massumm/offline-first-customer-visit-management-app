@@ -34,6 +34,48 @@ class ChoosePasswordPageView extends BaseView<ForgotPasswordController> {
                 ),
                 40.height,
 
+                // Reset Token Field
+                Text(
+                  "Reset Token",
+                  style: Get.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                10.height,
+                Obx(() => TextField(
+                      controller: controller.resetTokenController,
+                      decoration: InputDecoration(
+                        hintText: "Enter reset token",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(color: Colors.grey.shade300),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: Get.theme.primaryColor,
+                            width: 2,
+                          ),
+                        ),
+                        errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: const BorderSide(color: Colors.red),
+                        ),
+                        errorText: controller.resetTokenError.value,
+                      ),
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      onChanged: (value) {
+                        if (controller.resetTokenError.value != null) {
+                          controller.resetTokenError.value = null;
+                        }
+                      },
+                    )),
+                20.height,
+
                 // New Password Field
                 Text(
                   "New password",

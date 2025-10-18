@@ -62,15 +62,27 @@ class ForgotPasswordPageView extends BaseView<ForgotPasswordController> {
                 // Send OTP Button
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  child: Obx(() {
+                    return ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    ),
-                    onPressed: controller.gotToNextPage,
-                    child: const Text("Send OTP"),
-                  ),
+                      onPressed: controller.isSendingOtp.value
+                          ? null
+                          : controller.gotToNextPage,
+                      child: controller.isSendingOtp.value
+                          ? const Padding(
+                              padding: EdgeInsets.all(4.0),
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Text("Send OTP"),
+                    );
+                  }),
                 ),
               ],
             ),

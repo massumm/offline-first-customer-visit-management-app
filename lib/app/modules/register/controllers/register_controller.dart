@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
+import 'package:icon/app/data/local/preference/preference_service.dart';
 import 'package:icon/app/modules/register/repository/registration_repository.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
@@ -15,18 +17,36 @@ class RegisterController extends BaseController {
   var obscurePassword = true.obs;
   var agreeToService = false.obs;
 
+  // OTP Controllers for email verification
+  final otp1Controller = TextEditingController();
+  final otp2Controller = TextEditingController();
+  final otp3Controller = TextEditingController();
+  final otp4Controller = TextEditingController();
+  final otp5Controller = TextEditingController();
+  final otp6Controller = TextEditingController();
+
+  // Resend timer
+  var resendTimer = 60.obs;
+  var canResend = false.obs;
+  Timer? _timer;
+
+  // Store verification key
+  var verificationKey = '';
+
   // TextInput validation error
   var passwordError = RxnString();
   var emailError = RxnString();
   var nameError = RxnString();
   var isLoading = false.obs;
+  var isVerifying = false.obs;
 
   // .............Theme Data...........
   final ts = Get.find<ThemeService>();
 
-  bool  get isDarkTheme  {
+  bool get isDarkTheme {
     final platformDark =
-        WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+        WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+        Brightness.dark;
 
     return ts.themeMode == ThemeMode.dark ||
         (ts.themeMode == ThemeMode.system && platformDark);
@@ -75,7 +95,7 @@ class RegisterController extends BaseController {
       'qwerty',
       '111111',
       'p@ssword',
-      'admin'
+      'admin',
     };
 
     if (commonPasswords.contains(password.toLowerCase())) {
@@ -85,7 +105,8 @@ class RegisterController extends BaseController {
     if (email != null && email.isNotEmpty) {
       final username = email.split('@').first;
       // Avoid flagging short usernames that might appear in many words.
-      if (username.length > 3 && password.toLowerCase().contains(username.toLowerCase())) {
+      if (username.length > 3 &&
+          password.toLowerCase().contains(username.toLowerCase())) {
         return "Password cannot be too similar to your email.";
       }
     }
@@ -113,9 +134,9 @@ class RegisterController extends BaseController {
     // Trigger validation for both email and password
     emailError.value = validateEmail(emailCtr.text);
     passwordError.value = validatePassword(passwordCtr.text);
-    nameError.value = validateName(emailCtr.text);
+    nameError.value = validateName(nameCtr.text);
 
-    // Only proceed with login if there are no errors
+    // Only proceed with registration if there are no errors
     if (emailError.value == null &&
         passwordError.value == null &&
         nameError.value == null) {
@@ -131,14 +152,16 @@ class RegisterController extends BaseController {
           .onRegister(requestBody)
           .then(
             (response) {
-              Get.offAndToNamed(Routes.LOGIN);
+              isLoading.value = false;
+              // Navigate to two-factor authentication setup page
+              Get.toNamed(Routes.Two_Factor_Verification);
               CustomToast.showSuccessToast(
-                response.message ?? "User registered successfully",
+                response.message ?? "Account created successfully",
               );
             },
             onError: (e) {
               isLoading.value = false;
-              if(e is ApiException){
+              if (e is ApiException) {
                 CustomToast.showErrorToast(e.description);
                 return;
               }
@@ -146,5 +169,130 @@ class RegisterController extends BaseController {
             },
           );
     }
+  }
+
+  void sendVerificationEmail() {
+    if (isVerifying.isTrue) return;
+
+    isVerifying(true);
+
+    // TODO: Call API to send verification email
+    // For now, simulate sending and navigate to OTP page
+    Future.delayed(const Duration(seconds: 1), () {
+      isVerifying.value = false;
+      // Navigate to OTP page
+      Get.toNamed(Routes.EMAIL_VERIFICATION_OTP);
+      CustomToast.showSuccessToast('Verification code sent to your email');
+      _startResendTimer();
+    });
+  }
+
+  void verifyEmailOtp() {
+    if (isLoading.isTrue) return;
+
+    final otp = otp1Controller.text +
+        otp2Controller.text +
+        otp3Controller.text +
+        otp4Controller.text +
+        otp5Controller.text +
+        otp6Controller.text;
+
+    if (otp.length != 6) {
+      CustomToast.showErrorToast('Please enter complete OTP');
+      return;
+    }
+
+    isLoading(true);
+
+    final otpRequestBody = {
+      "email": emailCtr.text,
+      "code": otp,
+    };
+
+    // Step 1: Verify OTP
+    _registrationRepository.verifyOtp(otpRequestBody).then(
+      (otpResponse) async {
+        // Step 2: Save the key from response to shared preferences
+        final String verificationKey = otpResponse['key'] ?? '';
+        if (verificationKey.isEmpty) {
+          isLoading.value = false;
+          CustomToast.showErrorToast('Invalid verification key received');
+          throw Exception('Invalid verification key');
+        }
+
+        // Save key to shared preferences
+        await StorageService.to.setString('verification_key', verificationKey);
+
+        // Step 3: Call verify email API with the saved key
+        final emailVerifyRequestBody = {
+          "key": verificationKey,
+        };
+
+        return await _registrationRepository.verifyEmail(emailVerifyRequestBody);
+      },
+    ).then(
+      (emailResponse) async {
+        isLoading.value = false;
+        _clearOtpFields();
+        _timer?.cancel();
+        // Clear the verification key from storage after successful verification
+        await StorageService.to.remove('verification_key');
+        Get.offAllNamed(Routes.LOGIN);
+        CustomToast.showSuccessToast('Email verified successfully!');
+      },
+    ).catchError((e) {
+      isLoading.value = false;
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+        return;
+      }
+      CustomToast.showErrorToast('An unexpected error occurred');
+    });
+  }
+
+  void resendEmailOtp() {
+    if (!canResend.value) return;
+
+    // TODO: Call API to resend OTP
+    CustomToast.showSuccessToast('OTP sent to your email');
+    _startResendTimer();
+  }
+
+  void _startResendTimer() {
+    canResend.value = false;
+    resendTimer.value = 60;
+    _timer?.cancel();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendTimer.value > 0) {
+        resendTimer.value--;
+      } else {
+        canResend.value = true;
+        timer.cancel();
+      }
+    });
+  }
+
+  void _clearOtpFields() {
+    otp1Controller.clear();
+    otp2Controller.clear();
+    otp3Controller.clear();
+    otp4Controller.clear();
+    otp5Controller.clear();
+    otp6Controller.clear();
+  }
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    emailCtr.dispose();
+    passwordCtr.dispose();
+    nameCtr.dispose();
+    otp1Controller.dispose();
+    otp2Controller.dispose();
+    otp3Controller.dispose();
+    otp4Controller.dispose();
+    otp5Controller.dispose();
+    otp6Controller.dispose();
+    super.onClose();
   }
 }

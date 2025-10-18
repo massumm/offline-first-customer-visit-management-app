@@ -27,6 +27,43 @@ class RegistrationRepositoryImpl extends BaseRemoteSource
     }
   }
 
+  @override
+  Future<Map<String, dynamic>> verifyOtp(Map<String, dynamic> requestBody) {
+    final String endpoint = "${DioProvider.baseUrl}/api/accounts/otp/verify/";
+
+    Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: requestBody,
+    );
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data as Map<String, dynamic>);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> verifyEmail(Map<String, dynamic> requestBody) {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/auth/registration/verify-email/";
+
+    Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: requestBody,
+    );
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data as Map<String, dynamic>);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   RegistrationResponseModel _parseLoginResponse(Response<dynamic> response) {
     return RegistrationResponseModel.fromJson(response.data);
   }
