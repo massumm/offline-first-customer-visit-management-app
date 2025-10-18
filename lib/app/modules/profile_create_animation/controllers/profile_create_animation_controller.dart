@@ -44,7 +44,8 @@ class ProfileCreateAnimationController extends BaseController {
     if (answers == null) {
       logger.e("FATAL: No onboarding answers found. Navigating home.");
       // If there's no data, we can't make API calls, so just navigate home.
-      Get.offAllNamed(Routes.HOME);
+      //TODO: HANDLE ROUTE
+      Get.toNamed(Routes.HOME);
       return;
     }
 
@@ -76,7 +77,8 @@ class ProfileCreateAnimationController extends BaseController {
       // This block will always execute, whether the API calls succeeded or failed.
       'Navigating to home screen...'.log();
       _isProcessing.value = false;
-      Get.offAllNamed(Routes.HOME);
+      //TODO: HANDLE ROUTE
+      Get.toNamed(Routes.HOME);
     }
   }
 
