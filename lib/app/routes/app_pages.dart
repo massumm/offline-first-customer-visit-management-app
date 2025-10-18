@@ -83,7 +83,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.PROFILE_CREATE_ANIMATION,
-      page: () => const ProfileCreateAnimationView(),
+      page: () => ProfileCreateAnimationView(),
       binding: ProfileCreateAnimationBinding(),
     ),
     GetPage(
