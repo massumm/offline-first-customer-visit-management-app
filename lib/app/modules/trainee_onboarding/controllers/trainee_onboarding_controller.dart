@@ -14,6 +14,7 @@ class TraineeOnboardingController extends BaseController {
   /// Configure your flow here
   final questionGroups = <QuestionGroup>[
     QuestionGroup(
+      name: 'Personal Details',
       introduction: "To start, let's get some personal details.",
       questions: [
         const QAItem(
@@ -43,6 +44,7 @@ class TraineeOnboardingController extends BaseController {
       ],
     ),
     QuestionGroup(
+      name: 'Fitness Background',
       introduction: "Great! Now for a bit about your fitness background.",
       questions: [
         const QAItem(
@@ -69,11 +71,6 @@ class TraineeOnboardingController extends BaseController {
             'None',
           ],
         ),
-      ],
-    ),
-    QuestionGroup(
-      introduction: "Finally, let's talk about what drives you.",
-      questions: [
         const QAItem(
           id: 'fitness_motivation',
           question: "Why do you want to improve your fitness right now?",
@@ -92,6 +89,7 @@ class TraineeOnboardingController extends BaseController {
     ),
     // --------- GOALS ----------
     QuestionGroup(
+      name: 'Goals',
       introduction: "Let's set some goals. What are you aiming for?",
       questions: [
         const QAItem(
@@ -139,6 +137,7 @@ class TraineeOnboardingController extends BaseController {
     ),
     //-------- ACTIVITY ---------
     QuestionGroup(
+      name: 'Activity',
       introduction: "Now, let's get into your activity habits.",
       conclusion:
           "Awesome, that gives me a great picture of your activity levels!",
@@ -344,6 +343,7 @@ class TraineeOnboardingController extends BaseController {
     ),
     // ---------- Recovery ----------
     QuestionGroup(
+      name: 'Recovery',
       introduction: "Finally, let's talk about recovery.",
       conclusion: "That's everything I need to know. Thanks for sharing!",
       questions: [
@@ -478,10 +478,8 @@ class TraineeOnboardingController extends BaseController {
       ],
     ),
     // ------------ Body Profile
-    // in lib/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart
-
-    // ------------ Body Profile
     QuestionGroup(
+      name: 'Body Profile',
       introduction: "Next, let's get some body profile details.",
       // ADDED: A conclusion message for the end of this group.
       conclusion: "Excellent! That's all the profile information we need.",
@@ -723,9 +721,17 @@ class TraineeOnboardingController extends BaseController {
 
         // 4. Otherwise, prompt the user and wait for them to Continue or Skip
         isAwaitingGroupConfirmation.value = true;
-        await _botSay("Ready to move on to the next section?");
+        // ---  Show remaining group names ---
+        final remainingGroups = questionGroups.sublist(nextGroupIndex + 1);
+        final remainingGroupNames =
+        remainingGroups.map((g) => "• ${g.name}").join('\n');
+
+        await _botSay(
+          "Great job! To create the best plan, we still need to cover these topics:\n$remainingGroupNames",
+        );
+        await _botSay("Ready to continue?");
         return; // IMPORTANT: Exit _askNext and wait for user action
-        // --- END: End-of-Group Logic ---
+        // --- End-of-Group Logic ---
       }
 
       // This case is now handled by the logic above, but serves as a fallback.
