@@ -11,6 +11,7 @@ import '../../../../generated/assets.dart';
 import '../../../core/widgets/back_pill.dart';
 import '../../../core/widgets/input_widgets/adaptive_text_field.dart';
 import '../../../core/widgets/super_image.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/register_controller.dart';
 
 class RegisterView extends BaseView<RegisterController> {
@@ -253,7 +254,7 @@ class RegisterView extends BaseView<RegisterController> {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                Get.back();
+                                Get.offAndToNamed(Routes.LOGIN);
                               },
                           ),
                         ],
