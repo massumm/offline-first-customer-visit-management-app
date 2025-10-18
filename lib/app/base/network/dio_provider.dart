@@ -58,7 +58,7 @@ class DioProvider {
     error: true,
     compact: true,
     maxWidth: _maxLineWidth,
-    enabled: kDebugMode,
+    enabled: true,//kDebugMode,
   );
 
   static Dio get _dio {
