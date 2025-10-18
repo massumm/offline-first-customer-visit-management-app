@@ -9,6 +9,7 @@ abstract class Routes {
   static const REGISTER = _Paths.REGISTER;
   static const Two_Factor_Verification = _Paths.Two_Factor_Verification;
   static const EMAIL_VERIFICATION_OTP = _Paths.EMAIL_VERIFICATION_OTP;
+  static const TWO_FACTOR_SUCCESS = _Paths.TWO_FACTOR_SUCCESS;
   static const ONBOARDING = _Paths.ONBOARDING;
   static const TRAINER_ONBOARDING = _Paths.TRAINER_ONBOARDING;
   static const ICON_CHAT = _Paths.ICON_CHAT;
@@ -26,6 +27,7 @@ abstract class _Paths {
   static const REGISTER = '/register';
   static const Two_Factor_Verification = '/two-factor-verification';
   static const EMAIL_VERIFICATION_OTP = '/email-verification-otp';
+  static const TWO_FACTOR_SUCCESS = '/two-factor-success';
   static const ONBOARDING = '/onboarding';
   static const TRAINER_ONBOARDING = '/trainer-onboarding';
   static const PROFILE_CREATE_ANIMATION = '/profile-create-animation';

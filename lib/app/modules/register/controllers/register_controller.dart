@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
-import 'package:icon/app/data/local/preference/preference_service.dart';
+// import 'package:icon/app/data/local/preference/preference_service.dart'; // TODO: Uncomment when using actual API
 import 'package:icon/app/modules/register/repository/registration_repository.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
@@ -202,8 +202,20 @@ class RegisterController extends BaseController {
       return;
     }
 
+    // TODO: Remove this temporary bypass and use actual API verification
+    // Temporarily accept any 6-digit OTP
     isLoading(true);
+    
+    Future.delayed(const Duration(seconds: 1), () {
+      isLoading.value = false;
+      _clearOtpFields();
+      _timer?.cancel();
+      Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
+      CustomToast.showSuccessToast('Email verified successfully!');
+    });
 
+    /* 
+    // Original API implementation - uncomment when ready to use
     final otpRequestBody = {
       "email": emailCtr.text,
       "code": otp,
@@ -237,7 +249,7 @@ class RegisterController extends BaseController {
         _timer?.cancel();
         // Clear the verification key from storage after successful verification
         await StorageService.to.remove('verification_key');
-        Get.offAllNamed(Routes.LOGIN);
+        Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
         CustomToast.showSuccessToast('Email verified successfully!');
       },
     ).catchError((e) {
@@ -248,6 +260,7 @@ class RegisterController extends BaseController {
       }
       CustomToast.showErrorToast('An unexpected error occurred');
     });
+    */
   }
 
   void resendEmailOtp() {
