@@ -4,6 +4,7 @@ import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/modules/register/repository/registration_repository.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../core/theme/services/theme_service.dart';
 
@@ -130,7 +131,7 @@ class RegisterController extends BaseController {
           .onRegister(requestBody)
           .then(
             (response) {
-              Get.back();
+              Get.offAndToNamed(Routes.LOGIN);
               CustomToast.showSuccessToast(
                 response.message ?? "User registered successfully",
               );
