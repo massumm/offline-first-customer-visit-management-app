@@ -1,16 +1,20 @@
-# icon
+# Icon Train Smarter
 
-A new Flutter project.
+A next generation healthcare app. 
 
 ## Getting Started
 
 This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+Packages & Technologies that are used
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+------------------------------
+- **GetX** => an extra-light and powerful solution for Flutter. It combines high-performance state management, intelligent dependency injection, and route management quickly and practically.
+- **GetCLI** => Official CLI for the GetX™ framework.
+- **FVM** => Flutter Version Management to manage Flutter SDK versions.
+- **Flutter Native Splash** => to display a splash screen. This package automatically generates iOS, Android, and Web-native code for customizing this native splash screen background color and splash image. Supports dark mode, full screen, and platform-specific options.
+
+## Project Structure
+<!-- omit in toc -->
+Getx Pattern
