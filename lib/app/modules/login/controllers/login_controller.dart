@@ -4,6 +4,7 @@ import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/services/theme_service.dart';
 import '../../../base/widgets/custom_toast.dart';
+import '../../../data/local/preference/store/trainee_data_store.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
 import '../repository/login_repository.dart';
@@ -161,19 +162,20 @@ class LoginController extends BaseController {
   }
 
   void _handleRoute() {
-    //TODO: Handle the trainee onb.
-     final hasProfileData =  false;
-         // TraineeDataStore.to.traineeModelValue;
+    // Check if there is pending onboarding data for the trainee.
+    final onboardingData = TraineeDataStore.to.onboardingDataValue;
 
-    // if (hasProfileData != null) {
-    //   // Create Trainee profile
-    //   Get.toNamed(Routes.PROFILE_CREATE_ANIMATION);
-    // } else {
-    //   Get.offAllNamed(Routes.HOME);
-    // }
-
-     Get.offAllNamed(Routes.HOME);
+    if (onboardingData != null) {
+      // If data exists, the user likely just finished onboarding before logging in.
+      // Navigate them to the profile creation flow, clearing the login stack.
+      Get.offAllNamed(Routes.PROFILE_CREATE_ANIMATION);
+    } else {
+      // If no onboarding data is found, the user is a returning user.
+      // Navigate them directly to the home screen, clearing the login stack.
+      Get.offAllNamed(Routes.HOME);
+    }
   }
+
 
   void toRegister() {
     Get.toNamed(Routes.REGISTER);

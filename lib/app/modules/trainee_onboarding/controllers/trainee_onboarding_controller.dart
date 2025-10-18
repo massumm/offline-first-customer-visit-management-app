@@ -5,6 +5,7 @@ import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../data/local/preference/store/trainee_data_store.dart';
 import '../../../routes/app_pages.dart';
 import '../models/onboarding_qa_model.dart';
 
@@ -654,15 +655,16 @@ class TraineeOnboardingController extends BaseController {
 
   // Add this new method to handle the final action
   void proceedToSignup() {
-    // Here, you would navigate to your signup/registration page.
-    // It's a good practice to pass the collected answers along.
-    // For example, using GetX navigation:
+    final onboardingJson = toJson();
 
-    // For demonstration, we'll just show a snackbar.
-    CustomToast.showSuccessToast( "Onboarding Complete");
-    Get.toNamed(Routes.REGISTER, arguments: toJson());
+    // This will encode the map to a JSON string and save it to local storage.
+    Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
 
-    "Proceeding to signup with data: ${toJson()}".log();
+    CustomToast.showSuccessToast("Onboarding Complete");
+
+    Get.toNamed(Routes.REGISTER, arguments: onboardingJson);
+
+    "Proceeding to signup with data: $onboardingJson".log();
   }
 
   Future<void> _botSay(String text) async {
