@@ -135,7 +135,9 @@ class LoginView extends BaseView<LoginController> {
                         ],
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          controller.toForgotPassword();
+                        },
                         child: Text(
                           "Forgot password?",
                           style: theme.textTheme.titleSmall,
