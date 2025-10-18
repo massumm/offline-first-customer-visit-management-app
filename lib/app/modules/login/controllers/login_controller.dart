@@ -41,8 +41,8 @@ class LoginController extends BaseController {
 
   @override
   void onClose() {
-    emailCtr.dispose();
-    passwordCtr.dispose();
+    // emailCtr.dispose();
+    // passwordCtr.dispose();
     super.onClose();
   }
 
