@@ -17,4 +17,4 @@ Packages & Technologies that are used
 
 ## Project Structure
 <!-- omit in toc -->
-Getx Pattern
+MVC 
