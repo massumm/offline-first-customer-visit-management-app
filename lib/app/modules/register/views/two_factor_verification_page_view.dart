@@ -11,7 +11,6 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
   @override
   Widget body(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F7F7),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -26,7 +25,6 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
                 "Add an Extra Layer of\nSecurity",
                 style: Get.textTheme.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF5B5B5B),
                   height: 1.3,
                 ),
               ),
@@ -36,7 +34,6 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
               Text(
                 "Protect your account with two-factor\nauthentication.",
                 style: Get.textTheme.bodyLarge?.copyWith(
-                  color: const Color(0xFF241814),
                   fontWeight: FontWeight.w600,
                   height: 1.4,
                 ),
@@ -53,7 +50,7 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
                 subtitle: "Receive verification codes via text message",
                 onTap: () {
                   // TODO: Navigate to SMS verification
-                  Get.back();
+                  // Get.back();
                 },
               ),
               16.height,
@@ -66,22 +63,24 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
                 subtitle: "use apps like Google Authenticator or Authy",
                 onTap: () {
                   // TODO: Navigate to authenticator setup
-                  Get.back();
+                  // Get.back();
                 },
               ),
               16.height,
 
-              Obx(() => _buildOptionCard(
-                    icon: Icons.email_outlined,
-                    iconColor: const Color(0xFFE9522B),
-                    iconBgColor: const Color(0xFFFFEBE5),
-                    title: "Email Verification",
-                    subtitle: "Get codes sent to your email address",
-                    isLoading: controller.isVerifying.value,
-                    onTap: controller.isVerifying.value
-                        ? null
-                        : controller.sendVerificationEmail,
-                  )),
+              Obx(
+                () => _buildOptionCard(
+                  icon: Icons.email_outlined,
+                  iconColor: const Color(0xFFE9522B),
+                  iconBgColor: const Color(0xFFFFEBE5),
+                  title: "Email Verification",
+                  subtitle: "Get codes sent to your email address",
+                  isLoading: controller.isVerifying.value,
+                  onTap: controller.isVerifying.value
+                      ? null
+                      : controller.sendVerificationEmail,
+                ),
+              ),
 
               40.height,
             ],
@@ -107,8 +106,11 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
           borderRadius: BorderRadius.circular(12),
+          color: Get.theme.inputDecorationTheme.fillColor,
+          border: Border.all(
+            color: Get.theme.inputDecorationTheme.border!.borderSide.color,
+          ),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.04),
@@ -142,7 +144,6 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
                         title,
                         style: Get.textTheme.bodyLarge?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: const Color(0xFF241814),
                           fontSize: 11,
                         ),
                       ),
@@ -172,7 +173,6 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
                   Text(
                     subtitle,
                     style: Get.textTheme.bodySmall?.copyWith(
-                      color: const Color(0xFF5B5B5B),
                       height: 1.4,
                       fontSize: 8,
                     ),
@@ -191,11 +191,7 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
                       color: Color(0xFFE9522B),
                     ),
                   )
-                : const Icon(
-                    Icons.chevron_right,
-                    color: Color(0xFF241814),
-                    size: 24,
-                  ),
+                : const Icon(Icons.chevron_right, size: 24),
           ],
         ),
       ),

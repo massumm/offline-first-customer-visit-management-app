@@ -18,7 +18,7 @@ class TwoFactorSuccessPageView extends BaseView<RegisterController> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
-              
+
               // Success Icon
               Container(
                 width: 120,
@@ -73,10 +73,7 @@ class TwoFactorSuccessPageView extends BaseView<RegisterController> {
                   },
                   child: const Text(
                     "Go to Login",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                   ),
                 ),
               ),

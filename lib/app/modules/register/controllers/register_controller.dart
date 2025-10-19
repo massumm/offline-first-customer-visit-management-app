@@ -25,6 +25,13 @@ class RegisterController extends BaseController {
   final otp5Controller = TextEditingController();
   final otp6Controller = TextEditingController();
 
+  final otp1FocusNode = FocusNode();
+  final otp2FocusNode = FocusNode();
+  final otp3FocusNode = FocusNode();
+  final otp4FocusNode = FocusNode();
+  final otp5FocusNode = FocusNode();
+  final otp6FocusNode = FocusNode();
+
   // Resend timer
   var resendTimer = 60.obs;
   var canResend = false.obs;
@@ -39,6 +46,7 @@ class RegisterController extends BaseController {
   var nameError = RxnString();
   var isLoading = false.obs;
   var isVerifying = false.obs;
+  var emailOtpError = RxnString();
 
   // .............Theme Data...........
   final ts = Get.find<ThemeService>();
@@ -198,6 +206,7 @@ class RegisterController extends BaseController {
         otp6Controller.text;
 
     if (otp.length != 6) {
+      emailOtpError.value = 'Please enter complete OTP';
       CustomToast.showErrorToast('Please enter complete OTP');
       return;
     }
@@ -209,6 +218,7 @@ class RegisterController extends BaseController {
     Future.delayed(const Duration(seconds: 1), () {
       isLoading.value = false;
       _clearOtpFields();
+      emailOtpError.value = null;
       _timer?.cancel();
       Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
       CustomToast.showSuccessToast('Email verified successfully!');
@@ -292,6 +302,7 @@ class RegisterController extends BaseController {
     otp4Controller.clear();
     otp5Controller.clear();
     otp6Controller.clear();
+    emailOtpError.value = null;
   }
 
   @override
@@ -306,6 +317,12 @@ class RegisterController extends BaseController {
     otp4Controller.dispose();
     otp5Controller.dispose();
     otp6Controller.dispose();
+    otp1FocusNode.dispose();
+    otp2FocusNode.dispose();
+    otp3FocusNode.dispose();
+    otp4FocusNode.dispose();
+    otp5FocusNode.dispose();
+    otp6FocusNode.dispose();
     super.onClose();
   }
 }

@@ -33,7 +33,14 @@ class ForgotPasswordController extends BaseController {
   final otp4Controller = TextEditingController();
   final otp5Controller = TextEditingController();
   final otp6Controller = TextEditingController();
-  
+
+  final otp1FocusNode = FocusNode();
+  final otp2FocusNode = FocusNode();
+  final otp3FocusNode = FocusNode();
+  final otp4FocusNode = FocusNode();
+  final otp5FocusNode = FocusNode();
+  final otp6FocusNode = FocusNode();
+
   final otpError = RxnString();
   final resendTimer = 30.obs;
   final canResend = false.obs;
@@ -48,7 +55,7 @@ class ForgotPasswordController extends BaseController {
   final confirmPasswordError = RxnString();
   final isNewPasswordVisible = false.obs;
   final isConfirmPasswordVisible = false.obs;
-  
+
   // Loading state for send OTP
   final isSendingOtp = false.obs;
 
@@ -65,82 +72,82 @@ class ForgotPasswordController extends BaseController {
         emailError.value = "Email is required";
         return;
       }
-      
+
       // Basic email validation
       final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
       if (!emailRegex.hasMatch(emailController.text)) {
         emailError.value = "Please enter a valid email";
         return;
       }
-      
+
       // Clear error if validation passes
       emailError.value = null;
-      
+
       // Call password reset request API
       sendPasswordResetRequest();
       return;
     }
-    
+
     if (currentPageIndex.value < pages.length - 1) {
       pageController.nextPage(
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
       currentPageIndex.value++;
-      
+
       // Start timer when reaching OTP page
       if (currentPageIndex.value == 1 && !_isTimerRunning) {
         startResendTimer();
       }
     }
   }
-  
+
   void sendPasswordResetRequest() {
     if (isSendingOtp.isTrue) return;
-    
+
     isSendingOtp(true);
-    
-    final requestBody = {
-      "email": emailController.text,
-    };
-    
+
+    final requestBody = {"email": emailController.text};
+
     // Step 1: Request password reset
-    _forgotPasswordRepository.requestPasswordReset(requestBody).then(
-      (passwordResetResponse) {
-        // Step 2: Request OTP after password reset request succeeds
-        return _forgotPasswordRepository.requestOtp(requestBody);
-      },
-    ).then(
-      (otpResponse) {
-        isSendingOtp.value = false;
-        // Navigate to OTP page
-        pageController.nextPage(
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        );
-        currentPageIndex.value++;
-        
-        // Start timer when reaching OTP page
-        if (!_isTimerRunning) {
-          startResendTimer();
-        }
-        
-        CustomToast.showSuccessToast(
-          otpResponse['detail'] ?? 'OTP sent.',
-        );
-      },
-    ).catchError((e) {
-      isSendingOtp.value = false;
-      if (e is ApiException) {
-        CustomToast.showErrorToast(e.description);
-        return;
-      }
-      CustomToast.showErrorToast('An unexpected error occurred');
-    });
+    _forgotPasswordRepository
+        .requestPasswordReset(requestBody)
+        .then((passwordResetResponse) {
+          // Step 2: Request OTP after password reset request succeeds
+          return _forgotPasswordRepository.requestOtp(requestBody);
+        })
+        .then((otpResponse) {
+          isSendingOtp.value = false;
+          // Navigate to OTP page
+          pageController.nextPage(
+            duration: const Duration(milliseconds: 500),
+            curve: Curves.easeInOut,
+          );
+          currentPageIndex.value++;
+
+          // Start timer when reaching OTP page
+          if (!_isTimerRunning) {
+            startResendTimer();
+          }
+
+          CustomToast.showSuccessToast(otpResponse['detail'] ?? 'OTP sent.');
+        })
+        .catchError((e) {
+          isSendingOtp.value = false;
+          if (e is ApiException) {
+            CustomToast.showErrorToast(e.description);
+            return;
+          }
+          CustomToast.showErrorToast('An unexpected error occurred');
+        });
   }
 
   void gotToPreviousPage() {
     if (currentPageIndex.value > 0) {
+      if (currentPageIndex.value == 1) {
+        clearOtpPageValues();
+      }
+
       pageController.previousPage(
         duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
@@ -160,7 +167,8 @@ class ForgotPasswordController extends BaseController {
   }
 
   void verifyOtp() {
-    final otp = otp1Controller.text +
+    final otp =
+        otp1Controller.text +
         otp2Controller.text +
         otp3Controller.text +
         otp4Controller.text +
@@ -172,42 +180,41 @@ class ForgotPasswordController extends BaseController {
       return;
     }
 
-    final requestBody = {
-      "email": emailController.text,
-      "code": otp,
-    };
+    final requestBody = {"email": emailController.text, "code": otp};
 
-    _forgotPasswordRepository.verifyOtp(requestBody).then(
-      (response) {
-        // Store tokens if provided
-        if (response['access'] != null) {
-          // TODO: Store access token
-        }
-        if (response['refresh'] != null) {
-          // TODO: Store refresh token
-        }
+    _forgotPasswordRepository
+        .verifyOtp(requestBody)
+        .then(
+          (response) {
+            // Store tokens if provided
+            if (response['access'] != null) {
+              // TODO: Store access token
+            }
+            if (response['refresh'] != null) {
+              // TODO: Store refresh token
+            }
 
-        // Navigate to next page (choose password)
-        gotToNextPage();
-        
-        CustomToast.showSuccessToast(
-          response['detail'] ?? 'OTP verified successfully.',
+            // Navigate to next page (choose password)
+            gotToNextPage();
+
+            CustomToast.showSuccessToast(
+              response['detail'] ?? 'OTP verified successfully.',
+            );
+          },
+          onError: (e) {
+            if (e is ApiException) {
+              otpError.value = e.description;
+              CustomToast.showErrorToast(e.description);
+              return;
+            }
+            CustomToast.showErrorToast('An unexpected error occurred');
+          },
         );
-      },
-      onError: (e) {
-        if (e is ApiException) {
-          otpError.value = e.description;
-          CustomToast.showErrorToast(e.description);
-          return;
-        }
-        CustomToast.showErrorToast('An unexpected error occurred');
-      },
-    );
   }
 
   void resendOtp() {
     if (!canResend.value) return;
-    
+
     // TODO: Implement resend OTP logic
     canResend.value = false;
     resendTimer.value = 30;
@@ -218,10 +225,10 @@ class ForgotPasswordController extends BaseController {
     _isTimerRunning = true;
     resendTimer.value = 30;
     canResend.value = false;
-    
+
     _runTimer();
   }
-  
+
   void _runTimer() {
     Future.delayed(const Duration(seconds: 1), () {
       if (_isTimerRunning && resendTimer.value > 0) {
@@ -274,30 +281,32 @@ class ForgotPasswordController extends BaseController {
       "new_password": newPasswordController.text,
     };
 
-    _forgotPasswordRepository.resetPasswordConfirm(requestBody).then(
-      (response) {
-        // Navigate to success page
-        gotToNextPage();
-        
-        CustomToast.showSuccessToast(
-          response['detail'] ?? 'Password reset successful.',
+    _forgotPasswordRepository
+        .resetPasswordConfirm(requestBody)
+        .then(
+          (response) {
+            // Navigate to success page
+            gotToNextPage();
+
+            CustomToast.showSuccessToast(
+              response['detail'] ?? 'Password reset successful.',
+            );
+          },
+          onError: (e) {
+            if (e is ApiException) {
+              // Check if error is related to token
+              if (e.description.toLowerCase().contains('token') ||
+                  e.description.toLowerCase().contains('uuid')) {
+                resetTokenError.value = e.description;
+              } else {
+                newPasswordError.value = e.description;
+              }
+              CustomToast.showErrorToast(e.description);
+              return;
+            }
+            CustomToast.showErrorToast('An unexpected error occurred');
+          },
         );
-      },
-      onError: (e) {
-        if (e is ApiException) {
-          // Check if error is related to token
-          if (e.description.toLowerCase().contains('token') || 
-              e.description.toLowerCase().contains('uuid')) {
-            resetTokenError.value = e.description;
-          } else {
-            newPasswordError.value = e.description;
-          }
-          CustomToast.showErrorToast(e.description);
-          return;
-        }
-        CustomToast.showErrorToast('An unexpected error occurred');
-      },
-    );
   }
 
   void toggleNewPasswordVisibility() {
@@ -319,9 +328,28 @@ class ForgotPasswordController extends BaseController {
     otp4Controller.dispose();
     otp5Controller.dispose();
     otp6Controller.dispose();
+    otp1FocusNode.dispose();
+    otp2FocusNode.dispose();
+    otp3FocusNode.dispose();
+    otp4FocusNode.dispose();
+    otp5FocusNode.dispose();
+    otp6FocusNode.dispose();
     resetTokenController.dispose();
     newPasswordController.dispose();
     confirmPasswordController.dispose();
     super.onClose();
+  }
+
+  void clearOtpPageValues() {
+    otp1Controller.clear();
+    otp2Controller.clear();
+    otp3Controller.clear();
+    otp4Controller.clear();
+    otp5Controller.clear();
+    otp6Controller.clear();
+    otpError.value = null;
+    _isTimerRunning = false;
+    resendTimer.value = 30;
+    canResend.value = false;
   }
 }

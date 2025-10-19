@@ -45,6 +45,7 @@ class AdaptiveSuperTextField extends StatelessWidget {
     this.obscuringCharacter = '•',
     this.showClearButton = false,
     this.suffixIconConstraints,
+    this.textAlign = TextAlign.start,
   });
 
   final SuperTextFieldPlatform platform;
@@ -81,6 +82,7 @@ class AdaptiveSuperTextField extends StatelessWidget {
   final String obscuringCharacter;
   final bool showClearButton;
   final BoxConstraints? suffixIconConstraints;
+  final TextAlign textAlign;
 
   bool _isCupertino(BuildContext context) {
     if (platform == SuperTextFieldPlatform.cupertino) return true;
@@ -122,6 +124,7 @@ class AdaptiveSuperTextField extends StatelessWidget {
         obscuringCharacter: obscuringCharacter,
         showClearButton: showClearButton,
         enabled: enabled,
+        textAlign: textAlign,
       );
     }
 
@@ -143,6 +146,7 @@ class AdaptiveSuperTextField extends StatelessWidget {
       maxLines: maxLines,
       minLines: minLines,
       style: style,
+      textAlign: textAlign,
     );
   }
 }

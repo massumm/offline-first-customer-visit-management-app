@@ -11,6 +11,7 @@ class ForgotPasswordView extends BaseView<ForgotPasswordController> {
       body: PageView(
         controller: controller.pageController,
         onPageChanged: controller.onPageChange,
+        physics: const NeverScrollableScrollPhysics(),
         children: controller.pages,
       ),
     );

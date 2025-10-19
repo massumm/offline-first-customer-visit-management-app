@@ -21,5 +21,9 @@ class Assets {
   static const String svgOnboarding2 = 'assets/svg/onboarding-2.svg';
   static const String svgOnboarding3 = 'assets/svg/onboarding-3.svg';
   static const String svgPasswordSuccess = 'assets/svg/password_success.svg';
-
+  static const String svgOnboardingGoals = 'assets/svg/onboarding-goals.svg';
+  static const String svgOnboardingProgress =
+      'assets/svg/onboarding-progress.svg';
+  static const String svgOnboardingExpertIcons =
+      'assets/svg/onboarding-expert-icons.svg';
 }

@@ -11,25 +11,25 @@ class OnboardingController extends GetxController {
 
   final List<Map<String, String>> onboardingData = [
     {
-      "image": Assets.imagesOnboarding1,
+      "image": Assets.svgOnboardingGoals,
       "title": "Set Your Goals",
       "desc":
-      "Define your fitness journey with clear, achievable targets designed just for you.",
-      "button": "Next"
+          "Define your fitness journey with clear, achievable targets designed just for you.",
+      "button": "Next",
     },
     {
-      "image": Assets.imagesOnboarding2,
+      "image": Assets.svgOnboardingProgress,
       "title": "Track Your Progress",
       "desc":
-      "Monitor workouts, calories, and performance with real-time insights that keep you moving forward.",
-      "button": "Next"
+          "Monitor workouts, calories, and performance with real-time insights that keep you moving forward.",
+      "button": "Next",
     },
     {
-      "image": Assets.imagesOnboarding3,
+      "image": Assets.svgOnboardingExpertIcons,
       "title": "Expert-Crafted Icons",
       "desc":
-      "Choose your icon – crafted by qualified fitness professionals and athletes – to help you.",
-      "button": "Get Started"
+          "Choose your icon – crafted by qualified fitness professionals and athletes – to help you.",
+      "button": "Get Started",
     },
   ];
 
@@ -46,7 +46,11 @@ class OnboardingController extends GetxController {
   }
 
   void skip() {
-    pageController.jumpToPage(onboardingData.length - 1);
+    pageController.animateToPage(
+      onboardingData.length - 1,
+      duration: const Duration(milliseconds: 350),
+      curve: Curves.easeInOut,
+    );
   }
 
   void goToLogin() {

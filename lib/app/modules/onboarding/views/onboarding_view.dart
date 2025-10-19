@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 
 import '../../../core/values/app_colors.dart';
@@ -15,55 +16,62 @@ class OnboardingView extends GetView<OnboardingController> {
       body: SafeArea(
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: controller.skip,
-                child: const Text(
-                  "Skip",
-                  style: TextStyle(color: Colors.white),
+            Obx(() {
+              final isLastPage =
+                  controller.currentPage.value ==
+                  controller.onboardingData.length - 1;
+              if (isLastPage) {
+                return 48.height;
+              }
+              return Align(
+                alignment: Alignment.topRight,
+                child: TextButton(
+                  onPressed: controller.skip,
+                  child: Text(
+                    "Skip",
+                    style: TextStyle(color: AppColors.colorPrimary),
+                  ),
                 ),
-              ),
-            ),
+              );
+            }),
             Expanded(
-              child: PageView.builder(
-                controller: controller.pageController,
-                itemCount: controller.onboardingData.length,
-                onPageChanged: (index) {
-                  controller.currentPage.value = index;
-                },
-                itemBuilder: (context, index) {
-                  final data = controller.onboardingData[index];
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SuperImage(data['image'], height: 250, width: 250),
-                      const SizedBox(height: 20),
-                      Text(
-                        data["title"]!,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 10),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                        child: Text(
-                          data["desc"]!,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white70,
-                            height: 1.4,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: PageView.builder(
+                  controller: controller.pageController,
+                  itemCount: controller.onboardingData.length,
+                  onPageChanged: (index) {
+                    controller.currentPage.value = index;
+                  },
+                  itemBuilder: (context, index) {
+                    final data = controller.onboardingData[index];
+                    return Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          data["title"]!,
+                          style: Get.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
                           ),
-                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
-                  );
-                },
+                        20.height,
+                        Text(data["desc"]!, style: Get.textTheme.bodyMedium),
+                        10.height,
+                        const Spacer(),
+                        Center(
+                          child: SuperImage(
+                            data['image'],
+                            height: 340,
+                            width: 250,
+                            radius: 12,
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    );
+                  },
+                ),
               ),
             ),
             Obx(
@@ -71,10 +79,11 @@ class OnboardingView extends GetView<OnboardingController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: List.generate(
                   controller.onboardingData.length,
-                  (index) => Container(
+                  (index) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 250),
                     margin: const EdgeInsets.symmetric(horizontal: 4),
-                    height: 8,
-                    width: controller.currentPage.value == index ? 18 : 8,
+                    width: 8,
+                    height: controller.currentPage.value == index ? 18 : 10,
                     decoration: BoxDecoration(
                       color: controller.currentPage.value == index
                           ? AppColors.colorPrimary
@@ -123,10 +132,7 @@ class OnboardingView extends GetView<OnboardingController> {
                         padding: EdgeInsets.only(bottom: 1),
                         decoration: BoxDecoration(
                           border: Border(
-                            bottom: BorderSide(
-                              color: Colors.black,
-                              width: 1.5,
-                            ),
+                            bottom: BorderSide(color: Colors.black, width: 1.5),
                           ),
                         ),
                         child: Text(
@@ -134,7 +140,6 @@ class OnboardingView extends GetView<OnboardingController> {
                           style: TextStyle(
                             color: AppColors.colorPrimary,
                             fontWeight: FontWeight.w700,
-
                           ),
                         ),
                       ),

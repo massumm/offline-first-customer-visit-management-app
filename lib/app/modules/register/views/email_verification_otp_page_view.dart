@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/back_pill.dart';
+import 'package:icon/app/core/widgets/input_widgets/otp_digit_field.dart';
 import 'package:icon/app/modules/register/controllers/register_controller.dart';
 
 class EmailVerificationOtpPageView extends BaseView<RegisterController> {
@@ -35,58 +35,76 @@ class EmailVerificationOtpPageView extends BaseView<RegisterController> {
                 Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 400),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: _buildOtpField(
-                            context,
-                            controller.otp1Controller,
-                            true,
+                    child: Obx(() {
+                      final error = controller.emailOtpError.value;
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Expanded(
+                            child: OtpDigitField(
+                              controller: controller.otp1Controller,
+                              focusNode: controller.otp1FocusNode,
+                              autoFocus: true,
+                              errorText: error,
+                              isFirst: true,
+                              onChanged: (_) =>
+                                  controller.emailOtpError.value = null,
+                            ),
                           ),
-                        ),
-                        8.width,
-                        Expanded(
-                          child: _buildOtpField(
-                            context,
-                            controller.otp2Controller,
-                            false,
+                          8.width,
+                          Expanded(
+                            child: OtpDigitField(
+                              controller: controller.otp2Controller,
+                              focusNode: controller.otp2FocusNode,
+                              errorText: error,
+                              onChanged: (_) =>
+                                  controller.emailOtpError.value = null,
+                            ),
                           ),
-                        ),
-                        8.width,
-                        Expanded(
-                          child: _buildOtpField(
-                            context,
-                            controller.otp3Controller,
-                            false,
+                          8.width,
+                          Expanded(
+                            child: OtpDigitField(
+                              controller: controller.otp3Controller,
+                              focusNode: controller.otp3FocusNode,
+                              errorText: error,
+                              onChanged: (_) =>
+                                  controller.emailOtpError.value = null,
+                            ),
                           ),
-                        ),
-                        8.width,
-                        Expanded(
-                          child: _buildOtpField(
-                            context,
-                            controller.otp4Controller,
-                            false,
+                          8.width,
+                          Expanded(
+                            child: OtpDigitField(
+                              controller: controller.otp4Controller,
+                              focusNode: controller.otp4FocusNode,
+                              errorText: error,
+                              onChanged: (_) =>
+                                  controller.emailOtpError.value = null,
+                            ),
                           ),
-                        ),
-                        8.width,
-                        Expanded(
-                          child: _buildOtpField(
-                            context,
-                            controller.otp5Controller,
-                            false,
+                          8.width,
+                          Expanded(
+                            child: OtpDigitField(
+                              controller: controller.otp5Controller,
+                              focusNode: controller.otp5FocusNode,
+                              errorText: error,
+                              onChanged: (_) =>
+                                  controller.emailOtpError.value = null,
+                            ),
                           ),
-                        ),
-                        8.width,
-                        Expanded(
-                          child: _buildOtpField(
-                            context,
-                            controller.otp6Controller,
-                            false,
+                          8.width,
+                          Expanded(
+                            child: OtpDigitField(
+                              controller: controller.otp6Controller,
+                              focusNode: controller.otp6FocusNode,
+                              errorText: error,
+                              isLast: true,
+                              onChanged: (_) =>
+                                  controller.emailOtpError.value = null,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      );
+                    }),
                   ),
                 ),
                 20.height,
@@ -142,59 +160,6 @@ class EmailVerificationOtpPageView extends BaseView<RegisterController> {
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildOtpField(
-    BuildContext context,
-    TextEditingController textController,
-    bool autoFocus,
-  ) {
-    return Center(
-      child: TextField(
-        controller: textController,
-        autofocus: autoFocus,
-        textAlign: TextAlign.center,
-        keyboardType: TextInputType.number,
-        maxLength: 1,
-        style: Get.textTheme.titleLarge?.copyWith(
-          fontWeight: FontWeight.w600,
-          color: Colors.black,
-        ),
-        decoration: InputDecoration(
-          counterText: "",
-          contentPadding: EdgeInsets.zero,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.grey.shade300),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Colors.grey.shade300),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(color: Get.theme.primaryColor, width: 2),
-          ),
-        ),
-        inputFormatters: [
-          FilteringTextInputFormatter.digitsOnly,
-          LengthLimitingTextInputFormatter(1),
-        ],
-        onChanged: (value) {
-          if (value.length == 1) {
-            FocusScope.of(context).nextFocus();
-          } else if (value.isEmpty) {
-            FocusScope.of(context).previousFocus();
-          }
-        },
-        onSubmitted: (value) {
-          if (value.length == 1) {
-            FocusScope.of(context).nextFocus();
-          }
-        },
-        onTapOutside: (_) => FocusScope.of(context).unfocus(),
       ),
     );
   }

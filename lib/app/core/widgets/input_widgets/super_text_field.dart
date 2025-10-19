@@ -35,6 +35,7 @@ class SuperTextField extends StatefulWidget {
     this.obscuringCharacter = '•',
     this.showClearButton = false, // Only for non-password fields.
     this.suffixIconConstraints,
+    this.textAlign = TextAlign.start,
   });
 
   final TextEditingController controller;
@@ -52,6 +53,7 @@ class SuperTextField extends StatefulWidget {
   final Widget? suffixIcon;
   final EdgeInsetsGeometry? contentPadding;
   final BoxConstraints? suffixIconConstraints;
+  final TextAlign textAlign;
 
   // Behavior
   final ValueChanged<String>? onChanged;
@@ -131,6 +133,7 @@ class _SuperTextFieldState extends State<SuperTextField> {
       enabled: widget.enabled,
       readOnly: widget.readOnly,
       autofillHints: widget.autofillHints,
+      textAlign: widget.textAlign,
       validator: widget.validator,
       style: widget.style ?? theme.textTheme.bodyLarge,
       keyboardType: widget.keyboardType,
@@ -178,7 +181,7 @@ class _SuperTextFieldState extends State<SuperTextField> {
               borderSide: BorderSide(color: theme.colorScheme.error, width: 1),
             ),
         focusedErrorBorder:
-           theme.inputDecorationTheme.focusedErrorBorder ??
+            theme.inputDecorationTheme.focusedErrorBorder ??
             OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: BorderSide(color: theme.colorScheme.error, width: 2),

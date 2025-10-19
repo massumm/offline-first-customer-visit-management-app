@@ -72,9 +72,11 @@ class ForgotPasswordPageView extends BaseView<ForgotPasswordController> {
                       onPressed: controller.isSendingOtp.value
                           ? null
                           : controller.gotToNextPage,
+
                       child: controller.isSendingOtp.value
-                          ? const Padding(
-                              padding: EdgeInsets.all(4.0),
+                          ? const SizedBox(
+                              height: 25,
+                              width: 25,
                               child: CircularProgressIndicator(
                                 color: Colors.white,
                                 strokeWidth: 2,

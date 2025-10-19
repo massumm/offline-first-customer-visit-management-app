@@ -39,6 +39,7 @@ class CupertinoSuperTextField extends StatefulWidget {
     this.obscuringCharacter = '•',
     this.showClearButton = false,
     this.enabled,
+    this.textAlign = TextAlign.start, 
   });
 
   final TextEditingController controller;
@@ -76,6 +77,7 @@ class CupertinoSuperTextField extends StatefulWidget {
   final String obscuringCharacter;
   final bool showClearButton;
   final bool? enabled;
+  final TextAlign textAlign;
 
   @override
   State<CupertinoSuperTextField> createState() =>
