@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/modules/onboarding/views/onboarding_intro.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../generated/assets.dart';
 
-class OnboardingController extends GetxController {
+class OnboardingController extends BaseController {
   var currentPage = 0.obs;
   final PageController pageController = PageController();
 
