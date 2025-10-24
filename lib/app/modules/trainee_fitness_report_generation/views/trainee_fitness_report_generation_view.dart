@@ -85,7 +85,7 @@ class TraineeFitnessReportGenerationView
                   hintText: "abc@example.com",
                   labelText: 'Email',
                   keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
+                  textInputAction: TextInputAction.done,
                   errorText: controller.emailError.value,
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   onChanged: (value) {
