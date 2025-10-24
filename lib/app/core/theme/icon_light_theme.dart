@@ -50,7 +50,7 @@ class IconLightTheme {
       fontSize: 16,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.15,
-      color:AppColors.lightTextPrimaryColor,
+      color: AppColors.lightTextPrimaryColor,
     ),
     titleSmall: GoogleFonts.inter(
       fontSize: 14,
@@ -112,11 +112,19 @@ class IconLightTheme {
       secondary: AppColors.greenColor,
       tertiary: AppColors.informationColor,
       error: AppColors.warningColor,
-      surface:  AppColors.lightBgColor,
+      surface: AppColors.lightBgColor,
     ),
-    appBarTheme:  AppBarTheme(
+    iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        foregroundColor: AppColors.lightTextPrimaryColor,
+        iconSize: 24,
+      ),
+    ),
+    appBarTheme: AppBarTheme(
       backgroundColor: AppColors.lightBgColor,
       elevation: 0,
+      iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
       foregroundColor: AppColors.lightBgColor,
     ),
     cardTheme: CardThemeData(
@@ -146,11 +154,17 @@ class IconLightTheme {
       iconColor: Colors.black,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: AppColors.lightInputBorderColor, width: 1),
+        borderSide: BorderSide(
+          color: AppColors.lightInputBorderColor,
+          width: 1,
+        ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
-        borderSide: BorderSide(color: AppColors.lightInputBorderColor, width: 1),
+        borderSide: BorderSide(
+          color: AppColors.lightInputBorderColor,
+          width: 1,
+        ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(15),
@@ -160,7 +174,10 @@ class IconLightTheme {
         borderRadius: BorderRadius.circular(15),
         borderSide: BorderSide(color: AppColors.warningColor, width: 0.5),
       ),
-      hintStyle: const TextStyle(color: AppColors.lightHintTextColor, fontSize: 14),
+      hintStyle: const TextStyle(
+        color: AppColors.lightHintTextColor,
+        fontSize: 14,
+      ),
     ),
     elevatedButtonTheme: appElevatedButtonTheme,
   );

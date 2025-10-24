@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../controllers/trainee_onboarding_controller.dart';
@@ -18,16 +19,40 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
     return AppBar(
-      title: const Text('Onboarding Assistant'),
-      centerTitle: true,
+      title: Row(
+        children: [
+          const CircleAvatar(
+            radius: 20,
+            backgroundImage: AssetImage('assets/images/icon-logo-pink.png'),
+          ),
+          6.width,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Mish Icon',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Text(
+                'Online',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
       actions: [
         Obx(
-          () => controller.canGoBack
+              () => controller.canGoBack
               ? IconButton(
-                  icon: const Icon(Icons.undo),
-                  onPressed: controller.goBack,
-                  tooltip: 'Go Back',
-                )
+            icon: const Icon(Icons.undo),
+            style: Theme.of(context).iconButtonTheme.style,
+            onPressed: controller.goBack,
+            tooltip: 'Go Back',
+          )
               : const SizedBox.shrink(),
         ),
         IconButton(
@@ -38,7 +63,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       ],
     );
   }
-
   @override
   Widget body(BuildContext context) {
     return Column(

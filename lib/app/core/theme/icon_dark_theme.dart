@@ -105,6 +105,17 @@ class IconDarkTheme {
     scaffoldBackgroundColor: AppColors.darkBgColor,
     cardColor: AppColors.cardBgColor,
     useMaterial3: true,
+    iconTheme: IconThemeData(
+      color: AppColors.darkTextPrimaryColor,
+      size: 24
+
+    ),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        foregroundColor: AppColors.darkTextPrimaryColor,
+        iconSize: 24,
+      ),
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.darkBgColor,
       elevation: 0,
