@@ -59,22 +59,22 @@ class TraineeFitnessReportGenerationView
                       text: 'Report,\n',
                       style: Get.textTheme.titleLarge,
                     ),
-                    TextSpan(
-                      text: 'please ',
-                      style: Get.textTheme.titleLarge,
-                    ),
+                    TextSpan(text: 'please ', style: Get.textTheme.titleLarge),
                     TextSpan(
                       text: 'enter your',
                       style: Get.textTheme.titleLarge?.copyWith(
                         color: Get.theme.colorScheme.primary,
                       ),
                     ),
-                    TextSpan(
-                      text: ' email.',
-                      style: Get.textTheme.titleLarge,
-                    ),
+                    TextSpan(text: ' email.', style: Get.textTheme.titleLarge),
                   ],
                 ),
+              ),
+              8.height,
+              // Sub title
+              Text(
+                "This email address will be used to create you account and send you the report.",
+                style: Theme.of(context).textTheme.labelMedium,
               ),
               const Spacer(),
               // Text('Email', style: Get.textTheme.labelLarge),
@@ -101,7 +101,7 @@ class TraineeFitnessReportGenerationView
                     onPressed: controller.isValidEmail.isTrue
                         ? controller.onSubmitButtonPressed
                         : null,
-                    child: const Text('Next'),
+                    child: const Text('Submit'),
                   ),
                 ),
               ),
