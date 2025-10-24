@@ -600,6 +600,7 @@ class TraineeOnboardingController extends BaseController {
   //-------------------- QA Stepper --------------------
   // Add these reactive properties:
   final RxInt totalGroups = 0.obs; // Initialize with the actual total number of groups
+ final RxDouble currentGroupProgress = 0.0.obs;
 
   @override
   void onInit() {
@@ -1204,7 +1205,9 @@ class TraineeOnboardingController extends BaseController {
     if (currentGroupIndex.value < totalGroups.value - 1) {
       currentGroupIndex.value++;
     }
-    // ... rest of your logic ...
+    // Calculate the currentGroupProgress the stepper progress
+    currentGroupProgress.value =
+        (currentGroupIndex.value + 1) / totalGroups.value;
   }
 
 

@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
+import 'widgets/animated_onboarding_stepper.dart';
 import 'widgets/message_bubble.dart';
 import 'widgets/type_bubble.dart';
 
@@ -68,10 +69,12 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     return Column(
       children: [
         // Custom Stepper For visualizing group movement
-        Obx(() => _OnboardingStepper(
+        Obx(() => AnimatedOnboardingStepper(
           totalSteps: controller.totalGroups.value,
           currentStep: controller.currentGroupIndex.value,
-        )),
+          stepProgress: controller.currentGroupProgress.value,
+        )
+        ),
         Expanded(
           child: Obx(() {
             final items = controller.messages;
@@ -687,104 +690,6 @@ class _ImageMessageBubble extends StatelessWidget {
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-/// A custom stepper widget to visualize progress through onboarding groups.
-class _OnboardingStepper extends StatelessWidget {
-  final int totalSteps;
-  final int currentStep; // 0-indexed
-
-  const _OnboardingStepper({
-    required this.totalSteps,
-    required this.currentStep,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final primaryColor = theme.colorScheme.primary;
-    final onPrimaryColor = theme.colorScheme.onPrimary;
-    // Muted color for inactive elements, derived from onSurface
-    final inactiveColor = theme.colorScheme.onSurface.withOpacity(0.3);
-    // Text color for inactive elements, typically onSurface
-    final onInactiveColor = theme.colorScheme.onSurface;
-
-    // Avoid rendering if there are no steps
-    if (totalSteps <= 0) {
-      return const SizedBox.shrink();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: List.generate(totalSteps, (index) {
-          final isCompleted = index < currentStep;
-          final isActive = index == currentStep;
-
-          Color circleFillColor;
-          Color circleBorderColor;
-          Color textColor;
-          Color lineColor;
-
-          if (isCompleted) {
-            circleFillColor = primaryColor;
-            circleBorderColor = primaryColor;
-            textColor = onPrimaryColor;
-            lineColor = primaryColor; // Line after completed step is also primary
-          } else if (isActive) {
-            circleFillColor = primaryColor;
-            circleBorderColor = primaryColor;
-            textColor = onPrimaryColor;
-            lineColor = inactiveColor; // Line *after* active step is inactive
-          } else {
-            circleFillColor = inactiveColor;
-            circleBorderColor = inactiveColor;
-            textColor = onInactiveColor;
-            lineColor = inactiveColor;
-          }
-
-          return Expanded(
-            child: Row(
-              children: [
-                // Step Circle
-                Container(
-                  width: 28, // Slightly larger for better visibility
-                  height: 28,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: circleFillColor,
-                    border: Border.all(
-                      color: circleBorderColor,
-                      width: isActive ? 2.5 : 1.5, // Thicker border for active step
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '${index + 1}',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: textColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-                // Connecting Line (if not the last step)
-                if (index < totalSteps - 1)
-                  Expanded(
-                    child: Container(
-                      height: 2,
-                      color: lineColor,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        }),
       ),
     );
   }
