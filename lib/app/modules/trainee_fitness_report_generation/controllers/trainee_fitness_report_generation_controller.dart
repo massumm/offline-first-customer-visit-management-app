@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
-import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/utils/app_validators.dart';
+
+import '../views/saving_view.dart';
 
 class TraineeFitnessReportGenerationController extends BaseController {
 
@@ -21,15 +22,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
   }
   Future<void> onSubmitButtonPressed() async {
     if (isValidEmail.value) {
-      isLoading.value = true;
-      try {
-
-        await Future.delayed(const Duration(seconds: 2));
-      } catch (e) {
-        'Error submitting email: $e'.log();
-      } finally {
-        isLoading.value = false;
-      }
+       Get.to(() => SavingView());
     }
   }
   void onEmailChanged(String value) {
