@@ -1,7 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/back_pill.dart';
+import 'package:icon/generated/assets.dart';
 
 import '../controllers/fitness_report_controller.dart';
 
@@ -10,52 +15,71 @@ class FitnessReportLandingView extends BaseView<FitnessReportController> {
 
   @override
   Widget body(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: SizedBox(
-          height: Get.size.height,
-          width: Get.size.width,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+    return SafeArea(
+      child: Stack(
+        children: [
+          // Background SVG
+          Positioned(
+            top: -113,
+            left: -109,
+            child: Opacity(
+              opacity:
+                  0.3, // Adjust opacity value (0.0 = transparent, 1.0 = opaque)
+              child: SvgPicture.asset(
+                Assets.svgBgGradientColor,
+                fit: BoxFit.cover,
+                width: 655.32,
+                height: 503.33,
+                // alignment: Alignment.topCenter,
+              ),
+            ),
+          ),
+          // Content
+          Padding(
+            padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 BackPill(onTap: Get.back),
-                const SizedBox(height: 40),
-                Text('Fitness Report', style: Get.textTheme.titleLarge),
-                const SizedBox(height: 10),
+                30.height,
                 RichText(
                   text: TextSpan(
-                    style: Get.textTheme.bodyMedium,
+                    style: Get.textTheme.bodyMedium?.copyWith(height: 2.0),
                     children: [
-                      const TextSpan(text: 'To receive your '),
                       TextSpan(
-                        text: 'personalized Icon Report',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
+                        text: 'To receive your\n',
+                        style: Get.textTheme.titleLarge?.copyWith(),
                       ),
-                      const TextSpan(text: ', please '),
                       TextSpan(
-                        text: 'enter your',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
+                        text: 'personalized Icon ',
+                        style: Get.textTheme.titleLarge?.copyWith(
                           color: Get.theme.colorScheme.primary,
                         ),
                       ),
-                      const TextSpan(text: ' email.'),
+                      TextSpan(
+                        text: 'Report,\n',
+                        style: Get.textTheme.titleLarge,
+                      ),
+                      TextSpan(
+                        text: 'please ',
+                        style: Get.textTheme.titleLarge,
+                      ),
+                      TextSpan(
+                        text: 'enter your',
+                        style: Get.textTheme.titleLarge?.copyWith(
+                          color: Get.theme.colorScheme.primary,
+                        ),
+                      ),
+                      TextSpan(
+                        text: ' email.',
+                        style: Get.textTheme.titleLarge,
+                      ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 30),
-                Text(
-                  'Email',
-                  style: Get.textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 10),
+                const Spacer(),
+                Text('Email', style: Get.textTheme.labelLarge),
+                10.height,
                 Obx(
                   () => TextField(
                     onChanged: controller.updateEmail,
@@ -72,7 +96,7 @@ class FitnessReportLandingView extends BaseView<FitnessReportController> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 30),
+                10.height,
                 Obx(
                   () => SizedBox(
                     width: double.infinity,
@@ -87,7 +111,7 @@ class FitnessReportLandingView extends BaseView<FitnessReportController> {
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

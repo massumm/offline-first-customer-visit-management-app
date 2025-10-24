@@ -121,3 +121,4 @@ app.*.symbols
 .fvm/
 mvp_design/
 PROJECT_STRUCTURE.md
+lib/gen/assets.gen.dart

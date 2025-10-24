@@ -42,7 +42,7 @@ class IconDarkTheme {
 
     titleLarge: GoogleFonts.inter(
       fontSize: 22,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
     titleMedium: GoogleFonts.inter(
