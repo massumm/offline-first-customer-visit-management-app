@@ -172,7 +172,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               return _buildTimePickerButton(context);
             }
 
-            // START: Add new conditions for height and weight pickers
+            //  height and weight pickers
             if (controller.isCurrentHeight) {
               return _HeightPicker(controller: controller);
             }
@@ -180,7 +180,12 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             if (controller.isCurrentWeight) {
               return _WeightPicker(controller: controller);
             }
-            // END: Add new conditions
+
+
+            // Hide the input field for Choice questions.
+            if(controller.currentQuestion?.type == QAType.choice){
+              return SizedBox.shrink();
+            }
 
             // Default input field for text/number questions.
             return _buildTextInput();
