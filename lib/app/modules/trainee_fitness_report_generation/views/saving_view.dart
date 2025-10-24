@@ -21,55 +21,53 @@ class SavingView extends BaseView<TraineeFitnessReportGenerationController> {
           colors: [Color(0xFFFFE6E1), Colors.white],
         ),
       ),
-      child: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 24),
-            const _TopStatusBarStub(),
-            // optional, for the look
-            const Spacer(),
-            // Ring + % text
-            // Use Obx to reactively update the UI when controller.progress changes
-            Obx(
-                  () => AnimatedProgressRing(
-                value: controller.progress.value,
-                // Get progress from the controller
-                size: 240,
-                stroke: 12,
-                ringColor: const Color(0xFFE94B35),
-                trackColor: const Color(0x1AE94B35),
-                segmentCount: 48,
-                segmentGapFactor: 0.18,
-                // animation will auto-adjust based on delta
-              ),
+      child: Column(
+        children: [
+          const SizedBox(height: 24),
+          const _TopStatusBarStub(),
+          // optional, for the look
+          const Spacer(),
+          // Ring + % text
+          // Use Obx to reactively update the UI when controller.progress changes
+          Obx(
+                () => AnimatedProgressRing(
+              value: controller.progress.value,
+              // Get progress from the controller
+              size: 240,
+              stroke: 12,
+              ringColor: const Color(0xFFE94B35),
+              trackColor: const Color(0x1AE94B35),
+              segmentCount: 48,
+              segmentGapFactor: 0.18,
+              // animation will auto-adjust based on delta
             ),
-            const SizedBox(height: 28),
-            const Text(
-              'Saving your data securely',
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
-                color: Colors.black87,
-              ),
+          ),
+          const SizedBox(height: 28),
+          const Text(
+            'Saving your data securely',
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              fontSize: 18,
+              color: Colors.black87,
             ),
-            const SizedBox(height: 6),
-            const Text(
-              'Your Icon is learning about you, this only\n'
-                  'takes a moment',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 12,
-                height: 1.3,
-                color: Colors.black54,
-              ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Your Icon is learning about you, this only\n'
+                'takes a moment',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 12,
+              height: 1.3,
+              color: Colors.black54,
             ),
-            const Spacer(),
-            // Remove the demo controls in production.
-            // If you need to trigger progress updates for testing,
-            // you can keep them and call controller.updateProgress(value).
-            // For now, they are removed as the controller should drive this.
-          ],
-        ),
+          ),
+          const Spacer(),
+          // Remove the demo controls in production.
+          // If you need to trigger progress updates for testing,
+          // you can keep them and call controller.updateProgress(value).
+          // For now, they are removed as the controller should drive this.
+        ],
       ),
     );
   }
