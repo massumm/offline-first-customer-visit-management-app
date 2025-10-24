@@ -20,6 +20,8 @@ abstract class Routes {
   static const FITNESS_REPORT = _Paths.FITNESS_REPORT;
   static const FITNESS_REPORT_GENERATING = _Paths.FITNESS_REPORT_GENERATING;
   static const REPORT_DISPLAY = _Paths.REPORT_DISPLAY;
+  static const TRAINEE_FITNESS_REPORT_GENERATION =
+      _Paths.TRAINEE_FITNESS_REPORT_GENERATION;
 }
 
 abstract class _Paths {
@@ -41,4 +43,6 @@ abstract class _Paths {
   static const FITNESS_REPORT = '/fitness-report';
   static const FITNESS_REPORT_GENERATING = '/fitness-report-generating';
   static const REPORT_DISPLAY = '/report-display';
+  static const TRAINEE_FITNESS_REPORT_GENERATION =
+      '/trainee-fitness-report-generation';
 }
