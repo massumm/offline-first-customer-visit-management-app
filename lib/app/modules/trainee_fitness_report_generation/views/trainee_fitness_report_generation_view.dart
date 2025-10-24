@@ -78,8 +78,8 @@ class TraineeFitnessReportGenerationView
                   ),
                 ),
                 const Spacer(),
-                Text('Email', style: Get.textTheme.labelLarge),
-                10.height,
+                // Text('Email', style: Get.textTheme.labelLarge),
+                // 10.height,
                 Obx(() {
                   return AdaptiveSuperTextField(
                     controller: controller.emailCtr,
