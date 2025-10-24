@@ -43,7 +43,7 @@ class IconLightTheme {
 
     titleLarge: GoogleFonts.inter(
       fontSize: 22,
-      fontWeight: FontWeight.bold,
+      fontWeight: FontWeight.w500,
       color: AppColors.lightTextPrimaryColor,
     ),
     titleMedium: GoogleFonts.inter(
@@ -113,19 +113,28 @@ class IconLightTheme {
       tertiary: AppColors.informationColor,
       error: AppColors.warningColor,
       surface: AppColors.lightBgColor,
+      onSurface: AppColors.lightTextPrimaryColor, // Explicitly set for text/icons on surface
+    ),
+    iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        foregroundColor: AppColors.lightTextPrimaryColor,
+        iconSize: 24,
+      ),
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.lightBgColor,
       elevation: 0,
+      iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
       foregroundColor: AppColors.lightBgColor,
     ),
     cardTheme: CardThemeData(
       elevation: 2,
-      color: const Color(0xFF1A1B1E),
+      color: Colors.white, // Corrected: Use a light color for cards in light theme
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
     dialogTheme: DialogThemeData(
-      backgroundColor: const Color(0xFF1A1B1E),
+      backgroundColor: Colors.white, // Corrected: Use a light color for dialogs in light theme
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
 
@@ -134,7 +143,7 @@ class IconLightTheme {
         borderSide: BorderSide(width: 2.0, color: AppColors.colorPrimary),
       ),
       labelColor: AppColors.colorPrimary,
-      unselectedLabelColor: Colors.white.withValues(alpha: 0.7),
+      unselectedLabelColor: AppColors.lightTextSecondaryColor, // Corrected: Use a visible color
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

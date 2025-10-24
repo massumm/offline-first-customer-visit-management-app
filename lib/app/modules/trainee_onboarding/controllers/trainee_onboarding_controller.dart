@@ -62,7 +62,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'accountability_partner',
           question:
-              "Do you have an accountability partner to help you on your journey?",
+          "Do you have an accountability partner to help you on your journey?",
           type: QAType.choice,
           options: [
             "Friends",
@@ -105,22 +105,19 @@ class TraineeOnboardingController extends BaseController {
           type: QAType.choice,
           options: ["Gradual", "Moderate", "Fast", "Not sure yet"],
         ),
-        // 1. This is the new branching question
         const QAItem(
           id: 'has_target_event',
           question:
-              "Do you have a specific date or event you’re working toward?",
+          "Do you have a specific date or event you’re working toward?",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
-        // This question is asked only if the answer above is "Yes"
         const QAItem(
           id: 'target_event_name',
           question: "What's the name of the event?",
           type: QAType.text,
           hint: "e.g., Wedding, Marathon",
         ),
-        // This question is also asked only if the answer is "Yes"
         const QAItem(
           id: 'target_event_date',
           question: "And when is it?",
@@ -141,8 +138,7 @@ class TraineeOnboardingController extends BaseController {
       name: 'Activity',
       introduction: "Now, let's get into your activity habits.",
       conclusion:
-          "Awesome, that gives me a great picture of your activity levels!",
-
+      "Awesome, that gives me a great picture of your activity levels!",
       questions: [
         const QAItem(
           id: 'training_location',
@@ -156,7 +152,6 @@ class TraineeOnboardingController extends BaseController {
             "Prefer not to say",
           ],
         ),
-        // This question is asked only if the answer above is "At home" or "A mix"
         const QAItem(
           id: 'home_equipment',
           question: "What equipment do you have access to at home?",
@@ -165,13 +160,12 @@ class TraineeOnboardingController extends BaseController {
             'None',
             'Weights',
             'Barbell',
-            'Bands'
-                'Cardio equipment',
+            'Bands',
+            'Cardio equipment',
             'Both',
             'Other',
           ],
         ),
-        // This new question is asked only if the answer above is "Other"
         const QAItem(
           id: 'home_equipment_other',
           question: "Please specify what 'Other' equipment you have.",
@@ -189,11 +183,10 @@ class TraineeOnboardingController extends BaseController {
             "HIIT",
             "Yoga/Pilates",
             "A mix",
-            "Not sure yet"
-                'Other',
+            "Not sure yet",
+            'Other',
           ],
         ),
-        // New conditional question added here
         const QAItem(
           id: 'training_style_other',
           question: "Please specify your preferred training style.",
@@ -238,18 +231,16 @@ class TraineeOnboardingController extends BaseController {
             "Prefer not to say",
           ],
         ),
-        //
         const QAItem(
           id: 'set_reminder',
           question: "Would you like to set a reminder for your selected time?",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
-        //  Asks for the time if the answer above was "Yes"
         const QAItem(
           id: 'reminder_time',
           question: "Great! At what time would you like to be reminded?",
-          type: QAType.time, // Assumes a new QAType.time for a time picker
+          type: QAType.time,
           hint: "Select a time",
         ),
         const QAItem(
@@ -258,7 +249,6 @@ class TraineeOnboardingController extends BaseController {
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
-        // This question is asked only if the answer above is "Yes"
         const QAItem(
           id: 'specific_body_parts',
           question: "Great! Which body parts are your priority?",
@@ -279,7 +269,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'general_lifestyle_activity',
           question:
-              "Outside of training and your occupation, how active is your general lifestyle?",
+          "Outside of training and your occupation, how active is your general lifestyle?",
           type: QAType.choice,
           options: [
             "Mostly sedentary (e.g., relaxing at home)",
@@ -297,8 +287,8 @@ class TraineeOnboardingController extends BaseController {
             "8,000",
             "10,000",
             "12,000+",
-            'Custom number'
-                "Not sure yet",
+            'Custom number',
+            "Not sure yet",
           ],
         ),
         const QAItem(
@@ -307,7 +297,6 @@ class TraineeOnboardingController extends BaseController {
           type: QAType.number,
           hint: "e.g., 7500",
         ),
-        // START: Add these new questions
         const QAItem(
           id: 'training_limitations',
           question: "What limits your ability to train consistently?",
@@ -322,20 +311,18 @@ class TraineeOnboardingController extends BaseController {
             "Other",
           ],
         ),
-        // This question is asked only if the answer above is "Other"
         const QAItem(
           id: 'training_limitations_other',
           question:
-              "Could you please specify what other factors limit your training?",
+          "Could you please specify what other factors limit your training?",
           type: QAType.text,
           hint: "e.g., Injury, travel schedule",
           canSkip: true,
         ),
-
         const QAItem(
           id: 'workout_enjoyment',
           question:
-              "What kind of workouts do you most enjoy, or is there anything you want to try?",
+          "What kind of workouts do you most enjoy, or is there anything you want to try?",
           type: QAType.text,
           hint: "e.g., Running, weightlifting, dance classes",
           canSkip: true,
@@ -398,7 +385,6 @@ class TraineeOnboardingController extends BaseController {
             "Prefer not to say",
           ],
         ),
-        // This question is asked only if the answer above is "Other"
         const QAItem(
           id: 'stress_sources_other',
           question: "Please specify what 'Other' sources of stress you have.",
@@ -406,22 +392,19 @@ class TraineeOnboardingController extends BaseController {
           hint: "Optional: e.g., Social life, personal goals",
           canSkip: true,
         ),
-        // START: New Injury Questions
         const QAItem(
           id: 'has_injuries',
           question:
-              "Do you have any injuries or conditions that impact your fitness?",
+          "Do you have any injuries or conditions that impact your fitness?",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
-        // This question is asked only if the answer above is "Yes"
         const QAItem(
           id: 'injury_name_1',
           question: "What is the injury or condition?",
           type: QAType.text,
           hint: "e.g., Lower back pain, Knee tendinitis",
         ),
-        // This question is also asked only if the answer is "Yes"
         const QAItem(
           id: 'injury_description_1',
           question: "Please briefly describe it and any limitations it causes.",
@@ -429,21 +412,18 @@ class TraineeOnboardingController extends BaseController {
           hint: "Optional: e.g., 'Can't do heavy squats'",
           canSkip: true,
         ),
-        // This question is also asked only if the answer is "Yes"
         const QAItem(
           id: 'add_another_injury',
           question: "Would you like to add another injury or condition?",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
-        // This question is asked only if the answer above is "Yes"
         const QAItem(
           id: 'injury_name_2',
           question: "What is the next injury or condition?",
           type: QAType.text,
           hint: "e.g., Shoulder impingement",
         ),
-        // This question is also asked only if the answer is "Yes"
         const QAItem(
           id: 'injury_description_2',
           question: "Please briefly describe this one.",
@@ -451,11 +431,10 @@ class TraineeOnboardingController extends BaseController {
           hint: "Optional",
           canSkip: true,
         ),
-        // END: New Injury Questions
         const QAItem(
           id: 'recovery_obstacles',
           question:
-              "What usually gets in the way of you resting and recovering properly?",
+          "What usually gets in the way of you resting and recovering properly?",
           type: QAType.choice,
           options: [
             "Busy schedule / Lack of time",
@@ -467,11 +446,10 @@ class TraineeOnboardingController extends BaseController {
             "Other",
           ],
         ),
-
         const QAItem(
           id: 'recovery_obstacles_other',
           question:
-              "Please specify what other factors get in the way of your recovery.",
+          "Please specify what other factors get in the way of your recovery.",
           type: QAType.text,
           hint: "Optional: e.g., Late-night screen time",
           canSkip: true,
@@ -482,7 +460,6 @@ class TraineeOnboardingController extends BaseController {
     QuestionGroup(
       name: 'Body Profile',
       introduction: "Next, let's get some body profile details.",
-      // ADDED: A conclusion message for the end of this group.
       conclusion: "Excellent! That's all the profile information we need.",
       questions: [
         const QAItem(
@@ -562,11 +539,10 @@ class TraineeOnboardingController extends BaseController {
           hint: "Optional: You can skip this",
           canSkip: true,
         ),
-        // REMOVED: The duplicate 'thigh_measurement' question that was here.
         const QAItem(
           id: 'upload_progress_photo',
           question:
-              "Would you like to upload a private progress photo? (Optional)",
+          "Would you like to upload a private progress photo? (Optional)",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
@@ -591,25 +567,33 @@ class TraineeOnboardingController extends BaseController {
   final Map<String, String> answers = {}; // id -> answer
   final pageController = ScrollController();
 
-  // In TraineeOnboardingController, add this with your other reactive properties
+  // Show the final Continue button after completion
   final isAwaitingFinalContinuation = false.obs;
+  // ADD this new state variable for the checkbox
+  final hasAgreedToTerms = false.obs;
 
   /// True when the UI should show the "Continue" and "Skip" buttons.
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
 
+  //-------------------- QA Stepper --------------------
+  final RxInt totalGroups = 0.obs;
+  final RxDouble currentGroupProgress = 0.0.obs; // kept for UI that needs per-group
+
   @override
   void onInit() {
     super.onInit();
+    totalGroups(questionGroups.length);
+    // Recompute progress when position OR answers change
+    currentGroupIndex.listen((_) => _updateProgresses());
+    currentQuestionIndexInGroup.listen((_) => _updateProgresses());
+    isAwaitingGroupConfirmation.listen((_) => _updateProgresses());
     start();
   }
-
-  // In TraineeOnboardingController, after the onInit() method
 
   Future<void> continueToNextGroup() async {
     if (!isAwaitingGroupConfirmation.value) return;
     isAwaitingGroupConfirmation.value = false;
 
-    // Advance to the next group and ask its first question
     currentGroupIndex.value++;
     currentQuestionIndexInGroup.value = -1;
     await _askNext();
@@ -621,49 +605,50 @@ class TraineeOnboardingController extends BaseController {
     await _completeOnboarding();
   }
 
+  //  toggle the agreement state from the UI
+  void toggleTermsAgreement(bool? newValue) {
+    hasAgreedToTerms.value = newValue ?? false;
+  }
+
+
   void start() async {
     messages.clear();
     answers.clear();
     currentGroupIndex.value = 0;
-    currentQuestionIndexInGroup.value = -1; // Start before the first question
+    currentQuestionIndexInGroup.value = -1;
+    // ADD a reset for the new state variable
+    hasAgreedToTerms.value = false;
+    isAwaitingFinalContinuation.value = false;
+    _updateProgresses();
     await _botSay("Hello 👋");
     await _askNext();
   }
 
-  // Future<void> _completeOnboarding() async {
-  //   currentGroupIndex.value = questionGroups.length; // Set to "done" state
-  //   await _botSay("All set! 🎉 Thanks for the info.");
-  // final summary = answers.entries
-  //     .map((e) => "• ${e.key}: ${e.value}")
-  //     .join("\n");
-  //   await _botSay("Here's a summary of your answers:\n$summary");
-  //   await _botSay("You can now proceed, or use the ↺ button to restart.");
-  // }
-
   Future<void> _completeOnboarding() async {
-    currentGroupIndex.value =
-        questionGroups.length; // Mark flow as internally "done"
+    currentGroupIndex.value = questionGroups.length; // done
+    _updateProgresses();
     await _botSay("All set! 🎉 Thanks for the info.");
     await _botSay("Grading and storing all your information...");
+    //TODO: CONFIRM
     await _botSay(
-      "To save your progress and create your personalized profile, you'll need to create a account.",
+      "To save your progress and create your personalized icon profile, you'll need to agree out terms and conditions to continue.",
     );
-
-    // Set the new state to show the final "Continue" button in the UI
     isAwaitingFinalContinuation.value = true;
   }
 
-  // Add this new method to handle the final action
-  void proceedToSignup() {
+  void proceedToContinue() {
+    // ADD a guard clause for safety, though the button will be disabled
+    if (!hasAgreedToTerms.value) {
+      CustomToast.showErrorToast(
+        "Please agree to the terms and conditions to continue.",
+      );
+      return;
+    }
     final onboardingJson = toJson();
-
-    // This will encode the map to a JSON string and save it to local storage.
     Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
-
     CustomToast.showSuccessToast("Onboarding Complete");
-
+    // TODO: HANDLE THE ROUTE
     Get.toNamed(Routes.REGISTER, arguments: onboardingJson);
-
     "Proceeding to signup with data: $onboardingJson".log();
   }
 
@@ -676,54 +661,177 @@ class TraineeOnboardingController extends BaseController {
     _scrollToBottom();
   }
 
+  // -------------------- Skip rules (single source of truth) --------------------
+  bool _shouldSkipQuestion(QAItem q) {
+    final id = q.id;
+
+    if ((id == 'target_event_name' || id == 'target_event_date') &&
+        answers['has_target_event'] == 'No') return true;
+
+    final trainingLocation = answers['training_location'];
+    if ((id == 'home_equipment' || id == 'home_equipment_other') &&
+        (trainingLocation != 'At home' && trainingLocation != 'A mix')) {
+      return true;
+    }
+    if (id == 'home_equipment_other' && answers['home_equipment'] != 'Other') {
+      return true;
+    }
+
+    if (id == 'training_style_other' && answers['training_style'] != 'Other') {
+      return true;
+    }
+
+    final preferredTime = answers['preferred_training_time'];
+    if ((id == 'set_reminder' || id == 'reminder_time') &&
+        (preferredTime == 'Anytime / Varies' ||
+            preferredTime == 'Prefer not to say')) {
+      return true;
+    }
+    if (id == 'reminder_time' && answers['set_reminder'] == 'No') {
+      return true;
+    }
+
+    if (id == 'specific_body_parts' && answers['focus_on_body_parts'] == 'No') {
+      return true;
+    }
+
+    if (id == 'daily_step_goal_custom' &&
+        answers['daily_step_goal'] != 'Custom number') {
+      return true;
+    }
+
+    if (id == 'training_limitations_other' &&
+        answers['training_limitations'] != 'Other') {
+      return true;
+    }
+
+    if (id == 'stress_sources_other' &&
+        answers['stress_sources'] != 'Other') {
+      return true;
+    }
+
+    if ((id == 'injury_name_1' ||
+        id == 'injury_description_1' ||
+        id == 'add_another_injury' ||
+        id == 'injury_name_2' ||
+        id == 'injury_description_2') &&
+        answers['has_injuries'] == 'No') {
+      return true;
+    }
+    if ((id == 'injury_name_2' || id == 'injury_description_2') &&
+        answers['add_another_injury'] != 'Yes') {
+      return true;
+    }
+
+    if (id == 'recovery_obstacles_other' &&
+        answers['recovery_obstacles'] != 'Other') {
+      return true;
+    }
+
+    const measurementIds = {
+      'chest_measurement',
+      'waist_measurement',
+      'hips_measurement',
+      'arm_measurement',
+      'thigh_measurement',
+    };
+    if (measurementIds.contains(id) &&
+        answers['add_body_measurements'] != 'Yes') {
+      return true;
+    }
+
+    if (id == 'progress_photo_picker' &&
+        answers['upload_progress_photo'] != 'Yes') {
+      return true;
+    }
+
+    return false;
+  }
+
+  // -------------------- Active/answered helpers --------------------
+  List<QAItem> _activeQuestionsForGroup(int gi) {
+    if (gi < 0 || gi >= questionGroups.length) return const [];
+    return questionGroups[gi].questions.where((q) => !_shouldSkipQuestion(q)).toList();
+  }
+
+  int _answeredCount(Iterable<QAItem> qs) {
+    int c = 0;
+    for (final q in qs) {
+      final v = answers[q.id];
+      if (v != null && v.isNotEmpty) c++;
+    }
+    return c;
+  }
+
+  /// Global progress across the entire flow (0..1) based on answered, non-skipped questions.
+  double _globalProgress() {
+    if (questionGroups.isEmpty) return 0.0;
+
+    int totalActive = 0;
+    int totalAnswered = 0;
+
+    for (int gi = 0; gi < questionGroups.length; gi++) {
+      final activeQs = _activeQuestionsForGroup(gi);
+      totalActive += activeQs.length;
+
+      // If we've reached a group break, treat that group as fully answered
+      // (you already showed summary and wait Continue/Skip).
+      if (isAwaitingGroupConfirmation.value && gi < currentGroupIndex.value) {
+        totalAnswered += activeQs.length;
+        continue;
+      }
+
+      // normal answered count
+      totalAnswered += _answeredCount(activeQs);
+    }
+
+    // End-state overrides
+    if (isFinished || isAwaitingFinalContinuation.value) return 1.0;
+    if (totalActive == 0) return 0.0;
+
+    final gp = totalAnswered / totalActive;
+    return gp.clamp(0.0, 1.0);
+  }
+
+  // -------------------- Core flow --------------------
   Future<void> _askNext() async {
-    // If we are waiting for the user to press "Continue" or "Skip", do nothing.
     if (isAwaitingGroupConfirmation.value) return;
 
-    // Determine the next position
     int nextQuestionIndex = currentQuestionIndexInGroup.value;
     int nextGroupIndex = currentGroupIndex.value;
 
-    // Loop to find the next valid, non-skipped question
     while (true) {
       nextQuestionIndex++;
 
-      // Check if the current group is finished
+      // End of group?
       if (nextGroupIndex < questionGroups.length &&
-          nextQuestionIndex >=
-              questionGroups[nextGroupIndex].questions.length) {
-        // --- START: End-of-Group Logic ---
+          nextQuestionIndex >= questionGroups[nextGroupIndex].questions.length) {
         final finishedGroup = questionGroups[nextGroupIndex];
 
-        // 1. Show the group's conclusion message if it exists
         if (finishedGroup.conclusion != null) {
           await _botSay(finishedGroup.conclusion!);
         }
 
-        // 2. Generate and show a summary for the just-completed group
+        // Section summary (answered only)
         final summaryLines = <String>[];
         for (final question in finishedGroup.questions) {
-          if (answers.containsKey(question.id)) {
-            final questionText = question.question.replaceAll('?', '');
-            // Using a more readable format for the summary
-            summaryLines.add("• $questionText: **${answers[question.id]}**");
+          final ans = answers[question.id];
+          if (ans != null && ans.isNotEmpty) {
+            final qt = question.question.replaceAll('?', '');
+            summaryLines.add("• $qt: **$ans**");
           }
         }
         if (summaryLines.isNotEmpty) {
-          await _botSay(
-            "Here's a summary for this section:\n${summaryLines.join('\n')}",
-          );
+          await _botSay("Here's a summary for this section:\n${summaryLines.join('\n')}");
         }
 
-        // 3. If this was the VERY LAST group, complete the whole flow
         if (nextGroupIndex >= questionGroups.length - 1) {
           await _completeOnboarding();
-          return; // End the entire process
+          return;
         }
 
-        // 4. Otherwise, prompt the user and wait for them to Continue or Skip
         isAwaitingGroupConfirmation.value = true;
-        // ---  Show remaining group names ---
+
         final remainingGroups = questionGroups.sublist(nextGroupIndex + 1);
         final remainingGroupNames =
         remainingGroups.map((g) => "• ${g.name}").join('\n');
@@ -732,153 +840,36 @@ class TraineeOnboardingController extends BaseController {
           "Great job! To create the best plan, we still need to cover these topics:\n$remainingGroupNames",
         );
         await _botSay("Ready to continue?");
-        return; // IMPORTANT: Exit _askNext and wait for user action
-        // --- End-of-Group Logic ---
+        _updateProgresses();
+        return;
       }
 
-      // This case is now handled by the logic above, but serves as a fallback.
       if (nextGroupIndex >= questionGroups.length) {
         await _completeOnboarding();
         return;
       }
 
-      final questionCandidate =
-          questionGroups[nextGroupIndex].questions[nextQuestionIndex];
+      final candidate =
+      questionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
-      // --- all skip rules remain the same ---
-      bool shouldSkip = false;
-      // Rule 1: Skip event questions if user answered "No"
-      if ((questionCandidate.id == 'target_event_name' ||
-              questionCandidate.id == 'target_event_date') &&
-          answers['has_target_event'] == 'No') {
-        shouldSkip = true;
-      }
-      // Rule 2: Skip home equipment questions if not training at home/mix
-      final trainingLocation = answers['training_location'];
-      if ((questionCandidate.id == 'home_equipment' ||
-              questionCandidate.id == 'home_equipment_other') &&
-          (trainingLocation != 'At home' && trainingLocation != 'A mix')) {
-        shouldSkip = true;
-      }
-
-      // Rule 3: Skip 'other' equipment detail if user didn't select 'Other'
-      if (questionCandidate.id == 'home_equipment_other' &&
-          answers['home_equipment'] != 'Other') {
-        shouldSkip = true;
-      }
-
-      // Rule 4: Skip 'other' training style if user didn't select 'Other'
-      if (questionCandidate.id == 'training_style_other' &&
-          answers['training_style'] != 'Other') {
-        shouldSkip = true;
-      }
-
-      // Rule 5: Skip reminder questions if no specific time was chosen.
-      final preferredTime = answers['preferred_training_time'];
-      if ((questionCandidate.id == 'set_reminder' ||
-              questionCandidate.id == 'reminder_time') &&
-          (preferredTime == 'Anytime / Varies' ||
-              preferredTime == 'Prefer not to say')) {
-        shouldSkip = true;
-      }
-
-      // Rule 6: Skip reminder time picker if user answered "No".
-      if (questionCandidate.id == 'reminder_time' &&
-          answers['set_reminder'] == 'No') {
-        shouldSkip = true;
-      }
-
-      // Rule 7: Skip specific body parts if user answered "No"
-      if (questionCandidate.id == 'specific_body_parts' &&
-          answers['focus_on_body_parts'] == 'No') {
-        shouldSkip = true;
-      }
-
-      // Rule 8: Skip custom step goal if user didn't select 'Custom number'
-      if (questionCandidate.id == 'daily_step_goal_custom' &&
-          answers['daily_step_goal'] != 'Custom number') {
-        shouldSkip = true;
-      }
-
-      // Rule 9: Skip 'other' limitations if user didn't select 'Other'
-      if (questionCandidate.id == 'training_limitations_other' &&
-          answers['training_limitations'] != 'Other') {
-        shouldSkip = true;
-      }
-
-      // Rule 10: Skip 'other' stress sources if user didn't select 'Other'
-      if (questionCandidate.id == 'stress_sources_other' &&
-          answers['stress_sources'] != 'Other') {
-        shouldSkip = true;
-      }
-
-      // Rule 11: Skip all injury questions if user answered "No"
-      if ((questionCandidate.id == 'injury_name_1' ||
-              questionCandidate.id == 'injury_description_1' ||
-              questionCandidate.id == 'add_another_injury' ||
-              questionCandidate.id == 'injury_name_2' ||
-              questionCandidate.id == 'injury_description_2') &&
-          answers['has_injuries'] == 'No') {
-        shouldSkip = true;
-      }
-
-      // Rule 12: Skip second injury questions if user doesn't want to add more
-      if ((questionCandidate.id == 'injury_name_2' ||
-              questionCandidate.id == 'injury_description_2') &&
-          answers['add_another_injury'] != 'Yes') {
-        shouldSkip = true;
-      }
-
-      // Rule 13: Skip 'other' recovery obstacles if user didn't select 'Other'
-      if (questionCandidate.id == 'recovery_obstacles_other' &&
-          answers['recovery_obstacles'] != 'Other') {
-        shouldSkip = true;
-      }
-
-      // Rule 14: Skip body measurement questions if user answered "No"
-      const measurementIds = {
-        'chest_measurement',
-        'waist_measurement',
-        'hips_measurement',
-        'arm_measurement',
-        'thigh_measurement',
-      };
-
-      // Rule 15: Skip body measurement questions if user answered "No"
-      if (measurementIds.contains(questionCandidate.id) &&
-          answers['add_body_measurements'] != 'Yes') {
-        shouldSkip = true;
-      }
-
-      // Rule 15: Skip the photo picker if the user answered "No"
-      if (questionCandidate.id == 'progress_photo_picker' &&
-          answers['upload_progress_photo'] != 'Yes') {
-        shouldSkip = true;
-      }
-
-      if (!shouldSkip) {
-        // Found a valid question, break the loop to ask it
-        break;
-      }
+      if (!_shouldSkipQuestion(candidate)) break;
     }
 
-    // If we are starting a new group, show its introduction message
     final bool isNewGroup =
         nextQuestionIndex == 0 &&
-        (currentGroupIndex.value != nextGroupIndex ||
-            currentQuestionIndexInGroup.value == -1);
+            (currentGroupIndex.value != nextGroupIndex ||
+                currentQuestionIndexInGroup.value == -1);
 
     if (isNewGroup) {
       await _botSay(questionGroups[nextGroupIndex].introduction);
     }
 
-    // Ask the actual question
     final q = questionGroups[nextGroupIndex].questions[nextQuestionIndex];
     await _botSay(q.question);
 
-    // Update the state to the new position
     currentGroupIndex.value = nextGroupIndex;
     currentQuestionIndexInGroup.value = nextQuestionIndex;
+    _updateProgresses();
   }
 
   void _scrollToBottom() {
@@ -898,9 +889,6 @@ class TraineeOnboardingController extends BaseController {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     _saveUserAnswer(q, option);
-
-    // The new _askNext() method now handles all branching logic,
-    // so the special cases are no longer needed here.
     await _askNext();
   }
 
@@ -908,7 +896,6 @@ class TraineeOnboardingController extends BaseController {
   Future<void> send(String text) async {
     final value = text.trim();
 
-    // If flow is finished, any input restarts it.
     if (isFinished) {
       messages.add(ChatMessage(from: Sender.user, text: value));
       _scrollToBottom();
@@ -920,7 +907,6 @@ class TraineeOnboardingController extends BaseController {
 
     final q = currentQuestion!;
 
-    // ... (rest of the send method is the same)
     if (value.isEmpty) {
       if (q.canSkip) {
         _saveUserAnswer(q, "Skipped");
@@ -940,8 +926,7 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
-  // --- Updated Helper Getters and Methods ---
-
+  // --- Helper Getters and Methods ---
   bool get isFinished => currentGroupIndex.value >= questionGroups.length;
 
   bool get _canAnswer =>
@@ -951,13 +936,13 @@ class TraineeOnboardingController extends BaseController {
     messages.add(ChatMessage(from: Sender.user, text: value));
     answers[q.id] = value;
     _scrollToBottom();
+    _updateProgresses();
   }
 
   bool get canGoBack =>
       !isFinished &&
-      (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
+          (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
 
-  /// Go back one step (keeps prior answers)
   Future<void> goBack() async {
     if (!canGoBack) return;
 
@@ -966,8 +951,6 @@ class TraineeOnboardingController extends BaseController {
     int targetQuestionIndex = currentQuestionIndexInGroup.value;
     int targetGroupIndex = currentGroupIndex.value;
 
-    // This loop finds the correct previous question to go back to,
-    // automatically handling branches that were skipped.
     while (true) {
       targetQuestionIndex--;
 
@@ -977,131 +960,19 @@ class TraineeOnboardingController extends BaseController {
             questionGroups[targetGroupIndex].questions.length - 1;
       }
 
-      final questionCandidate =
-          questionGroups[targetGroupIndex].questions[targetQuestionIndex];
+      final candidate =
+      questionGroups[targetGroupIndex].questions[targetQuestionIndex];
 
-      // Check if this candidate question should have been skipped based on previous answers.
-      bool wasSkipped = false;
-      // Rule 1
-      if ((questionCandidate.id == 'target_event_name' ||
-              questionCandidate.id == 'target_event_date') &&
-          answers['has_target_event'] == 'No') {
-        wasSkipped = true;
-      }
-
-      // Rule 2
-      final trainingLocation = answers['training_location'];
-      if ((questionCandidate.id == 'home_equipment' ||
-              questionCandidate.id == 'home_equipment_other') &&
-          (trainingLocation != 'At home' && trainingLocation != 'A mix')) {
-        wasSkipped = true;
-      }
-
-      // Rule 3
-      if (questionCandidate.id == 'home_equipment_other' &&
-          answers['home_equipment'] != 'Other') {
-        wasSkipped = true;
-      }
-
-      // Rule 4
-      if (questionCandidate.id == 'training_style_other' &&
-          answers['training_style'] != 'Other') {
-        wasSkipped = true;
-      }
-
-      // Rule 5
-      final preferredTime = answers['preferred_training_time'];
-      if ((questionCandidate.id == 'set_reminder' ||
-              questionCandidate.id == 'reminder_time') &&
-          (preferredTime == 'Anytime / Varies' ||
-              preferredTime == 'Prefer not to say')) {
-        wasSkipped = true;
-      }
-
-      // Rule 6
-      if (questionCandidate.id == 'reminder_time' &&
-          answers['set_reminder'] == 'No') {
-        wasSkipped = true;
-      }
-
-      // Rule 7
-      if (questionCandidate.id == 'specific_body_parts' &&
-          answers['focus_on_body_parts'] == 'No') {
-        wasSkipped = true;
-      }
-
-      // Rule 8
-      if (questionCandidate.id == 'daily_step_goal_custom' &&
-          answers['daily_step_goal'] != 'Custom number') {
-        wasSkipped = true;
-      }
-
-      // Rule 9
-      if (questionCandidate.id == 'training_limitations_other' &&
-          answers['training_limitations'] != 'Other') {
-        wasSkipped = true;
-      }
-
-      // Rule 10
-      if (questionCandidate.id == 'stress_sources_other' &&
-          answers['stress_sources'] != 'Other') {
-        wasSkipped = true;
-      }
-
-      // Rule 11
-      if ((questionCandidate.id == 'injury_name_1' ||
-              questionCandidate.id == 'injury_description_1' ||
-              questionCandidate.id == 'add_another_injury' ||
-              questionCandidate.id == 'injury_name_2' ||
-              questionCandidate.id == 'injury_description_2') &&
-          answers['has_injuries'] == 'No') {
-        wasSkipped = true;
-      }
-
-      // Rule 12
-      if ((questionCandidate.id == 'injury_name_2' ||
-              questionCandidate.id == 'injury_description_2') &&
-          answers['add_another_injury'] != 'Yes') {
-        wasSkipped = true;
-      }
-
-      // Rule 13
-      if (questionCandidate.id == 'recovery_obstacles_other' &&
-          answers['recovery_obstacles'] != 'Other') {
-        wasSkipped = true;
-      }
-
-      // Rule 14
-      const measurementIds = {
-        'chest_measurement',
-        'waist_measurement',
-        'hips_measurement',
-        'arm_measurement',
-        'thigh_measurement',
-      };
-      if (measurementIds.contains(questionCandidate.id) &&
-          answers['add_body_measurements'] != 'Yes') {
-        wasSkipped = true;
-      }
-
-      // Rule 15: Skip the photo picker if the user answered "No"
-      if (questionCandidate.id == 'progress_photo_picker' &&
-          answers['upload_progress_photo'] != 'Yes') {
-        wasSkipped = true;
-      }
-
-      if (!wasSkipped) {
-        // This is a valid previous question, so we break the loop.
-        break;
-      }
+      final wasSkipped = _shouldSkipQuestion(candidate);
+      if (!wasSkipped) break;
     }
 
     final q = questionGroups[targetGroupIndex].questions[targetQuestionIndex];
     await _botSay(q.question);
 
-    // Update state to the new, correct previous position.
     currentGroupIndex.value = targetGroupIndex;
     currentQuestionIndexInGroup.value = targetQuestionIndex;
+    _updateProgresses();
   }
 
   Map<String, dynamic> toJson() => {
@@ -1113,10 +984,8 @@ class TraineeOnboardingController extends BaseController {
   Future<void> selectDate(DateTime date) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-    // ... (rest of the method is the same)
     final formattedDate =
         "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-
     _saveUserAnswer(q, formattedDate);
     await _askNext();
   }
@@ -1125,12 +994,10 @@ class TraineeOnboardingController extends BaseController {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     final formattedTime = time.format(context);
-
     _saveUserAnswer(q, formattedTime);
     await _askNext();
   }
 
-  // handler for the height picker
   Future<void> selectHeight({int? cm, int? feet, int? inches}) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
@@ -1141,7 +1008,6 @@ class TraineeOnboardingController extends BaseController {
     } else if (feet != null && inches != null) {
       formattedHeight = "$feet' $inches\"";
     } else {
-      // This case would be triggered by a "Skip" button in the UI
       _saveUserAnswer(q, "Skipped");
       await _askNext();
       return;
@@ -1151,60 +1017,141 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
-  // handler for the weight picker
   Future<void> selectWeight({double? weight, String? unit}) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-
     if (weight == null || unit == null) {
-      // This case would be triggered by a "Skip" button in the UI
       _saveUserAnswer(q, "Skipped");
       await _askNext();
       return;
     }
-    // Format to one decimal place for consistency
     final formattedWeight = "${weight.toStringAsFixed(1)} $unit";
-
     _saveUserAnswer(q, formattedWeight);
     await _askNext();
   }
 
-  /// The UI should call this after using image_picker to get a file.
   Future<void> selectImage(XFile imageFile) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-
-    // The answer map stores the file path for later use (e.g., uploading).
     answers[q.id] = imageFile.path;
-
-    // MODIFIED: Create a ChatMessage containing the image path instead of text.
     messages.add(
       ChatMessage(from: Sender.user, imagePath: imageFile.path, text: ''),
     );
     _scrollToBottom();
-
-    // Proceed to the next step in the onboarding flow.
+    _updateProgresses();
     await _askNext();
   }
 
-  // Helpers for cleaner Obx use
-  QAItem? get currentQuestion {
-    if (isFinished || currentQuestionIndexInGroup.value < 0) {
-      return null;
+  // -------------- Per-group progress (for section UIs) --------------
+  // double _computeGroupProgress(int groupIndex) {
+  //   if (groupIndex < 0 || groupIndex >= questionGroups.length) return 0.0;
+  //   final activeQs = _activeQuestionsForGroup(groupIndex);
+  //   if (activeQs.isEmpty) return 1.0;
+  //
+  //   int answered = _answeredCount(activeQs);
+  //
+  //   // If we’re sitting at a group break, that group is effectively complete.
+  //   if (isAwaitingGroupConfirmation.value &&
+  //       currentGroupIndex.value == groupIndex) {
+  //     answered = activeQs.length;
+  //   }
+  //
+  //   return (answered / activeQs.length).clamp(0.0, 1.0);
+  // }
+
+  // -------------- Stepper bindings --------------
+  /// The stepper has `totalSteps` dots (groups), but the bar position should follow
+  /// the **global answered fraction** of all active questions.
+  // void _updateProgresses() {
+  //   // keep the per-group progress if other parts of UI need it
+  //   if (isFinished || currentGroupIndex.value >= questionGroups.length) {
+  //     currentGroupProgress.value = 0.0;
+  //   } else {
+  //     currentGroupProgress.value = _computeGroupProgress(currentGroupIndex.value);
+  //   }
+  // }
+
+  int get stepperTotalSteps => questionGroups.length;
+
+  int get stepperCurrentStep {
+    if (isFinished && questionGroups.isNotEmpty) {
+      return questionGroups.length - 1;
     }
+    return currentGroupIndex.value.clamp(
+      0,
+      (questionGroups.length - 1).clamp(0, 1 << 30),
+    );
+  }
+
+  /// Convert global (0..1) → widget’s `(currentStep + stepProgress)/(totalSteps-1)`
+  double get stepperStepProgress {
+    final n = questionGroups.length;
+    if (n <= 1) return _globalProgress(); // trivial bar
+
+    // Global 0..1 fraction of answered active questions
+    final gp = _globalProgress();
+
+    // Map to overall "segment space"
+    final overall = gp * (n - 1);
+
+    // Force the thumb to live inside current step for dot visuals
+    final stepProg = (overall - stepperCurrentStep).clamp(0.0, 1.0);
+    return stepProg;
+  }
+
+  // ------------ Convenience flags for input UI ------------
+  QAItem? get currentQuestion {
+    if (isFinished || currentQuestionIndexInGroup.value < 0) return null;
     return questionGroups[currentGroupIndex.value]
         .questions[currentQuestionIndexInGroup.value];
   }
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
-
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
-
   bool get isCurrentTime => currentQuestion?.type == QAType.time;
-
   bool get isCurrentHeight => currentQuestion?.type == QAType.height;
-
   bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
-
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
+
+  // REMOVE THIS ENTIRE METHOD
+  void moveToNextGroup() {
+    if (currentGroupIndex.value < totalGroups.value - 1) {
+      currentGroupIndex.value++;
+    }
+    // This logic is incorrect for per-question progress.
+    currentGroupProgress.value =
+        (currentGroupIndex.value + 1) / totalGroups.value;
+  }
+
+  // -------------- Stepper bindings --------------
+  /// The stepper has `totalSteps` dots (groups), but the bar position should follow
+  /// the **global answered fraction** of all active questions.
+  void _updateProgresses() {
+    // keep the per-group progress if other parts of UI need it
+    if (isFinished || currentGroupIndex.value >= questionGroups.length) {
+      currentGroupProgress.value = 0.0;
+    } else {
+      // This is the key line that computes the progress for the current group.
+      currentGroupProgress.value = _computeGroupProgress(currentGroupIndex.value);
+    }
+  }
+  // -------------- Per-group progress (for section UIs) --------------
+  double _computeGroupProgress(int groupIndex) {
+    if (groupIndex < 0 || groupIndex >= questionGroups.length) return 0.0;
+    // 1. Get all non-skipped questions for the current group.
+    final activeQs = _activeQuestionsForGroup(groupIndex);
+    if (activeQs.isEmpty) return 1.0;
+
+    // 2. Count how many of them have been answered.
+    int answered = _answeredCount(activeQs);
+
+    // If we’re sitting at a group break, that group is effectively complete.
+    if (isAwaitingGroupConfirmation.value &&
+        currentGroupIndex.value == groupIndex) {
+      answered = activeQs.length;
+    }
+
+    // 3. Calculate the progress (e.g., 2 answered / 4 total = 0.5)
+    return (answered / activeQs.length).clamp(0.0, 1.0);
+  }
 }

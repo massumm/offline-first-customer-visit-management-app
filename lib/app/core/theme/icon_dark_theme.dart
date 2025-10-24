@@ -105,6 +105,17 @@ class IconDarkTheme {
     scaffoldBackgroundColor: AppColors.darkBgColor,
     cardColor: AppColors.cardBgColor,
     useMaterial3: true,
+    iconTheme: IconThemeData(
+      color: AppColors.darkTextPrimaryColor,
+      size: 24
+
+    ),
+    iconButtonTheme: IconButtonThemeData(
+      style: IconButton.styleFrom(
+        foregroundColor: AppColors.darkTextPrimaryColor,
+        iconSize: 24,
+      ),
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.darkBgColor,
       elevation: 0,
@@ -133,12 +144,31 @@ class IconDarkTheme {
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.colorPrimary,
       brightness: Brightness.dark,
+
+      // --- Core Brand Colors ---
       primary: AppColors.colorPrimary,
       onPrimaryContainer: AppColors.darkShapeColor,
+      // Assuming AppColors has a secondary color defined
       // secondary: AppColors.colorSecondary,
-      // error: AppColors.colorError,
-      // surface: Colors.white,
-      // background: Color(0xFFFDFDFD),
+      error: AppColors.warningColor,
+
+      // --- Surface and Background Colors ---
+      // Aligns with scaffoldBackgroundColor
+      // Aligns with cardColor and dialogTheme.backgroundColor
+      surface: AppColors.darkShapeColor,
+
+      // --- "On" Colors (for text and icons) ---
+      // Defines the color of content placed on top of the key colors above.
+      // Setting these explicitly ensures high contrast.
+      onPrimary: Colors.white,
+      // onSecondary: Colors.black,
+      onError: AppColors.warningColor,
+      onSurface: Colors.white,
+      onSurfaceVariant: Colors.white,
+
+      // --- Other Colors ---
+      // Aligns with the border color used in InputDecorationTheme
+      outline: AppColors.darkStockColor,
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

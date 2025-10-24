@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
+import 'widgets/animated_onboarding_stepper.dart';
 import 'widgets/message_bubble.dart';
 import 'widgets/type_bubble.dart';
 
@@ -18,16 +20,40 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
     return AppBar(
-      title: const Text('Onboarding Assistant'),
-      centerTitle: true,
+      title: Row(
+        children: [
+          const CircleAvatar(
+            radius: 20,
+            backgroundImage: AssetImage('assets/images/icon-logo-pink.png'),
+          ),
+          6.width,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Mish Icon',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Text(
+                'Online',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
       actions: [
         Obx(
-          () => controller.canGoBack
+              () => controller.canGoBack
               ? IconButton(
-                  icon: const Icon(Icons.undo),
-                  onPressed: controller.goBack,
-                  tooltip: 'Go Back',
-                )
+            icon: const Icon(Icons.undo),
+            // Removed explicit style assignment, IconButton will now use theme's IconButtonThemeData
+            onPressed: controller.goBack,
+            tooltip: 'Go Back',
+          )
               : const SizedBox.shrink(),
         ),
         IconButton(
@@ -38,11 +64,17 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       ],
     );
   }
-
   @override
   Widget body(BuildContext context) {
     return Column(
       children: [
+        // Custom Stepper For visualizing group movement
+        Obx(() => AnimatedOnboardingStepper(
+          totalSteps: controller.totalGroups.value,
+          currentStep: controller.currentGroupIndex.value,
+          stepProgress: controller.currentGroupProgress.value,
+        )
+        ),
         Expanded(
           child: Obx(() {
             final items = controller.messages;
@@ -102,10 +134,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               children: q.options
                   .map(
                     (o) => ActionChip(
-                      label: Text(o),
-                      onPressed: () => controller.choose(o),
-                    ),
-                  )
+                  label: Text(o),
+                  onPressed: () => controller.choose(o),
+                ),
+              )
                   .toList(),
             ),
           );
@@ -117,7 +149,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           child: Obx(() {
             // ADD THIS: Check for the final continuation state first.
             if (controller.isAwaitingFinalContinuation.isTrue) {
-              return _buildFinalContinueButton();
+              return _buildFinalContinueButton(context);
             }
 
             // When a group is finished, show Continue/Skip buttons.
@@ -140,7 +172,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               return _buildTimePickerButton(context);
             }
 
-            // START: Add new conditions for height and weight pickers
+            //  height and weight pickers
             if (controller.isCurrentHeight) {
               return _HeightPicker(controller: controller);
             }
@@ -148,7 +180,12 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             if (controller.isCurrentWeight) {
               return _WeightPicker(controller: controller);
             }
-            // END: Add new conditions
+
+
+            // Hide the input field for Choice questions.
+            if(controller.currentQuestion?.type == QAType.choice){
+              return SizedBox.shrink();
+            }
 
             // Default input field for text/number questions.
             return _buildTextInput();
@@ -158,22 +195,64 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       ],
     );
   }
-  Widget _buildFinalContinueButton() {
+// In TraineeOnboardingView class
+
+  Widget _buildFinalContinueButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      child: SizedBox(
-        width: double.infinity,
-        child: FilledButton(
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+      // MODIFIED: Use a Column to stack the checkbox and the button
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // START: ADDED WIDGET
+          // A row containing the checkbox and tappable text
+          Row(
+            children: [
+              Obx(() => Checkbox(
+                value: controller.hasAgreedToTerms.value,
+                onChanged: controller.toggleTermsAgreement,
+              )),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    children: [
+                      const TextSpan(text: 'I have read and agree to the '),
+                      TextSpan(
+                        text: 'Terms and Conditions',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Theme.of(context).colorScheme.primary,
+                        ),
+                        // TODO: Add a recognizer to open the terms page
+                        // recognizer: TapGestureRecognizer()..onTap = () => Get.toNamed(Routes.TERMS),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          onPressed: controller.proceedToSignup,
-          child: const Text('Continue to Sign Up'),
-        ),
+          const SizedBox(height: 12),
+          // END: ADDED WIDGET
+
+          // MODIFIED: Wrap the button in an Obx to make it reactive
+          Obx(() => FilledButton(
+            style: FilledButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            // The button is disabled if `hasAgreedToTerms` is false
+            onPressed: controller.hasAgreedToTerms.value
+                ? controller.proceedToContinue
+                : null,
+            child: const Text('Continue'),
+          )),
+        ],
       ),
     );
   }
-
   Widget _buildContinuationButtons() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -310,11 +389,11 @@ class _HeightPickerState extends State<_HeightPicker> {
   // Data for pickers
   final List<int> _cmValues = List.generate(
     101,
-    (index) => 120 + index,
+        (index) => 120 + index,
   ); // 120-220 cm
   final List<int> _feetValues = List.generate(
     4,
-    (index) => 4 + index,
+        (index) => 4 + index,
   ); // 4-7 ft
   final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
 
@@ -326,7 +405,7 @@ class _HeightPickerState extends State<_HeightPicker> {
       decoration: BoxDecoration(
         color: Theme.of(
           context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        ).colorScheme.surfaceContainerHighest.withOpacity(0.3), // Corrected withValues to withOpacity
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -443,11 +522,11 @@ class _WeightPickerState extends State<_WeightPicker> {
   // Data for pickers
   final List<double> _kgValues = List.generate(
     1101,
-    (i) => 40.0 + i * 0.1,
+        (i) => 40.0 + i * 0.1,
   ); // 40.0-150.0 kg
   final List<double> _lbsValues = List.generate(
     2401,
-    (i) => 90.0 + i * 0.1,
+        (i) => 90.0 + i * 0.1,
   ); // 90.0-330.0 lbs
 
   @override
@@ -461,7 +540,7 @@ class _WeightPickerState extends State<_WeightPicker> {
       decoration: BoxDecoration(
         color: Theme.of(
           context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        ).colorScheme.surfaceContainerHighest.withOpacity(0.3), // Corrected withValues to withOpacity
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -480,7 +559,7 @@ class _WeightPickerState extends State<_WeightPicker> {
               scrollController: FixedExtentScrollController(
                 initialItem: currentValues.indexOf(
                   currentValues.firstWhere(
-                    (v) => (v - initialValue).abs() < 0.01,
+                        (v) => (v - initialValue).abs() < 0.01,
                     orElse: () => currentValues.first,
                   ),
                 ),
@@ -645,9 +724,9 @@ class _ImageMessageBubble extends StatelessWidget {
             // Once the frame is ready, this builder is called again and `child` is shown.
             return frame == null
                 ? const Padding(
-                    padding: EdgeInsets.all(48.0),
-                    child: Center(child: CircularProgressIndicator.adaptive()),
-                  )
+              padding: EdgeInsets.all(48.0),
+              child: Center(child: CircularProgressIndicator.adaptive()),
+            )
                 : child;
           },
           // Show an error icon if the image fails to load
