@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/back_pill.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/modules/trainer_onboarding/controllers/trainer_onboarding_controller.dart';
 import 'package:icon/app/modules/trainer_onboarding/views/screens/exercise_strategy_training_style_screen.dart';
 
@@ -19,7 +19,7 @@ class TrainingPlansScreen extends GetView<TrainerOnboardingController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BackPill(onTap: () => Navigator.maybePop(context)),
+            ActionPill(onTap: () => Navigator.maybePop(context)),
             30.height,
             const ProgressBar(currentStep: 2, stepText: "Exercise Strategy"),
             250.height,
@@ -38,7 +38,7 @@ class TrainingPlansScreen extends GetView<TrainerOnboardingController> {
             20.height,
             Expanded(
               child: Obx(
-                    () => ReorderableListView.builder(
+                () => ReorderableListView.builder(
                   itemCount: controller.trainingPlanOptions.length,
                   onReorder: controller.reorderItems,
                   buildDefaultDragHandles: false,
@@ -79,13 +79,19 @@ class TrainingPlansScreen extends GetView<TrainerOnboardingController> {
                           12.width,
                           ReorderableDragStartListener(
                             index: index,
-                            child: const Icon(Icons.drag_indicator_rounded, color: Colors.grey),
+                            child: const Icon(
+                              Icons.drag_indicator_rounded,
+                              color: Colors.grey,
+                            ),
                           ),
                           12.width,
                           Expanded(
                             child: Text(
                               option,
-                              style: TextStyle(color: AppColors.subTextColor, fontWeight: FontWeight.w600),
+                              style: TextStyle(
+                                color: AppColors.subTextColor,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                         ],

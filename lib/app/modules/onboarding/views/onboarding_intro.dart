@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 
-import '../../../core/widgets/back_pill.dart';
+import '../../../core/widgets/action_pill.dart';
 import '../../../routes/app_pages.dart';
 
 class OnboardingIntro extends StatelessWidget {
@@ -21,7 +21,7 @@ class OnboardingIntro extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Back button (small rounded square)
-              BackPill(onTap: () => Navigator.maybePop(context)),
+              ActionPill(onTap: () => Navigator.maybePop(context)),
               Spacer(),
 
               // Tiny orange kicker

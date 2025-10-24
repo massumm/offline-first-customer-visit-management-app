@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/back_pill.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/core/widgets/custom_text_field.dart';
 import 'package:icon/app/modules/trainer_onboarding/controllers/trainer_onboarding_controller.dart';
 import 'package:icon/app/modules/trainer_onboarding/views/screens/success_dialog_screen.dart';
@@ -21,7 +21,7 @@ class TopicWontCoverScreen extends GetView<TrainerOnboardingController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BackPill(onTap: () => Navigator.maybePop(context)),
+              ActionPill(onTap: () => Navigator.maybePop(context)),
               30.height,
               const ProgressBar(
                 currentStep: 2,

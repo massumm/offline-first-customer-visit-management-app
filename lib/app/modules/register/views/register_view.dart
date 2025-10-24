@@ -8,7 +8,7 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 
 import '../../../../generated/assets.dart';
-import '../../../core/widgets/back_pill.dart';
+import '../../../core/widgets/action_pill.dart';
 import '../../../core/widgets/input_widgets/adaptive_text_field.dart';
 import '../../../core/widgets/super_image.dart';
 import '../../../routes/app_pages.dart';
@@ -23,7 +23,7 @@ class RegisterView extends BaseView<RegisterController> {
       alignment: Alignment.topCenter,
       children: [
         _buildBody(context),
-        Positioned(top: 20, left: 16, child: BackPill(onTap: Get.back)),
+        Positioned(top: 20, left: 16, child: ActionPill(onTap: Get.back)),
         //TODO: Background Effects
         // SuperImage(
         //   Assets.svgBgGradientColor

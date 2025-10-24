@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/back_pill.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
 
 class SuccessDialog extends StatelessWidget {
   final VoidCallback onFinish;
@@ -42,9 +42,7 @@ class SuccessDialog extends StatelessWidget {
                 // Back arrow
                 Align(
                   alignment: Alignment.topLeft,
-                  child: BackPill(
-                    onTap: () => Navigator.maybePop(context),
-                  ),
+                  child: ActionPill(onTap: () => Navigator.maybePop(context)),
                 ),
                 const SizedBox(height: 8),
                 Text(

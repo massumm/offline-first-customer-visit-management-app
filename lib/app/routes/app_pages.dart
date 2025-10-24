@@ -5,9 +5,7 @@ import 'package:get/get.dart';
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
 import '../modules/fitness_report/bindings/fitness_report_binding.dart';
-import '../modules/fitness_report/views/fitness_report_landing_view.dart';
 import '../modules/fitness_report/views/report_display_view.dart';
-import '../modules/fitness_report/views/report_generating_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/forgot_password/views/forgot_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
@@ -39,7 +37,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const String INITIAL = Routes.SPLASH;
+  static const String INITIAL = Routes.FITNESS_REPORT;
 
   static final routes = [
     GetPage(
@@ -116,12 +114,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.FITNESS_REPORT,
-      page: () => FitnessReportLandingView(),
-      binding: FitnessReportBinding(),
-    ),
-    GetPage(
-      name: _Paths.FITNESS_REPORT_GENERATING,
-      page: () => ReportGeneratingView(),
+      page: () => ReportDisplayView(),
       binding: FitnessReportBinding(),
     ),
     GetPage(
@@ -131,7 +124,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.TRAINEE_FITNESS_REPORT_GENERATION,
-      page: () =>  TraineeFitnessReportGenerationView(),
+      page: () => TraineeFitnessReportGenerationView(),
       binding: TraineeFitnessReportGenerationBinding(),
     ),
   ];

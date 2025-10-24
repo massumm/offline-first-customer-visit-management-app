@@ -2,12 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/theme/services/theme_service.dart';
 
-class BackPill extends StatelessWidget {
-  const BackPill({super.key, required this.onTap, this.height = 32, this.width = 32});
+class ActionPill extends StatelessWidget {
+  const ActionPill({
+    super.key,
+    required this.onTap,
+    this.icon = Icons.arrow_back_ios_new_rounded,
+    this.height = 32,
+    this.width = 32,
+    this.iconSize = 16,
+  });
 
   final VoidCallback onTap;
+  final IconData icon;
   final double height;
   final double width;
+  final double iconSize;
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +32,7 @@ class BackPill extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         alignment: Alignment.center,
-        child:  Icon(
-          Icons.arrow_back_ios_new_rounded,
-          size: 16,
-          color: theme.iconTheme.color
-        ),
+        child: Icon(icon, size: iconSize, color: theme.iconTheme.color),
       ),
     );
   }

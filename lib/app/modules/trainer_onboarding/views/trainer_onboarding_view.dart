@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/back_pill.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 import '../../../../generated/assets.dart';
 import '../controllers/trainer_onboarding_controller.dart';
@@ -18,7 +18,7 @@ class TrainerOnboardingView extends GetView<TrainerOnboardingController> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          BackPill(onTap: () => Navigator.maybePop(context)),
+          ActionPill(onTap: () => Navigator.maybePop(context)),
           Expanded(
             child: Stack(
               children: [
@@ -26,14 +26,14 @@ class TrainerOnboardingView extends GetView<TrainerOnboardingController> {
                   child: Align(
                     alignment: Alignment.topCenter,
                     heightFactor: 0.7,
-                    child: SuperImage(Assets.imagesGridlineImage)
+                    child: SuperImage(Assets.imagesGridlineImage),
                   ),
                 ),
                 Positioned(
                   top: 60,
                   left: 0,
                   right: 0,
-                  child: SuperImage(Assets.imagesBodyScanner)
+                  child: SuperImage(Assets.imagesBodyScanner),
                 ),
                 Positioned(
                   left: 16,

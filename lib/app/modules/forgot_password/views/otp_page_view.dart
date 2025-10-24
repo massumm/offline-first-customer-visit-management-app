@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/back_pill.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/core/widgets/input_widgets/otp_digit_field.dart';
 import 'package:icon/app/modules/forgot_password/controllers/forgot_password_controller.dart';
 
@@ -27,7 +27,7 @@ class OtpPageView extends BaseView<ForgotPasswordController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  BackPill(onTap: controller.gotToPreviousPage),
+                  ActionPill(onTap: controller.gotToPreviousPage),
                   controller.forgotPasswordDefaultHeight,
                   Text("Enter OTP Code", style: Get.textTheme.titleLarge),
                   10.height,
@@ -53,7 +53,8 @@ class OtpPageView extends BaseView<ForgotPasswordController> {
                                 autoFocus: true,
                                 errorText: error,
                                 isFirst: true,
-                                onChanged: (_) => controller.otpError.value = null,
+                                onChanged: (_) =>
+                                    controller.otpError.value = null,
                                 onTapOutside: (_) =>
                                     FocusScope.of(context).unfocus(),
                               ),
@@ -64,7 +65,8 @@ class OtpPageView extends BaseView<ForgotPasswordController> {
                                 controller: controller.otp2Controller,
                                 focusNode: controller.otp2FocusNode,
                                 errorText: error,
-                                onChanged: (_) => controller.otpError.value = null,
+                                onChanged: (_) =>
+                                    controller.otpError.value = null,
                                 onTapOutside: (_) =>
                                     FocusScope.of(context).unfocus(),
                               ),
@@ -75,7 +77,8 @@ class OtpPageView extends BaseView<ForgotPasswordController> {
                                 controller: controller.otp3Controller,
                                 focusNode: controller.otp3FocusNode,
                                 errorText: error,
-                                onChanged: (_) => controller.otpError.value = null,
+                                onChanged: (_) =>
+                                    controller.otpError.value = null,
                                 onTapOutside: (_) =>
                                     FocusScope.of(context).unfocus(),
                               ),
@@ -86,7 +89,8 @@ class OtpPageView extends BaseView<ForgotPasswordController> {
                                 controller: controller.otp4Controller,
                                 focusNode: controller.otp4FocusNode,
                                 errorText: error,
-                                onChanged: (_) => controller.otpError.value = null,
+                                onChanged: (_) =>
+                                    controller.otpError.value = null,
                                 onTapOutside: (_) =>
                                     FocusScope.of(context).unfocus(),
                               ),
@@ -97,7 +101,8 @@ class OtpPageView extends BaseView<ForgotPasswordController> {
                                 controller: controller.otp5Controller,
                                 focusNode: controller.otp5FocusNode,
                                 errorText: error,
-                                onChanged: (_) => controller.otpError.value = null,
+                                onChanged: (_) =>
+                                    controller.otpError.value = null,
                                 onTapOutside: (_) =>
                                     FocusScope.of(context).unfocus(),
                               ),
@@ -109,7 +114,8 @@ class OtpPageView extends BaseView<ForgotPasswordController> {
                                 focusNode: controller.otp6FocusNode,
                                 errorText: error,
                                 isLast: true,
-                                onChanged: (_) => controller.otpError.value = null,
+                                onChanged: (_) =>
+                                    controller.otpError.value = null,
                                 onTapOutside: (_) =>
                                     FocusScope.of(context).unfocus(),
                               ),
@@ -170,5 +176,4 @@ class OtpPageView extends BaseView<ForgotPasswordController> {
     final secs = seconds % 60;
     return '${minutes.toString().padLeft(2, '0')}:${secs.toString().padLeft(2, '0')}';
   }
-
 }

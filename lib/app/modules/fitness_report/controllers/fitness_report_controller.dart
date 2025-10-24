@@ -1,50 +1,66 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
-import 'package:icon/app/routes/app_pages.dart';
+import '../views/introduction_page_view.dart';
+import '../views/profile_overview_page_view.dart';
+import '../views/recovery_strategy_page_view.dart';
+import '../views/nutrition_strategy_page_view.dart';
+import '../views/activity_strategy_page_view.dart';
+import '../views/daily_goals_page_view.dart';
+import '../views/mindset_motivation_page_view.dart';
+import '../views/integration_summary_page_view.dart';
+import '../views/icon_closing_message_page_view.dart';
 
 class FitnessReportController extends BaseController {
-  final email = ''.obs;
-  final isLoading = false.obs;
-  final selectedView = 'report'.obs; // 'report', 'introduction', 'profile'
+  late PageController pageController;
 
-  // Profile data
-  final memberSince = 'June 2023'.obs;
-  final currentGoal = 'Strength training'.obs;
-  final achievements = ['5K Run', 'Weight Loss', 'Consistency Award'].obs;
-  final fullName = 'Alex Johnson'.obs;
-  final membershipLevel = 'Gold Member'.obs;
-  final userEmail = 'alex.johnson@example.com'.obs;
-  final lastWorkout = '2 days ago'.obs;
-
-  void updateEmail(String value) => email.value = value;
-
-  bool get isValidEmail => email.value.isNotEmpty && email.value.contains('@');
-
-  void showIntroduction() {
-    selectedView.value = 'introduction';
+  @override
+  void onInit() {
+    super.onInit();
+    pageController = PageController(initialPage: 0);
   }
 
-  void showProfileOverview() {
-    selectedView.value = 'profile';
+  @override
+  void onClose() {
+    pageController.dispose();
+    super.onClose();
   }
 
-  void showReport() {
-    selectedView.value = 'report';
+  List<Widget> get pages => [
+    IntroductionPageView(),
+    ProfileOverviewPageView(),
+    RecoveryStrategyPageView(),
+    NutritionStrategyPageView(),
+    ActivityStrategyPageView(),
+    DailyGoalsPageView(),
+    MindsetMotivationPageView(),
+    IntegrationSummaryPageView(),
+    IconClosingMessagePageView(),
+  ];
+
+  final currentPageIndex = 0.obs;
+
+  void onPageChange(int index) {
+    currentPageIndex.value = index;
   }
 
-  Future<void> generateReport() async {
-    if (!isValidEmail) {
-      Get.snackbar('Error', 'Please enter a valid email');
-      return;
+  void gotToNextPage() {
+    if (currentPageIndex.value < pages.length - 1) {
+      pageController.nextPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      currentPageIndex.value++;
     }
+  }
 
-    isLoading.value = true;
-    Get.toNamed(Routes.FITNESS_REPORT_GENERATING);
-    
-    // TODO: Implement actual report generation
-    await Future.delayed(const Duration(seconds: 2)); // Simulate processing
-    
-    isLoading.value = false;
-    Get.toNamed(Routes.REPORT_DISPLAY);
+  void gotToPreviousPage() {
+    if (currentPageIndex.value > 0) {
+      pageController.previousPage(
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      currentPageIndex.value--;
+    }
   }
 }

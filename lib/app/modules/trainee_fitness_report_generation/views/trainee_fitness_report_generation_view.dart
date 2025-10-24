@@ -5,7 +5,7 @@ import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/input_widgets/input_widgets.dart';
 
-import '../../../core/widgets/back_pill.dart';
+import '../../../core/widgets/action_pill.dart';
 import '../controllers/trainee_fitness_report_generation_controller.dart';
 
 class TraineeFitnessReportGenerationView
@@ -39,7 +39,7 @@ class TraineeFitnessReportGenerationView
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BackPill(onTap: Get.back),
+              ActionPill(onTap: Get.back),
               30.height,
               RichText(
                 text: TextSpan(

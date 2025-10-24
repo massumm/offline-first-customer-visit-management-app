@@ -10,7 +10,7 @@ import 'package:icon/app/core/widgets/super_image.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
-import '../../../core/widgets/back_pill.dart';
+import '../../../core/widgets/action_pill.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends BaseView<LoginController> {
@@ -22,7 +22,7 @@ class LoginView extends BaseView<LoginController> {
       alignment: Alignment.topCenter,
       children: [
         _buildBody(context),
-        Positioned(top: 20, left: 16, child: BackPill(onTap: Get.back)),
+        Positioned(top: 20, left: 16, child: ActionPill(onTap: Get.back)),
         //TODO: Background Effects
         // SuperImage(
         //   Assets.svgBgGradientColor
