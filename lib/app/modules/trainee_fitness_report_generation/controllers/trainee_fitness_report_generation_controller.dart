@@ -3,17 +3,17 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/utils/app_validators.dart';
 
+import '../../trainee_onboarding/repository/trainee_onboarding_repository.dart';
 import '../views/saving_view.dart';
 
 class TraineeFitnessReportGenerationController extends BaseController {
-
-  final count = 0.obs;
+  final TraineeOnboardingRepository _repo = Get.find(
+    tag: (TraineeOnboardingRepository).toString(),
+  );
 
  final TextEditingController emailCtr = TextEditingController();
-
   var emailError = RxnString() ;
   final isValidEmail = RxBool(false);
-  final isLoading = RxBool(false);
 
   // --------------- Loading Effect State ---------------
   final progress = 0.0.obs;
