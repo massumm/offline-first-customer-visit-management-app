@@ -644,12 +644,15 @@ class TraineeOnboardingController extends BaseController {
       );
       return;
     }
-    final onboardingJson = toJson();
-    Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
-    CustomToast.showSuccessToast("Onboarding Complete");
-    // TODO: HANDLE THE ROUTE
-    Get.toNamed(Routes.REGISTER, arguments: onboardingJson);
-    "Proceeding to signup with data: $onboardingJson".log();
+    try{
+      final onboardingJson = toJson();
+      Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
+      CustomToast.showSuccessToast('Profile data saved successfully.');
+      Get.toNamed(Routes.FITNESS_REPORT, arguments: onboardingJson);
+      "Proceeding to fitness report with data: $onboardingJson".log();
+    } catch(e){
+      CustomToast.showErrorToast('Error saving data: $e');
+    }
   }
 
   Future<void> _botSay(String text) async {
