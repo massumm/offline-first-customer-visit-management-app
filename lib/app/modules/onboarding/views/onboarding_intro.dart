@@ -42,19 +42,21 @@ class OnboardingIntro extends StatelessWidget {
                       text: 'personal coach',
                       style: theme.textTheme.bodyLarge!.copyWith(
                         color: theme.colorScheme.primary,
-                        fontSize: (theme.textTheme.bodyLarge!.fontSize ?? 16) + 8,
+                        fontSize:
+                            (theme.textTheme.bodyLarge!.fontSize ?? 16) + 8,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     const TextSpan(
                       text:
-                      ' - but first, it needs to know you - the more detail you share now, the smarter and more ',
+                          ' - but first, it needs to know you - the more detail you share now, the smarter and more ',
                     ),
                     TextSpan(
                       text: 'personalised your plan',
                       style: theme.textTheme.bodyLarge!.copyWith(
                         color: theme.colorScheme.primary,
-                        fontSize: (theme.textTheme.bodyLarge!.fontSize ?? 16) + 8,
+                        fontSize:
+                            (theme.textTheme.bodyLarge!.fontSize ?? 16) + 8,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -73,7 +75,7 @@ class OnboardingIntro extends StatelessWidget {
               // Supporting copy
               Text(
                 "This won’t take long. Each question is just one or two taps,"
-                  " and you’ll see your progress as you go",
+                " and you’ll see your progress as you go",
                 style: theme.textTheme.bodyMedium!.copyWith(
                   color: AppColors.subTextColor,
                 ),
@@ -94,8 +96,7 @@ class OnboardingIntro extends StatelessWidget {
                     elevation: 0,
                   ),
                   onPressed: () {
-                    //  Get.toNamed(Routes.TRAINEE_ONBOARDING);
-                    Get.toNamed(Routes.FITNESS_REPORT);
+                    Get.toNamed(Routes.TRAINEE_ONBOARDING);
                   },
                   child: const Text(
                     "Let's begin",
@@ -110,5 +111,3 @@ class OnboardingIntro extends StatelessWidget {
     );
   }
 }
-
-
