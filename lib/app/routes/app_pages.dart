@@ -131,7 +131,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.TRAINEE_FITNESS_REPORT_GENERATION,
-      page: () => const TraineeFitnessReportGenerationView(),
+      page: () =>  TraineeFitnessReportGenerationView(),
       binding: TraineeFitnessReportGenerationBinding(),
     ),
   ];
