@@ -1,44 +1,39 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart'; // Assuming GetX for controller management
+import 'package:icon/app/base/base_view.dart';
 
-class SavingView extends StatefulWidget {
-  const SavingView({super.key});
+// Import your controller
+import 'package:icon/app/modules/trainee_fitness_report_generation/controllers/trainee_fitness_report_generation_controller.dart';
 
-  @override
-  State<SavingView> createState() => _SavingViewState();
-}
-
-class _SavingViewState extends State<SavingView> {
-  double progressTarget = 0.84; // 0.0 .. 1.0
-
-  // Example: change progress dynamically (simulate backend updates)
-  // In real use, call setProgress(value) whenever you get new progress.
-  void setProgress(double v) {
-    setState(() => progressTarget = v.clamp(0.0, 1.0));
-  }
+class SavingView extends BaseView<TraineeFitnessReportGenerationController> {
+  SavingView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      // subtle angled gradient background like the mock
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [Color(0xFFFFE6E1), Colors.white],
-          ),
+  Widget body(BuildContext context) {
+    return Container(
+      width: Get.width,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+          colors: [Color(0xFFFFE6E1), Colors.white],
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              const SizedBox(height: 24),
-              const _TopStatusBarStub(), // optional, for the look
-              const Spacer(),
-              // Ring + % text
-              AnimatedProgressRing(
-                value: progressTarget,
+      ),
+      child: SafeArea(
+        child: Column(
+          children: [
+            const SizedBox(height: 24),
+            const _TopStatusBarStub(),
+            // optional, for the look
+            const Spacer(),
+            // Ring + % text
+            // Use Obx to reactively update the UI when controller.progress changes
+            Obx(
+                  () => AnimatedProgressRing(
+                value: controller.progress.value,
+                // Get progress from the controller
                 size: 240,
                 stroke: 12,
                 ringColor: const Color(0xFFE94B35),
@@ -47,85 +42,39 @@ class _SavingViewState extends State<SavingView> {
                 segmentGapFactor: 0.18,
                 // animation will auto-adjust based on delta
               ),
-              const SizedBox(height: 28),
-              const Text(
-                'Saving your data securely',
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 18,
-                  color: Colors.black87,
-                ),
+            ),
+            const SizedBox(height: 28),
+            const Text(
+              'Saving your data securely',
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 18,
+                color: Colors.black87,
               ),
-              const SizedBox(height: 6),
-              const Text(
-                'Your Icon is learning about you, this only\n'
-                    'takes a moment',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  height: 1.3,
-                  color: Colors.black54,
-                ),
+            ),
+            const SizedBox(height: 6),
+            const Text(
+              'Your Icon is learning about you, this only\n'
+                  'takes a moment',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 12,
+                height: 1.3,
+                color: Colors.black54,
               ),
-              const Spacer(),
-              // Demo controls (remove in production)
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 16,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // simulate a server update
-                          final next = (progressTarget + 0.07).clamp(0.0, 1.0);
-                          setProgress(next);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFE94B35),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        child: const Text('Advance'),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () =>
-                            setProgress(math.Random().nextDouble()),
-                        style: OutlinedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                          side: const BorderSide(color: Color(0xFFE94B35)),
-                          foregroundColor: const Color(0xFFE94B35),
-                        ),
-                        child: const Text('Random'),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+            const Spacer(),
+            // Remove the demo controls in production.
+            // If you need to trigger progress updates for testing,
+            // you can keep them and call controller.updateProgress(value).
+            // For now, they are removed as the controller should drive this.
+          ],
         ),
       ),
     );
   }
 }
 
-/// A pretty circular progress with:
-/// - segmented background ticks
-/// - smooth animated sweep
-/// - rounded head with a moving dot
-/// - centered percentage text
 class AnimatedProgressRing extends StatefulWidget {
   const AnimatedProgressRing({
     super.key,
@@ -204,7 +153,8 @@ class _AnimatedProgressRingState extends State<AnimatedProgressRing>
       height: size,
       child: AnimatedBuilder(
         animation: _controller,
-        builder: (_, __) {
+        builder: (_, _) {
+          // Changed _ to __ for unused parameter
           final v = _anim.value;
           return Stack(
             alignment: Alignment.center,
