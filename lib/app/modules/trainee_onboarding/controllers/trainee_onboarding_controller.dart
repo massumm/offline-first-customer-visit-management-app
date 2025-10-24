@@ -569,6 +569,8 @@ class TraineeOnboardingController extends BaseController {
 
   // Show the final Continue button after completion
   final isAwaitingFinalContinuation = false.obs;
+  // ADD this new state variable for the checkbox
+  final hasAgreedToTerms = false.obs;
 
   /// True when the UI should show the "Continue" and "Skip" buttons.
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
@@ -603,11 +605,20 @@ class TraineeOnboardingController extends BaseController {
     await _completeOnboarding();
   }
 
+  //  toggle the agreement state from the UI
+  void toggleTermsAgreement(bool? newValue) {
+    hasAgreedToTerms.value = newValue ?? false;
+  }
+
+
   void start() async {
     messages.clear();
     answers.clear();
     currentGroupIndex.value = 0;
     currentQuestionIndexInGroup.value = -1;
+    // ADD a reset for the new state variable
+    hasAgreedToTerms.value = false;
+    isAwaitingFinalContinuation.value = false;
     _updateProgresses();
     await _botSay("Hello 👋");
     await _askNext();
@@ -618,16 +629,25 @@ class TraineeOnboardingController extends BaseController {
     _updateProgresses();
     await _botSay("All set! 🎉 Thanks for the info.");
     await _botSay("Grading and storing all your information...");
+    //TODO: CONFIRM
     await _botSay(
-      "To save your progress and create your personalized profile, you'll need to create a account.",
+      "To save your progress and create your personalized icon profile, you'll need to agree out terms and conditions to continue.",
     );
     isAwaitingFinalContinuation.value = true;
   }
 
-  void proceedToSignup() {
+  void proceedToContinue() {
+    // ADD a guard clause for safety, though the button will be disabled
+    if (!hasAgreedToTerms.value) {
+      CustomToast.showErrorToast(
+        "Please agree to the terms and conditions to continue.",
+      );
+      return;
+    }
     final onboardingJson = toJson();
     Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
     CustomToast.showSuccessToast("Onboarding Complete");
+    // TODO: HANDLE THE ROUTE
     Get.toNamed(Routes.REGISTER, arguments: onboardingJson);
     "Proceeding to signup with data: $onboardingJson".log();
   }

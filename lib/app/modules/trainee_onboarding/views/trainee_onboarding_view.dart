@@ -149,7 +149,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           child: Obx(() {
             // ADD THIS: Check for the final continuation state first.
             if (controller.isAwaitingFinalContinuation.isTrue) {
-              return _buildFinalContinueButton();
+              return _buildFinalContinueButton(context);
             }
 
             // When a group is finished, show Continue/Skip buttons.
@@ -195,22 +195,64 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       ],
     );
   }
-  Widget _buildFinalContinueButton() {
+// In TraineeOnboardingView class
+
+  Widget _buildFinalContinueButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      child: SizedBox(
-        width: double.infinity,
-        child: FilledButton(
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+      // MODIFIED: Use a Column to stack the checkbox and the button
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // START: ADDED WIDGET
+          // A row containing the checkbox and tappable text
+          Row(
+            children: [
+              Obx(() => Checkbox(
+                value: controller.hasAgreedToTerms.value,
+                onChanged: controller.toggleTermsAgreement,
+              )),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    children: [
+                      const TextSpan(text: 'I have read and agree to the '),
+                      TextSpan(
+                        text: 'Terms and Conditions',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          decoration: TextDecoration.underline,
+                          decorationColor: Theme.of(context).colorScheme.primary,
+                        ),
+                        // TODO: Add a recognizer to open the terms page
+                        // recognizer: TapGestureRecognizer()..onTap = () => Get.toNamed(Routes.TERMS),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
-          onPressed: controller.proceedToSignup,
-          child: const Text('Continue to Sign Up'),
-        ),
+          const SizedBox(height: 12),
+          // END: ADDED WIDGET
+
+          // MODIFIED: Wrap the button in an Obx to make it reactive
+          Obx(() => FilledButton(
+            style: FilledButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+            ),
+            // The button is disabled if `hasAgreedToTerms` is false
+            onPressed: controller.hasAgreedToTerms.value
+                ? controller.proceedToContinue
+                : null,
+            child: const Text('Continue'),
+          )),
+        ],
       ),
     );
   }
-
   Widget _buildContinuationButtons() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
