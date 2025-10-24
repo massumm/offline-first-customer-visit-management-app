@@ -30,7 +30,10 @@ class FitnessReportAppbarWidget extends StatelessWidget {
           ),
         ),
         // add hamburger icon
-        ActionPill(onTap: () {}, icon: Icons.menu),
+        ActionPill(
+          onTap: controller.showOptionsBottomSheet,
+          icon: Icons.menu,
+        ),
       ],
     );
   }

@@ -73,4 +73,7 @@ abstract class AppColors {
 
   static const Color colorDelete = Color(0xFFE53935);
   static const Color echoMessageBgColor = Color(0xFFBBDEFB);
+
+  static const Color positiveBorderColor = Color(0XFF17D23F);
+  static const Color positiveBgColor = Color(0XFFE8FBEC);
 }

@@ -18,9 +18,12 @@ class Assets {
   static const String jsonsProfileLoading = 'assets/jsons/profile_loading.json';
   static const String svgBgGradientColor = 'assets/svg/bg-gradient-color.svg';
   static const String svgBgGradientColorCropped = 'assets/svg/bg-gradient-color-cropped.svg';
+  static const String svgCurrentStress = 'assets/svg/current_stress.svg';
+  static const String svgEnergyCircular = 'assets/svg/energy_circular.svg';
   static const String svgIconLogoDark = 'assets/svg/icon-logo-dark.svg';
   static const String svgIconLogoPink = 'assets/svg/icon-logo-pink.svg';
   static const String svgLevel7 = 'assets/svg/level-7.svg';
+  static const String svgLifestyleConsiderations = 'assets/svg/lifestyle_considerations.svg';
   static const String svgLogo = 'assets/svg/logo.svg';
   static const String svgMorningIcon = 'assets/svg/morning_icon.svg';
   static const String svgOnboarding1 = 'assets/svg/onboarding-1.svg';
@@ -30,5 +33,10 @@ class Assets {
   static const String svgOnboardingGoals = 'assets/svg/onboarding-goals.svg';
   static const String svgOnboardingProgress = 'assets/svg/onboarding-progress.svg';
   static const String svgPasswordSuccess = 'assets/svg/password_success.svg';
+  static const String svgRecoveryDays = 'assets/svg/recovery_days.svg';
+  static const String svgRecoveryFocus = 'assets/svg/recovery_focus.svg';
+  static const String svgRepairStrategy = 'assets/svg/repair_strategy.svg';
+  static const String svgSleepCircular = 'assets/svg/sleep_circular.svg';
+  static const String svgTargetStress = 'assets/svg/target_stress.svg';
   static const String svgUserCircularIcon = 'assets/svg/user-circular-icon.svg';
 }
