@@ -49,7 +49,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               () => controller.canGoBack
               ? IconButton(
             icon: const Icon(Icons.undo),
-            style: Theme.of(context).iconButtonTheme.style,
+            // Removed explicit style assignment, IconButton will now use theme's IconButtonThemeData
             onPressed: controller.goBack,
             tooltip: 'Go Back',
           )
@@ -67,6 +67,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   Widget body(BuildContext context) {
     return Column(
       children: [
+        // Custom Stepper For visualizing group movement
+        Obx(() => _OnboardingStepper(
+          totalSteps: controller.totalGroups.value,
+          currentStep: controller.currentGroupIndex.value,
+        )),
         Expanded(
           child: Obx(() {
             final items = controller.messages;
@@ -126,10 +131,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               children: q.options
                   .map(
                     (o) => ActionChip(
-                      label: Text(o),
-                      onPressed: () => controller.choose(o),
-                    ),
-                  )
+                  label: Text(o),
+                  onPressed: () => controller.choose(o),
+                ),
+              )
                   .toList(),
             ),
           );
@@ -334,11 +339,11 @@ class _HeightPickerState extends State<_HeightPicker> {
   // Data for pickers
   final List<int> _cmValues = List.generate(
     101,
-    (index) => 120 + index,
+        (index) => 120 + index,
   ); // 120-220 cm
   final List<int> _feetValues = List.generate(
     4,
-    (index) => 4 + index,
+        (index) => 4 + index,
   ); // 4-7 ft
   final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
 
@@ -350,7 +355,7 @@ class _HeightPickerState extends State<_HeightPicker> {
       decoration: BoxDecoration(
         color: Theme.of(
           context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        ).colorScheme.surfaceContainerHighest.withOpacity(0.3), // Corrected withValues to withOpacity
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -467,11 +472,11 @@ class _WeightPickerState extends State<_WeightPicker> {
   // Data for pickers
   final List<double> _kgValues = List.generate(
     1101,
-    (i) => 40.0 + i * 0.1,
+        (i) => 40.0 + i * 0.1,
   ); // 40.0-150.0 kg
   final List<double> _lbsValues = List.generate(
     2401,
-    (i) => 90.0 + i * 0.1,
+        (i) => 90.0 + i * 0.1,
   ); // 90.0-330.0 lbs
 
   @override
@@ -485,7 +490,7 @@ class _WeightPickerState extends State<_WeightPicker> {
       decoration: BoxDecoration(
         color: Theme.of(
           context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        ).colorScheme.surfaceContainerHighest.withOpacity(0.3), // Corrected withValues to withOpacity
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -504,7 +509,7 @@ class _WeightPickerState extends State<_WeightPicker> {
               scrollController: FixedExtentScrollController(
                 initialItem: currentValues.indexOf(
                   currentValues.firstWhere(
-                    (v) => (v - initialValue).abs() < 0.01,
+                        (v) => (v - initialValue).abs() < 0.01,
                     orElse: () => currentValues.first,
                   ),
                 ),
@@ -669,9 +674,9 @@ class _ImageMessageBubble extends StatelessWidget {
             // Once the frame is ready, this builder is called again and `child` is shown.
             return frame == null
                 ? const Padding(
-                    padding: EdgeInsets.all(48.0),
-                    child: Center(child: CircularProgressIndicator.adaptive()),
-                  )
+              padding: EdgeInsets.all(48.0),
+              child: Center(child: CircularProgressIndicator.adaptive()),
+            )
                 : child;
           },
           // Show an error icon if the image fails to load
@@ -682,6 +687,104 @@ class _ImageMessageBubble extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+/// A custom stepper widget to visualize progress through onboarding groups.
+class _OnboardingStepper extends StatelessWidget {
+  final int totalSteps;
+  final int currentStep; // 0-indexed
+
+  const _OnboardingStepper({
+    required this.totalSteps,
+    required this.currentStep,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+    final onPrimaryColor = theme.colorScheme.onPrimary;
+    // Muted color for inactive elements, derived from onSurface
+    final inactiveColor = theme.colorScheme.onSurface.withOpacity(0.3);
+    // Text color for inactive elements, typically onSurface
+    final onInactiveColor = theme.colorScheme.onSurface;
+
+    // Avoid rendering if there are no steps
+    if (totalSteps <= 0) {
+      return const SizedBox.shrink();
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: List.generate(totalSteps, (index) {
+          final isCompleted = index < currentStep;
+          final isActive = index == currentStep;
+
+          Color circleFillColor;
+          Color circleBorderColor;
+          Color textColor;
+          Color lineColor;
+
+          if (isCompleted) {
+            circleFillColor = primaryColor;
+            circleBorderColor = primaryColor;
+            textColor = onPrimaryColor;
+            lineColor = primaryColor; // Line after completed step is also primary
+          } else if (isActive) {
+            circleFillColor = primaryColor;
+            circleBorderColor = primaryColor;
+            textColor = onPrimaryColor;
+            lineColor = inactiveColor; // Line *after* active step is inactive
+          } else {
+            circleFillColor = inactiveColor;
+            circleBorderColor = inactiveColor;
+            textColor = onInactiveColor;
+            lineColor = inactiveColor;
+          }
+
+          return Expanded(
+            child: Row(
+              children: [
+                // Step Circle
+                Container(
+                  width: 28, // Slightly larger for better visibility
+                  height: 28,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: circleFillColor,
+                    border: Border.all(
+                      color: circleBorderColor,
+                      width: isActive ? 2.5 : 1.5, // Thicker border for active step
+                    ),
+                  ),
+                  child: Center(
+                    child: Text(
+                      '${index + 1}',
+                      style: theme.textTheme.labelSmall?.copyWith(
+                        color: textColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+                // Connecting Line (if not the last step)
+                if (index < totalSteps - 1)
+                  Expanded(
+                    child: Container(
+                      height: 2,
+                      color: lineColor,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        }),
       ),
     );
   }

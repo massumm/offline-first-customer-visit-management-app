@@ -597,9 +597,14 @@ class TraineeOnboardingController extends BaseController {
   /// True when the UI should show the "Continue" and "Skip" buttons.
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
 
+  //-------------------- QA Stepper --------------------
+  // Add these reactive properties:
+  final RxInt totalGroups = 0.obs; // Initialize with the actual total number of groups
+
   @override
   void onInit() {
     super.onInit();
+    totalGroups(questionGroups.length);
     start();
   }
 
@@ -1195,6 +1200,13 @@ class TraineeOnboardingController extends BaseController {
     return questionGroups[currentGroupIndex.value]
         .questions[currentQuestionIndexInGroup.value];
   }
+  void moveToNextGroup() {
+    if (currentGroupIndex.value < totalGroups.value - 1) {
+      currentGroupIndex.value++;
+    }
+    // ... rest of your logic ...
+  }
+
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
 
