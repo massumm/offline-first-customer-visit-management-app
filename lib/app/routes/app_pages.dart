@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
@@ -25,6 +26,10 @@ import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
 import '../modules/trainer_onboarding/bindings/trainer_onboarding_binding.dart';
 import '../modules/trainer_onboarding/views/trainer_onboarding_view.dart';
+import '../modules/fitness_report/bindings/fitness_report_binding.dart';
+import '../modules/fitness_report/views/fitness_report_landing_view.dart';
+import '../modules/fitness_report/views/report_generating_view.dart';
+import '../modules/fitness_report/views/report_display_view.dart';
 
 part 'app_routes.dart';
 
@@ -50,7 +55,6 @@ class AppPages {
       name: _Paths.SPLASH,
       page: () => const SplashView(),
       binding: SplashBinding(),
-      // middlewares: [LoginMiddleware()],
     ),
     GetPage(
       name: _Paths.LOGIN,
@@ -106,6 +110,21 @@ class AppPages {
       name: _Paths.FORGOT_PASSWORD,
       page: () => ForgotPasswordView(),
       binding: ForgotPasswordBinding(),
+    ),
+    GetPage(
+      name: _Paths.FITNESS_REPORT,
+      page: () => FitnessReportLandingView(),
+      binding: FitnessReportBinding(),
+    ),
+    GetPage(
+      name: _Paths.FITNESS_REPORT_GENERATING,
+      page: () => ReportGeneratingView(),
+      binding: FitnessReportBinding(),
+    ),
+    GetPage(
+      name: _Paths.REPORT_DISPLAY,
+      page: () => ReportDisplayView(),
+      binding: FitnessReportBinding(),
     ),
   ];
 }

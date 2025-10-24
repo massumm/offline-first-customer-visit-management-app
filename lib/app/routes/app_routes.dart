@@ -17,6 +17,9 @@ abstract class Routes {
   static const ACTIVITY_TRACKER = _Paths.HOME + _Paths.ACTIVITY_TRACKER;
   static const TRAINEE_ONBOARDING = _Paths.TRAINEE_ONBOARDING;
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
+  static const FITNESS_REPORT = _Paths.FITNESS_REPORT;
+  static const FITNESS_REPORT_GENERATING = _Paths.FITNESS_REPORT_GENERATING;
+  static const REPORT_DISPLAY = _Paths.REPORT_DISPLAY;
 }
 
 abstract class _Paths {
@@ -35,4 +38,7 @@ abstract class _Paths {
   static const ICON_CHAT = '/icon-chat';
   static const TRAINEE_ONBOARDING = '/trainee-onboarding';
   static const FORGOT_PASSWORD = '/forgot-password';
+  static const FITNESS_REPORT = '/fitness-report';
+  static const FITNESS_REPORT_GENERATING = '/fitness-report-generating';
+  static const REPORT_DISPLAY = '/report-display';
 }

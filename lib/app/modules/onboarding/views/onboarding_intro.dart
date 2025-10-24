@@ -94,7 +94,8 @@ class OnboardingIntro extends StatelessWidget {
                     elevation: 0,
                   ),
                   onPressed: () {
-                     Get.toNamed(Routes.TRAINEE_ONBOARDING);
+                    //  Get.toNamed(Routes.TRAINEE_ONBOARDING);
+                    Get.toNamed(Routes.FITNESS_REPORT);
                   },
                   child: const Text(
                     "Let's begin",

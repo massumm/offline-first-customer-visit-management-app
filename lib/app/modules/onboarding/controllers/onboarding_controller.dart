@@ -56,4 +56,8 @@ class OnboardingController extends GetxController {
   void goToLogin() {
     Get.toNamed(Routes.LOGIN);
   }
+
+  void goToFitnessReport() {
+    Get.toNamed(Routes.FITNESS_REPORT);
+  }
 }
