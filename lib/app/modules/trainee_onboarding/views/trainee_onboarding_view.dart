@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../generated/assets.dart';
@@ -52,16 +53,24 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               ),
             ],
           ),
-          // Set the leading widget to null when it shouldn't be visible.
-          // This prevents the AppBar from allocating space for it.
           leading: controller.canGoBack
-              ? IconButton(
-                  icon: const Icon(Icons.undo),
-                  onPressed: controller.goBack,
-                  tooltip: 'Go back previous question',
+              ? Center(
+                  child: SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: ActionPill(
+                      onTap: controller.goBack,
+                      icon: Icons.undo,
+                    ),
+                  ),
                 )
-              : null,
-          automaticallyImplyLeading: false,
+              : Center(
+                  child: SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: ActionPill(onTap: Get.back),
+                  ),
+                ),
           actions: [
             if (controller.currentQuestion?.canSkip ?? false) ...[
               TextButton(
