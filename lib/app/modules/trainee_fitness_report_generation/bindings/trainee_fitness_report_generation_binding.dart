@@ -15,7 +15,7 @@ class TraineeFitnessReportGenerationBinding extends Bindings {
 
     Get.lazyPut<TraineeOnboardingAuthRepository>(
           () => TraineeOnboardingAuthRepositoryImpl(),
-      tag: (TraineeOnboardingRepository).toString(),
+      tag: (TraineeOnboardingAuthRepository).toString(),
     );
 
 
