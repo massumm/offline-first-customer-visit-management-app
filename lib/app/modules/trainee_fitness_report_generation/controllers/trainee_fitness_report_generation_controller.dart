@@ -23,9 +23,12 @@ class TraineeFitnessReportGenerationController extends BaseController {
 
   final isSubmitBtnEnable = RxBool(false);
 
-  // --------------- Loading Effect State ---------------
-  final progress = 0.0.obs;
   final RxBool onEmailLoading = false.obs;
+
+  // ---------------Progress Loading Effect State ---------------
+  final progress = 0.0.obs;
+  var enableApiProgressState = false.obs;
+
 
   @override
   void onInit() {
@@ -40,22 +43,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
     super.onClose();
   }
 
-  void _simulateProgress() async {
-    // This is just an example. In a real app, this would come from
-    // actual data saving operations.
-    await Future.delayed(const Duration(milliseconds: 500));
-    progress.value = 0.1;
-    await Future.delayed(const Duration(milliseconds: 800));
-    progress.value = 0.3;
-    await Future.delayed(const Duration(milliseconds: 1200));
-    progress.value = 0.6;
-    await Future.delayed(const Duration(milliseconds: 1000));
-    progress.value = 0.85;
-    await Future.delayed(const Duration(milliseconds: 700));
-    progress.value = 1.0; // Complete
-    // After completion, you might navigate to another screen
-    // Get.offAllNamed('/report_complete');
-  }
+
 
   // You might also have a method to manually update progress if needed
   void updateProgress(double value) {
@@ -71,7 +59,8 @@ class TraineeFitnessReportGenerationController extends BaseController {
           .registerEmail({'email': emailCtr.text})
           .then(
             (value) {
-              Get.to(() => SavingView());
+              enableApiProgressState(true);
+              _simulateProgress();
             },
             onError: (e) {
               isSubmitBtnEnable(true); // Enable the button
@@ -90,5 +79,23 @@ class TraineeFitnessReportGenerationController extends BaseController {
     if (emailError.value == null) {
       isSubmitBtnEnable(true);
     }
+  }
+
+  // -------------------- Progress Indicator Animations -----------
+  void _simulateProgress() async {
+    // This is just an example. In a real app, this would come from
+    // actual data saving operations.
+    await Future.delayed(const Duration(milliseconds: 500));
+    progress.value = 0.1;
+    await Future.delayed(const Duration(milliseconds: 800));
+    progress.value = 0.3;
+    await Future.delayed(const Duration(milliseconds: 1200));
+    progress.value = 0.6;
+    await Future.delayed(const Duration(milliseconds: 1000));
+    progress.value = 0.85;
+    await Future.delayed(const Duration(milliseconds: 700));
+    progress.value = 1.0; // Complete
+    // After completion, you might navigate to another screen
+    // Get.offAllNamed('/report_complete');
   }
 }
