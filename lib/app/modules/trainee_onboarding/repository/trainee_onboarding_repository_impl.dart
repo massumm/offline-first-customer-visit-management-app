@@ -48,7 +48,7 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",
     };
-    Future<Response<dynamic>> dioCall = dioClient.post(
+    Future<Response<dynamic>> dioCall = dioClient.put(
       endpoint,
       data: model,
       options: Options(headers: headers),
