@@ -23,6 +23,9 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
       endpoint,
       data: model,
       options: Options(headers: headers),
+      onSendProgress: (int sent, int total) {
+
+      }
     );
 
     try {
