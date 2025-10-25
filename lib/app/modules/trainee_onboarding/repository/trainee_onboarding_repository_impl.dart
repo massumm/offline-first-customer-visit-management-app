@@ -12,9 +12,8 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
 
   @override
   Future<TraineeProfileCreateResponseModel> createTraineeProfile(
-      Map<String, dynamic> model,
-      ) {
-    DioProvider.setLoggingEnabled(true);
+    Map<String, dynamic> model,
+  ) {
     final String endpoint = "${DioProvider.baseUrl}/api/trainees/profile/";
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",
@@ -23,6 +22,7 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
       endpoint,
       data: model,
       options: Options(headers: headers),
+      onSendProgress: (int sent, int total) {},
     );
 
     try {
@@ -35,29 +35,15 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
   }
 
   TraineeProfileCreateResponseModel _parseLoginResponse(
-      Response<dynamic> response,
-      ) {
+    Response<dynamic> response,
+  ) {
     return TraineeProfileCreateResponseModel.fromJson(response.data);
   }
 
-  // @override
-  // Future<void> storeTraineeProfile(
-  //     TraineeProfileCreateModel traineeProfileCreateModel,
-  //     ) async {
-  //   try {
-  //     // Store data
-  //     await TraineeDataStore.to.saveTraineeModel(traineeProfileCreateModel);
-  //   } catch (e) {
-  //     logger.e(e.toString());
-  //     return Future.error(e);
-  //   }
-  // }
-
   @override
   Future<TraineePreferenceCreateResponseModel> createTraineePreferences(
-      Map<String, dynamic> model,
-      ) {
-    DioProvider.setLoggingEnabled(true);
+    Map<String, dynamic> model,
+  ) {
     final String endpoint = "${DioProvider.baseUrl}/api/trainees/preferences/";
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",
@@ -78,8 +64,83 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
   }
 
   TraineePreferenceCreateResponseModel _parsePreferenceResponse(
-      Response<dynamic> response,
-      ) {
+    Response<dynamic> response,
+  ) {
     return TraineePreferenceCreateResponseModel.fromJson(response.data);
+  }
+
+  @override
+  Future<Map<String, dynamic>> createTraineePreferenceActivity(Map<String, dynamic> data) {
+    // TODO: implement createTraineePreferenceActivity
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Map<String, dynamic>> createTraineePreferenceGoals(Map<String, dynamic> data) {
+    final String endpoint = "${DioProvider.baseUrl}/api/trainees/preferences/goals/events/";
+
+    final Map<String, String> headers = {
+      'Authorization': "Bearer ${token ?? ''}",
+    };
+
+    Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: data,
+      options: Options(headers: headers),
+    );
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> createTraineePreferenceNutrition(Map<String, dynamic> data) {
+    final String endpoint = "${DioProvider.baseUrl}/api/trainees/preferences/nutrition/foods/";
+
+    final Map<String, String> headers = {
+      'Authorization': "Bearer ${token ?? ''}",
+    };
+
+    Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: data,
+      options: Options(headers: headers),
+    );
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> createTraineePreferenceRecovery(Map<String, dynamic> data) {
+    final String endpoint = "${DioProvider.baseUrl}/api/trainees/preferences/recovery_preferences/";
+
+    final Map<String, String> headers = {
+      'Authorization': "Bearer ${token ?? ''}",
+    };
+
+    Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: data,
+      options: Options(headers: headers),
+    );
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data);
+    } catch (e) {
+      rethrow;
+    }
   }
 }
