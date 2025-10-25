@@ -5,6 +5,7 @@ import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/utils/app_validators.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
 import '../../../data/local/preference/store/trainee_data_store.dart';
@@ -141,6 +142,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
     progress.value = 1.0; // Complete
 
     // After completion, you might navigate to another screen.
+    Get.offAndToNamed(Routes.FITNESS_REPORT);
   }
 
   Future<TraineeProfileCreateResponseModel> _createProfile(
