@@ -128,6 +128,7 @@ class IconLightTheme {
       elevation: 0,
       iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
       foregroundColor: AppColors.lightBgColor,
+      surfaceTintColor: AppColors.lightBgColor,
     ),
     cardTheme: CardThemeData(
       elevation: 2,

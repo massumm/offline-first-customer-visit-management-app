@@ -9,6 +9,8 @@ import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
 import '../../../data/local/preference/store/trainee_data_store.dart';
+import '../../../data/local/preference/store/user_store.dart';
+import '../../login/models/login_response_model.dart';
 import '../../trainee_onboarding/models/trainee_preference_create_response_model.dart';
 import '../../trainee_onboarding/models/trainee_profile_create_response_model.dart';
 import '../../trainee_onboarding/repository/trainee_onboarding_repository.dart';
@@ -52,33 +54,41 @@ class TraineeFitnessReportGenerationController extends BaseController {
   }
 
   Future<void> onSubmitButtonPressed() async {
-    if (isSubmitBtnEnable.value) {
-      onEmailLoading(true);
-      isSubmitBtnEnable(false); // Disable the button
+    if (isSubmitBtnEnable.value == false) return;
 
-      await _onboardingAuthRepository
-          .registerEmail({'email': emailCtr.text})
-          .then(
-            (value) {
-              enableApiProgressState(true);
-              _createTraineeReport();
-            },
-            onError: (e) {
-              isSubmitBtnEnable(true); // Enable the button
-              if (e is ApiException) {
-                CustomToast.showErrorToast(e.description);
-              }
-            },
-          )
-          .whenComplete((){
-        onEmailLoading(false);
-        // TODO: FOR DEMO
-        enableApiProgressState(true);
-        Future.delayed(Duration(seconds: 2), (){
-          Get.toNamed(Routes.FITNESS_REPORT);
-        });
+    isSubmitBtnEnable(false);
+    onEmailLoading(true);
+
+    try {
+      final response = await _onboardingAuthRepository.registerEmail({
+        'email': emailCtr.text,
       });
+
+      onEmailLoading(false);
+
+      // Await the token storage and report generation.
+      await _storeUserToken(response);
+    } catch (e) {
+      isSubmitBtnEnable(true);
+      onEmailLoading(false);
+
+      // Show an appropriate error message to the user.
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      } else {
+        CustomToast.showErrorToast(
+          "An unexpected error occurred. Please try again.",
+        );
+        "Error on submit: ${e.toString()}".log();
+      }
     }
+  }
+
+  Future<void> _storeUserToken(LoginResponseModel response) async {
+    UserStore.to.saveProfileAndToken(response).whenComplete(() {
+      enableApiProgressState(true);
+      _createTraineeReport();
+    });
   }
 
   void onEmailChanged(String value) {
