@@ -7,7 +7,7 @@ import 'trainee_onboarding_auth_repository.dart';
 class TraineeOnboardingAuthRepositoryImpl extends BaseRemoteSource
     implements TraineeOnboardingAuthRepository {
   @override
-  Future<Map<String, dynamic>> registerEmail(String payload) {
+  Future<Map<String, dynamic>> registerEmail(Map<String, dynamic> payload) async {
     final String endpoint =
         "${DioProvider.baseUrl}/api/accounts/register-email/";
 

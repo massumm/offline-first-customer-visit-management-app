@@ -1,22 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/core/utils/app_validators.dart';
 
+import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
 import '../../trainee_onboarding/repository/trainee_onboarding_repository.dart';
 import '../views/saving_view.dart';
 
 class TraineeFitnessReportGenerationController extends BaseController {
-  final TraineeOnboardingRepository _repo = Get.find(
+  final TraineeOnboardingRepository _onboardingRepository = Get.find(
     tag: (TraineeOnboardingRepository).toString(),
   );
 
- final TextEditingController emailCtr = TextEditingController();
-  var emailError = RxnString() ;
+  final TraineeOnboardingAuthRepository _onboardingAuthRepository = Get.find(
+    tag: (TraineeOnboardingAuthRepository).toString(),
+  );
+
+  final TextEditingController emailCtr = TextEditingController();
+  var emailError = RxnString();
+
   final isValidEmail = RxBool(false);
 
   // --------------- Loading Effect State ---------------
   final progress = 0.0.obs;
+  final RxBool onEmailLoading = false.obs;
 
   @override
   void onInit() {
@@ -52,15 +60,31 @@ class TraineeFitnessReportGenerationController extends BaseController {
   void updateProgress(double value) {
     progress.value = value.clamp(0.0, 1.0);
   }
+
   Future<void> onSubmitButtonPressed() async {
     if (isValidEmail.value) {
-       Get.to(() => SavingView());
+      onEmailLoading(true);
+      await _onboardingAuthRepository
+          .registerEmail({'email': emailCtr.text})
+          .then(
+            (value) {
+              Get.to(() => SavingView());
+            },
+            onError: (e) {
+              showErrorMessage(e.toString());
+              if (e is ApiException) {
+                // TODO: Handle api exceptions
+              }
+            },
+          )
+          .whenComplete(() => onEmailLoading(false));
     }
   }
+
   void onEmailChanged(String value) {
     emailError.value = AppValidator().validateEmail(value);
 
-    if(emailError.value == null){
+    if (emailError.value == null) {
       isValidEmail(true);
     }
   }

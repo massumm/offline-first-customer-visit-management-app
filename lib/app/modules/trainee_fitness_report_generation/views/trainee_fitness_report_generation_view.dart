@@ -101,7 +101,12 @@ class TraineeFitnessReportGenerationView
                     onPressed: controller.isValidEmail.isTrue
                         ? controller.onSubmitButtonPressed
                         : null,
-                    child: const Text('Submit'),
+                    child: controller.onEmailLoading.isFalse
+                        ? const Text('Submit')
+                        : Padding(
+                            padding: EdgeInsets.all(6),
+                            child: CircularProgressIndicator.adaptive(),
+                          ),
                   ),
                 ),
               ),
