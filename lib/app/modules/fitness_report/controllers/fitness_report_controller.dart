@@ -43,24 +43,34 @@ class FitnessReportController extends BaseController {
 
   final currentPageIndex = 0.obs;
   final menuCloseDelay = const Duration(milliseconds: 200);
+  bool _isNavigating = false;
 
   void onPageChange(int pageIndex) {
-    if (pageIndex != currentPageIndex.value) {
-      final distance = pageIndex - currentPageIndex.value;
-
-      if (distance == 1) {
-        gotToNextPage();
-      } else if (distance == -1) {
-        gotToPreviousPage();
-      } else {
-        pageController.animateToPage(
-          pageIndex,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-        );
-        currentPageIndex.value = pageIndex;
-      }
+    if (_isNavigating || pageIndex == currentPageIndex.value) {
+      return;
     }
+    debugPrint("onPageChange: Current Page Index: ${currentPageIndex.value}");
+    debugPrint("onPageChange: New Page Index: $pageIndex");
+
+    _isNavigating = true;
+    final distance = pageIndex - currentPageIndex.value;
+
+    if (distance == 1) {
+      gotToNextPage();
+    } else if (distance == -1) {
+      gotToPreviousPage();
+    } else {
+      pageController.animateToPage(
+        pageIndex,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      currentPageIndex.value = pageIndex;
+    }
+
+    Future.delayed(const Duration(milliseconds: 600), () {
+      _isNavigating = false;
+    });
   }
 
   void gotToNextPage() {
