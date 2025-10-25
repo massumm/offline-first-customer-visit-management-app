@@ -37,6 +37,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
+  // Todo: Change this to initial route
   static const String INITIAL = Routes.FITNESS_REPORT;
 
   static final routes = [
