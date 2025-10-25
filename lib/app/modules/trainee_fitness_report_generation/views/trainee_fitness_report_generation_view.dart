@@ -98,10 +98,15 @@ class TraineeFitnessReportGenerationView
                 () => SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: controller.isValidEmail.isTrue
+                    onPressed: controller.isSubmitBtnEnable.isTrue
                         ? controller.onSubmitButtonPressed
                         : null,
-                    child: const Text('Submit'),
+                    child: controller.onEmailLoading.isTrue
+                        ? Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: const CircularProgressIndicator.adaptive(),
+                          )
+                        : const Text('Submit'),
                   ),
                 ),
               ),
