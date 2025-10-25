@@ -44,7 +44,7 @@ class TraineeOnboardingRepositoryImpl extends BaseRemoteSource
   Future<TraineePreferenceCreateResponseModel> createTraineePreferences(
     Map<String, dynamic> model,
   ) {
-    final String endpoint = "${DioProvider.baseUrl}/api/trainees/preferences/";
+    final String endpoint = "${DioProvider.baseUrl}/api/trainees/preferences/activity/";
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",
     };

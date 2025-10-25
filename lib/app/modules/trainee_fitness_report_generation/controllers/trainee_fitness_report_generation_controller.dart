@@ -161,10 +161,9 @@ class TraineeFitnessReportGenerationController extends BaseController {
     // After completion, you might navigate to another screen.
     Get.offAndToNamed(Routes.FITNESS_REPORT);
   }
-
   Future<TraineeProfileCreateResponseModel> _createProfile(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
       "bio": answers['success_in_6_months'] ?? '',
       "date_of_birth": answers['dob'] ?? '',
@@ -174,30 +173,55 @@ class TraineeFitnessReportGenerationController extends BaseController {
       "city": "",
       "gender": answers['gender'] ?? '',
     };
-    return await _onboardingRepository.createTraineeProfile(model);
+    try {
+      return await _onboardingRepository.createTraineeProfile(model);
+    } on ApiException catch (e) {
+      "API Error creating profile: ${e.description}".log();
+      rethrow; // Propagate the error to the central handler.
+    } catch (e) {
+      "Unexpected error in _createProfile: ${e.toString()}".log();
+      // Wrap unexpected errors for consistent handling.
+      throw ApiException(
+        message: "Failed to create your profile. Please try again.",
+        httpCode: 500,
+        status: 'Error',
+      );
+    }
   }
 
   Future<TraineePreferenceCreateResponseModel> _createPreference(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
       "fitness_experience": answers['fitness_experience'] ?? '',
       "accountability_partner": answers['accountability_partner'] ?? '',
       "training_location": answers['training_location'] ?? '',
       "equipment_access": answers['home_equipment'] ?? '',
       "preferred_training_style": answers['training_style'] ?? '',
-      "days_per_week": answers['workout_frequency'] ?? '',
+      "days_per_week": answers['workout_frequency'] ?? 0,
       "session_length": answers['session_duration'] ?? '',
-      "training_intensity": answers['session_intensity'] ?? '',
+      "training_intensity": answers['session_intensity'] ?? 0,
       "preferred_time_of_day": answers['preferred_training_time'] ?? '',
       "training_reminder": answers['set_reminder'] ?? false,
     };
-    return await _onboardingRepository.createTraineePreferences(model);
+    try {
+      return await _onboardingRepository.createTraineePreferences(model);
+    } on ApiException catch (e) {
+      "API Error creating preferences: ${e.description}".log();
+      rethrow;
+    } catch (e) {
+      "Unexpected error in _createPreference: ${e.toString()}".log();
+      throw ApiException(
+        message: "Failed to save your preferences. Please try again.",
+        httpCode: 500,
+        status: 'Error',
+      );
+    }
   }
 
   Future<Map<String, dynamic>> _createPreferenceGoals(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
       "trainee_goal": 0, // TODO: ID?
       "description": "string",
@@ -205,16 +229,31 @@ class TraineeFitnessReportGenerationController extends BaseController {
       "is_active": true,
     };
 
-    return await _onboardingRepository.createTraineePreferenceGoals(model);
+    try {
+      return await _onboardingRepository.createTraineePreferenceGoals(model);
+    } on ApiException catch (e) {
+      "API Error creating preference goals: ${e.description}".log();
+      rethrow;
+    } catch (e) {
+      "Unexpected error in _createPreferenceGoals: ${e.toString()}".log();
+      throw ApiException(
+        message: "Failed to save your goals. Please try again.",
+        httpCode: 500,
+        status: 'Error',
+      );
+    }
   }
 
   Future<void> _createPreferenceActivity(Map<String, dynamic> answers) async {
+    // This method is currently a placeholder and does not make an API call.
+    // If an API call is added in the future, it should also be wrapped in a try-catch block
+    // similar to the other methods in this file.
     return Future.value();
   }
 
   Future<Map<String, dynamic>> _createPreferenceNutrition(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
       "trainee_profile": 0, //TODO: ID?
       "food": {"name": "string"},
@@ -225,12 +264,24 @@ class TraineeFitnessReportGenerationController extends BaseController {
       "reaction_description": "string",
       "severity_level": 32767,
     };
-    return await _onboardingRepository.createTraineePreferenceNutrition(model);
+    try {
+      return await _onboardingRepository.createTraineePreferenceNutrition(model);
+    } on ApiException catch (e) {
+      "API Error creating preference nutrition: ${e.description}".log();
+      rethrow;
+    } catch (e) {
+      "Unexpected error in _createPreferenceNutrition: ${e.toString()}".log();
+      throw ApiException(
+        message: "Failed to save nutrition preferences. Please try again.",
+        httpCode: 500,
+        status: 'Error',
+      );
+    }
   }
 
   Future<Map<String, dynamic>> _createPreferenceRecovery(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
       "average_sleep_hours_per_night": 0,
       "desired_sleep_hours_per_night": 0,
@@ -245,6 +296,18 @@ class TraineeFitnessReportGenerationController extends BaseController {
       "barrier_to_recovery_description": "string",
     };
 
-    return await _onboardingRepository.createTraineePreferenceRecovery(model);
+    try {
+      return await _onboardingRepository.createTraineePreferenceRecovery(model);
+    } on ApiException catch (e) {
+      "API Error creating preference recovery: ${e.description}".log();
+      rethrow;
+    } catch (e) {
+      "Unexpected error in _createPreferenceRecovery: ${e.toString()}".log();
+      throw ApiException(
+        message: "Failed to save recovery preferences. Please try again.",
+        httpCode: 500,
+        status: 'Error',
+      );
+    }
   }
 }
