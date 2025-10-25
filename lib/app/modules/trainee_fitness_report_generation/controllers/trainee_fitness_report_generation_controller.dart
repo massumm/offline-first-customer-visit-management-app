@@ -35,7 +35,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
   void onInit() {
     super.onInit();
     // Simulate progress updates, e.g., from a backend call
-    _simulateProgress();
+    // _simulateProgress();
   }
 
   @override
@@ -99,7 +99,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
     // After completion, you might navigate to another screen
     // Get.offAllNamed('/report_complete');
 
-    _createTraineeReport();
+    // _createTraineeReport();
   }
 
   /// Gathers trainee data, creates their profile and preferences via API calls,
@@ -134,7 +134,6 @@ class TraineeFitnessReportGenerationController extends BaseController {
     progress.value = 1.0; // Complete
 
     // After completion, you might navigate to another screen.
-    // Get.offAllNamed('/report_complete');
   }
 
   Future<void> _createProfile(Map<String, dynamic> answers) {
