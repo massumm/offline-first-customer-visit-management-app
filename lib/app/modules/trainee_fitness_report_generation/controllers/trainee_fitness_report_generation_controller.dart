@@ -28,6 +28,8 @@ class TraineeFitnessReportGenerationController extends BaseController {
 
   final RxBool onEmailLoading = false.obs;
 
+  final RxBool isValidEmail = true.obs;
+
   // ---------------Progress Loading Effect State ---------------
   final progress = 0.0.obs;
   var enableApiProgressState = false.obs;

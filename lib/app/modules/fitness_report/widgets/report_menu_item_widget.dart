@@ -14,24 +14,21 @@ class ReportMenuItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
-        horizontal: 16,
-      ),
-      decoration: BoxDecoration(
-        color: Get.theme.cardTheme.color,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(title),
-          ActionPill(
-            onTap: onTap,
-            icon: Icons.arrow_forward_ios,
-          ),
-        ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        decoration: BoxDecoration(
+          color: Get.theme.cardTheme.color,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title),
+            ActionPill(onTap: onTap, icon: Icons.arrow_forward_ios),
+          ],
+        ),
       ),
     );
   }

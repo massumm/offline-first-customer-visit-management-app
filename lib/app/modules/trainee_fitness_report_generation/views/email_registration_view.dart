@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
 
-import '../../../core/widgets/back_pill.dart';
 import '../../../core/widgets/input_widgets/adaptive_text_field.dart';
 import '../controllers/trainee_fitness_report_generation_controller.dart';
 
@@ -37,7 +37,7 @@ class EmailRegistrationView
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BackPill(onTap: Get.back),
+              ActionPill(onTap: Get.back),
               30.height,
               RichText(
                 text: TextSpan(
