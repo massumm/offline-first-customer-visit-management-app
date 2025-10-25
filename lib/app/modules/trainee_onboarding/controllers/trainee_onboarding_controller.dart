@@ -978,11 +978,17 @@ class TraineeOnboardingController extends BaseController {
     _updateProgresses();
   }
 
-  Map<String, dynamic> toJson() => {
-    'answers': answers,
-    'completed': isFinished,
-    'timestamp': DateTime.now().toIso8601String(),
-  };
+  Map<String, dynamic> toJson() {
+    final processedAnswers = answers.map((key, value) {
+      return MapEntry(key, value == 'Skipped' ? '' : value);
+    });
+
+    return {
+      'answers': processedAnswers,
+      'completed': isFinished,
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+  }
 
   Future<void> selectDate(DateTime date) async {
     if (!_canAnswer) return;
