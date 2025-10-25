@@ -198,7 +198,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
     Map<String, dynamic> answers,
   ) async {
     final model = {
-      "trainee_goal": 0,
+      "trainee_goal": 0, // TODO: ID?
       "description": "string",
       "event_date": "2019-08-24",
       "is_active": true,
@@ -215,7 +215,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
     Map<String, dynamic> answers,
   ) async {
     final model = {
-      "trainee_profile": 0,
+      "trainee_profile": 0, //TODO: ID?
       "food": {"name": "string"},
       "food_name": "string",
       "relationship": "liked",
