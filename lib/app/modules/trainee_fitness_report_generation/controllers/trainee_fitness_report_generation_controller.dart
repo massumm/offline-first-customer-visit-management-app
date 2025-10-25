@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/base/network/exceptions/api_exception.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/utils/app_validators.dart';
 
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
@@ -64,6 +65,8 @@ class TraineeFitnessReportGenerationController extends BaseController {
   Future<void> onSubmitButtonPressed() async {
     if (isValidEmail.value) {
       onEmailLoading(true);
+      isValidEmail(false); // Disable the button
+
       await _onboardingAuthRepository
           .registerEmail({'email': emailCtr.text})
           .then(
@@ -71,9 +74,9 @@ class TraineeFitnessReportGenerationController extends BaseController {
               Get.to(() => SavingView());
             },
             onError: (e) {
-              showErrorMessage(e.toString());
+              isValidEmail(true); // Enable the button
               if (e is ApiException) {
-                // TODO: Handle api exceptions
+                 CustomToast.showErrorToast(e.description);
               }
             },
           )

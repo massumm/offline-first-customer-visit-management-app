@@ -43,98 +43,84 @@ Exception handleDioError(DioException dioError) {
 }
 Exception _parseDioErrorResponse(DioException dioError) {
   final Logger logger = BuildConfig.instance.config.logger;
+  final response = dioError.response;
+  final responseData = response?.data;
+  final int statusCode = response?.statusCode ?? -1;
 
-  int statusCode = dioError.response?.statusCode ?? -1;
   String? status;
   String? serverMessage;
-  String? serverDescription; // General description
+  String? serverDescription;
 
-  // Specific fields for 400 error
-  List<String>? usernameErrors;
-  List<String>? emailErrors;
-  List<String>? passwordErrors;
+  // Safely parse the response data if it's a map
+  if (responseData is Map<String, dynamic>) {
+    status = responseData['status'] as String?;
+    serverMessage = responseData['message'] as String?;
+    // Prefer 'description', but fall back to 'detail' if it's not available.
+    serverDescription = responseData['description'] as String? ??
+        responseData['detail'] as String?;
 
-
-  try {
-    if (statusCode == -1 || statusCode == HttpStatus.ok) {
-      statusCode = dioError.response?.data["statusCode"];
-    }
-    status = dioError.response?.data["status"];
-    serverMessage = dioError.response?.data["message"];
-
-
-    // Check if the error is a 400 and try to parse specific fields
-    if (statusCode == HttpStatus.badRequest && dioError.response?.data is Map) {
-      final responseData = dioError.response?.data as Map<String, dynamic>;
-      if (responseData.containsKey("username") && responseData["username"] is List) {
-        usernameErrors = List<String>.from(responseData["username"]);
+    // Special handling for 400 Bad Request (validation errors)
+    if (statusCode == HttpStatus.badRequest) {
+      final StringBuffer detailedErrors = StringBuffer();
+      if (responseData.containsKey("username") &&
+          responseData["username"] is List) {
+        detailedErrors.writeln(
+            "Username: ${List<String>.from(responseData["username"]).join(', ')}");
       }
       if (responseData.containsKey("email") && responseData["email"] is List) {
-        emailErrors = List<String>.from(responseData["email"]);
+        detailedErrors.writeln(
+            "Email: ${List<String>.from(responseData["email"]).join(', ')}");
       }
-      if (responseData.containsKey("password") && responseData["password"] is List) {
-        passwordErrors = List<String>.from(responseData["password"]);
+      if (responseData.containsKey("password") &&
+          responseData["password"] is List) {
+        detailedErrors.writeln(
+            "Password: ${List<String>.from(responseData["password"]).join(', ')}");
       }
-      // You can construct a more specific error message here if needed
-      // For example, concatenate all error messages.
-      StringBuffer detailedErrors = StringBuffer();
-      if (usernameErrors?.isNotEmpty ?? false) {
-        detailedErrors.writeln("Username errors: ${usernameErrors!.join(', ')}");
-      }
-      if (emailErrors?.isNotEmpty ?? false) {
-        detailedErrors.writeln("Email errors: ${emailErrors!.join(', ')}");
-      }
-      if (passwordErrors?.isNotEmpty ?? false) {
-        detailedErrors.writeln("Password errors: ${passwordErrors!.join(', ')}");
-      }
-      if(detailedErrors.isNotEmpty) {
+
+      if (detailedErrors.isNotEmpty) {
         serverDescription = detailedErrors.toString().trim();
-      } else {
-        serverDescription = dioError.response?.data["description"];
       }
-
-    } else {
-      serverDescription = dioError.response?.data["description"];
     }
-
-  } catch (e, s) {
-    logger.i("$e");
-    logger.i(s.toString());
-
-
-    // It seems 'code' is not always present, so logging it directly might cause an error
-    // if it's null. Only log it if you are sure it should be there or add a null check.
-    // logger.i(code.toString());
-
-
-    serverMessage = "Something went wrong. Please try again later.";
+  } else if (responseData is String) {
+    // Handle cases where the error response is just a plain string
+    serverMessage = responseData;
   }
 
+  logger.e(
+    "DioError: [$statusCode] ${dioError.requestOptions.path}\n"
+        "Response data: $responseData",
+  );
+
   switch (statusCode) {
-    case HttpStatus.serviceUnavailable:
+    case HttpStatus.serviceUnavailable: // 503
       return ServiceUnavailableException("Service Temporarily Unavailable");
-    case HttpStatus.notFound:
+    case HttpStatus.notFound: // 404
       return NotFoundException(
-        serverMessage ?? "Not found.", // Provide a default message
+        serverMessage ?? "Not found",
         status ?? "",
-        serverDescription ?? "",
+        serverDescription ?? "The requested resource was not found.",
       );
-    case HttpStatus.badRequest: // Handle 400 specifically
-    // You might want a specific Exception type for validation errors
+    case HttpStatus.unauthorized: // 401
+    // Handles "Authentication credentials were not provided."
+      return ApiException(
+        httpCode: statusCode,
+        status: status ?? "Unauthorized",
+        message: serverMessage ?? serverDescription ?? "Authentication failed.",
+        description: serverDescription ?? "You are not authorized to perform this action.",
+      );
+    case HttpStatus.badRequest: // 400
       return ApiException(
         httpCode: statusCode,
         status: status ?? "Bad Request",
         message: serverMessage ?? "Invalid request.",
         description: serverDescription ?? "Please check your input.",
-        // You could add the specific error fields to your ApiException if it's designed to hold them
-        // errors: { "username": usernameErrors, "email": emailErrors, "password": passwordErrors }
       );
     default:
       return ApiException(
         httpCode: statusCode,
-        status: status ?? "",
+        status: status ?? "Error",
         message: serverMessage ?? "An API error occurred.",
-        description: serverDescription ?? "",
+        description: serverDescription ?? "Something went wrong. Please try again later.",
       );
   }
 }
