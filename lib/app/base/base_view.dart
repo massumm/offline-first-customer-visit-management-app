@@ -106,8 +106,8 @@ abstract class BaseView<Controller extends BaseController>
                       : const SizedBox.shrink(),
                 ),
                 Obx(
-                  () => controller.errorMessage.isNotEmpty
-                      ? _showErrorSnackBar(controller.errorMessage)
+                  () => controller.networkErrorMsg.isNotEmpty
+                      ? _showErrorSnackBar(controller.networkErrorMsg)
                       : const SizedBox.shrink(),
                 ),
               ],
@@ -154,8 +154,8 @@ abstract class BaseView<Controller extends BaseController>
                     : const SizedBox.shrink(),
               ),
               Obx(
-                () => controller.errorMessage.isNotEmpty
-                    ? _showCupertinoError(controller.errorMessage)
+                () => controller.networkErrorMsg.isNotEmpty
+                    ? _showCupertinoError(controller.networkErrorMsg)
                     : const SizedBox.shrink(),
               ),
               // If you really want a FAB on iOS, position it manually:
