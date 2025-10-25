@@ -82,24 +82,6 @@ class TraineeFitnessReportGenerationController extends BaseController {
   }
 
   // -------------------- Progress Indicator Animations -----------
-  void _simulateProgress() async {
-    // This is just an example. In a real app, this would come from
-    // actual data saving operations.
-    await Future.delayed(const Duration(milliseconds: 500));
-    progress.value = 0.1;
-    await Future.delayed(const Duration(milliseconds: 800));
-    progress.value = 0.3;
-    await Future.delayed(const Duration(milliseconds: 1200));
-    progress.value = 0.6;
-    await Future.delayed(const Duration(milliseconds: 1000));
-    progress.value = 0.85;
-    await Future.delayed(const Duration(milliseconds: 700));
-    progress.value = 1.0; // Complete
-    // After completion, you might navigate to another screen
-    // Get.offAllNamed('/report_complete');
-
-    // _createTraineeReport();
-  }
 
   /// Gathers trainee data, creates their profile and preferences via API calls,
   /// and updates the progress indicator accordingly.

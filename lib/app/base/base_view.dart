@@ -6,7 +6,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 
-import '../core/values/app_colors.dart';
 import '../flavors/build_config.dart';
 import 'base_controller.dart';
 import 'models/app_states.dart';
