@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 
+import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
 import '../../../core/widgets/input_widgets/adaptive_text_field.dart';
 import '../controllers/trainee_fitness_report_generation_controller.dart';
