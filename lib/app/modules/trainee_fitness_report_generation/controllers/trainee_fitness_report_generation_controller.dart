@@ -70,7 +70,14 @@ class TraineeFitnessReportGenerationController extends BaseController {
               }
             },
           )
-          .whenComplete(() => onEmailLoading(false));
+          .whenComplete((){
+        onEmailLoading(false);
+        // TODO: FOR DEMO
+        enableApiProgressState(true);
+        Future.delayed(Duration(seconds: 2), (){
+          Get.toNamed(Routes.FITNESS_REPORT);
+        });
+      });
     }
   }
 
