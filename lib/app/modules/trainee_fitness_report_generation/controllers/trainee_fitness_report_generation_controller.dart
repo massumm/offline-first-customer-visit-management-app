@@ -21,7 +21,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
   final TextEditingController emailCtr = TextEditingController();
   var emailError = RxnString();
 
-  final isValidEmail = RxBool(false);
+  final isSubmitBtnEnable = RxBool(false);
 
   // --------------- Loading Effect State ---------------
   final progress = 0.0.obs;
@@ -63,9 +63,9 @@ class TraineeFitnessReportGenerationController extends BaseController {
   }
 
   Future<void> onSubmitButtonPressed() async {
-    if (isValidEmail.value) {
+    if (isSubmitBtnEnable.value) {
       onEmailLoading(true);
-      isValidEmail(false); // Disable the button
+      isSubmitBtnEnable(false); // Disable the button
 
       await _onboardingAuthRepository
           .registerEmail({'email': emailCtr.text})
@@ -74,7 +74,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
               Get.to(() => SavingView());
             },
             onError: (e) {
-              isValidEmail(true); // Enable the button
+              isSubmitBtnEnable(true); // Enable the button
               if (e is ApiException) {
                  CustomToast.showErrorToast(e.description);
               }
@@ -88,7 +88,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
     emailError.value = AppValidator().validateEmail(value);
 
     if (emailError.value == null) {
-      isValidEmail(true);
+      isSubmitBtnEnable(true);
     }
   }
 }

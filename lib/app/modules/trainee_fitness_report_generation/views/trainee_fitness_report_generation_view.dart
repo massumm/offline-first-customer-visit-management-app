@@ -98,7 +98,7 @@ class TraineeFitnessReportGenerationView
                 () => SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: controller.isValidEmail.isTrue
+                    onPressed: controller.isSubmitBtnEnable.isTrue
                         ? controller.onSubmitButtonPressed
                         : null,
                     child: controller.onEmailLoading.isFalse
