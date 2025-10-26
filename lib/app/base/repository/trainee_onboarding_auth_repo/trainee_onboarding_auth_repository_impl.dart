@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:icon/app/modules/login/models/login_response_model.dart';
 
 import '../../base_remote_source.dart';
 import '../../network/dio_provider.dart';
@@ -7,7 +8,7 @@ import 'trainee_onboarding_auth_repository.dart';
 class TraineeOnboardingAuthRepositoryImpl extends BaseRemoteSource
     implements TraineeOnboardingAuthRepository {
   @override
-  Future<Map<String, dynamic>> registerEmail(Map<String, dynamic> payload) async {
+  Future<LoginResponseModel> registerEmail(Map<String, dynamic> payload) async {
     final String endpoint =
         "${DioProvider.baseUrl}/api/accounts/register-email/";
 
@@ -16,7 +17,7 @@ class TraineeOnboardingAuthRepositoryImpl extends BaseRemoteSource
     try {
       return callApiWithErrorParser(
         dioCall,
-      ).then((Response response) => response.data);
+      ).then((Response response) => LoginResponseModel.fromJson(response.data));
     } catch (e) {
       rethrow;
     }

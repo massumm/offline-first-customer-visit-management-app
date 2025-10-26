@@ -114,6 +114,7 @@ class IconLightTheme {
       error: AppColors.warningColor,
       surface: AppColors.lightBgColor,
       onSurface: AppColors.lightTextPrimaryColor, // Explicitly set for text/icons on surface
+      surfaceContainerHighest: Colors.white,
     ),
     iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
     iconButtonTheme: IconButtonThemeData(
@@ -127,6 +128,7 @@ class IconLightTheme {
       elevation: 0,
       iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
       foregroundColor: AppColors.lightBgColor,
+      surfaceTintColor: AppColors.lightBgColor,
     ),
     cardTheme: CardThemeData(
       elevation: 2,

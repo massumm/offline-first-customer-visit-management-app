@@ -1,10 +1,7 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-import 'package:get/get.dart'; // Assuming GetX for controller management
+import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
-
-// Import your controller
 import 'package:icon/app/modules/trainee_fitness_report_generation/controllers/trainee_fitness_report_generation_controller.dart';
 
 class SavingView extends BaseView<TraineeFitnessReportGenerationController> {
@@ -21,52 +18,92 @@ class SavingView extends BaseView<TraineeFitnessReportGenerationController> {
           colors: [Color(0xFFFFE6E1), Colors.white],
         ),
       ),
-      child: Column(
-        children: [
-          const SizedBox(height: 24),
-          const _TopStatusBarStub(),
-          // optional, for the look
-          const Spacer(),
-          // Ring + % text
-          // Use Obx to reactively update the UI when controller.progress changes
-          Obx(
-                () => AnimatedProgressRing(
-              value: controller.progress.value,
-              // Get progress from the controller
-              size: 240,
-              stroke: 12,
-              ringColor: const Color(0xFFE94B35),
-              trackColor: const Color(0x1AE94B35),
-              segmentCount: 48,
-              segmentGapFactor: 0.18,
-              // animation will auto-adjust based on delta
-            ),
+      child: Obx(() {
+        return controller.hasError.value
+            ? _buildErrorView(context)
+            : _buildProgressView();
+      }),
+    );
+  }
+
+  Column _buildProgressView() {
+    return Column(
+      children: [
+        const Spacer(),
+        Obx(
+          () => AnimatedProgressRing(
+            value: controller.progress.value,
+            // Get progress from the controller
+            size: 240,
+            stroke: 12,
+            ringColor: const Color(0xFFE94B35),
+            trackColor: const Color(0x1AE94B35),
+            segmentCount: 48,
+            segmentGapFactor: 0.18,
           ),
-          const SizedBox(height: 28),
+        ),
+        const SizedBox(height: 28),
+        const Text(
+          'Saving your data securely',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            fontSize: 18,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 6),
+        const Text(
+          'Your Icon is learning about you, this only\n'
+          'takes a moment',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12, height: 1.3, color: Colors.black54),
+        ),
+        const Spacer(),
+      ],
+    );
+  }
+
+  /// The view to display when a network error occurs.
+  Widget _buildErrorView(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.cloud_off_rounded,
+            color: Color(0xFFE94B35),
+            size: 80,
+          ),
+          const SizedBox(height: 24),
           const Text(
-            'Saving your data securely',
+            'Unable to Save',
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 18,
               color: Colors.black87,
             ),
           ),
-          const SizedBox(height: 6),
-          const Text(
-            'Your Icon is learning about you, this only\n'
-                'takes a moment',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 12,
-              height: 1.3,
-              color: Colors.black54,
+          const SizedBox(height: 8),
+          Obx(
+            () => Text(
+              controller.errorMessage.value,
+              textAlign: TextAlign.center,
+              maxLines: 5,
+              overflow: TextOverflow.fade,
+              style: const TextStyle(
+                fontSize: 12,
+                height: 1.3,
+                color: Colors.black54,
+              ),
             ),
           ),
-          const Spacer(),
-          // Remove the demo controls in production.
-          // If you need to trigger progress updates for testing,
-          // you can keep them and call controller.updateProgress(value).
-          // For now, they are removed as the controller should drive this.
+          const SizedBox(height: 32),
+          ElevatedButton(
+            onPressed: () => controller.retryReportGeneration(),
+            child: const Text('TRY AGAIN'),
+          ),
         ],
       ),
     );
@@ -294,15 +331,5 @@ class _RingPainter extends CustomPainter {
         ringColor != oldDelegate.ringColor ||
         trackColor != oldDelegate.trackColor ||
         segmentGapFactor != oldDelegate.segmentGapFactor;
-  }
-}
-
-/// Just a tiny fake “status bar” spacing like the mock — safe to remove.
-class _TopStatusBarStub extends StatelessWidget {
-  const _TopStatusBarStub();
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(height: 0); // placeholder
   }
 }

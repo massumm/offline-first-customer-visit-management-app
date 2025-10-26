@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
@@ -38,7 +37,7 @@ class AppPages {
   AppPages._();
 
   // Todo: Change this to initial route
-  static const String INITIAL = Routes.FITNESS_REPORT;
+  static const String INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(

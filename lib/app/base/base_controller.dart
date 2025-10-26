@@ -33,7 +33,7 @@ abstract class BaseController extends GetxController
   String get message => _messageController.value;
   String showMessage(String msg) => _messageController(msg);
   final _errorMessageController = ''.obs;
-  String get errorMessage => _errorMessageController.value;
+  String get networkErrorMsg => _errorMessageController.value;
   String showErrorMessage(String msg) => _errorMessageController(msg);
   final _successMessageController = ''.obs;
   String get successMessage => _messageController.value;

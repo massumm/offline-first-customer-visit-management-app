@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:icon/app/core/theme/services/theme_service.dart';
 
 class ActionPill extends StatelessWidget {
   const ActionPill({

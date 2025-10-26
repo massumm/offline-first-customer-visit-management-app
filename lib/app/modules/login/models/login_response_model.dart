@@ -19,8 +19,8 @@ class LoginResponseModel {
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json){
     return LoginResponseModel(
-      refresh: json["refresh"],
-      access: json["access"],
+      refresh: json["refresh"] ?? json['refresh_token'],
+      access: json["access"] ?? json['token'],
     );
   }
 

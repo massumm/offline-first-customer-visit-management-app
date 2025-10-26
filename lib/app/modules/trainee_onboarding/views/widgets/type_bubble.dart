@@ -22,8 +22,8 @@ class _TypingBubbleState extends State<TypingBubble>
 
   @override
   Widget build(BuildContext context) {
-    final bg = Theme.of(context).colorScheme.surfaceContainerHighest;
-    final fg = Theme.of(context).colorScheme.onSurfaceVariant;
+    final bg = Theme.of(context).colorScheme.primary;
+    final fg = Theme.of(context).colorScheme.surfaceContainerHighest;
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(

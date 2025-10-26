@@ -165,6 +165,7 @@ class IconDarkTheme {
       onError: AppColors.warningColor,
       onSurface: Colors.white,
       onSurfaceVariant: Colors.white,
+      surfaceContainerHighest: AppColors.darkShapeColor,
 
       // --- Other Colors ---
       // Aligns with the border color used in InputDecorationTheme

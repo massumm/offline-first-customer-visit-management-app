@@ -6,8 +6,10 @@ import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../../generated/assets.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
 import 'widgets/animated_onboarding_stepper.dart';
@@ -19,61 +21,82 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
-    return AppBar(
-      title: Row(
-        children: [
-          const CircleAvatar(
-            radius: 20,
-            backgroundImage: AssetImage('assets/images/icon-logo-pink.png'),
-          ),
-          6.width,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
+    // Wrap the Obx in a PreferredSize widget to satisfy the return type.
+    return PreferredSize(
+      // The standard height for an AppBar.
+      preferredSize: const Size.fromHeight(kToolbarHeight),
+      child: Obx(
+        () => AppBar(
+          title: Row(
             children: [
-              Text(
-                'Mish Icon',
-                style: Theme.of(context).textTheme.titleMedium,
+              const CircleAvatar(
+                radius: 20,
+                // Use the generated asset path for type safety and clarity.
+                backgroundImage: AssetImage(Assets.imagesIconLogoPink),
               ),
-              Text(
-                'Online',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+              6.width,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Mish Icon',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  Text(
+                    'Online',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
               ),
             ],
-          )
-        ],
+          ),
+          leading: controller.canGoBack
+              ? Center(
+                  child: SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: ActionPill(
+                      onTap: controller.goBack,
+                      icon: Icons.undo,
+                    ),
+                  ),
+                )
+              : Center(
+                  child: SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: ActionPill(onTap: Get.back),
+                  ),
+                ),
+          actions: [
+            if (controller.currentQuestion?.canSkip ?? false) ...[
+              TextButton(
+                onPressed: () {
+                  controller.send('');
+                },
+                child: Text('Skip'),
+              ),
+            ],
+          ],
+        ),
       ),
-      actions: [
-        Obx(
-              () => controller.canGoBack
-              ? IconButton(
-            icon: const Icon(Icons.undo),
-            // Removed explicit style assignment, IconButton will now use theme's IconButtonThemeData
-            onPressed: controller.goBack,
-            tooltip: 'Go Back',
-          )
-              : const SizedBox.shrink(),
-        ),
-        IconButton(
-          icon: const Icon(Icons.refresh),
-          onPressed: controller.start,
-          tooltip: 'Restart',
-        ),
-      ],
     );
   }
+
   @override
   Widget body(BuildContext context) {
     return Column(
       children: [
         // Custom Stepper For visualizing group movement
-        Obx(() => AnimatedOnboardingStepper(
-          totalSteps: controller.totalGroups.value,
-          currentStep: controller.currentGroupIndex.value,
-          stepProgress: controller.currentGroupProgress.value,
-        )
+        Obx(
+          () => AnimatedOnboardingStepper(
+            totalSteps: controller.totalGroups.value,
+            currentStep: controller.currentGroupIndex.value,
+            stepProgress: controller.currentGroupProgress.value,
+          ),
         ),
         Expanded(
           child: Obx(() {
@@ -134,10 +157,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               children: q.options
                   .map(
                     (o) => ActionChip(
-                  label: Text(o),
-                  onPressed: () => controller.choose(o),
-                ),
-              )
+                      label: Text(o),
+                      onPressed: () => controller.choose(o),
+                    ),
+                  )
                   .toList(),
             ),
           );
@@ -181,9 +204,8 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               return _WeightPicker(controller: controller);
             }
 
-
             // Hide the input field for Choice questions.
-            if(controller.currentQuestion?.type == QAType.choice){
+            if (controller.currentQuestion?.type == QAType.choice) {
               return SizedBox.shrink();
             }
 
@@ -195,7 +217,8 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       ],
     );
   }
-// In TraineeOnboardingView class
+
+  // In TraineeOnboardingView class
 
   Widget _buildFinalContinueButton(BuildContext context) {
     return Padding(
@@ -209,10 +232,12 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           // A row containing the checkbox and tappable text
           Row(
             children: [
-              Obx(() => Checkbox(
-                value: controller.hasAgreedToTerms.value,
-                onChanged: controller.toggleTermsAgreement,
-              )),
+              Obx(
+                () => Checkbox(
+                  value: controller.hasAgreedToTerms.value,
+                  onChanged: controller.toggleTermsAgreement,
+                ),
+              ),
               Expanded(
                 child: RichText(
                   text: TextSpan(
@@ -224,7 +249,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           decoration: TextDecoration.underline,
-                          decorationColor: Theme.of(context).colorScheme.primary,
+                          decorationColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
                         ),
                         // TODO: Add a recognizer to open the terms page
                         // recognizer: TapGestureRecognizer()..onTap = () => Get.toNamed(Routes.TERMS),
@@ -239,20 +266,23 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           // END: ADDED WIDGET
 
           // MODIFIED: Wrap the button in an Obx to make it reactive
-          Obx(() => FilledButton(
-            style: FilledButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+          Obx(
+            () => FilledButton(
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              // The button is disabled if `hasAgreedToTerms` is false
+              onPressed: controller.hasAgreedToTerms.value
+                  ? controller.proceedToContinue
+                  : null,
+              child: const Text('Continue'),
             ),
-            // The button is disabled if `hasAgreedToTerms` is false
-            onPressed: controller.hasAgreedToTerms.value
-                ? controller.proceedToContinue
-                : null,
-            child: const Text('Continue'),
-          )),
+          ),
         ],
       ),
     );
   }
+
   Widget _buildContinuationButtons() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -389,11 +419,11 @@ class _HeightPickerState extends State<_HeightPicker> {
   // Data for pickers
   final List<int> _cmValues = List.generate(
     101,
-        (index) => 120 + index,
+    (index) => 120 + index,
   ); // 120-220 cm
   final List<int> _feetValues = List.generate(
     4,
-        (index) => 4 + index,
+    (index) => 4 + index,
   ); // 4-7 ft
   final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
 
@@ -403,9 +433,8 @@ class _HeightPickerState extends State<_HeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.surfaceContainerHighest.withOpacity(0.3), // Corrected withValues to withOpacity
+        color: Theme.of(context).colorScheme.surfaceContainerHighest
+            .withOpacity(0.3), // Corrected withValues to withOpacity
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -522,11 +551,11 @@ class _WeightPickerState extends State<_WeightPicker> {
   // Data for pickers
   final List<double> _kgValues = List.generate(
     1101,
-        (i) => 40.0 + i * 0.1,
+    (i) => 40.0 + i * 0.1,
   ); // 40.0-150.0 kg
   final List<double> _lbsValues = List.generate(
     2401,
-        (i) => 90.0 + i * 0.1,
+    (i) => 90.0 + i * 0.1,
   ); // 90.0-330.0 lbs
 
   @override
@@ -538,9 +567,8 @@ class _WeightPickerState extends State<_WeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.surfaceContainerHighest.withOpacity(0.3), // Corrected withValues to withOpacity
+        color: Theme.of(context).colorScheme.surfaceContainerHighest
+            .withOpacity(0.3), // Corrected withValues to withOpacity
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -559,7 +587,7 @@ class _WeightPickerState extends State<_WeightPicker> {
               scrollController: FixedExtentScrollController(
                 initialItem: currentValues.indexOf(
                   currentValues.firstWhere(
-                        (v) => (v - initialValue).abs() < 0.01,
+                    (v) => (v - initialValue).abs() < 0.01,
                     orElse: () => currentValues.first,
                   ),
                 ),
@@ -724,9 +752,9 @@ class _ImageMessageBubble extends StatelessWidget {
             // Once the frame is ready, this builder is called again and `child` is shown.
             return frame == null
                 ? const Padding(
-              padding: EdgeInsets.all(48.0),
-              child: Center(child: CircularProgressIndicator.adaptive()),
-            )
+                    padding: EdgeInsets.all(48.0),
+                    child: Center(child: CircularProgressIndicator.adaptive()),
+                  )
                 : child;
           },
           // Show an error icon if the image fails to load
