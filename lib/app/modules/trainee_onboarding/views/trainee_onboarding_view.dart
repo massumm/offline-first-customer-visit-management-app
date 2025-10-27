@@ -95,7 +95,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         ],
       ],
       bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0),
+        preferredSize: const Size.fromHeight(80.0),
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
           child: Column(
@@ -103,7 +103,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               6.height,
-              Text('Personal', style: Theme.of(context).textTheme.titleLarge),
+              Text(
+                'Personal',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
               const SizedBox(height: 8),
               AnimatedOnboardingStepper(
                 totalSteps: controller.totalGroups.value,

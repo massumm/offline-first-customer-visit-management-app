@@ -33,7 +33,7 @@ class IconLightTheme {
     headlineMedium: GoogleFonts.inter(
       fontSize: 28,
       fontWeight: FontWeight.w400,
-      color: Colors.black,
+      color: AppColors.lightTextSecondaryColor,
     ),
     headlineSmall: GoogleFonts.inter(
       fontSize: 24,

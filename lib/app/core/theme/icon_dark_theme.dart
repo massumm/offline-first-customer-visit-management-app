@@ -32,7 +32,7 @@ class IconDarkTheme {
     headlineMedium: GoogleFonts.inter(
       fontSize: 28,
       fontWeight: FontWeight.w400,
-      color: Colors.white,
+      color: AppColors.darkTextSecondaryColor,
     ),
     headlineSmall: GoogleFonts.inter(
       fontSize: 24,
