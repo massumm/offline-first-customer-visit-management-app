@@ -34,6 +34,7 @@ class IconLightTheme {
       fontSize: 28,
       fontWeight: FontWeight.w400,
       color: AppColors.lightTextSecondaryColor,
+      height: 1.3,
     ),
     headlineSmall: GoogleFonts.inter(
       fontSize: 24,
@@ -113,7 +114,8 @@ class IconLightTheme {
       tertiary: AppColors.informationColor,
       error: AppColors.warningColor,
       surface: AppColors.lightBgColor,
-      onSurface: AppColors.lightTextPrimaryColor, // Explicitly set for text/icons on surface
+      onSurface: AppColors.lightTextPrimaryColor,
+      // Explicitly set for text/icons on surface
       surfaceContainerHighest: Colors.white,
     ),
     iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
@@ -126,17 +128,22 @@ class IconLightTheme {
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.lightBgColor,
       elevation: 0,
-      iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
+      iconTheme: IconThemeData(
+        color: AppColors.lightTextPrimaryColor,
+        size: 24,
+      ),
       foregroundColor: AppColors.lightBgColor,
       surfaceTintColor: AppColors.lightBgColor,
     ),
     cardTheme: CardThemeData(
       elevation: 2,
-      color: Colors.white, // Corrected: Use a light color for cards in light theme
+      color: Colors.white,
+      // Corrected: Use a light color for cards in light theme
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
     dialogTheme: DialogThemeData(
-      backgroundColor: Colors.white, // Corrected: Use a light color for dialogs in light theme
+      backgroundColor: Colors.white,
+      // Corrected: Use a light color for dialogs in light theme
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
 
@@ -145,7 +152,8 @@ class IconLightTheme {
         borderSide: BorderSide(width: 2.0, color: AppColors.colorPrimary),
       ),
       labelColor: AppColors.colorPrimary,
-      unselectedLabelColor: AppColors.lightTextSecondaryColor, // Corrected: Use a visible color
+      unselectedLabelColor:
+          AppColors.lightTextSecondaryColor, // Corrected: Use a visible color
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

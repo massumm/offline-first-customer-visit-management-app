@@ -43,7 +43,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     width: 8,
                     height: 8,
                     decoration: const BoxDecoration(
-                      color: Colors.green,
+                      color: Color(0xff2FFF3C),
                       shape: BoxShape.circle,
                     ),
                   ),
