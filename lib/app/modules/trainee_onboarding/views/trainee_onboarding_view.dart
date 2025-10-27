@@ -21,66 +21,97 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
-    // Wrap the Obx in a PreferredSize widget to satisfy the return type.
-    return PreferredSize(
-      // The standard height for an AppBar.
-      preferredSize: const Size.fromHeight(kToolbarHeight),
-      child: Obx(
-        () => AppBar(
-          title: Row(
+    return AppBar(
+      title: Row(
+        children: [
+          Stack(
             children: [
               const CircleAvatar(
                 radius: 20,
-                // Use the generated asset path for type safety and clarity.
                 backgroundImage: AssetImage(Assets.imagesIconLogoPink),
               ),
-              6.width,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Mish Icon',
-                    style: Theme.of(context).textTheme.titleMedium,
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(2.0),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
                   ),
-                  Text(
-                    'Online',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: const BoxDecoration(
+                      color: Colors.green,
+                      shape: BoxShape.circle,
                     ),
                   ),
-                ],
+                ),
               ),
             ],
           ),
-          leading: controller.canGoBack
-              ? Center(
-                  child: SizedBox(
-                    width: 32.0,
-                    height: 32.0,
-                    child: ActionPill(
-                      onTap: controller.goBack,
-                      icon: Icons.undo,
-                    ),
-                  ),
-                )
-              : Center(
-                  child: SizedBox(
-                    width: 32.0,
-                    height: 32.0,
-                    child: ActionPill(onTap: Get.back),
-                  ),
+          6.width,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Mish Icon', style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                'Online',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
                 ),
-          actions: [
-            if (controller.currentQuestion?.canSkip ?? false) ...[
-              TextButton(
-                onPressed: () {
-                  controller.send('');
-                },
-                child: Text('Skip'),
               ),
             ],
-          ],
+          ),
+        ],
+      ),
+      leading: Obx(
+        () => controller.canGoBack
+            ? Center(
+                child: SizedBox(
+                  width: 32.0,
+                  height: 32.0,
+                  child: ActionPill(onTap: controller.goBack, icon: Icons.undo),
+                ),
+              )
+            : Center(
+                child: SizedBox(
+                  width: 32.0,
+                  height: 32.0,
+                  child: ActionPill(onTap: Get.back),
+                ),
+              ),
+      ),
+      actions: [
+        if (controller.currentQuestion?.canSkip ?? false) ...[
+          TextButton(
+            onPressed: () {
+              controller.send('');
+            },
+            child: const Text('Skip'),
+          ),
+        ],
+      ],
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(70.0),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              6.height,
+              Text('Personal', style: Theme.of(context).textTheme.titleLarge),
+              const SizedBox(height: 8),
+              AnimatedOnboardingStepper(
+                totalSteps: controller.totalGroups.value,
+                currentStep: controller.currentGroupIndex.value,
+                stepProgress: controller.currentGroupProgress.value,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -91,13 +122,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     return Column(
       children: [
         // Custom Stepper For visualizing group movement
-        Obx(
-          () => AnimatedOnboardingStepper(
-            totalSteps: controller.totalGroups.value,
-            currentStep: controller.currentGroupIndex.value,
-            stepProgress: controller.currentGroupProgress.value,
-          ),
-        ),
         Expanded(
           child: Obx(() {
             final items = controller.messages;
@@ -218,18 +242,13 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     );
   }
 
-  // In TraineeOnboardingView class
-
   Widget _buildFinalContinueButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      // MODIFIED: Use a Column to stack the checkbox and the button
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // START: ADDED WIDGET
-          // A row containing the checkbox and tappable text
           Row(
             children: [
               Obx(
@@ -263,9 +282,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             ],
           ),
           const SizedBox(height: 12),
-          // END: ADDED WIDGET
 
-          // MODIFIED: Wrap the button in an Obx to make it reactive
           Obx(
             () => FilledButton(
               style: FilledButton.styleFrom(
@@ -311,9 +328,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       onPressed: () async {
         final DateTime? pickedDate = await showDatePicker(
           context: context,
-          initialDate: DateTime.now().subtract(
-            const Duration(days: 365 * 20),
-          ), // Sensible default
+          initialDate: DateTime.now().subtract(const Duration(days: 365 * 20)),
           firstDate: DateTime(1920),
           lastDate: DateTime.now(),
         );
@@ -395,9 +410,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   }
 }
 
-// Add these new widgets at the end of the file
-
-/// A widget for selecting height with options for cm or ft/in.
 class _HeightPicker extends StatefulWidget {
   const _HeightPicker({required this.controller});
 
@@ -433,8 +445,9 @@ class _HeightPickerState extends State<_HeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest
-            .withOpacity(0.3), // Corrected withValues to withOpacity
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -456,7 +469,7 @@ class _HeightPickerState extends State<_HeightPicker> {
               if (canSkip) ...[
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () => widget.controller.selectHeight(), // Skip
+                    onPressed: () => widget.controller.selectHeight(),
                     child: const Text('Skip'),
                   ),
                 ),
@@ -530,7 +543,6 @@ class _HeightPickerState extends State<_HeightPicker> {
   }
 }
 
-/// A widget for selecting weight with options for kg or lbs.
 class _WeightPicker extends StatefulWidget {
   const _WeightPicker({required this.controller});
 
@@ -567,8 +579,9 @@ class _WeightPickerState extends State<_WeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest
-            .withOpacity(0.3), // Corrected withValues to withOpacity
+        color: Theme.of(
+          context,
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -644,8 +657,6 @@ class _WeightPickerState extends State<_WeightPicker> {
   }
 }
 
-/// A widget that displays an "Upload Photo" button and handles the image
-/// selection process by showing a dialog for Camera or Gallery.
 class _ImagePickerInput extends StatelessWidget {
   final TraineeOnboardingController controller;
 
@@ -666,8 +677,6 @@ class _ImagePickerInput extends StatelessWidget {
     );
   }
 
-  /// Shows a dialog to let the user choose between taking a new photo
-  /// or selecting one from their gallery.
   void _showImageSourceDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -698,21 +707,17 @@ class _ImagePickerInput extends StatelessWidget {
     );
   }
 
-  /// Uses the image_picker package to select an image and passes the
-  /// result back to the controller.
   Future<void> _pickImage(ImageSource source) async {
     final ImagePicker picker = ImagePicker();
     // Pick an image.
     final XFile? image = await picker.pickImage(source: source);
 
     if (image != null) {
-      // If an image was selected, call the controller's handler method.
       controller.selectImage(image);
     }
   }
 }
 
-///displays an image from a local file path.
 class _ImageMessageBubble extends StatelessWidget {
   final String imagePath;
   final Sender from;
@@ -726,7 +731,6 @@ class _ImageMessageBubble extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(
-        // Constrain the width to 70% of the screen
         maxWidth: MediaQuery.of(context).size.width * 0.7,
       ),
       margin: const EdgeInsets.symmetric(vertical: 4),
@@ -736,20 +740,17 @@ class _ImageMessageBubble extends StatelessWidget {
             : theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
       ),
-      // Clip the image to the rounded corners of the container
+
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Image.file(
           File(imagePath),
           fit: BoxFit.cover,
-          // MODIFIED: Use frameBuilder for compatibility with older Flutter versions.
-          // It provides a similar "while loading" capability.
+
           frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
             if (wasSynchronouslyLoaded) {
-              return child; // If loaded instantly, just show the image.
+              return child;
             }
-            // If the frame is not yet available, show a loading indicator.
-            // Once the frame is ready, this builder is called again and `child` is shown.
             return frame == null
                 ? const Padding(
                     padding: EdgeInsets.all(48.0),
@@ -757,7 +758,6 @@ class _ImageMessageBubble extends StatelessWidget {
                   )
                 : child;
           },
-          // Show an error icon if the image fails to load
           errorBuilder: (context, error, stackTrace) {
             return const Padding(
               padding: EdgeInsets.all(32.0),
