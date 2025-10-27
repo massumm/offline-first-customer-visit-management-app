@@ -669,7 +669,9 @@ class TraineeOnboardingController extends BaseController {
     final id = q.id;
 
     if ((id == 'target_event_name' || id == 'target_event_date') &&
-        answers['has_target_event'] == 'No') return true;
+        answers['has_target_event'] == 'No') {
+      return true;
+    }
 
     final trainingLocation = answers['training_location'];
     if ((id == 'home_equipment' || id == 'home_equipment_other') &&
@@ -1113,6 +1115,13 @@ class TraineeOnboardingController extends BaseController {
     if (isFinished || currentQuestionIndexInGroup.value < 0) return null;
     return questionGroups[currentGroupIndex.value]
         .questions[currentQuestionIndexInGroup.value];
+  }
+
+  String? get getCurrentGroupName {
+    if (currentGroupIndex.value >= 0 && currentGroupIndex.value < questionGroups.length) {
+      return questionGroups[currentGroupIndex.value].name;
+    }
+    return null;
   }
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;

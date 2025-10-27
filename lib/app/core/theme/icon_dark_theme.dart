@@ -32,7 +32,8 @@ class IconDarkTheme {
     headlineMedium: GoogleFonts.inter(
       fontSize: 28,
       fontWeight: FontWeight.w400,
-      color: Colors.white,
+      color: AppColors.darkTextSecondaryColor,
+      height: 1.3
     ),
     headlineSmall: GoogleFonts.inter(
       fontSize: 24,
@@ -115,6 +116,10 @@ class IconDarkTheme {
         foregroundColor: AppColors.darkTextPrimaryColor,
         iconSize: 24,
       ),
+    ),
+    dividerTheme: DividerThemeData(
+      color: AppColors.darkStockColor,
+      thickness: 1,
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.darkBgColor,
