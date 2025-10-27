@@ -669,7 +669,9 @@ class TraineeOnboardingController extends BaseController {
     final id = q.id;
 
     if ((id == 'target_event_name' || id == 'target_event_date') &&
-        answers['has_target_event'] == 'No') return true;
+        answers['has_target_event'] == 'No') {
+      return true;
+    }
 
     final trainingLocation = answers['training_location'];
     if ((id == 'home_equipment' || id == 'home_equipment_other') &&
