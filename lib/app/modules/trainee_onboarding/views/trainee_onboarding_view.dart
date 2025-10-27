@@ -121,22 +121,24 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   //   );
   // }
 
-
-
   @override
   Widget body(BuildContext context) {
     return Column(
       children: [
-        Obx(() => OnboardingHeader(
-          avatarAsset: Assets.imagesIconLogoPink,
-          name: 'Mish Icon',
-          statusText: 'Online',
-          sectionTitle: 'Personal',
-          totalSteps: controller.totalGroups.value,
-          currentStep: controller.currentGroupIndex.value,
-          stepProgress: controller.currentGroupProgress.value,
-          controller: controller,
-        )),
+        Obx(
+          () => OnboardingHeader(
+            avatarAsset: Assets.imagesIconLogoPink,
+            name: 'Mish Icon',
+            statusText: 'Online',
+            sectionTitle: controller.isFinished
+                ? "You're all set!"
+                : controller.getCurrentGroupName ?? "Just a moment...",
+            totalSteps: controller.totalGroups.value,
+            currentStep: controller.currentGroupIndex.value,
+            stepProgress: controller.currentGroupProgress.value,
+            controller: controller,
+          ),
+        ),
         // Custom Stepper For visualizing group movement
         Expanded(
           child: Obx(() {
@@ -404,8 +406,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             controller.textController.clear();
           },
           icon: const Icon(Icons.send),
-          label: Obx(() => (controller.currentQuestion?.canSkip ?? false)
-              ? const Text("Skip") : const Text("Send"),),
+          label: Obx(
+            () => (controller.currentQuestion?.canSkip ?? false)
+                ? const Text("Skip")
+                : const Text("Send"),
+          ),
         ),
         const SizedBox(width: 8),
       ],

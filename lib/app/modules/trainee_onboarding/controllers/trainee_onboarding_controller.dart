@@ -1117,6 +1117,13 @@ class TraineeOnboardingController extends BaseController {
         .questions[currentQuestionIndexInGroup.value];
   }
 
+  String? get getCurrentGroupName {
+    if (currentGroupIndex.value >= 0 && currentGroupIndex.value < questionGroups.length) {
+      return questionGroups[currentGroupIndex.value].name;
+    }
+    return null;
+  }
+
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
   bool get isCurrentTime => currentQuestion?.type == QAType.time;
