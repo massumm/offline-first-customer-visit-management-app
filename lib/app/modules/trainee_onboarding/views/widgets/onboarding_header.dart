@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/values/app_colors.dart';
 
 import '../../../../core/widgets/action_pill.dart';
 import '../../controllers/trainee_onboarding_controller.dart';

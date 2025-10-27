@@ -150,7 +150,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 if (isTypingRow) return const TypingBubble();
                 final m = items[index];
 
-                // --- START: MODIFIED LOGIC ---
                 // Determine alignment
                 final alignment = m.from == Sender.user
                     ? Alignment.centerRight
@@ -183,7 +182,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               controller.showGroupContinuationButtons ||
               q == null ||
               q.type != QAType.choice) {
-            // END: Modify this condition
             return const SizedBox.shrink();
           }
 
@@ -339,19 +337,22 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   }
 
   Widget _buildDatePickerButton(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () async {
-        final DateTime? pickedDate = await showDatePicker(
-          context: context,
-          initialDate: DateTime.now().subtract(const Duration(days: 365 * 20)),
-          firstDate: DateTime(1920),
-          lastDate: DateTime.now(),
-        );
-        if (pickedDate != null) {
-          controller.selectDate(pickedDate);
-        }
-      },
-      child: Text(controller.currentQuestion?.hint ?? "Select Date"),
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12),
+      child: ElevatedButton(
+        onPressed: () async {
+          final DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now().subtract(const Duration(days: 365 * 20)),
+            firstDate: DateTime(1920),
+            lastDate: DateTime.now(),
+          );
+          if (pickedDate != null) {
+            controller.selectDate(pickedDate);
+          }
+        },
+        child: Text(controller.currentQuestion?.hint ?? "Select Date"),
+      ),
     );
   }
 
