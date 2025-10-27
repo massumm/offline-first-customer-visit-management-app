@@ -117,6 +117,10 @@ class IconDarkTheme {
         iconSize: 24,
       ),
     ),
+    dividerTheme: DividerThemeData(
+      color: AppColors.darkStockColor,
+      thickness: 1,
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.darkBgColor,
       elevation: 0,

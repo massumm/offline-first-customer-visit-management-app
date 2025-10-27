@@ -155,6 +155,10 @@ class IconLightTheme {
       unselectedLabelColor:
           AppColors.lightTextSecondaryColor, // Corrected: Use a visible color
     ),
+    dividerTheme: DividerThemeData(
+      color: AppColors.lightStockColor,
+      thickness: 1,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
       isDense: true,

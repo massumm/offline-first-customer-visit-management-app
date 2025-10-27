@@ -124,7 +124,7 @@ class OnboardingHeader extends StatelessWidget {
               ],
             ],
           ),
-          Divider(color: AppColors.darkStockColor, thickness: 1, height: 24),
+          Divider(color: Theme.of(context).dividerTheme.color, height: 24),
         ],
       ),
     );

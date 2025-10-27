@@ -5,14 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
-import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../generated/assets.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
-import 'widgets/animated_onboarding_stepper.dart';
 import 'widgets/message_bubble.dart';
 import 'widgets/onboarding_header.dart';
 import 'widgets/type_bubble.dart';
@@ -366,7 +363,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           initialTime: TimeOfDay.now(),
         );
         if (pickedTime != null) {
-          controller.selectTime(pickedTime, context);
+           controller.selectTime(pickedTime, context);
         }
       },
       child: Text(controller.currentQuestion?.hint ?? "Select Time"),
