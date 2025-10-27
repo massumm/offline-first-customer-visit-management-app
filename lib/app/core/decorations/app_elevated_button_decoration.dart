@@ -21,7 +21,11 @@ ElevatedButtonThemeData get appElevatedButtonTheme {
       foregroundColor: Colors.white,
       fixedSize: buttonFixedSize,
       textStyle: btnTextStyle,
-      shape: RoundedRectangleBorder(borderRadius: borderRadius),
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius,
+        side: BorderSide(color: AppColors.darkStockColor, width: 1),
+      ),
+      elevation: 0,
     ),
   );
 }
