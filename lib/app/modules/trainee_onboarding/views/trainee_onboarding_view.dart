@@ -194,7 +194,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         SafeArea(
           top: false,
           child: Obx(() {
-            // ADD THIS: Check for the final continuation state first.
+            // Check for the final continuation state first.
             if (controller.isAwaitingFinalContinuation.isTrue) {
               return _buildFinalContinueButton(context);
             }
@@ -205,7 +205,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             }
 
             if (controller.isCurrentImage) {
-              // NEW: Show the image picker button
+              // Show the image picker button
               return _ImagePickerInput(controller: controller);
             }
 
