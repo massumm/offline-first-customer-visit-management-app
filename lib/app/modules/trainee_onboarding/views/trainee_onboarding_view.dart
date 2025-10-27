@@ -14,116 +14,129 @@ import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
 import 'widgets/animated_onboarding_stepper.dart';
 import 'widgets/message_bubble.dart';
+import 'widgets/onboarding_header.dart';
 import 'widgets/type_bubble.dart';
 
 class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   TraineeOnboardingView({super.key});
 
-  @override
-  PreferredSizeWidget? appBar(BuildContext context) {
-    return AppBar(
-      title: Row(
-        children: [
-          Stack(
-            children: [
-              const CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage(Assets.imagesIconLogoPink),
-              ),
-              Positioned(
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  padding: const EdgeInsets.all(2.0),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    decoration: const BoxDecoration(
-                      color: Color(0xff2FFF3C),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          6.width,
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Mish Icon', style: Theme.of(context).textTheme.titleMedium),
-              Text(
-                'Online',
-                style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      leading: Obx(
-        () => controller.canGoBack
-            ? Center(
-                child: SizedBox(
-                  width: 32.0,
-                  height: 32.0,
-                  child: ActionPill(onTap: controller.goBack, icon: Icons.undo),
-                ),
-              )
-            : Center(
-                child: SizedBox(
-                  width: 32.0,
-                  height: 32.0,
-                  child: ActionPill(onTap: Get.back),
-                ),
-              ),
-      ),
-      actions: [
-        if (controller.currentQuestion?.canSkip ?? false) ...[
-          TextButton(
-            onPressed: () {
-              controller.send('');
-            },
-            child: const Text('Skip'),
-          ),
-        ],
-      ],
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(80.0),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              6.height,
-              Text(
-                'Personal',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 8),
-              AnimatedOnboardingStepper(
-                totalSteps: controller.totalGroups.value,
-                currentStep: controller.currentGroupIndex.value,
-                stepProgress: controller.currentGroupProgress.value,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  // @override
+  // PreferredSizeWidget? appBar(BuildContext context) {
+  //   return AppBar(
+  //     title: Row(
+  //       children: [
+  //         Stack(
+  //           children: [
+  //             const CircleAvatar(
+  //               radius: 20,
+  //               backgroundImage: AssetImage(Assets.imagesIconLogoPink),
+  //             ),
+  //             Positioned(
+  //               right: 0,
+  //               bottom: 0,
+  //               child: Container(
+  //                 padding: const EdgeInsets.all(2.0),
+  //                 decoration: const BoxDecoration(
+  //                   color: Colors.white,
+  //                   shape: BoxShape.circle,
+  //                 ),
+  //                 child: Container(
+  //                   width: 8,
+  //                   height: 8,
+  //                   decoration: const BoxDecoration(
+  //                     color: Color(0xff2FFF3C),
+  //                     shape: BoxShape.circle,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         6.width,
+  //         Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Text('Mish Icon', style: Theme.of(context).textTheme.titleMedium),
+  //             Text(
+  //               'Online',
+  //               style: Theme.of(context).textTheme.bodySmall?.copyWith(
+  //                 color: Theme.of(context).colorScheme.onSurfaceVariant,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //     leading: Obx(
+  //       () => controller.canGoBack
+  //           ? Center(
+  //               child: SizedBox(
+  //                 width: 32.0,
+  //                 height: 32.0,
+  //                 child: ActionPill(onTap: controller.goBack, icon: Icons.undo),
+  //               ),
+  //             )
+  //           : Center(
+  //               child: SizedBox(
+  //                 width: 32.0,
+  //                 height: 32.0,
+  //                 child: ActionPill(onTap: Get.back),
+  //               ),
+  //             ),
+  //     ),
+  //     actions: [
+  //       if (controller.currentQuestion?.canSkip ?? false) ...[
+  //         TextButton(
+  //           onPressed: () {
+  //             controller.send('');
+  //           },
+  //           child: const Text('Skip'),
+  //         ),
+  //       ],
+  //     ],
+  //     bottom: PreferredSize(
+  //       preferredSize: const Size.fromHeight(80.0),
+  //       child: Padding(
+  //         padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
+  //         child: Column(
+  //           crossAxisAlignment: CrossAxisAlignment.start,
+  //           mainAxisAlignment: MainAxisAlignment.end,
+  //           children: [
+  //             6.height,
+  //             Text(
+  //               'Personal',
+  //               style: Theme.of(context).textTheme.headlineMedium,
+  //             ),
+  //             const SizedBox(height: 8),
+  //             AnimatedOnboardingStepper(
+  //               totalSteps: controller.totalGroups.value,
+  //               currentStep: controller.currentGroupIndex.value,
+  //               stepProgress: controller.currentGroupProgress.value,
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+
 
   @override
   Widget body(BuildContext context) {
     return Column(
       children: [
+        Obx(() => OnboardingHeader(
+          avatarAsset: Assets.imagesIconLogoPink,
+          name: 'Mish Icon',
+          statusText: 'Online',
+          sectionTitle: 'Personal',
+          totalSteps: controller.totalGroups.value,
+          currentStep: controller.currentGroupIndex.value,
+          stepProgress: controller.currentGroupProgress.value,
+          controller: controller,
+        )),
         // Custom Stepper For visualizing group movement
         Expanded(
           child: Obx(() {
