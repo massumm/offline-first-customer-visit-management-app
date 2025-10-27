@@ -3,13 +3,13 @@ enum QAType { text, number, choice, date, time, height, weight, image }
 class QuestionGroup {
   final String name;
   final String introduction;
-  final String? conclusion; // START: Add this line
+  final String? conclusion;
   final List<QAItem> questions;
 
   const QuestionGroup({
     required this.name,
     required this.introduction,
-    this.conclusion, // START: Add this line
+    this.conclusion,
     required this.questions,
   });
 }

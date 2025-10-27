@@ -41,7 +41,6 @@ class OnboardingHeader extends StatelessWidget {
         children: [
           Text(sectionTitle, style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 8),
-          // Your existing stepper
           AnimatedOnboardingStepper(
             totalSteps: totalSteps,
             currentStep: currentStep,

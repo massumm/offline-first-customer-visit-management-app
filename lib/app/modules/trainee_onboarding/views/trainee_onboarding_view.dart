@@ -404,7 +404,8 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             controller.textController.clear();
           },
           icon: const Icon(Icons.send),
-          label: const Text("Send"),
+          label: Obx(() => (controller.currentQuestion?.canSkip ?? false)
+              ? const Text("Skip") : const Text("Send"),),
         ),
         const SizedBox(width: 8),
       ],
