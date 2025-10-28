@@ -5,137 +5,156 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../../generated/assets.dart';
+import '../../../core/widgets/action_pill.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
+import 'widgets/animated_onboarding_stepper.dart';
 import 'widgets/message_bubble.dart';
-import 'widgets/onboarding_header.dart';
 import 'widgets/type_bubble.dart';
 
 class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   TraineeOnboardingView({super.key});
 
-  // @override
-  // PreferredSizeWidget? appBar(BuildContext context) {
-  //   return AppBar(
-  //     title: Row(
-  //       children: [
-  //         Stack(
-  //           children: [
-  //             const CircleAvatar(
-  //               radius: 20,
-  //               backgroundImage: AssetImage(Assets.imagesIconLogoPink),
-  //             ),
-  //             Positioned(
-  //               right: 0,
-  //               bottom: 0,
-  //               child: Container(
-  //                 padding: const EdgeInsets.all(2.0),
-  //                 decoration: const BoxDecoration(
-  //                   color: Colors.white,
-  //                   shape: BoxShape.circle,
-  //                 ),
-  //                 child: Container(
-  //                   width: 8,
-  //                   height: 8,
-  //                   decoration: const BoxDecoration(
-  //                     color: Color(0xff2FFF3C),
-  //                     shape: BoxShape.circle,
-  //                   ),
-  //                 ),
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //         6.width,
-  //         Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: [
-  //             Text('Mish Icon', style: Theme.of(context).textTheme.titleMedium),
-  //             Text(
-  //               'Online',
-  //               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-  //                 color: Theme.of(context).colorScheme.onSurfaceVariant,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //     leading: Obx(
-  //       () => controller.canGoBack
-  //           ? Center(
-  //               child: SizedBox(
-  //                 width: 32.0,
-  //                 height: 32.0,
-  //                 child: ActionPill(onTap: controller.goBack, icon: Icons.undo),
-  //               ),
-  //             )
-  //           : Center(
-  //               child: SizedBox(
-  //                 width: 32.0,
-  //                 height: 32.0,
-  //                 child: ActionPill(onTap: Get.back),
-  //               ),
-  //             ),
-  //     ),
-  //     actions: [
-  //       if (controller.currentQuestion?.canSkip ?? false) ...[
-  //         TextButton(
-  //           onPressed: () {
-  //             controller.send('');
-  //           },
-  //           child: const Text('Skip'),
-  //         ),
-  //       ],
-  //     ],
-  //     bottom: PreferredSize(
-  //       preferredSize: const Size.fromHeight(80.0),
-  //       child: Padding(
-  //         padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
-  //         child: Column(
-  //           crossAxisAlignment: CrossAxisAlignment.start,
-  //           mainAxisAlignment: MainAxisAlignment.end,
-  //           children: [
-  //             6.height,
-  //             Text(
-  //               'Personal',
-  //               style: Theme.of(context).textTheme.headlineMedium,
-  //             ),
-  //             const SizedBox(height: 8),
-  //             AnimatedOnboardingStepper(
-  //               totalSteps: controller.totalGroups.value,
-  //               currentStep: controller.currentGroupIndex.value,
-  //               stepProgress: controller.currentGroupProgress.value,
-  //             ),
-  //           ],
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
+  @override
+  PreferredSizeWidget? appBar(BuildContext context) {
+    const double bottomWidgetHeight = 80.0;
+    final double totalAppBarHeight = kToolbarHeight + bottomWidgetHeight;
+
+    return PreferredSize(
+      preferredSize: Size.fromHeight(totalAppBarHeight),
+      child: Obx(() {
+        // Adjust on Q. previous button
+        final double dynamicLeadingWidth = controller.canGoBack ? 78.0 : 48.0;
+        return AppBar(
+          title: Row(
+            children: [
+              Stack(
+                children: [
+                  const CircleAvatar(
+                    radius: 20,
+                    backgroundImage: AssetImage(Assets.imagesIconLogoPink),
+                  ),
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      padding: const EdgeInsets.all(2.0),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Container(
+                        width: 8,
+                        height: 8,
+                        decoration: const BoxDecoration(
+                          color: Color(0xff2FFF3C),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              6.width,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Mish Icon',
+                      style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    'Online',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          leadingWidth: dynamicLeadingWidth,
+          leading: Row(
+            children: [
+              const SizedBox(width: 8.0),
+              SizedBox(
+                width: 32.0,
+                height: 32.0,
+                child: ActionPill(onTap: Get.back),
+              ),
+              if (controller.canGoBack)
+                Padding(
+                  padding: const EdgeInsets.only(left: 6.0),
+                  child: SizedBox(
+                    width: 32.0,
+                    height: 32.0,
+                    child: ActionPill(
+                      onTap: controller.goBack,
+                      icon: Icons.undo,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          actions: [
+            if (controller.currentQuestion?.canSkip ?? false) ...[
+              TextButton(
+                onPressed: () {
+                  controller.send('');
+                },
+                child: const Text('Skip'),
+              ),
+            ],
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(bottomWidgetHeight),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  6.height,
+                  Text(
+                    'Personal',
+                    style: Theme.of(context).textTheme.headlineMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  AnimatedOnboardingStepper(
+                    totalSteps: controller.totalGroups.value,
+                    currentStep: controller.currentGroupIndex.value,
+                    stepProgress: controller.currentGroupProgress.value,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      }),
+    );
+  }
 
   @override
   Widget body(BuildContext context) {
     return Column(
       children: [
-        Obx(
-          () => OnboardingHeader(
-            avatarAsset: Assets.imagesIconLogoPink,
-            name: 'Mish Icon',
-            statusText: 'Online',
-            sectionTitle: controller.isFinished
-                ? "You're all set!"
-                : controller.getCurrentGroupName ?? "Just a moment...",
-            totalSteps: controller.totalGroups.value,
-            currentStep: controller.currentGroupIndex.value,
-            stepProgress: controller.currentGroupProgress.value,
-            controller: controller,
-          ),
-        ),
+        // Obx(
+        //   () => OnboardingHeader(
+        //     avatarAsset: Assets.imagesIconLogoPink,
+        //     name: 'Mish Icon',
+        //     statusText: 'Online',
+        //     sectionTitle: controller.isFinished
+        //         ? "You're all set!"
+        //         : controller.getCurrentGroupName ?? "Just a moment...",
+        //     totalSteps: controller.totalGroups.value,
+        //     currentStep: controller.currentGroupIndex.value,
+        //     stepProgress: controller.currentGroupProgress.value,
+        //     controller: controller,
+        //   ),
+        // ),
         // Custom Stepper For visualizing group movement
         Expanded(
           child: Obx(() {
@@ -185,21 +204,28 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             return const SizedBox.shrink();
           }
 
-          return Container(
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: q.options
-                  .map(
-                    (o) => ActionChip(
-                      label: Text(o),
-                      onPressed: () => controller.choose(o),
-                    ),
-                  )
-                  .toList(),
-            ),
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  alignment: WrapAlignment.center,
+                  children: q.options
+                      .map(
+                        (o) => ActionChip(
+                          label: Text(o),
+                          onPressed: () => controller.choose(o),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+              8.height,
+            ],
           );
         }),
 
@@ -343,7 +369,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         onPressed: () async {
           final DateTime? pickedDate = await showDatePicker(
             context: context,
-            initialDate: DateTime.now().subtract(const Duration(days: 365 * 20)),
+            initialDate: DateTime.now().subtract(
+              const Duration(days: 365 * 20),
+            ),
             firstDate: DateTime(1920),
             lastDate: DateTime.now(),
           );
@@ -364,7 +392,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           initialTime: TimeOfDay.now(),
         );
         if (pickedTime != null) {
-           controller.selectTime(pickedTime, context);
+          controller.selectTime(pickedTime, context);
         }
       },
       child: Text(controller.currentQuestion?.hint ?? "Select Time"),
@@ -404,6 +432,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             controller.textController.clear();
           },
           icon: const Icon(Icons.send),
+          style: FilledButton.styleFrom(
+            backgroundColor: controller.currentQuestion?.canSkip ?? false ?
+                Colors.grey.shade500 : null,
+          ),
           label: Obx(
             () => (controller.currentQuestion?.canSkip ?? false)
                 ? const Text("Skip")
