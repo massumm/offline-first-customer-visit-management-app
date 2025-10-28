@@ -5,9 +5,12 @@ import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/utils/app_validators.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
 import '../../../data/local/preference/store/trainee_data_store.dart';
+import '../../../data/local/preference/store/user_store.dart';
+import '../../login/models/login_response_model.dart';
 import '../../trainee_onboarding/models/trainee_preference_create_response_model.dart';
 import '../../trainee_onboarding/models/trainee_profile_create_response_model.dart';
 import '../../trainee_onboarding/repository/trainee_onboarding_repository.dart';
@@ -21,25 +24,21 @@ class TraineeFitnessReportGenerationController extends BaseController {
     tag: (TraineeOnboardingAuthRepository).toString(),
   );
 
+  // --- UI State for the initial email form ---
   final TextEditingController emailCtr = TextEditingController();
   var emailError = RxnString();
-
   final isSubmitBtnEnable = RxBool(false);
-
   final RxBool onEmailLoading = false.obs;
 
-  final RxBool isValidEmail = true.obs;
-
-  // ---------------Progress Loading Effect State ---------------
+  // --- UI State for the Saving/Progress View ---
   final progress = 0.0.obs;
-  var enableApiProgressState = false.obs;
+  var enableApiProgressState = false.obs; // Triggers navigation to SavingView
 
-  @override
-  void onInit() {
-    super.onInit();
-    // Simulate progress updates, e.g., from a backend call
-    // _simulateProgress();
-  }
+  // --- New properties for error handling in SavingView ---
+  final hasError = false.obs;
+
+  final RxString errorMessage =
+      'An unexpected error occurred. Please try again.'.obs;
 
   @override
   void onClose() {
@@ -47,125 +46,122 @@ class TraineeFitnessReportGenerationController extends BaseController {
     super.onClose();
   }
 
-  // You might also have a method to manually update progress if needed
-  void updateProgress(double value) {
-    progress.value = value.clamp(0.0, 1.0);
-  }
-
-  Future<void> onSubmitButtonPressed() async {
-    if (isSubmitBtnEnable.value) {
-      onEmailLoading(true);
-      isSubmitBtnEnable(false); // Disable the button
-
-      await _onboardingAuthRepository
-          .registerEmail({'email': emailCtr.text})
-          .then(
-            (value) {
-              enableApiProgressState(true);
-              _createTraineeReport();
-            },
-            onError: (e) {
-              isSubmitBtnEnable(true); // Enable the button
-              if (e is ApiException) {
-                CustomToast.showErrorToast(e.description);
-              }
-            },
-          )
-          .whenComplete(() => onEmailLoading(false));
-    }
-  }
-
   void onEmailChanged(String value) {
     emailError.value = AppValidator().validateEmail(value);
-
-    if (emailError.value == null) {
-      isSubmitBtnEnable(true);
-    }
+    isSubmitBtnEnable.value = emailError.value == null;
   }
 
-  // -------------------- Progress Indicator Animations -----------
-  void _simulateProgress() async {
-    // This is just an example. In a real app, this would come from
-    // actual data saving operations.
-    await Future.delayed(const Duration(milliseconds: 500));
-    progress.value = 0.1;
-    await Future.delayed(const Duration(milliseconds: 800));
-    progress.value = 0.3;
-    await Future.delayed(const Duration(milliseconds: 1200));
-    progress.value = 0.6;
-    await Future.delayed(const Duration(milliseconds: 1000));
-    progress.value = 0.85;
-    await Future.delayed(const Duration(milliseconds: 700));
-    progress.value = 1.0; // Complete
-    // After completion, you might navigate to another screen
-    // Get.offAllNamed('/report_complete');
+  /// Handles the initial email submission.
+  Future<void> onSubmitButtonPressed() async {
+    if (isSubmitBtnEnable.value == false) return;
 
-    // _createTraineeReport();
-  }
+    isSubmitBtnEnable(false);
+    onEmailLoading(true);
 
-  /// Gathers trainee data, creates their profile and preferences via API calls,
-  /// and updates the progress indicator accordingly.
-  /// Gathers trainee data, creates their profile and preferences via API calls,
-  /// and updates the progress indicator accordingly.
-  Future<void> _createTraineeReport() async {
-    Map<String, dynamic>? answers;
     try {
-      final onboardingJson = TraineeDataStore.to.onboardingDataValue;
-      answers = onboardingJson?['answers'] as Map<String, dynamic>?;
+      final response = await _onboardingAuthRepository.registerEmail({
+        'email': emailCtr.text,
+      });
+
+      await _storeUserTokenAndStartReport(response);
     } catch (e) {
-      "Error on getting trainee data: ${e.toString()}".log();
-      // Propagate a user-friendly error to be caught by the caller.
-      throw ApiException(
-        message: "Failed to retrieve your answers. Please try again.",
-        httpCode: 500,
-        status: '',
-      );
+      isSubmitBtnEnable(true);
+      onEmailLoading(false);
+
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      } else {
+        CustomToast.showErrorToast(
+          "An unexpected error occurred. Please try again.",
+        );
+        "Error on submit: ${e.toString()}".log();
+      }
     }
-
-    if (answers == null) {
-      logger.e("FATAL: No onboarding answers found.");
-      // If there's no data, we can't make API calls.
-      throw ApiException(
-        message:
-            "Could not find your onboarding data. Please restart the process.",
-        httpCode: 500,
-        status: '',
-      );
-    }
-
-    // Start the progress.
-    progress.value = 0.1;
-
-    // Create the user profile and update progress.
-    await _createProfile(answers);
-    progress.value = 0.2;
-
-    // Create the user preferences and update progress.
-    await _createPreference(answers);
-    progress.value = 0.4;
-
-    // Create the user preference goals and update progress.
-    await _createPreferenceGoals(answers);
-    progress.value = 0.6;
-
-    // Create the user preference activity and update progress.
-    await _createPreferenceActivity(answers);
-    progress.value = 0.7;
-
-    // Create the user preference nutrition and update progress.
-    await _createPreferenceNutrition(answers);
-    progress.value = 0.85;
-
-    // Create the user preference recovery and update progress.
-    await _createPreferenceRecovery(answers);
-    progress.value = 1.0; // Complete
-
-    // After completion, you might navigate to another screen.
   }
+
+  /// Saves the user token, then triggers the report generation process.
+  Future<void> _storeUserTokenAndStartReport(
+      LoginResponseModel response,
+      ) async {
+    try {
+      await UserStore.to.saveProfileAndToken(response);
+      enableApiProgressState(true);
+      onEmailLoading(false);
+      await _createTraineeReport();
+    } catch (e) {
+      "Failed to store user token: ${e.toString()}".log();
+      CustomToast.showErrorToast("Failed to save session. Please try again.");
+      isSubmitBtnEnable(true);
+      enableApiProgressState(false);
+    }
+  }
+
+  void retryReportGeneration() {
+    // Reset state before retrying
+    hasError(false);
+    progress(0.0);
+    errorMessage('An unexpected error occurred. Please try again.');
+    _createTraineeReport();
+  }
+
+  Future<void> _createTraineeReport() async {
+    try {
+
+      if (hasError.value) hasError(false);
+
+      final onboardingJson = TraineeDataStore.to.onboardingDataValue;
+      final answers = onboardingJson?['answers'] as Map<String, dynamic>?;
+
+      if (answers == null) {
+        throw ApiException(
+          message:
+          "Could not find your onboarding data. Please restart the process.",
+          httpCode: 500,
+          status: '',
+        );
+      }
+
+      // Each step updates the progress and can throw an exception on failure.
+      progress.value = 0.1;
+      await _createProfile(answers);
+      progress.value = 0.2;
+
+      await _createPreference(answers);
+      progress.value = 0.4;
+
+      await _createPreferenceGoals(answers);
+      progress.value = 0.6;
+
+      await _createPreferenceActivity(answers);
+      progress.value = 0.7;
+
+      await _createPreferenceNutrition(answers);
+      progress.value = 0.85;
+
+      await _createPreferenceRecovery(answers);
+      progress.value = 1.0; // Complete
+
+      // If all steps succeed, navigate to the next screen.
+      await Get.offAllNamed(Routes.FITNESS_REPORT);
+    } on ApiException catch (e) {
+      errorMessage(
+        e.message,
+      );
+      hasError(true);
+      "API Error during report generation: ${e.description}".log();
+    } catch (e) {
+      errorMessage(
+        'A network error occurred. Please check your connection and try again.',
+      );
+      hasError(true);
+      "Unexpected error during report generation: ${e.toString()}".log();
+    }
+  }
+
 
   Future<TraineeProfileCreateResponseModel> _createProfile(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
       "bio": answers['success_in_6_months'] ?? '',
       "date_of_birth": answers['dob'] ?? '',
@@ -175,38 +171,73 @@ class TraineeFitnessReportGenerationController extends BaseController {
       "city": "",
       "gender": answers['gender'] ?? '',
     };
-    return await _onboardingRepository.createTraineeProfile(model);
+    try {
+      return await _onboardingRepository.createTraineeProfile(model);
+    } on ApiException catch (e) {
+      "API Error creating profile: ${e.description}".log();
+      rethrow;
+    } catch (e) {
+      "Unexpected error in _createProfile: ${e.toString()}".log();
+      throw ApiException(
+        message: "Failed to create your profile. Please try again.",
+        httpCode: 500,
+        status: '',
+      );
+    }
   }
 
   Future<TraineePreferenceCreateResponseModel> _createPreference(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
       "fitness_experience": answers['fitness_experience'] ?? '',
       "accountability_partner": answers['accountability_partner'] ?? '',
       "training_location": answers['training_location'] ?? '',
       "equipment_access": answers['home_equipment'] ?? '',
       "preferred_training_style": answers['training_style'] ?? '',
-      "days_per_week": answers['workout_frequency'] ?? '',
+      "days_per_week": answers['workout_frequency'] ?? 0,
       "session_length": answers['session_duration'] ?? '',
-      "training_intensity": answers['session_intensity'] ?? '',
+      "training_intensity": answers['session_intensity'] ?? 0,
       "preferred_time_of_day": answers['preferred_training_time'] ?? '',
       "training_reminder": answers['set_reminder'] ?? false,
     };
-    return await _onboardingRepository.createTraineePreferences(model);
+    try {
+      return await _onboardingRepository.createTraineePreferences(model);
+    } on ApiException catch (e) {
+      "API Error creating preferences: ${e.description}".log();
+      rethrow;
+    } catch (e) {
+      "Unexpected error in _createPreference: ${e.toString()}".log();
+      throw ApiException(
+        message: "Failed to save your preferences. Please try again.",
+        httpCode: 500,
+        status: '',
+      );
+    }
   }
 
   Future<Map<String, dynamic>> _createPreferenceGoals(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
-      "trainee_goal": 0, // TODO: ID?
+      "trainee_goal": 0,
       "description": "string",
       "event_date": "2019-08-24",
       "is_active": true,
     };
-
-    return await _onboardingRepository.createTraineePreferenceGoals(model);
+    try {
+      return await _onboardingRepository.createTraineePreferenceGoals(model);
+    } on ApiException catch (e) {
+      "API Error creating preference goals: ${e.description}".log();
+      rethrow;
+    } catch (e) {
+      "Unexpected error in _createPreferenceGoals: ${e.toString()}".log();
+      throw ApiException(
+        message: "Failed to save your goals. Please try again.",
+        httpCode: 500,
+        status: '',
+      );
+    }
   }
 
   Future<void> _createPreferenceActivity(Map<String, dynamic> answers) async {
@@ -214,10 +245,10 @@ class TraineeFitnessReportGenerationController extends BaseController {
   }
 
   Future<Map<String, dynamic>> _createPreferenceNutrition(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
-      "trainee_profile": 0, //TODO: ID?
+      "trainee_profile": 0,
       "food": {"name": "string"},
       "food_name": "string",
       "relationship": "liked",
@@ -226,12 +257,26 @@ class TraineeFitnessReportGenerationController extends BaseController {
       "reaction_description": "string",
       "severity_level": 32767,
     };
-    return await _onboardingRepository.createTraineePreferenceNutrition(model);
+    try {
+      return await _onboardingRepository.createTraineePreferenceNutrition(
+        model,
+      );
+    } on ApiException catch (e) {
+      "API Error creating preference nutrition: ${e.description}".log();
+      rethrow;
+    } catch (e) {
+      "Unexpected error in _createPreferenceNutrition: ${e.toString()}".log();
+      throw ApiException(
+        message: "Failed to save nutrition preferences. Please try again.",
+        httpCode: 500,
+        status: '',
+      );
+    }
   }
 
   Future<Map<String, dynamic>> _createPreferenceRecovery(
-    Map<String, dynamic> answers,
-  ) async {
+      Map<String, dynamic> answers,
+      ) async {
     final model = {
       "average_sleep_hours_per_night": 0,
       "desired_sleep_hours_per_night": 0,
@@ -245,7 +290,18 @@ class TraineeFitnessReportGenerationController extends BaseController {
       "biggest_source_of_stress_other": "string",
       "barrier_to_recovery_description": "string",
     };
-
-    return await _onboardingRepository.createTraineePreferenceRecovery(model);
+    try {
+      return await _onboardingRepository.createTraineePreferenceRecovery(model);
+    } on ApiException catch (e) {
+      "API Error creating preference recovery: ${e.description}".log();
+      rethrow;
+    } catch (e) {
+      "Unexpected error in _createPreferenceRecovery: ${e.toString()}".log();
+      throw ApiException(
+        message: "Failed to save recovery preferences. Please try again.",
+        httpCode: 500,
+        status: '',
+      );
+    }
   }
 }
