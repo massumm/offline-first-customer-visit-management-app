@@ -914,7 +914,7 @@ class TraineeOnboardingController extends BaseController {
 
     if (value.isEmpty) {
       if (q.canSkip) {
-        _saveUserAnswer(q, "Skipped");
+        _saveUserAnswer(q, "Skip");
         inputText.value = '';
         await _askNext();
       }
