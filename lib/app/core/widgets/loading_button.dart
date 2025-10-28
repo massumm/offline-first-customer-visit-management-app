@@ -11,6 +11,7 @@ class LoadingButton extends StatelessWidget {
     this.loadingSize = 20,
     this.loadingStrokeWidth = 2,
     this.loadingColor = Colors.white,
+    this.gradient,
   });
 
   final VoidCallback? onPressed;
@@ -21,9 +22,42 @@ class LoadingButton extends StatelessWidget {
   final double loadingSize;
   final double loadingStrokeWidth;
   final Color loadingColor;
+  final Gradient? gradient;
 
   @override
   Widget build(BuildContext context) {
+    if (gradient != null) {
+      return SizedBox(
+        width: width,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: gradient,
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(borderRadius),
+              ),
+            ),
+            onPressed: isLoading == true ? null : onPressed,
+            child: isLoading == true
+                ? SizedBox(
+                    width: loadingSize,
+                    height: loadingSize,
+                    child: CircularProgressIndicator(
+                      strokeWidth: loadingStrokeWidth,
+                      color: loadingColor,
+                    ),
+                  )
+                : Text(label),
+          ),
+        ),
+      );
+    }
+
     return SizedBox(
       width: width,
       child: ElevatedButton(

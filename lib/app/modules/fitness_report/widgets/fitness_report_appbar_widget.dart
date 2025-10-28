@@ -7,11 +7,11 @@ class FitnessReportAppbarWidget extends StatelessWidget {
   const FitnessReportAppbarWidget({
     super.key,
     required this.controller,
-    required this.title,
+    this.title,
   });
 
   final FitnessReportController controller;
-  final String title;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -24,16 +24,13 @@ class FitnessReportAppbarWidget extends StatelessWidget {
               : controller.gotToPreviousPage,
         ),
         Text(
-          title,
+          title ?? '',
           style: Get.theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.bold,
           ),
         ),
         // add hamburger icon
-        ActionPill(
-          onTap: controller.showOptionsBottomSheet,
-          icon: Icons.menu,
-        ),
+        ActionPill(onTap: controller.showOptionsBottomSheet, icon: Icons.menu),
       ],
     );
   }

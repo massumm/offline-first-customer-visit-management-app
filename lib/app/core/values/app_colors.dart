@@ -35,6 +35,7 @@ abstract class AppColors {
   static const Color lightHintTextColor = Color(0xFF5B5B5B);
   static const Color iconBgColorLight = Color(0xFFFFEBE5);
   static const Color lightBgColorSecondary = Color(0xFFF2F2F2);
+  static const Color lightWarningColorBG = Color(0XFFFEF7E8);
 
   // ----------------- Dark Theme Colors ----------------------
 
@@ -52,6 +53,7 @@ abstract class AppColors {
   static const Color secondaryBg2Color = Color(0xFFFFEBE5);
   static const Color screenBgColor = Color(0xFF0d0d0d);
   static const Color greyColor1 = Color(0xFF2B2B2B);
+  static const Color darkWarningColorBG = Color(0XFFFEF7E8);
 
   //..............
 

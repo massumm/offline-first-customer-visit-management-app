@@ -13,7 +13,7 @@ import '../views/activity_strategy_page_view.dart';
 import '../views/daily_goals_page_view.dart';
 import '../views/mindset_motivation_page_view.dart';
 import '../views/integration_summary_page_view.dart';
-import '../views/icon_closing_message_page_view.dart';
+import '../views/congratulations_page_view.dart';
 
 class FitnessReportController extends BaseController {
   // -------------------Services ------------------
@@ -45,7 +45,7 @@ class FitnessReportController extends BaseController {
     DailyGoalsPageView(),
     MindsetMotivationPageView(),
     IntegrationSummaryPageView(),
-    IconClosingMessagePageView(),
+    CongratulationsMessagePageView(),
   ];
 
   final currentPageIndex = 0.obs;
