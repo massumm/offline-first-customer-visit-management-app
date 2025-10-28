@@ -32,7 +32,8 @@ class IconDarkTheme {
     headlineMedium: GoogleFonts.inter(
       fontSize: 28,
       fontWeight: FontWeight.w400,
-      color: Colors.white,
+      color: AppColors.darkTextSecondaryColor,
+      height: 1.3
     ),
     headlineSmall: GoogleFonts.inter(
       fontSize: 24,
@@ -116,6 +117,10 @@ class IconDarkTheme {
         iconSize: 24,
       ),
     ),
+    dividerTheme: DividerThemeData(
+      color: AppColors.darkStockColor,
+      thickness: 1,
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.darkBgColor,
       elevation: 0,
@@ -165,6 +170,7 @@ class IconDarkTheme {
       onError: AppColors.warningColor,
       onSurface: Colors.white,
       onSurfaceVariant: Colors.white,
+      surfaceContainerHighest: AppColors.darkShapeColor,
 
       // --- Other Colors ---
       // Aligns with the border color used in InputDecorationTheme

@@ -669,7 +669,9 @@ class TraineeOnboardingController extends BaseController {
     final id = q.id;
 
     if ((id == 'target_event_name' || id == 'target_event_date') &&
-        answers['has_target_event'] == 'No') return true;
+        answers['has_target_event'] == 'No') {
+      return true;
+    }
 
     final trainingLocation = answers['training_location'];
     if ((id == 'home_equipment' || id == 'home_equipment_other') &&
@@ -912,7 +914,7 @@ class TraineeOnboardingController extends BaseController {
 
     if (value.isEmpty) {
       if (q.canSkip) {
-        _saveUserAnswer(q, "Skipped");
+        _saveUserAnswer(q, "Skip");
         inputText.value = '';
         await _askNext();
       }
@@ -978,11 +980,17 @@ class TraineeOnboardingController extends BaseController {
     _updateProgresses();
   }
 
-  Map<String, dynamic> toJson() => {
-    'answers': answers,
-    'completed': isFinished,
-    'timestamp': DateTime.now().toIso8601String(),
-  };
+  Map<String, dynamic> toJson() {
+    final processedAnswers = answers.map((key, value) {
+      return MapEntry(key, value == 'Skipped' ? '' : value);
+    });
+
+    return {
+      'answers': processedAnswers,
+      'completed': isFinished,
+      'timestamp': DateTime.now().toIso8601String(),
+    };
+  }
 
   Future<void> selectDate(DateTime date) async {
     if (!_canAnswer) return;
@@ -1107,6 +1115,13 @@ class TraineeOnboardingController extends BaseController {
     if (isFinished || currentQuestionIndexInGroup.value < 0) return null;
     return questionGroups[currentGroupIndex.value]
         .questions[currentQuestionIndexInGroup.value];
+  }
+
+  String? get getCurrentGroupName {
+    if (currentGroupIndex.value >= 0 && currentGroupIndex.value < questionGroups.length) {
+      return questionGroups[currentGroupIndex.value].name;
+    }
+    return null;
   }
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;

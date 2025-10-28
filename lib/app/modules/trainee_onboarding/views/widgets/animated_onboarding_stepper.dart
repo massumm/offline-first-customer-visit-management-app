@@ -61,7 +61,7 @@ class _AnimatedOnboardingStepperState extends State<AnimatedOnboardingStepper> w
     if (widget.totalSteps <= 0) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final width = constraints.maxWidth;
