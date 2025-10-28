@@ -32,6 +32,7 @@ class FitnessReportController extends BaseController {
   @override
   void onClose() {
     pageController.dispose();
+    _reportService.detach();
     super.onClose();
   }
 
