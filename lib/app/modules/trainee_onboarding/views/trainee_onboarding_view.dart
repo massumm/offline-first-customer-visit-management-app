@@ -204,21 +204,28 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             return const SizedBox.shrink();
           }
 
-          return Container(
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: q.options
-                  .map(
-                    (o) => ActionChip(
-                      label: Text(o),
-                      onPressed: () => controller.choose(o),
-                    ),
-                  )
-                  .toList(),
-            ),
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  alignment: WrapAlignment.center,
+                  children: q.options
+                      .map(
+                        (o) => ActionChip(
+                          label: Text(o),
+                          onPressed: () => controller.choose(o),
+                        ),
+                      )
+                      .toList(),
+                ),
+              ),
+              8.height,
+            ],
           );
         }),
 
@@ -425,6 +432,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             controller.textController.clear();
           },
           icon: const Icon(Icons.send),
+          style: FilledButton.styleFrom(
+            backgroundColor: controller.currentQuestion?.canSkip ?? false ?
+                Colors.grey.shade500 : null,
+          ),
           label: Obx(
             () => (controller.currentQuestion?.canSkip ?? false)
                 ? const Text("Skip")
