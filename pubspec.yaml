@@ -43,9 +43,18 @@ flutter:
 
 
   assets:
+    - assets/
     - assets/images/
     - assets/svg/
     - assets/jsons/
+    - assets/svg/common/
+    - assets/svg/fitness_report/
+    - assets/svg/fitness_report/activity_objectives/
+    - assets/svg/fitness_report/congratulations/
+    - assets/svg/fitness_report/daily_goals/
+    - assets/svg/fitness_report/integration_summary/
+    - assets/svg/fitness_report/mindset_and_motivation/
+    - assets/svg/fitness_report/nutrition_objectives/
 
 
   # fonts:

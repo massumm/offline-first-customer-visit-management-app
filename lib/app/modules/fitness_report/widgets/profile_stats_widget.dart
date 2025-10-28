@@ -7,10 +7,12 @@ class ProfileStatsWidget extends StatelessWidget {
     super.key,
     required this.title,
     required this.stats,
+    this.dividerColor = const Color(0xFFE8E4E2),
   });
 
   final String title;
   final List<StatItem> stats;
+  final Color dividerColor;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +57,7 @@ class ProfileStatsWidget extends StatelessWidget {
                 ),
                 if (index < stats.length - 1) ...[
                   8.height,
-                  const Divider(height: 1, color: Colors.grey),
+                  Divider(height: 1, color: dividerColor),
                 ],
               ],
             ),

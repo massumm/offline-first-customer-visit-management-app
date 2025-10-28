@@ -30,6 +30,9 @@ class TraineeFitnessReportGenerationController extends BaseController {
   final isSubmitBtnEnable = RxBool(false);
   final RxBool onEmailLoading = false.obs;
 
+  final RxBool isValidEmail = true.obs;
+
+  // ---------------Progress Loading Effect State ---------------
   // --- UI State for the Saving/Progress View ---
   final progress = 0.0.obs;
   var enableApiProgressState = false.obs; // Triggers navigation to SavingView

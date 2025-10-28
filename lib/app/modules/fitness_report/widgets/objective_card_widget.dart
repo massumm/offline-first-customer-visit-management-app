@@ -2,17 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 
-class RecoveryObjectiveCardWidget extends StatelessWidget {
-  final String assetPath;
+class ObjectiveCardWidget extends StatelessWidget {
+  final String? assetPath;
   final String title;
   final String description;
+  final Color? bgColor;
+  final Color? titleColor;
 
-  const RecoveryObjectiveCardWidget({
+  const ObjectiveCardWidget({
     super.key,
-    required this.assetPath,
+    this.assetPath,
     required this.title,
     required this.description,
+    this.bgColor,
+    this.titleColor,
   });
 
   @override
@@ -22,15 +27,30 @@ class RecoveryObjectiveCardWidget extends StatelessWidget {
       width: Get.width * 0.45,
       height: Get.height * 0.25,
       decoration: BoxDecoration(
-        color: Get.theme.cardTheme.color,
+        color: bgColor ?? Get.theme.cardTheme.color,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SvgPicture.asset(assetPath),
-          8.height,
-          Text(title, style: Get.textTheme.bodySmall),
+          if (assetPath != null)
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Get.isDarkMode
+                    ? AppColors.iconBgColorDark
+                    : AppColors.iconBgColorLight,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: SvgPicture.asset(assetPath!),
+            ),
+          if (assetPath != null) 8.height,
+          Text(
+            title,
+            style: Get.textTheme.bodySmall?.copyWith(
+              color: titleColor,
+            ),
+          ),
           8.height,
           Text(
             description,
