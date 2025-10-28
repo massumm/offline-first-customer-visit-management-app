@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/modules/fitness_report/services/FitnessReportService.dart';
 import 'package:icon/app/modules/fitness_report/widgets/report_menu_item_widget.dart';
 import '../views/introduction_page_view.dart';
 import '../views/profile_overview_page_view.dart';
@@ -15,12 +16,17 @@ import '../views/integration_summary_page_view.dart';
 import '../views/icon_closing_message_page_view.dart';
 
 class FitnessReportController extends BaseController {
+  // -------------------Services ------------------
+  final FitnessReportService _reportService = Get.find<FitnessReportService>();
   late PageController pageController;
 
   @override
   void onInit() {
     super.onInit();
     pageController = PageController(initialPage: 0);
+
+    // ----------------- init services ----------------
+    _reportService.attach(this);
   }
 
   @override
