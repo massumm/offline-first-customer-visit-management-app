@@ -66,6 +66,8 @@ class TraineeFitnessReportGenerationController extends BaseController {
         'email': emailCtr.text,
       });
 
+      logger.d(response.access);
+
       await _storeUserTokenAndStartReport(response);
     } catch (e) {
       isSubmitBtnEnable(true);
