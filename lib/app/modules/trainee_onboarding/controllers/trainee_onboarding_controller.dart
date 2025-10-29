@@ -20,605 +20,154 @@ class TraineeOnboardingController extends BaseController {
   );
   final textController = TextEditingController();
 
-  // --------------- Data ---------------
-  final RxList<TraineeQuestionData> questionData =
-      <TraineeQuestionData>[].obs;
-  final questionGroups = <QuestionGroup>[
-    QuestionGroup(
-      name: 'Personal Details',
-      introduction: "To start, let's get some personal details.",
-      questions: [
-        const QAItem(
-          id: 'name',
-          question: "Hey! What's your name?",
-          type: QAType.text,
-          hint: "Type your name",
-        ),
-        const QAItem(
-          id: 'dob',
-          question: "Nice to meet you. What's your date of birth?",
-          type: QAType.date,
-          hint: "Select your date of birth",
-        ),
-        const QAItem(
-          id: 'gender',
-          question: "What is your gender?",
-          type: QAType.multipleChoice,
-          options: ["Male", "Female", "Prefer not to say"],
-        ),
-        const QAItem(
-          id: 'address',
-          question: "Where are you located?",
-          type: QAType.text,
-          hint: "e.g., New York, USA",
-        ),
-      ],
-    ),
-    QuestionGroup(
-      name: 'Fitness Background',
-      introduction: "Great! Now for a bit about your fitness background.",
-      questions: [
-        const QAItem(
-          id: 'fitness_experience',
-          question: "What's your current fitness experience level?",
-          type: QAType.multipleChoice,
-          options: [
-            "Beginner",
-            "Intermediate",
-            "Advanced",
-            "Prefer not to say",
-          ],
-        ),
-        QAItem(
-          id: 'accountability_partner',
-          question:
-              "Do you have an accountability partner to help you on your journey?",
-          type: QAType.multipleChoice,
-          options: const [
-            "Friends",
-            "Family",
-            'Personal trainer',
-            "Prefer not to say",
-            'None',
-          ],
-        ),
-        const QAItem(
-          id: 'fitness_motivation',
-          question: "Why do you want to improve your fitness right now?",
-          type: QAType.text,
-          hint: "Optional: Press send to skip",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'fitness_inspiration',
-          question: "Who inspires you the most in your fitness journey?",
-          type: QAType.text,
-          hint: "Optional: Press send to skip",
-          canSkip: true,
-        ),
-      ],
-    ),
-    // --------- GOALS ----------
-    QuestionGroup(
-      name: 'Goals',
-      introduction: "Let's set some goals. What are you aiming for?",
-      questions: [
-        const QAItem(
-          id: 'fitness_goals',
-          question: "What are your fitness goals right now?",
-          type: QAType.text,
-          hint: "e.g., Lose 10 lbs, run a 5k",
-        ),
-        const QAItem(
-          id: 'results_speed',
-          question: "How fast would you like to achieve results?",
-          type: QAType.multipleChoice,
-          options: ["Gradual", "Moderate", "Fast", "Not sure yet"],
-        ),
-        const QAItem(
-          id: 'has_target_event',
-          question:
-              "Do you have a specific date or event you’re working toward?",
-          type: QAType.multipleChoice,
-          options: ["Yes", "No"],
-        ),
-        const QAItem(
-          id: 'target_event_name',
-          question: "What's the name of the event?",
-          type: QAType.text,
-          hint: "e.g., Wedding, Marathon",
-        ),
-        const QAItem(
-          id: 'target_event_date',
-          question: "And when is it?",
-          type: QAType.date,
-          hint: "Select the event date",
-        ),
-        const QAItem(
-          id: 'success_in_6_months',
-          question: "What would success look like for you in 6 months?",
-          type: QAType.text,
-          hint: "Optional: e.g., More energy, feel stronger",
-          canSkip: true,
-        ),
-      ],
-    ),
-    //-------- ACTIVITY ---------
-    QuestionGroup(
-      name: 'Activity',
-      introduction: "Now, let's get into your activity habits.",
-      conclusion:
-          "Awesome, that gives me a great picture of your activity levels!",
-      questions: [
-        const QAItem(
-          id: 'training_location',
-          question: "Where do you usually train?",
-          type: QAType.multipleChoice,
-          options: [
-            "At a gym",
-            "At home",
-            "Outdoors",
-            "A mix",
-            "Prefer not to say",
-          ],
-        ),
-        const QAItem(
-          id: 'home_equipment',
-          question: "What equipment do you have access to at home?",
-          type: QAType.multipleChoice,
-          options: [
-            'None',
-            'Weights',
-            'Barbell',
-            'Bands',
-            'Cardio equipment',
-            'Both',
-            'Other',
-          ],
-        ),
-        const QAItem(
-          id: 'home_equipment_other',
-          question: "Please specify what 'Other' equipment you have.",
-          type: QAType.text,
-          hint: "e.g., Kettlebells, TRX",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'training_style',
-          question: "What is your preferred training style?",
-          type: QAType.multipleChoice,
-          options: [
-            "Strength training",
-            "Cardio",
-            "HIIT",
-            "Yoga/Pilates",
-            "A mix",
-            "Not sure yet",
-            'Other',
-          ],
-        ),
-        const QAItem(
-          id: 'training_style_other',
-          question: "Please specify your preferred training style.",
-          type: QAType.text,
-          hint: "e.g., CrossFit, Calisthenics",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'workout_frequency',
-          question: "How many days a week do you plan to work out?",
-          type: QAType.multipleChoice,
-          options: ["1-2", "3-4", "5+", "Not sure yet"],
-        ),
-        const QAItem(
-          id: 'session_duration',
-          question: "How long would you like your sessions to be?",
-          type: QAType.multipleChoice,
-          options: [
-            "15-30 minutes",
-            "30-45 minutes",
-            "45-60 minutes",
-            "60+ minutes",
-            "Varies / Not sure",
-          ],
-        ),
-        const QAItem(
-          id: 'session_intensity',
-          question: "How intense would you like your sessions to be?",
-          type: QAType.multipleChoice,
-          options: ["Light", "Moderate", "Intense", "Varies / Not sure"],
-        ),
-        const QAItem(
-          id: 'preferred_training_time',
-          question: "What time of day do you prefer to train?",
-          type: QAType.multipleChoice,
-          options: [
-            "Morning (before 9 AM)",
-            "Late Morning (9 AM - 12 PM)",
-            "Afternoon (12 PM - 5 PM)",
-            "Evening (after 5 PM)",
-            "Anytime / Varies",
-            "Prefer not to say",
-          ],
-        ),
-        const QAItem(
-          id: 'set_reminder',
-          question: "Would you like to set a reminder for your selected time?",
-          type: QAType.multipleChoice,
-          options: ["Yes", "No"],
-        ),
-        const QAItem(
-          id: 'reminder_time',
-          question: "Great! At what time would you like to be reminded?",
-          type: QAType.time,
-          hint: "Select a time",
-        ),
-        const QAItem(
-          id: 'focus_on_body_parts',
-          question: "Are there any specific body parts you want to focus on?",
-          type: QAType.multipleChoice,
-          options: ["Yes", "No"],
-        ),
-        const QAItem(
-          id: 'specific_body_parts',
-          question: "Great! Which body parts are your priority?",
-          type: QAType.text,
-          hint: "e.g., Chest, Legs, Abs",
-        ),
-        const QAItem(
-          id: 'occupation_activity_level',
-          question: "Outside of training, how active is your occupation?",
-          type: QAType.multipleChoice,
-          options: [
-            "Mostly sedentary (desk job)",
-            "Lightly active (some walking)",
-            "Moderately active (on your feet)",
-            "Very active (manual labor)",
-          ],
-        ),
-        const QAItem(
-          id: 'general_lifestyle_activity',
-          question:
-              "Outside of training and your occupation, how active is your general lifestyle?",
-          type: QAType.multipleChoice,
-          options: [
-            "Mostly sedentary (e.g., relaxing at home)",
-            "Lightly active (e.g., occasional walks, light chores)",
-            "Moderately active (e.g., regular walks, hobbies)",
-            "Very active (e.g., always on the go, active hobbies)",
-          ],
-        ),
-        const QAItem(
-          id: 'daily_step_goal',
-          question: "How many steps would you like to achieve each day?",
-          type: QAType.multipleChoice,
-          options: [
-            "5,000",
-            "8,000",
-            "10,000",
-            "12,000+",
-            'Custom number',
-            "Not sure yet",
-          ],
-        ),
-        const QAItem(
-          id: 'daily_step_goal_custom',
-          question: "What is your custom daily step goal?",
-          type: QAType.number,
-          hint: "e.g., 7500",
-        ),
-        const QAItem(
-          id: 'training_limitations',
-          question: "What limits your ability to train consistently?",
-          type: QAType.multipleChoice,
-          options: [
-            "Lack of time",
-            "Lack of motivation",
-            "Low energy levels",
-            "Access to gym/equipment",
-            "Not sure what to do",
-            "Nothing really",
-            "Other",
-          ],
-        ),
-        const QAItem(
-          id: 'training_limitations_other',
-          question:
-              "Could you please specify what other factors limit your training?",
-          type: QAType.text,
-          hint: "e.g., Injury, travel schedule",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'workout_enjoyment',
-          question:
-              "What kind of workouts do you most enjoy, or is there anything you want to try?",
-          type: QAType.text,
-          hint: "e.g., Running, weightlifting, dance classes",
-          canSkip: true,
-        ),
-      ],
-    ),
-    // ---------- Recovery ----------
-    QuestionGroup(
-      name: 'Recovery',
-      introduction: "Finally, let's talk about recovery.",
-      conclusion: "That's everything I need to know. Thanks for sharing!",
-      questions: [
-        const QAItem(
-          id: 'sleep_hours',
-          question: "On average, how many hours of sleep do you get per night?",
-          type: QAType.multipleChoice,
-          options: [
-            "Less than 5 hours",
-            "5-6 hours",
-            "7-8 hours",
-            "More than 8 hours",
-            "It varies a lot",
-          ],
-        ),
-        const QAItem(
-          id: 'sleep_quality',
-          question: "How would you rate your sleep quality?",
-          type: QAType.multipleChoice,
-          options: ["Excellent", "Good", "Fair", "Poor", "It varies"],
-        ),
-        const QAItem(
-          id: 'energy_levels',
-          question: "How energetic do you usually feel during the day?",
-          type: QAType.multipleChoice,
-          options: [
-            "Very energetic",
-            "Moderately energetic",
-            "A bit sluggish",
-            "Very low energy / Fatigued",
-            "It varies a lot",
-          ],
-        ),
-        const QAItem(
-          id: 'stress_levels',
-          question: "How would you rate your current stress levels?",
-          type: QAType.multipleChoice,
-          options: ["Very low", "Low", "Moderate", "High", "Very high"],
-        ),
-        const QAItem(
-          id: 'stress_sources',
-          question: "What are your biggest sources of stress?",
-          type: QAType.multipleChoice,
-          options: [
-            "Work / School",
-            "Family / Relationships",
-            "Finances",
-            "Health",
-            "A mix of factors",
-            "Other",
-            "Prefer not to say",
-          ],
-        ),
-        const QAItem(
-          id: 'stress_sources_other',
-          question: "Please specify what 'Other' sources of stress you have.",
-          type: QAType.text,
-          hint: "Optional: e.g., Social life, personal goals",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'has_injuries',
-          question:
-              "Do you have any injuries or conditions that impact your fitness?",
-          type: QAType.multipleChoice,
-          options: ["Yes", "No"],
-        ),
-        const QAItem(
-          id: 'injury_name_1',
-          question: "What is the injury or condition?",
-          type: QAType.text,
-          hint: "e.g., Lower back pain, Knee tendinitis",
-        ),
-        const QAItem(
-          id: 'injury_description_1',
-          question: "Please briefly describe it and any limitations it causes.",
-          type: QAType.text,
-          hint: "Optional: e.g., 'Can't do heavy squats'",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'add_another_injury',
-          question: "Would you like to add another injury or condition?",
-          type: QAType.multipleChoice,
-          options: ["Yes", "No"],
-        ),
-        const QAItem(
-          id: 'injury_name_2',
-          question: "What is the next injury or condition?",
-          type: QAType.text,
-          hint: "e.g., Shoulder impingement",
-        ),
-        const QAItem(
-          id: 'injury_description_2',
-          question: "Please briefly describe this one.",
-          type: QAType.text,
-          hint: "Optional",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'recovery_obstacles',
-          question:
-              "What usually gets in the way of you resting and recovering properly?",
-          type: QAType.multipleChoice,
-          options: [
-            "Busy schedule / Lack of time",
-            "Stress from work/life",
-            "Difficulty switching off / Relaxing",
-            "Poor sleep environment",
-            "Family or social obligations",
-            "Nothing really",
-            "Other",
-          ],
-        ),
-        const QAItem(
-          id: 'recovery_obstacles_other',
-          question:
-              "Please specify what other factors get in the way of your recovery.",
-          type: QAType.text,
-          hint: "Optional: e.g., Late-night screen time",
-          canSkip: true,
-        ),
-      ],
-    ),
-    // ------------ Body Profile
-    QuestionGroup(
-      name: 'Body Profile',
-      introduction: "Next, let's get some body profile details.",
-      conclusion: "Excellent! That's all the profile information we need.",
-      questions: [
-        const QAItem(
-          id: 'height',
-          question: "What’s your height?",
-          type: QAType.height,
-        ),
-        const QAItem(
-          id: 'current_weight',
-          question: "And your current weight?",
-          type: QAType.weight,
-        ),
-        const QAItem(
-          id: 'target_weight',
-          question: "What is your target weight?",
-          type: QAType.weight,
-          hint: "Optional: You can skip this if you're not sure",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'body_fat_level',
-          question: "How would you describe your current body fat level?",
-          type: QAType.multipleChoice,
-          options: ["Lean", "Average", "High", "Not Sure"],
-          hint: "This is just an estimate.",
-        ),
-        const QAItem(
-          id: 'body_type',
-          question: "How would you describe your body type?",
-          type: QAType.multipleChoice,
-          options: [
-            "Ectomorph (Lean)",
-            "Mesomorph (Athletic)",
-            "Endomorph (Heavyset)",
-            "Not Sure",
-          ],
-          hint: "This helps in tailoring your plan.",
-        ),
-        const QAItem(
-          id: 'add_body_measurements',
-          question: "Would you like to add any body measurements? (Optional)",
-          type: QAType.multipleChoice,
-          options: ["Yes", "No"],
-        ),
-        const QAItem(
-          id: 'chest_measurement',
-          question: "What is your chest measurement?",
-          type: QAType.weight,
-          hint: "Optional: You can skip this",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'waist_measurement',
-          question: "What is your waist measurement?",
-          type: QAType.weight,
-          hint: "Optional: You can skip this",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'hips_measurement',
-          question: "What is your hips measurement?",
-          type: QAType.weight,
-          hint: "Optional: You can skip this",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'arm_measurement',
-          question: "What is your arm measurement? (e.g., bicep)",
-          type: QAType.weight,
-          hint: "Optional: You can skip this",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'thigh_measurement',
-          question: "What is your thigh measurement? (e.g., quad)",
-          type: QAType.weight,
-          hint: "Optional: You can skip this",
-          canSkip: true,
-        ),
-        const QAItem(
-          id: 'upload_progress_photo',
-          question:
-              "Would you like to upload a private progress photo? (Optional)",
-          type: QAType.multipleChoice,
-          options: ["Yes", "No"],
-        ),
-        const QAItem(
-          id: 'progress_photo_picker',
-          question: "Great! Please upload your photo.",
-          type: QAType.image,
-        ),
-      ],
-    ),
-  ];
+  // --------------- Dynamic Data ---------------
+  /// This will hold the groups generated from the fetched API data.
+  final RxList<QuestionGroup> generatedQuestionGroups = <QuestionGroup>[].obs;
+  /// This holds the raw fetched data for reference.
+  final RxList<TraineeQuestionData> questionData = <TraineeQuestionData>[].obs;
 
-  /// Reactive state
+  // --------------- UI State ---------------
+  final RxBool isLoading = true.obs;
   final messages = <ChatMessage>[].obs;
   final isTyping = false.obs;
   final inputText = ''.obs;
-
-  // Replace currentIndex with group and question indices
   final currentGroupIndex = 0.obs;
   final currentQuestionIndexInGroup = (-1).obs;
   final isAwaitingGroupConfirmation = false.obs;
-  final Map<String, String> answers = {}; // id -> answer
+  final isAwaitingFinalContinuation = false.obs;
+  final hasAgreedToTerms = false.obs;
   final pageController = ScrollController();
 
-  // Show the final Continue button after completion
-  final isAwaitingFinalContinuation = false.obs;
-
-  // ADD this new state variable for the checkbox
-  final hasAgreedToTerms = false.obs;
+  // --------------- Answers ---------------
+  final Map<String, String> answers = {};
 
   /// True when the UI should show the "Continue" and "Skip" buttons.
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
 
   //-------------------- QA Stepper --------------------
-  final RxInt totalGroups = 0.obs;
-  final RxDouble currentGroupProgress =
-      0.0.obs; // kept for UI that needs per-group
+  final RxDouble currentGroupProgress = 0.0.obs;
 
   @override
   void onInit() {
     super.onInit();
-    totalGroups(questionGroups.length);
-    // Recompute progress when position OR answers change
+    // Progress updates are now tied to the dynamic groups
     currentGroupIndex.listen((_) => _updateProgresses());
     currentQuestionIndexInGroup.listen((_) => _updateProgresses());
     isAwaitingGroupConfirmation.listen((_) => _updateProgresses());
-    start();
   }
 
   @override
-  onReady(){
-    Future.microtask(() => _fetchQuestionsData());
+  void onReady() {
+    super.onReady();
+    _initializeOnboarding();
   }
 
-  Future<void> _fetchQuestionsData() async {
+  /// Fetches data, builds question groups, and starts the conversation.
+  Future<void> _initializeOnboarding() async {
+    isLoading(true);
     try {
-      final questionResponse = await _onboardingQARepository.fetchQuestionsData(1);
+      // Fetch the flat list of questions from the repository
+      final questionResponse =
+      await _onboardingQARepository.fetchQuestionsData(1);
       questionData.assignAll(questionResponse.questionsData);
+
+      // Build the structured QuestionGroup list from the flat data
+      _buildQuestionGroupsFromData(questionData);
+
+      // Start the conversation flow
+      start();
     } catch (error) {
-      if(error is ApiException){
-        apiErrorHandler( fallbackMessage: error.description);
-        return;
+      // Handle API or other errors
+      if (error is ApiException) {
+        apiErrorHandler(fallbackMessage: error.description);
+      } else {
+        CustomToast.showErrorToast('Error initializing onboarding: $error');
       }
-      CustomToast.showErrorToast('Error fetching questions data: $error');
     } finally {
+      isLoading(false);
     }
+  }
+
+  /// Divides the flat list of questions into 6 groups.
+  void _buildQuestionGroupsFromData(List<TraineeQuestionData> allQuestions) {
+    if (allQuestions.isEmpty) {
+      generatedQuestionGroups.clear();
+      return;
+    }
+
+    // Predefined titles and intros for the 6 groups. You can customize these.
+    final groupMetadatas = [
+      {
+        'name': 'Getting Started',
+        'intro': "To start, let's get some personal details."
+      },
+      {
+        'name': 'Fitness Background',
+        'intro': "Great! Now for a bit about your fitness background."
+      },
+      {
+        'name': 'Goals & Activity',
+        'intro': "Let's talk about your goals and activity levels."
+      },
+      {
+        'name': 'Nutrition',
+        'intro': 'Now, a few questions about your nutrition habits.'
+      },
+      {
+        'name': 'Health & Recovery',
+        'intro': "Finally, let's talk about your health and recovery."
+      },
+      {
+        'name': 'Body Profile',
+        'intro': "Excellent! Let's get your body profile details to track progress.",
+        'conclusion': "That's everything I need to know. Thanks for sharing!"
+      },
+    ];
+
+    const int numberOfGroups = 6;
+    final int questionsPerGroup = (allQuestions.length / numberOfGroups).ceil();
+    final List<QuestionGroup> newGroups = [];
+
+    for (int i = 0; i < numberOfGroups; i++) {
+      if (i * questionsPerGroup >= allQuestions.length) break;
+
+      final int start = i * questionsPerGroup;
+      final int end = (start + questionsPerGroup > allQuestions.length)
+          ? allQuestions.length
+          : start + questionsPerGroup;
+
+      final groupQuestionsData = allQuestions.sublist(start, end);
+
+      final groupQAItems =
+      groupQuestionsData.map((data) => _mapDataToQAItem(data)).toList();
+
+      if (groupQAItems.isNotEmpty) {
+        final metadata = groupMetadatas[i];
+        newGroups.add(
+          QuestionGroup(
+            name: metadata['name']!,
+            introduction: metadata['intro']!,
+            conclusion: metadata['conclusion'],
+            questions: groupQAItems,
+          ),
+        );
+      }
+    }
+    generatedQuestionGroups.assignAll(newGroups);
+  }
+
+  /// Maps a [TraineeQuestionData] object from the API to a [QAItem] used by the chat UI.
+  QAItem _mapDataToQAItem(TraineeQuestionData data) {
+    return QAItem(
+      // Use questionFieldName as the unique ID for the answer map
+      id: data.questionFieldName ?? data.id.toString(),
+      question: data.questionText ?? 'No question text',
+      type: data.questionType ?? QAType.unknown,
+      options: data.possibleAnswersMetadata?.choices ?? [],
+      // These fields are not available from the API, so we use defaults.
+      hint: null,
+      canSkip: false, // Set to false as we can't determine this from the API data
+    );
   }
 
   Future<void> continueToNextGroup() async {
@@ -636,7 +185,6 @@ class TraineeOnboardingController extends BaseController {
     await _completeOnboarding();
   }
 
-  //  toggle the agreement state from the UI
   void toggleTermsAgreement(bool? newValue) {
     hasAgreedToTerms.value = newValue ?? false;
   }
@@ -646,20 +194,19 @@ class TraineeOnboardingController extends BaseController {
     answers.clear();
     currentGroupIndex.value = 0;
     currentQuestionIndexInGroup.value = -1;
-    // ADD a reset for the new state variable
     hasAgreedToTerms.value = false;
     isAwaitingFinalContinuation.value = false;
+    isAwaitingGroupConfirmation.value = false;
     _updateProgresses();
     await _botSay("Hello 👋");
     await _askNext();
   }
 
   Future<void> _completeOnboarding() async {
-    currentGroupIndex.value = questionGroups.length; // done
+    currentGroupIndex.value = generatedQuestionGroups.length; // done
     _updateProgresses();
     await _botSay("All set! 🎉 Thanks for the info.");
     await _botSay("Grading and storing all your information...");
-    //TODO: CONFIRM
     await _botSay(
       "To save your progress and create your personalized icon profile, you'll need to agree out terms and conditions to continue.",
     );
@@ -667,7 +214,6 @@ class TraineeOnboardingController extends BaseController {
   }
 
   void proceedToContinue() {
-    // ADD a guard clause for safety, though the button will be disabled
     if (!hasAgreedToTerms.value) {
       CustomToast.showErrorToast(
         "Please agree to the terms and conditions to continue.",
@@ -698,97 +244,25 @@ class TraineeOnboardingController extends BaseController {
   }
 
   // -------------------- Skip rules (single source of truth) --------------------
+  /// NOTE: The complex, hardcoded skip logic has been removed.
+  /// With dynamic questions from an API, it's not safe to assume which questions
+  /// will exist or what their dependencies are. This function now returns false,
+  /// meaning all fetched questions will be asked sequentially.
+  /// You can re-introduce skip logic here based on the `question_field_name`
+  /// if you have guaranteed dependencies in your API data.
   bool _shouldSkipQuestion(QAItem q) {
-    final id = q.id;
-
-    if ((id == 'target_event_name' || id == 'target_event_date') &&
-        answers['has_target_event'] == 'No') {
-      return true;
-    }
-
-    final trainingLocation = answers['training_location'];
-    if ((id == 'home_equipment' || id == 'home_equipment_other') &&
-        (trainingLocation != 'At home' && trainingLocation != 'A mix')) {
-      return true;
-    }
-    if (id == 'home_equipment_other' && answers['home_equipment'] != 'Other') {
-      return true;
-    }
-
-    if (id == 'training_style_other' && answers['training_style'] != 'Other') {
-      return true;
-    }
-
-    final preferredTime = answers['preferred_training_time'];
-    if ((id == 'set_reminder' || id == 'reminder_time') &&
-        (preferredTime == 'Anytime / Varies' ||
-            preferredTime == 'Prefer not to say')) {
-      return true;
-    }
-    if (id == 'reminder_time' && answers['set_reminder'] == 'No') {
-      return true;
-    }
-
-    if (id == 'specific_body_parts' && answers['focus_on_body_parts'] == 'No') {
-      return true;
-    }
-
-    if (id == 'daily_step_goal_custom' &&
-        answers['daily_step_goal'] != 'Custom number') {
-      return true;
-    }
-
-    if (id == 'training_limitations_other' &&
-        answers['training_limitations'] != 'Other') {
-      return true;
-    }
-
-    if (id == 'stress_sources_other' && answers['stress_sources'] != 'Other') {
-      return true;
-    }
-
-    if ((id == 'injury_name_1' ||
-            id == 'injury_description_1' ||
-            id == 'add_another_injury' ||
-            id == 'injury_name_2' ||
-            id == 'injury_description_2') &&
-        answers['has_injuries'] == 'No') {
-      return true;
-    }
-    if ((id == 'injury_name_2' || id == 'injury_description_2') &&
-        answers['add_another_injury'] != 'Yes') {
-      return true;
-    }
-
-    if (id == 'recovery_obstacles_other' &&
-        answers['recovery_obstacles'] != 'Other') {
-      return true;
-    }
-
-    const measurementIds = {
-      'chest_measurement',
-      'waist_measurement',
-      'hips_measurement',
-      'arm_measurement',
-      'thigh_measurement',
-    };
-    if (measurementIds.contains(id) &&
-        answers['add_body_measurements'] != 'Yes') {
-      return true;
-    }
-
-    if (id == 'progress_photo_picker' &&
-        answers['upload_progress_photo'] != 'Yes') {
-      return true;
-    }
-
+    // Example of how you could add new skip logic:
+    // if (q.id == 'dietary_restrictions_other' && answers['current_dietary_restrictions'] != 'Other') {
+    //   return true;
+    // }
     return false;
   }
 
   // -------------------- Active/answered helpers --------------------
   List<QAItem> _activeQuestionsForGroup(int gi) {
-    if (gi < 0 || gi >= questionGroups.length) return const [];
-    return questionGroups[gi].questions
+    if (gi < 0 || gi >= generatedQuestionGroups.length) return const [];
+    return generatedQuestionGroups[gi]
+        .questions
         .where((q) => !_shouldSkipQuestion(q))
         .toList();
   }
@@ -804,27 +278,23 @@ class TraineeOnboardingController extends BaseController {
 
   /// Global progress across the entire flow (0..1) based on answered, non-skipped questions.
   double _globalProgress() {
-    if (questionGroups.isEmpty) return 0.0;
+    if (generatedQuestionGroups.isEmpty) return 0.0;
 
     int totalActive = 0;
     int totalAnswered = 0;
 
-    for (int gi = 0; gi < questionGroups.length; gi++) {
+    for (int gi = 0; gi < generatedQuestionGroups.length; gi++) {
       final activeQs = _activeQuestionsForGroup(gi);
       totalActive += activeQs.length;
 
-      // If we've reached a group break, treat that group as fully answered
-      // (you already showed summary and wait Continue/Skip).
       if (isAwaitingGroupConfirmation.value && gi < currentGroupIndex.value) {
         totalAnswered += activeQs.length;
         continue;
       }
 
-      // normal answered count
       totalAnswered += _answeredCount(activeQs);
     }
 
-    // End-state overrides
     if (isFinished || isAwaitingFinalContinuation.value) return 1.0;
     if (totalActive == 0) return 0.0;
 
@@ -839,20 +309,23 @@ class TraineeOnboardingController extends BaseController {
     int nextQuestionIndex = currentQuestionIndexInGroup.value;
     int nextGroupIndex = currentGroupIndex.value;
 
+    if (generatedQuestionGroups.isEmpty) {
+      await _completeOnboarding();
+      return;
+    }
+
     while (true) {
       nextQuestionIndex++;
 
-      // End of group?
-      if (nextGroupIndex < questionGroups.length &&
+      if (nextGroupIndex < generatedQuestionGroups.length &&
           nextQuestionIndex >=
-              questionGroups[nextGroupIndex].questions.length) {
-        final finishedGroup = questionGroups[nextGroupIndex];
+              generatedQuestionGroups[nextGroupIndex].questions.length) {
+        final finishedGroup = generatedQuestionGroups[nextGroupIndex];
 
         if (finishedGroup.conclusion != null) {
           await _botSay(finishedGroup.conclusion!);
         }
 
-        // Section summary (answered only)
         final summaryLines = <String>[];
         for (final question in finishedGroup.questions) {
           final ans = answers[question.id];
@@ -867,17 +340,17 @@ class TraineeOnboardingController extends BaseController {
           );
         }
 
-        if (nextGroupIndex >= questionGroups.length - 1) {
+        if (nextGroupIndex >= generatedQuestionGroups.length - 1) {
           await _completeOnboarding();
           return;
         }
 
         isAwaitingGroupConfirmation.value = true;
 
-        final remainingGroups = questionGroups.sublist(nextGroupIndex + 1);
-        final remainingGroupNames = remainingGroups
-            .map((g) => "• ${g.name}")
-            .join('\n');
+        final remainingGroups =
+        generatedQuestionGroups.sublist(nextGroupIndex + 1);
+        final remainingGroupNames =
+        remainingGroups.map((g) => "• ${g.name}").join('\n');
 
         await _botSay(
           "Great job! To create the best plan, we still need to cover these topics:\n$remainingGroupNames",
@@ -887,27 +360,27 @@ class TraineeOnboardingController extends BaseController {
         return;
       }
 
-      if (nextGroupIndex >= questionGroups.length) {
+      if (nextGroupIndex >= generatedQuestionGroups.length) {
         await _completeOnboarding();
         return;
       }
 
       final candidate =
-          questionGroups[nextGroupIndex].questions[nextQuestionIndex];
+      generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
 
-    final bool isNewGroup =
-        nextQuestionIndex == 0 &&
+    final bool isNewGroup = nextQuestionIndex == 0 &&
         (currentGroupIndex.value != nextGroupIndex ||
             currentQuestionIndexInGroup.value == -1);
 
     if (isNewGroup) {
-      await _botSay(questionGroups[nextGroupIndex].introduction);
+      await _botSay(generatedQuestionGroups[nextGroupIndex].introduction);
     }
 
-    final q = questionGroups[nextGroupIndex].questions[nextQuestionIndex];
+    final q =
+    generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = nextGroupIndex;
@@ -927,7 +400,6 @@ class TraineeOnboardingController extends BaseController {
     });
   }
 
-  /// Handle quick replies (choices)
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
@@ -935,7 +407,6 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
-  /// Handle send from text field
   Future<void> send(String text) async {
     final value = text.trim();
 
@@ -970,7 +441,8 @@ class TraineeOnboardingController extends BaseController {
   }
 
   // --- Helper Getters and Methods ---
-  bool get isFinished => currentGroupIndex.value >= questionGroups.length;
+  bool get isFinished =>
+      currentGroupIndex.value >= generatedQuestionGroups.length;
 
   bool get _canAnswer =>
       !isFinished && !isTyping.value && currentQuestionIndexInGroup.value != -1;
@@ -984,7 +456,7 @@ class TraineeOnboardingController extends BaseController {
 
   bool get canGoBack =>
       !isFinished &&
-      (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
+          (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
 
   Future<void> goBack() async {
     if (!canGoBack) return;
@@ -999,18 +471,24 @@ class TraineeOnboardingController extends BaseController {
 
       if (targetQuestionIndex < 0) {
         targetGroupIndex--;
+        if (targetGroupIndex < 0) break;
         targetQuestionIndex =
-            questionGroups[targetGroupIndex].questions.length - 1;
+            generatedQuestionGroups[targetGroupIndex].questions.length - 1;
       }
 
       final candidate =
-          questionGroups[targetGroupIndex].questions[targetQuestionIndex];
+      generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
 
-      final wasSkipped = _shouldSkipQuestion(candidate);
-      if (!wasSkipped) break;
+      if (!_shouldSkipQuestion(candidate)) break;
     }
 
-    final q = questionGroups[targetGroupIndex].questions[targetQuestionIndex];
+    if (targetGroupIndex < 0) {
+      start();
+      return;
+    }
+
+    final q =
+    generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = targetGroupIndex;
@@ -1091,109 +569,62 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
-  // -------------- Per-group progress (for section UIs) --------------
-  // double _computeGroupProgress(int groupIndex) {
-  //   if (groupIndex < 0 || groupIndex >= questionGroups.length) return 0.0;
-  //   final activeQs = _activeQuestionsForGroup(groupIndex);
-  //   if (activeQs.isEmpty) return 1.0;
-  //
-  //   int answered = _answeredCount(activeQs);
-  //
-  //   // If we’re sitting at a group break, that group is effectively complete.
-  //   if (isAwaitingGroupConfirmation.value &&
-  //       currentGroupIndex.value == groupIndex) {
-  //     answered = activeQs.length;
-  //   }
-  //
-  //   return (answered / activeQs.length).clamp(0.0, 1.0);
-  // }
-
-  // -------------- Stepper bindings --------------
-  /// The stepper has `totalSteps` dots (groups), but the bar position should follow
-  /// the **global answered fraction** of all active questions.
-  // void _updateProgresses() {
-  //   // keep the per-group progress if other parts of UI need it
-  //   if (isFinished || currentGroupIndex.value >= questionGroups.length) {
-  //     currentGroupProgress.value = 0.0;
-  //   } else {
-  //     currentGroupProgress.value = _computeGroupProgress(currentGroupIndex.value);
-  //   }
-  // }
-
-  int get stepperTotalSteps => questionGroups.length;
+  int get stepperTotalSteps => generatedQuestionGroups.length;
 
   int get stepperCurrentStep {
-    if (isFinished && questionGroups.isNotEmpty) {
-      return questionGroups.length - 1;
+    if (isFinished && generatedQuestionGroups.isNotEmpty) {
+      return generatedQuestionGroups.length - 1;
     }
     return currentGroupIndex.value.clamp(
       0,
-      (questionGroups.length - 1).clamp(0, 1 << 30),
+      (generatedQuestionGroups.length - 1).clamp(0, 1 << 30),
     );
   }
 
-  /// Convert global (0..1) → widget’s `(currentStep + stepProgress)/(totalSteps-1)`
   double get stepperStepProgress {
-    final n = questionGroups.length;
-    if (n <= 1) return _globalProgress(); // trivial bar
+    final n = generatedQuestionGroups.length;
+    if (n <= 1) return _globalProgress();
 
-    // Global 0..1 fraction of answered active questions
     final gp = _globalProgress();
-
-    // Map to overall "segment space"
     final overall = gp * (n - 1);
-
-    // Force the thumb to live inside current step for dot visuals
     final stepProg = (overall - stepperCurrentStep).clamp(0.0, 1.0);
     return stepProg;
   }
 
   // ------------ Convenience flags for input UI ------------
   QAItem? get currentQuestion {
-    if (isFinished || currentQuestionIndexInGroup.value < 0) return null;
-    return questionGroups[currentGroupIndex.value]
+    if (isFinished ||
+        currentGroupIndex.value >= generatedQuestionGroups.length ||
+        currentQuestionIndexInGroup.value < 0 ||
+        currentQuestionIndexInGroup.value >=
+            generatedQuestionGroups[currentGroupIndex.value].questions.length) {
+      return null;
+    }
+    return generatedQuestionGroups[currentGroupIndex.value]
         .questions[currentQuestionIndexInGroup.value];
   }
 
   String? get getCurrentGroupName {
     if (currentGroupIndex.value >= 0 &&
-        currentGroupIndex.value < questionGroups.length) {
-      return questionGroups[currentGroupIndex.value].name;
+        currentGroupIndex.value < generatedQuestionGroups.length) {
+      return generatedQuestionGroups[currentGroupIndex.value].name;
     }
     return null;
   }
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.multipleChoice;
-
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
-
   bool get isCurrentTime => currentQuestion?.type == QAType.time;
-
   bool get isCurrentHeight => currentQuestion?.type == QAType.height;
-
   bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
-
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
 
-  // REMOVE THIS ENTIRE METHOD
-  void moveToNextGroup() {
-    if (currentGroupIndex.value < totalGroups.value - 1) {
-      currentGroupIndex.value++;
-    }
-    // This logic is incorrect for per-question progress.
-    currentGroupProgress.value =
-        (currentGroupIndex.value + 1) / totalGroups.value;
-  }
-
   // -------------- Stepper bindings --------------
-  /// The stepper has `totalSteps` dots (groups), but the bar position should follow
-  /// the **global answered fraction** of all active questions.
   void _updateProgresses() {
-    // keep the per-group progress if other parts of UI need it
-    if (isFinished || currentGroupIndex.value >= questionGroups.length) {
+    if (isFinished ||
+        currentGroupIndex.value >= generatedQuestionGroups.length) {
       currentGroupProgress.value = 0.0;
     } else {
-      // This is the key line that computes the progress for the current group.
       currentGroupProgress.value = _computeGroupProgress(
         currentGroupIndex.value,
       );
@@ -1202,21 +633,19 @@ class TraineeOnboardingController extends BaseController {
 
   // -------------- Per-group progress (for section UIs) --------------
   double _computeGroupProgress(int groupIndex) {
-    if (groupIndex < 0 || groupIndex >= questionGroups.length) return 0.0;
-    // 1. Get all non-skipped questions for the current group.
+    if (groupIndex < 0 || groupIndex >= generatedQuestionGroups.length) {
+      return 0.0;
+    }
     final activeQs = _activeQuestionsForGroup(groupIndex);
     if (activeQs.isEmpty) return 1.0;
 
-    // 2. Count how many of them have been answered.
     int answered = _answeredCount(activeQs);
 
-    // If we’re sitting at a group break, that group is effectively complete.
     if (isAwaitingGroupConfirmation.value &&
         currentGroupIndex.value == groupIndex) {
       answered = activeQs.length;
     }
 
-    // 3. Calculate the progress (e.g., 2 answered / 4 total = 0.5)
     return (answered / activeQs.length).clamp(0.0, 1.0);
   }
 }

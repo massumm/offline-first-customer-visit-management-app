@@ -125,7 +125,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   ),
                   const SizedBox(height: 8),
                   AnimatedOnboardingStepper(
-                    totalSteps: controller.totalGroups.value,
+                    totalSteps: 6,
                     currentStep: controller.currentGroupIndex.value,
                     stepProgress: controller.currentGroupProgress.value,
                   ),
