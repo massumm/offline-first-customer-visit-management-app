@@ -1,3 +1,4 @@
+enum QAType { text, number, choice, date, time, height, weight, image }
 class TraineeOnboardingQuestionsModel {
   TraineeOnboardingQuestionsModel({
     required this.id,
@@ -14,7 +15,7 @@ class TraineeOnboardingQuestionsModel {
 
   final int? id;
   final int? traineeOnboarding;
-  final String? questionType;
+  final QAType? questionType;
   final String? questionText;
   final QuestionMetadata? questionMetadata;
   final String? questionFieldName;
@@ -26,7 +27,7 @@ class TraineeOnboardingQuestionsModel {
   TraineeOnboardingQuestionsModel copyWith({
     int? id,
     int? traineeOnboarding,
-    String? questionType,
+    QAType? questionType,
     String? questionText,
     QuestionMetadata? questionMetadata,
     String? questionFieldName,
@@ -42,22 +43,27 @@ class TraineeOnboardingQuestionsModel {
       questionText: questionText ?? this.questionText,
       questionMetadata: questionMetadata ?? this.questionMetadata,
       questionFieldName: questionFieldName ?? this.questionFieldName,
-      possibleAnswersMetadata: possibleAnswersMetadata ?? this.possibleAnswersMetadata,
+      possibleAnswersMetadata:
+      possibleAnswersMetadata ?? this.possibleAnswersMetadata,
       index: index ?? this.index,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
-  factory TraineeOnboardingQuestionsModel.fromJson(Map<String, dynamic> json){
+  factory TraineeOnboardingQuestionsModel.fromJson(Map<String, dynamic> json) {
     return TraineeOnboardingQuestionsModel(
       id: json["id"],
       traineeOnboarding: json["trainee_onboarding"],
-      questionType: json["question_type"],
+      questionType: QAType.values.asNameMap()[json["question_type"]],
       questionText: json["question_text"],
-      questionMetadata: json["question_metadata"] == null ? null : QuestionMetadata.fromJson(json["question_metadata"]),
+      questionMetadata: json["question_metadata"] == null
+          ? null
+          : QuestionMetadata.fromJson(json["question_metadata"]),
       questionFieldName: json["question_field_name"],
-      possibleAnswersMetadata: json["possible_answers_metadata"] == null ? null : PossibleAnswersMetadata.fromJson(json["possible_answers_metadata"]),
+      possibleAnswersMetadata: json["possible_answers_metadata"] == null
+          ? null
+          : PossibleAnswersMetadata.fromJson(json["possible_answers_metadata"]),
       index: json["index"],
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
@@ -65,8 +71,8 @@ class TraineeOnboardingQuestionsModel {
   }
 
   @override
-  String toString(){
-    return "$id, $traineeOnboarding, $questionType, $questionText, $questionMetadata, $questionFieldName, $possibleAnswersMetadata, $index, $createdAt, $updatedAt, ";
+  String toString() {
+    return "$id, $traineeOnboarding, ${questionType?.name}, $questionText, $questionMetadata, $questionFieldName, $possibleAnswersMetadata, $index, $createdAt, $updatedAt, ";
   }
 }
 

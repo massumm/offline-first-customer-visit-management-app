@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
+import 'package:icon/app/base/network/network_error/api_error_handler.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/modules/trainee_onboarding/repository/traineer_onboarding_qa_repository.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../data/local/preference/store/trainee_data_store.dart';
@@ -10,6 +13,10 @@ import '../../../routes/app_pages.dart';
 import '../models/onboarding_qa_model.dart';
 
 class TraineeOnboardingController extends BaseController {
+  // --------------- Repository ---------------
+  final TraineeOnboardingQARepository _onboardingQARepository = Get.find(
+    tag: (TraineeOnboardingQARepository).toString(),
+  );
   final textController = TextEditingController();
 
   /// Configure your flow here
@@ -62,7 +69,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'accountability_partner',
           question:
-          "Do you have an accountability partner to help you on your journey?",
+              "Do you have an accountability partner to help you on your journey?",
           type: QAType.choice,
           options: [
             "Friends",
@@ -108,7 +115,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'has_target_event',
           question:
-          "Do you have a specific date or event you’re working toward?",
+              "Do you have a specific date or event you’re working toward?",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
@@ -138,7 +145,7 @@ class TraineeOnboardingController extends BaseController {
       name: 'Activity',
       introduction: "Now, let's get into your activity habits.",
       conclusion:
-      "Awesome, that gives me a great picture of your activity levels!",
+          "Awesome, that gives me a great picture of your activity levels!",
       questions: [
         const QAItem(
           id: 'training_location',
@@ -269,7 +276,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'general_lifestyle_activity',
           question:
-          "Outside of training and your occupation, how active is your general lifestyle?",
+              "Outside of training and your occupation, how active is your general lifestyle?",
           type: QAType.choice,
           options: [
             "Mostly sedentary (e.g., relaxing at home)",
@@ -314,7 +321,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'training_limitations_other',
           question:
-          "Could you please specify what other factors limit your training?",
+              "Could you please specify what other factors limit your training?",
           type: QAType.text,
           hint: "e.g., Injury, travel schedule",
           canSkip: true,
@@ -322,7 +329,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'workout_enjoyment',
           question:
-          "What kind of workouts do you most enjoy, or is there anything you want to try?",
+              "What kind of workouts do you most enjoy, or is there anything you want to try?",
           type: QAType.text,
           hint: "e.g., Running, weightlifting, dance classes",
           canSkip: true,
@@ -395,7 +402,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'has_injuries',
           question:
-          "Do you have any injuries or conditions that impact your fitness?",
+              "Do you have any injuries or conditions that impact your fitness?",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
@@ -434,7 +441,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'recovery_obstacles',
           question:
-          "What usually gets in the way of you resting and recovering properly?",
+              "What usually gets in the way of you resting and recovering properly?",
           type: QAType.choice,
           options: [
             "Busy schedule / Lack of time",
@@ -449,7 +456,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'recovery_obstacles_other',
           question:
-          "Please specify what other factors get in the way of your recovery.",
+              "Please specify what other factors get in the way of your recovery.",
           type: QAType.text,
           hint: "Optional: e.g., Late-night screen time",
           canSkip: true,
@@ -542,7 +549,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'upload_progress_photo',
           question:
-          "Would you like to upload a private progress photo? (Optional)",
+              "Would you like to upload a private progress photo? (Optional)",
           type: QAType.choice,
           options: ["Yes", "No"],
         ),
@@ -569,6 +576,7 @@ class TraineeOnboardingController extends BaseController {
 
   // Show the final Continue button after completion
   final isAwaitingFinalContinuation = false.obs;
+
   // ADD this new state variable for the checkbox
   final hasAgreedToTerms = false.obs;
 
@@ -577,7 +585,8 @@ class TraineeOnboardingController extends BaseController {
 
   //-------------------- QA Stepper --------------------
   final RxInt totalGroups = 0.obs;
-  final RxDouble currentGroupProgress = 0.0.obs; // kept for UI that needs per-group
+  final RxDouble currentGroupProgress =
+      0.0.obs; // kept for UI that needs per-group
 
   @override
   void onInit() {
@@ -588,6 +597,19 @@ class TraineeOnboardingController extends BaseController {
     currentQuestionIndexInGroup.listen((_) => _updateProgresses());
     isAwaitingGroupConfirmation.listen((_) => _updateProgresses());
     start();
+  }
+
+  Future<void> _fetchQuestionsData() async {
+    try {
+      final questionsData = await _onboardingQARepository.fetchQuestionsData(1);
+    } catch (error) {
+      if(error is ApiException){
+        apiErrorHandler( fallbackMessage: error.description);
+        return;
+      }
+      CustomToast.showErrorToast('Error fetching questions data: $error');
+    } finally {
+    }
   }
 
   Future<void> continueToNextGroup() async {
@@ -609,7 +631,6 @@ class TraineeOnboardingController extends BaseController {
   void toggleTermsAgreement(bool? newValue) {
     hasAgreedToTerms.value = newValue ?? false;
   }
-
 
   void start() async {
     messages.clear();
@@ -644,13 +665,16 @@ class TraineeOnboardingController extends BaseController {
       );
       return;
     }
-    try{
+    try {
       final onboardingJson = toJson();
       Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
       CustomToast.showSuccessToast('Profile data saved successfully.');
-      Get.toNamed(Routes.TRAINEE_FITNESS_REPORT_GENERATION, arguments: onboardingJson);
+      Get.toNamed(
+        Routes.TRAINEE_FITNESS_REPORT_GENERATION,
+        arguments: onboardingJson,
+      );
       "Proceeding to fitness report with data: $onboardingJson".log();
-    } catch(e){
+    } catch (e) {
       CustomToast.showErrorToast('Error saving data: $e');
     }
   }
@@ -710,16 +734,15 @@ class TraineeOnboardingController extends BaseController {
       return true;
     }
 
-    if (id == 'stress_sources_other' &&
-        answers['stress_sources'] != 'Other') {
+    if (id == 'stress_sources_other' && answers['stress_sources'] != 'Other') {
       return true;
     }
 
     if ((id == 'injury_name_1' ||
-        id == 'injury_description_1' ||
-        id == 'add_another_injury' ||
-        id == 'injury_name_2' ||
-        id == 'injury_description_2') &&
+            id == 'injury_description_1' ||
+            id == 'add_another_injury' ||
+            id == 'injury_name_2' ||
+            id == 'injury_description_2') &&
         answers['has_injuries'] == 'No') {
       return true;
     }
@@ -756,7 +779,9 @@ class TraineeOnboardingController extends BaseController {
   // -------------------- Active/answered helpers --------------------
   List<QAItem> _activeQuestionsForGroup(int gi) {
     if (gi < 0 || gi >= questionGroups.length) return const [];
-    return questionGroups[gi].questions.where((q) => !_shouldSkipQuestion(q)).toList();
+    return questionGroups[gi].questions
+        .where((q) => !_shouldSkipQuestion(q))
+        .toList();
   }
 
   int _answeredCount(Iterable<QAItem> qs) {
@@ -810,7 +835,8 @@ class TraineeOnboardingController extends BaseController {
 
       // End of group?
       if (nextGroupIndex < questionGroups.length &&
-          nextQuestionIndex >= questionGroups[nextGroupIndex].questions.length) {
+          nextQuestionIndex >=
+              questionGroups[nextGroupIndex].questions.length) {
         final finishedGroup = questionGroups[nextGroupIndex];
 
         if (finishedGroup.conclusion != null) {
@@ -827,7 +853,9 @@ class TraineeOnboardingController extends BaseController {
           }
         }
         if (summaryLines.isNotEmpty) {
-          await _botSay("Here's a summary for this section:\n${summaryLines.join('\n')}");
+          await _botSay(
+            "Here's a summary for this section:\n${summaryLines.join('\n')}",
+          );
         }
 
         if (nextGroupIndex >= questionGroups.length - 1) {
@@ -838,8 +866,9 @@ class TraineeOnboardingController extends BaseController {
         isAwaitingGroupConfirmation.value = true;
 
         final remainingGroups = questionGroups.sublist(nextGroupIndex + 1);
-        final remainingGroupNames =
-        remainingGroups.map((g) => "• ${g.name}").join('\n');
+        final remainingGroupNames = remainingGroups
+            .map((g) => "• ${g.name}")
+            .join('\n');
 
         await _botSay(
           "Great job! To create the best plan, we still need to cover these topics:\n$remainingGroupNames",
@@ -855,15 +884,15 @@ class TraineeOnboardingController extends BaseController {
       }
 
       final candidate =
-      questionGroups[nextGroupIndex].questions[nextQuestionIndex];
+          questionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
 
     final bool isNewGroup =
         nextQuestionIndex == 0 &&
-            (currentGroupIndex.value != nextGroupIndex ||
-                currentQuestionIndexInGroup.value == -1);
+        (currentGroupIndex.value != nextGroupIndex ||
+            currentQuestionIndexInGroup.value == -1);
 
     if (isNewGroup) {
       await _botSay(questionGroups[nextGroupIndex].introduction);
@@ -946,7 +975,7 @@ class TraineeOnboardingController extends BaseController {
 
   bool get canGoBack =>
       !isFinished &&
-          (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
+      (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
 
   Future<void> goBack() async {
     if (!canGoBack) return;
@@ -966,7 +995,7 @@ class TraineeOnboardingController extends BaseController {
       }
 
       final candidate =
-      questionGroups[targetGroupIndex].questions[targetQuestionIndex];
+          questionGroups[targetGroupIndex].questions[targetQuestionIndex];
 
       final wasSkipped = _shouldSkipQuestion(candidate);
       if (!wasSkipped) break;
@@ -1118,17 +1147,23 @@ class TraineeOnboardingController extends BaseController {
   }
 
   String? get getCurrentGroupName {
-    if (currentGroupIndex.value >= 0 && currentGroupIndex.value < questionGroups.length) {
+    if (currentGroupIndex.value >= 0 &&
+        currentGroupIndex.value < questionGroups.length) {
       return questionGroups[currentGroupIndex.value].name;
     }
     return null;
   }
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
+
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
+
   bool get isCurrentTime => currentQuestion?.type == QAType.time;
+
   bool get isCurrentHeight => currentQuestion?.type == QAType.height;
+
   bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
+
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
 
   // REMOVE THIS ENTIRE METHOD
@@ -1150,9 +1185,12 @@ class TraineeOnboardingController extends BaseController {
       currentGroupProgress.value = 0.0;
     } else {
       // This is the key line that computes the progress for the current group.
-      currentGroupProgress.value = _computeGroupProgress(currentGroupIndex.value);
+      currentGroupProgress.value = _computeGroupProgress(
+        currentGroupIndex.value,
+      );
     }
   }
+
   // -------------- Per-group progress (for section UIs) --------------
   double _computeGroupProgress(int groupIndex) {
     if (groupIndex < 0 || groupIndex >= questionGroups.length) return 0.0;

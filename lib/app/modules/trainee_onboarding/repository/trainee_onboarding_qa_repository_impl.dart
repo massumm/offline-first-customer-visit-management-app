@@ -10,7 +10,7 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
   final String? token = UserStore.to.token;
 
   @override
-  Future<TraineeOnboardingQuestionsModel> getQuestions(int trainerId) {
+  Future<TraineeOnboardingQuestionsModel> fetchQuestionsData(int trainerId) {
     final String endpoint =
         "${DioProvider.baseUrl}/api/trainees/onboardings/$trainerId/questions/";
 
