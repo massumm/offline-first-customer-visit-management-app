@@ -1,4 +1,5 @@
-enum QAType { text, number, choice, date, time, height, weight, image }
+
+import 'trainee_onboarding_questions_model.dart';
 
 class QuestionGroup {
   final String name;

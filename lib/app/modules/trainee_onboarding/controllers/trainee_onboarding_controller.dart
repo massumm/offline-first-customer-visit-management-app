@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../data/local/preference/store/trainee_data_store.dart';
 import '../../../routes/app_pages.dart';
 import '../models/onboarding_qa_model.dart';
+import '../models/trainee_onboarding_questions_model.dart';
 
 class TraineeOnboardingController extends BaseController {
   // --------------- Repository ---------------
@@ -19,7 +20,9 @@ class TraineeOnboardingController extends BaseController {
   );
   final textController = TextEditingController();
 
-  /// Configure your flow here
+  // --------------- Data ---------------
+  final RxList<TraineeQuestionData> questionData =
+      <TraineeQuestionData>[].obs;
   final questionGroups = <QuestionGroup>[
     QuestionGroup(
       name: 'Personal Details',
@@ -40,7 +43,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'gender',
           question: "What is your gender?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Male", "Female", "Prefer not to say"],
         ),
         const QAItem(
@@ -58,7 +61,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'fitness_experience',
           question: "What's your current fitness experience level?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Beginner",
             "Intermediate",
@@ -66,12 +69,12 @@ class TraineeOnboardingController extends BaseController {
             "Prefer not to say",
           ],
         ),
-        const QAItem(
+        QAItem(
           id: 'accountability_partner',
           question:
               "Do you have an accountability partner to help you on your journey?",
-          type: QAType.choice,
-          options: [
+          type: QAType.multipleChoice,
+          options: const [
             "Friends",
             "Family",
             'Personal trainer',
@@ -109,14 +112,14 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'results_speed',
           question: "How fast would you like to achieve results?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Gradual", "Moderate", "Fast", "Not sure yet"],
         ),
         const QAItem(
           id: 'has_target_event',
           question:
               "Do you have a specific date or event you’re working toward?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Yes", "No"],
         ),
         const QAItem(
@@ -150,7 +153,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'training_location',
           question: "Where do you usually train?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "At a gym",
             "At home",
@@ -162,7 +165,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'home_equipment',
           question: "What equipment do you have access to at home?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             'None',
             'Weights',
@@ -183,7 +186,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'training_style',
           question: "What is your preferred training style?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Strength training",
             "Cardio",
@@ -204,13 +207,13 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'workout_frequency',
           question: "How many days a week do you plan to work out?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["1-2", "3-4", "5+", "Not sure yet"],
         ),
         const QAItem(
           id: 'session_duration',
           question: "How long would you like your sessions to be?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "15-30 minutes",
             "30-45 minutes",
@@ -222,13 +225,13 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'session_intensity',
           question: "How intense would you like your sessions to be?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Light", "Moderate", "Intense", "Varies / Not sure"],
         ),
         const QAItem(
           id: 'preferred_training_time',
           question: "What time of day do you prefer to train?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Morning (before 9 AM)",
             "Late Morning (9 AM - 12 PM)",
@@ -241,7 +244,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'set_reminder',
           question: "Would you like to set a reminder for your selected time?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Yes", "No"],
         ),
         const QAItem(
@@ -253,7 +256,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'focus_on_body_parts',
           question: "Are there any specific body parts you want to focus on?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Yes", "No"],
         ),
         const QAItem(
@@ -265,7 +268,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'occupation_activity_level',
           question: "Outside of training, how active is your occupation?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Mostly sedentary (desk job)",
             "Lightly active (some walking)",
@@ -277,7 +280,7 @@ class TraineeOnboardingController extends BaseController {
           id: 'general_lifestyle_activity',
           question:
               "Outside of training and your occupation, how active is your general lifestyle?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Mostly sedentary (e.g., relaxing at home)",
             "Lightly active (e.g., occasional walks, light chores)",
@@ -288,7 +291,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'daily_step_goal',
           question: "How many steps would you like to achieve each day?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "5,000",
             "8,000",
@@ -307,7 +310,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'training_limitations',
           question: "What limits your ability to train consistently?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Lack of time",
             "Lack of motivation",
@@ -345,7 +348,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'sleep_hours',
           question: "On average, how many hours of sleep do you get per night?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Less than 5 hours",
             "5-6 hours",
@@ -357,13 +360,13 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'sleep_quality',
           question: "How would you rate your sleep quality?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Excellent", "Good", "Fair", "Poor", "It varies"],
         ),
         const QAItem(
           id: 'energy_levels',
           question: "How energetic do you usually feel during the day?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Very energetic",
             "Moderately energetic",
@@ -375,13 +378,13 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'stress_levels',
           question: "How would you rate your current stress levels?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Very low", "Low", "Moderate", "High", "Very high"],
         ),
         const QAItem(
           id: 'stress_sources',
           question: "What are your biggest sources of stress?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Work / School",
             "Family / Relationships",
@@ -403,7 +406,7 @@ class TraineeOnboardingController extends BaseController {
           id: 'has_injuries',
           question:
               "Do you have any injuries or conditions that impact your fitness?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Yes", "No"],
         ),
         const QAItem(
@@ -422,7 +425,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'add_another_injury',
           question: "Would you like to add another injury or condition?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Yes", "No"],
         ),
         const QAItem(
@@ -442,7 +445,7 @@ class TraineeOnboardingController extends BaseController {
           id: 'recovery_obstacles',
           question:
               "What usually gets in the way of you resting and recovering properly?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Busy schedule / Lack of time",
             "Stress from work/life",
@@ -489,14 +492,14 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'body_fat_level',
           question: "How would you describe your current body fat level?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Lean", "Average", "High", "Not Sure"],
           hint: "This is just an estimate.",
         ),
         const QAItem(
           id: 'body_type',
           question: "How would you describe your body type?",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: [
             "Ectomorph (Lean)",
             "Mesomorph (Athletic)",
@@ -508,7 +511,7 @@ class TraineeOnboardingController extends BaseController {
         const QAItem(
           id: 'add_body_measurements',
           question: "Would you like to add any body measurements? (Optional)",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Yes", "No"],
         ),
         const QAItem(
@@ -550,7 +553,7 @@ class TraineeOnboardingController extends BaseController {
           id: 'upload_progress_photo',
           question:
               "Would you like to upload a private progress photo? (Optional)",
-          type: QAType.choice,
+          type: QAType.multipleChoice,
           options: ["Yes", "No"],
         ),
         const QAItem(
@@ -599,9 +602,15 @@ class TraineeOnboardingController extends BaseController {
     start();
   }
 
+  @override
+  onReady(){
+    Future.microtask(() => _fetchQuestionsData());
+  }
+
   Future<void> _fetchQuestionsData() async {
     try {
-      final questionsData = await _onboardingQARepository.fetchQuestionsData(1);
+      final questionResponse = await _onboardingQARepository.fetchQuestionsData(1);
+      questionData.assignAll(questionResponse.questionsData);
     } catch (error) {
       if(error is ApiException){
         apiErrorHandler( fallbackMessage: error.description);
@@ -1154,7 +1163,7 @@ class TraineeOnboardingController extends BaseController {
     return null;
   }
 
-  bool get isCurrentChoice => currentQuestion?.type == QAType.choice;
+  bool get isCurrentChoice => currentQuestion?.type == QAType.multipleChoice;
 
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
 

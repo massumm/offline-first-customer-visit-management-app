@@ -12,6 +12,7 @@ import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
+import '../models/trainee_onboarding_questions_model.dart';
 import 'widgets/animated_onboarding_stepper.dart';
 import 'widgets/message_bubble.dart';
 import 'widgets/type_bubble.dart';
@@ -200,7 +201,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           if (controller.isFinished ||
               controller.showGroupContinuationButtons ||
               q == null ||
-              q.type != QAType.choice) {
+              q.type != QAType.multipleChoice) {
             return const SizedBox.shrink();
           }
 
@@ -268,7 +269,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             }
 
             // Hide the input field for Choice questions.
-            if (controller.currentQuestion?.type == QAType.choice) {
+            if (controller.currentQuestion?.type == QAType.multipleChoice) {
               return SizedBox.shrink();
             }
 
@@ -455,7 +456,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     if (q == null) {
       return "Say hi to start";
     }
-    if (q.type == QAType.choice) {
+    if (q.type == QAType.multipleChoice) {
       return "Choose an option above";
     }
     return q.hint ?? "Type your answer";

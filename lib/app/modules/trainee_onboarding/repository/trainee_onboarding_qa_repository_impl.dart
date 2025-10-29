@@ -5,14 +5,15 @@ import '../../../base/network/dio_provider.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import 'traineer_onboarding_qa_repository.dart';
 
+
 class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     implements TraineeOnboardingQARepository {
   final String? token = UserStore.to.token;
 
   @override
-  Future<TraineeOnboardingQuestionsModel> fetchQuestionsData(int trainerId) {
+  Future<TraineeOnboardingQuestionDataModel> fetchQuestionsData(int trainerId) {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/trainees/onboardings/$trainerId/questions/";
+        "${DioProvider.baseUrl}/api/trainers/onboardings/$trainerId/questions/";
 
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",
@@ -32,7 +33,7 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     }
   }
 
-  TraineeOnboardingQuestionsModel _parseQuestionsResponse(
+  TraineeOnboardingQuestionDataModel _parseQuestionsResponse(
     Response<dynamic> response,
-  ) => TraineeOnboardingQuestionsModel.fromJson(response.data);
+  ) => TraineeOnboardingQuestionDataModel.fromJson(response.data);
 }
