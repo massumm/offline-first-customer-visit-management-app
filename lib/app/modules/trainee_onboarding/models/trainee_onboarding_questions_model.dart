@@ -158,6 +158,15 @@ class PossibleAnswersMetadata {
     );
   }
 
+// toJson method
+  Map<String, dynamic> toJson() {
+    return {
+      'choices': choices,
+    };
+  }
+
+
+
   @override
   String toString() => choices.toString();
 }

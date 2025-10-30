@@ -58,7 +58,7 @@ class TraineeOnboardingController extends BaseController {
   final pageController = ScrollController();
 
   // --------------- Answers ---------------
-  final Map<String, String> answers = {};
+  final Map<int, String> answers = {};
 
   /// True when the UI should show the "Continue" and "Skip" buttons.
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
@@ -180,9 +180,11 @@ class TraineeOnboardingController extends BaseController {
   /// Maps a [TraineeQuestionData] object from the API to a [QAItem] used by the chat UI.
   QAItem _mapDataToQAItem(TraineeQuestionData data) {
     return QAItem(
-      id: data.questionFieldName ?? data.id.toString(),
+      id:  data.id ?? 1,
       question: data.questionText ?? 'No question text',
       type: data.questionType ?? QAType.unknown,
+      questionFieldName: data.questionFieldName,
+      possibleAnswersMetadata: data.possibleAnswersMetadata,
       options: data.possibleAnswersMetadata?.choices ?? [],
       hint: null,
       canSkip: false,
@@ -486,10 +488,10 @@ class TraineeOnboardingController extends BaseController {
     try {
       final q = currentQuestion!;
       final answerData = {
-        "trainee_profile": 1,
-        "trainee_onboarding_question": int.tryParse(q.id) ?? 1,
+        "trainee_profile": 2,
+        "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
-        "answer_metadata": {},
+        // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
       };
 
       await _onboardingQARepository.sendAnswers(answerData, 1);
