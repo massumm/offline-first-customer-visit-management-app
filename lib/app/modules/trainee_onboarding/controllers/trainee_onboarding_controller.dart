@@ -478,7 +478,8 @@ class TraineeOnboardingController extends BaseController {
       isEmailLoading(false);
     }
   }
-  Future<void> _sendMessage(ChatMessage userMessage) async {
+
+  Future<bool> _sendMessage(ChatMessage userMessage) async {
     // Mark the message as sending before the API call
     userMessage.updateStatus(MessageStatus.sending);
 
@@ -486,45 +487,43 @@ class TraineeOnboardingController extends BaseController {
       final q = currentQuestion!;
       final answerData = {
         "trainee_profile": 1,
-        "trainee_onboarding_question": int.tryParse(q.id ?? '1') ?? 1,
+        "trainee_onboarding_question": int.tryParse(q.id) ?? 1,
         "answer_text": answers[q.id],
         "answer_metadata": {},
       };
 
-      await _onboardingQARepository.sendAnswers(answerData, 0);
+      await _onboardingQARepository.sendAnswers(answerData, 1);
+
       userMessage.updateStatus(MessageStatus.delivered); // Mark as delivered on success
+      return true;
     } catch (e) {
       userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
       CustomToast.showErrorToast("Error sending message: $e");
+      return false;
     }
   }
+
 
   Future<void> send(String text) async {
     final value = text.trim();
 
-    // Handle email submission phase
+    // Handle email submission phase (already correctly handles success/failure for _registerUser)
     if (onboardingPhase.value == OnboardingPhase.awaitingEmail) {
       if (value.isEmail) {
         userEmail.value = value;
-
-        // Create the message with a pending status and add it to the list
         final userMessage = ChatMessage(
           from: Sender.user,
           text: value,
           status: MessageStatus.pending,
         );
         messages.add(userMessage);
-
         _scrollToBottom();
         textController.clear();
         inputText.value = '';
-
-        // Pass the message object to _registerUser to handle status updates
         final bool didRegisterSuccessfully = await _registerUser(userMessage);
         if (didRegisterSuccessfully) {
           await _askForInitialTerms();
         }
-        // If registration fails, the message status will be updated to 'failed'
       } else {
         await _botSay("Please enter a valid email address.");
       }
@@ -544,10 +543,10 @@ class TraineeOnboardingController extends BaseController {
 
     if (value.isEmpty) {
       if (q.canSkip) {
-        _saveUserAnswer(q, "Skip");
+        await _saveUserAnswer(q, "Skip"); // _saveUserAnswer now calls _askNext() on success
         inputText.value = '';
         textController.clear();
-        await _askNext();
+        // Removed: await _askNext();
       }
       return;
     }
@@ -557,13 +556,10 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    _saveUserAnswer(q, value);
-    // await _sendMessage(
-    //   ChatMessage(from: Sender.user, text: value),
-    // ); // Post Message Data.
+    await _saveUserAnswer(q, value); // _saveUserAnswer now calls _askNext() on success
     inputText.value = '';
     textController.clear();
-    await _askNext();
+    // Removed: await _askNext();
   }
 
   // --- Helper Getters and Methods ---
@@ -577,7 +573,7 @@ class TraineeOnboardingController extends BaseController {
 
 
   Future<void> _saveUserAnswer(QAItem q, String value) async {
-
+    // Create the chat message with pending status
     final userMessage = ChatMessage(from: Sender.user, text: value, status: MessageStatus.pending);
     messages.add(userMessage); // Add to the observable list
 
@@ -585,7 +581,12 @@ class TraineeOnboardingController extends BaseController {
     _scrollToBottom();
     _updateProgresses();
 
-    await _sendMessage(userMessage);
+    // Await the message sending and check its success
+    final bool success = await _sendMessage(userMessage);
+    if (success) {
+      await _askNext(); // Only ask the next question if the message was delivered
+    }
+    // If not successful, the message status will be 'failed', and the user remains on the current question.
   }
 
   Future<void> _saveImageAnswer(QAItem q, XFile imageFile) async {
@@ -596,11 +597,17 @@ class TraineeOnboardingController extends BaseController {
       status: MessageStatus.pending,
     );
     messages.add(userMessage);
-    answers[q.id] = imageFile.path; // Store the image path as the answer
+    answers[q.id] = imageFile.path; // Store the answer in your map
     _scrollToBottom();
     _updateProgresses();
-    await _sendMessage(userMessage); // Await the message sending
+
+    // Await the message sending and check its success
+    final bool success = await _sendMessage(userMessage);
+    if (success) {
+      await _askNext();
+    }
   }
+
 
   bool get canGoBack =>
       !isFinished &&

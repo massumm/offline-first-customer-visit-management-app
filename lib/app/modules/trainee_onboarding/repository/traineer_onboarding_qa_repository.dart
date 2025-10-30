@@ -6,6 +6,6 @@ abstract class TraineeOnboardingQARepository {
   ); // Default id is 1
 
   Future<Map<String, dynamic>> sendAnswers(
-      Map<String, dynamic> answers, int trainerId
+      Map<String, dynamic> answers, int traineeId
       );
 }
