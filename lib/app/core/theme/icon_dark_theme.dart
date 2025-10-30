@@ -137,12 +137,12 @@ class IconDarkTheme {
 
     cardTheme: CardThemeData(
       elevation: 2,
-      color: AppColors.cardBgColor,
+      color: AppColors.darkShapeColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
 
     dialogTheme: DialogThemeData(
-      backgroundColor: AppColors.cardBgColor,
+      backgroundColor: AppColors.darkShapeColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
 

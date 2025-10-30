@@ -137,12 +137,12 @@ class IconLightTheme {
     ),
     cardTheme: CardThemeData(
       elevation: 2,
-      color: Colors.white,
+      color:AppColors.lightShapeColor,
       // Corrected: Use a light color for cards in light theme
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
     dialogTheme: DialogThemeData(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.lightShapeColor,
       // Corrected: Use a light color for dialogs in light theme
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
