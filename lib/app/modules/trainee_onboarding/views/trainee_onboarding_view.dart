@@ -712,7 +712,7 @@ class _ImagePickerInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
       child: ElevatedButton.icon(
         icon: const Icon(Icons.camera_alt),
         label: const Text("Upload Photo"),
