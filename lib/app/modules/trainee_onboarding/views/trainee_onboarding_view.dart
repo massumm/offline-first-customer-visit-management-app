@@ -434,20 +434,18 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           ),
         ),
         const SizedBox(width: 8),
-        Obx(() {
-          return FilledButton.icon(
-            onPressed: () =>
-                 controller.send(controller.textController.text),
-            style: FilledButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)),
-              ),
+        FilledButton.icon(
+          onPressed: () =>
+              controller.send(controller.textController.text),
+          style: FilledButton.styleFrom(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
-            icon: const Icon(Icons.send),
-            label: const Text('Send'), // TODO: HANDLE SKIP
-          );
-        }),
+          ),
+          icon: const Icon(Icons.send),
+          label: const Text('Send'), // TODO: HANDLE SKIP
+        ),
         const SizedBox(width: 8),
       ],
     );

@@ -470,6 +470,21 @@ class TraineeOnboardingController extends BaseController {
       isEmailLoading(false);
     }
   }
+
+  Future<void> _sendMessage() async {
+    try{
+      final answerData = {
+        "trainee_profile": 1,
+        "trainee_onboarding_question": int.tryParse(currentQuestion?.id ?? '1') ?? 1,
+        "answer_text": answers['${currentQuestion?.id}'],
+        "answer_metadata": {},
+      };
+      final response = await _onboardingQARepository.sendAnswers(answerData, 0); // Default value 0
+    } catch(e) {
+      CustomToast.showErrorToast("Error sending message: $e");
+    }
+  }
+
   Future<void> send(String text) async {
     final value = text.trim();
 
@@ -520,6 +535,7 @@ class TraineeOnboardingController extends BaseController {
     }
 
     _saveUserAnswer(q, value);
+    await _sendMessage(); // Post Message Data.
     inputText.value = '';
     textController.clear();
     await _askNext();

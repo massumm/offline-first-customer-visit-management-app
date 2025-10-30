@@ -36,4 +36,28 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
   TraineeOnboardingQuestionDataModel _parseQuestionsResponse(
     Response<dynamic> response,
   ) => TraineeOnboardingQuestionDataModel.fromJson(response.data);
+
+  @override
+  Future<Map<String, dynamic>> sendAnswers(Map<String, dynamic> answers, int trainerId) {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/trainers/onboardings/$trainerId/answers/";
+
+    final Map<String, String> headers = {
+      'Authorization': "Bearer ${token ?? ''}",
+    };
+
+    Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: answers,
+      options: Options(headers: headers),
+    );
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
