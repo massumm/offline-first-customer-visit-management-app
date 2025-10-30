@@ -436,8 +436,7 @@ class TraineeOnboardingController extends BaseController {
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-    await _saveUserAnswer(q, option); // This now handles message creation and sending
-    await _askNext();
+    await _saveUserAnswer(q, option);
   }
 
   Future<void> _storeUserToken(LoginResponseModel response) async {
@@ -488,7 +487,7 @@ class TraineeOnboardingController extends BaseController {
     try {
       final q = currentQuestion!;
       final answerData = {
-        "trainee_profile": 2,
+        "trainee_profile": 3,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
         // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
@@ -668,16 +667,14 @@ class TraineeOnboardingController extends BaseController {
     final q = currentQuestion!;
     final formattedDate =
         "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-    _saveUserAnswer(q, formattedDate);
-    await _askNext();
+    await _saveUserAnswer(q, formattedDate);
   }
 
   Future<void> selectTime(TimeOfDay time, BuildContext context) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     final formattedTime = time.format(context);
-    _saveUserAnswer(q, formattedTime);
-    await _askNext();
+    await _saveUserAnswer(q, formattedTime);
   }
 
   Future<void> selectHeight({int? cm, int? feet, int? inches}) async {
@@ -690,34 +687,28 @@ class TraineeOnboardingController extends BaseController {
     } else if (feet != null && inches != null) {
       formattedHeight = "$feet' $inches\"";
     } else {
-      _saveUserAnswer(q, "Skipped");
-      await _askNext();
+      await _saveUserAnswer(q, "Skipped");
       return;
     }
 
-    _saveUserAnswer(q, formattedHeight);
-    await _askNext();
+    await _saveUserAnswer(q, formattedHeight);
   }
 
   Future<void> selectWeight({double? weight, String? unit}) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     if (weight == null || unit == null) {
-      _saveUserAnswer(q, "Skipped");
-      await _askNext();
+      await _saveUserAnswer(q, "Skipped");
       return;
     }
     final formattedWeight = "${weight.toStringAsFixed(1)} $unit";
-    _saveUserAnswer(q, formattedWeight);
-    await _askNext();
+    await _saveUserAnswer(q, formattedWeight);
   }
 
-  // Update selectImage to use the new _saveImageAnswer method
   Future<void> selectImage(XFile imageFile) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     await _saveImageAnswer(q, imageFile); // Use the new method
-    await _askNext();
   }
 
   int get stepperTotalSteps => generatedQuestionGroups.length;
