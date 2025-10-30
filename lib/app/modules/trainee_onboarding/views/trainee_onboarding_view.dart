@@ -67,11 +67,21 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('Mish Icon',
-                      style: Theme.of(context).textTheme.titleMedium),
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .titleMedium),
                   Text(
                     'Online',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(
+                      color: Theme
+                          .of(context)
+                          .colorScheme
+                          .onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -122,7 +132,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   6.height,
                   Text(
                     controller.getCurrentGroupName ?? "Getting Started",
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headlineMedium,
                   ),
                   const SizedBox(height: 8),
                   AnimatedOnboardingStepper(
@@ -200,10 +213,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   alignment: WrapAlignment.center,
                   children: q.options
                       .map(
-                        (o) => ActionChip(
-                      label: Text(o),
-                      onPressed: () => controller.choose(o),
-                    ),
+                        (o) =>
+                        ActionChip(
+                          label: Text(o),
+                          onPressed: () => controller.choose(o),
+                        ),
                   )
                       .toList(),
                 ),
@@ -274,24 +288,34 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           Row(
             children: [
               Obx(
-                    () => Checkbox(
-                  value: controller.hasAgreedToInitialTerms.value,
-                  onChanged: controller.toggleInitialTermsAgreement,
-                ),
+                    () =>
+                    Checkbox(
+                      value: controller.hasAgreedToInitialTerms.value,
+                      onChanged: controller.toggleInitialTermsAgreement,
+                    ),
               ),
               Expanded(
                 child: RichText(
                   text: TextSpan(
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodyMedium,
                     children: [
                       const TextSpan(text: 'I agree to the '),
                       TextSpan(
                         text: 'Terms and Conditions',
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme
+                              .of(context)
+                              .colorScheme
+                              .primary,
                           decoration: TextDecoration.underline,
                           decorationColor:
-                          Theme.of(context).colorScheme.primary,
+                          Theme
+                              .of(context)
+                              .colorScheme
+                              .primary,
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
@@ -307,15 +331,16 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           ),
           const SizedBox(height: 12),
           Obx(
-                () => FilledButton(
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              onPressed: controller.hasAgreedToInitialTerms.value
-                  ? controller.proceedAfterInitialTerms
-                  : null,
-              child: const Text('Continue'),
-            ),
+                () =>
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  onPressed: controller.hasAgreedToInitialTerms.value
+                      ? controller.proceedAfterInitialTerms
+                      : null,
+                  child: const Text('Continue'),
+                ),
           ),
         ],
       ),
@@ -409,17 +434,20 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           ),
         ),
         const SizedBox(width: 8),
-        FilledButton.icon(
-          onPressed: () => controller.send(controller.textController.text),
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
+        Obx(() {
+          return FilledButton.icon(
+            onPressed: () =>
+                 controller.send(controller.textController.text),
+            style: FilledButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+              ),
             ),
-          ),
-          icon: const Icon(Icons.send),
-          label: const Text('Send'), // TODO: HANDLE SKIP
-        ),
+            icon: const Icon(Icons.send),
+            label: const Text('Send'), // TODO: HANDLE SKIP
+          );
+        }),
         const SizedBox(width: 8),
       ],
     );
@@ -483,9 +511,13 @@ class _HeightPickerState extends State<_HeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(
+        color: Theme
+            .of(
           context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        )
+            .colorScheme
+            .surfaceContainerHighest
+            .withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -617,9 +649,13 @@ class _WeightPickerState extends State<_WeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(
+        color: Theme
+            .of(
           context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        )
+            .colorScheme
+            .surfaceContainerHighest
+            .withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -718,30 +754,31 @@ class _ImagePickerInput extends StatelessWidget {
   void _showImageSourceDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text("Select Image Source"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text("Take Photo"),
-              onTap: () {
-                Navigator.of(dialogContext).pop();
-                _pickImage(ImageSource.camera);
-              },
+      builder: (dialogContext) =>
+          AlertDialog(
+            title: const Text("Select Image Source"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.camera_alt),
+                  title: const Text("Take Photo"),
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    _pickImage(ImageSource.camera);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.photo_library),
+                  title: const Text("Choose from Gallery"),
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    _pickImage(ImageSource.gallery);
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text("Choose from Gallery"),
-              onTap: () {
-                Navigator.of(dialogContext).pop();
-                _pickImage(ImageSource.gallery);
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -769,7 +806,10 @@ class _ImageMessageBubble extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.7,
+        maxWidth: MediaQuery
+            .of(context)
+            .size
+            .width * 0.7,
       ),
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(

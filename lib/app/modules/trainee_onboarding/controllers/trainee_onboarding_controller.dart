@@ -8,8 +8,11 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/repository/traineer_onboarding_qa_repository.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
 import '../../../data/local/preference/store/trainee_data_store.dart';
+import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
+import '../../login/models/login_response_model.dart';
 import '../models/onboarding_qa_model.dart';
 import '../models/trainee_onboarding_questions_model.dart';
 
@@ -26,11 +29,16 @@ class TraineeOnboardingController extends BaseController {
   final TraineeOnboardingQARepository _onboardingQARepository = Get.find(
     tag: (TraineeOnboardingQARepository).toString(),
   );
+
+  final TraineeOnboardingAuthRepository _onboardingAuthRepository = Get.find(
+    tag: (TraineeOnboardingAuthRepository).toString(),
+  );
   final textController = TextEditingController();
 
   // --------------- Dynamic Data ---------------
   /// This will hold the groups generated from the fetched API data.
   final RxList<QuestionGroup> generatedQuestionGroups = <QuestionGroup>[].obs;
+
   /// This holds the raw fetched data for reference.
   final RxList<TraineeQuestionData> questionData = <TraineeQuestionData>[].obs;
 
@@ -40,6 +48,7 @@ class TraineeOnboardingController extends BaseController {
   final RxBool hasAgreedToInitialTerms = false.obs;
 
   final RxBool isLoading = true.obs;
+  final RxBool isEmailLoading = true.obs;
   final messages = <ChatMessage>[].obs;
   final isTyping = false.obs;
   final inputText = ''.obs;
@@ -78,8 +87,9 @@ class TraineeOnboardingController extends BaseController {
     isLoading(true);
     try {
       // Fetch the flat list of questions from the repository
-      final questionResponse =
-      await _onboardingQARepository.fetchQuestionsData(1);
+      final questionResponse = await _onboardingQARepository.fetchQuestionsData(
+        1,
+      );
       questionData.assignAll(questionResponse.questionsData);
 
       // Build the structured QuestionGroup list from the flat data
@@ -112,25 +122,25 @@ class TraineeOnboardingController extends BaseController {
     final groupMetadatas = [
       {
         'name': 'Fitness Background',
-        'intro': "Great! Now for a bit about your fitness background."
+        'intro': "Great! Now for a bit about your fitness background.",
       },
       {
         'name': 'Goals & Activity',
-        'intro': "Let's talk about your goals and activity levels."
+        'intro': "Let's talk about your goals and activity levels.",
       },
       {
         'name': 'Nutrition',
-        'intro': 'Now, a few questions about your nutrition habits.'
+        'intro': 'Now, a few questions about your nutrition habits.',
       },
       {
         'name': 'Health & Recovery',
-        'intro': "Finally, let's talk about your health and recovery."
+        'intro': "Finally, let's talk about your health and recovery.",
       },
       {
         'name': 'Body Profile',
         'intro':
-        "Excellent! Let's get your body profile details to track progress.",
-        'conclusion': "That's everything I need to know. Thanks for sharing!"
+            "Excellent! Let's get your body profile details to track progress.",
+        'conclusion': "That's everything I need to know. Thanks for sharing!",
       },
     ];
 
@@ -148,8 +158,9 @@ class TraineeOnboardingController extends BaseController {
 
       final groupQuestionsData = allQuestions.sublist(start, end);
 
-      final groupQAItems =
-      groupQuestionsData.map((data) => _mapDataToQAItem(data)).toList();
+      final groupQAItems = groupQuestionsData
+          .map((data) => _mapDataToQAItem(data))
+          .toList();
 
       if (groupQAItems.isNotEmpty) {
         final metadata = groupMetadatas[i];
@@ -270,8 +281,7 @@ class TraineeOnboardingController extends BaseController {
 
   List<QAItem> _activeQuestionsForGroup(int gi) {
     if (gi < 0 || gi >= generatedQuestionGroups.length) return const [];
-    return generatedQuestionGroups[gi]
-        .questions
+    return generatedQuestionGroups[gi].questions
         .where((q) => !_shouldSkipQuestion(q))
         .toList();
   }
@@ -364,10 +374,12 @@ class TraineeOnboardingController extends BaseController {
 
         isAwaitingGroupConfirmation.value = true;
 
-        final remainingGroups =
-        generatedQuestionGroups.sublist(nextGroupIndex + 1);
-        final remainingGroupNames =
-        remainingGroups.map((g) => "• ${g.name}").join('\n');
+        final remainingGroups = generatedQuestionGroups.sublist(
+          nextGroupIndex + 1,
+        );
+        final remainingGroupNames = remainingGroups
+            .map((g) => "• ${g.name}")
+            .join('\n');
 
         await _botSay(
           "Great job! To create the best plan, we still need to cover these topics:\n$remainingGroupNames",
@@ -383,12 +395,13 @@ class TraineeOnboardingController extends BaseController {
       }
 
       final candidate =
-      generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
+          generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
 
-    final bool isNewGroup = nextQuestionIndex == 0 &&
+    final bool isNewGroup =
+        nextQuestionIndex == 0 &&
         (currentGroupIndex.value != nextGroupIndex ||
             currentQuestionIndexInGroup.value == -1);
 
@@ -397,7 +410,7 @@ class TraineeOnboardingController extends BaseController {
     }
 
     final q =
-    generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
+        generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = nextGroupIndex;
@@ -424,6 +437,39 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
+  Future<void> _storeUserToken(LoginResponseModel response) async {
+    try {
+      await UserStore.to.saveProfileAndToken(response);
+    } catch (e) {
+      "Failed to store user token: ${e.toString()}".log();
+      CustomToast.showErrorToast("Failed to save session. Please try again.");
+    }
+  }
+
+  Future<bool> _registerUser() async {
+     if (onboardingPhase.value != OnboardingPhase.awaitingEmail) return false;
+
+    isEmailLoading(true);
+
+    try {
+      final response = await _onboardingAuthRepository.registerEmail({
+        'email': userEmail.value,
+      });
+      await _storeUserToken(response);
+      return true;
+    } catch (e) {
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      } else {
+        CustomToast.showErrorToast(
+          "An unexpected error occurred. Please try again.",
+        );
+      }
+      return false;
+    } finally {
+      isEmailLoading(false);
+    }
+  }
   Future<void> send(String text) async {
     final value = text.trim();
 
@@ -435,7 +481,12 @@ class TraineeOnboardingController extends BaseController {
         _scrollToBottom();
         textController.clear();
         inputText.value = '';
-        await _askForInitialTerms();
+
+        final bool didRegisterSuccessfully = await _registerUser();
+        if (didRegisterSuccessfully) {
+          await _askForInitialTerms();
+        }
+        // If registration fails, the UI remains at the email entry stage.
       } else {
         await _botSay("Please enter a valid email address.");
       }
@@ -479,9 +530,9 @@ class TraineeOnboardingController extends BaseController {
 
   bool get _canAnswer =>
       onboardingPhase.value == OnboardingPhase.askingQuestions &&
-          !isFinished &&
-          !isTyping.value &&
-          currentQuestionIndexInGroup.value != -1;
+      !isFinished &&
+      !isTyping.value &&
+      currentQuestionIndexInGroup.value != -1;
 
   void _saveUserAnswer(QAItem q, String value) {
     messages.add(ChatMessage(from: Sender.user, text: value));
@@ -492,7 +543,7 @@ class TraineeOnboardingController extends BaseController {
 
   bool get canGoBack =>
       !isFinished &&
-          (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
+      (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
 
   Future<void> goBack() async {
     if (!canGoBack) return;
@@ -512,8 +563,8 @@ class TraineeOnboardingController extends BaseController {
             generatedQuestionGroups[targetGroupIndex].questions.length - 1;
       }
 
-      final candidate =
-      generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
+      final candidate = generatedQuestionGroups[targetGroupIndex]
+          .questions[targetQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
@@ -523,8 +574,8 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    final q =
-    generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
+    final q = generatedQuestionGroups[targetGroupIndex]
+        .questions[targetQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = targetGroupIndex;
@@ -651,10 +702,15 @@ class TraineeOnboardingController extends BaseController {
   }
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.multipleChoice;
+
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
+
   bool get isCurrentTime => currentQuestion?.type == QAType.time;
+
   bool get isCurrentHeight => currentQuestion?.type == QAType.height;
+
   bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
+
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
 
   // -------------- Stepper bindings --------------
