@@ -340,6 +340,8 @@ class TraineeOnboardingController extends BaseController {
           await _botSay(finishedGroup.conclusion!);
         }
 
+        // The user requested to remove the summary overview. This block is now commented out.
+        /*
         final summaryLines = <String>[];
         for (final question in finishedGroup.questions) {
           final ans = answers[question.id];
@@ -353,6 +355,7 @@ class TraineeOnboardingController extends BaseController {
             "Here's a summary for this section:\n${summaryLines.join('\n')}",
           );
         }
+        */
 
         if (nextGroupIndex >= generatedQuestionGroups.length - 1) {
           await _completeOnboarding();
