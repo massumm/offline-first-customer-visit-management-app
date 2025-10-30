@@ -543,10 +543,9 @@ class TraineeOnboardingController extends BaseController {
 
     if (value.isEmpty) {
       if (q.canSkip) {
-        await _saveUserAnswer(q, "Skip"); // _saveUserAnswer now calls _askNext() on success
+        await _saveUserAnswer(q, "Skip");
         inputText.value = '';
         textController.clear();
-        // Removed: await _askNext();
       }
       return;
     }
@@ -556,10 +555,9 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    await _saveUserAnswer(q, value); // _saveUserAnswer now calls _askNext() on success
     inputText.value = '';
     textController.clear();
-    // Removed: await _askNext();
+    await _saveUserAnswer(q, value);
   }
 
   // --- Helper Getters and Methods ---
@@ -577,16 +575,15 @@ class TraineeOnboardingController extends BaseController {
     final userMessage = ChatMessage(from: Sender.user, text: value, status: MessageStatus.pending);
     messages.add(userMessage); // Add to the observable list
 
-    answers[q.id] = value; // Store the answer in your map
+    answers[q.id] = value;
     _scrollToBottom();
     _updateProgresses();
 
     // Await the message sending and check its success
     final bool success = await _sendMessage(userMessage);
     if (success) {
-      await _askNext(); // Only ask the next question if the message was delivered
+      await _askNext();
     }
-    // If not successful, the message status will be 'failed', and the user remains on the current question.
   }
 
   Future<void> _saveImageAnswer(QAItem q, XFile imageFile) async {
