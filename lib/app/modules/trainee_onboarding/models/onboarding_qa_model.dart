@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 
 import 'trainee_onboarding_questions_model.dart';
 
@@ -35,12 +36,24 @@ class QAItem {
 
 enum Sender { bot, user }
 
+enum MessageStatus { pending, sending, delivered, failed }
+
 class ChatMessage {
   final Sender from;
   final String text;
   final String? imagePath;
-  final DateTime at;
 
-  ChatMessage({required this.from, required this.text, this.imagePath, DateTime? at})
-    : at = at ?? DateTime.now();
+  // final DateTime at;
+  final Rx<MessageStatus> status;
+
+  ChatMessage({
+    required this.from,
+    required this.text,
+    this.imagePath,
+    MessageStatus status = MessageStatus.pending,
+  }) : status = status.obs;
+
+  void updateStatus(MessageStatus newStatus) {
+    status.value = newStatus;
+  }
 }

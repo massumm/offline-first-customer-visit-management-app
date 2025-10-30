@@ -66,22 +66,14 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Mish Icon',
-                      style: Theme
-                          .of(context)
-                          .textTheme
-                          .titleMedium),
+                  Text(
+                    'Mish Icon',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   Text(
                     'Online',
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(
-                      color: Theme
-                          .of(context)
-                          .colorScheme
-                          .onSurfaceVariant,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -132,10 +124,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   6.height,
                   Text(
                     controller.getCurrentGroupName ?? "Getting Started",
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .headlineMedium,
+                    style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 8),
                   AnimatedOnboardingStepper(
@@ -175,12 +164,19 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
                 Widget bubble;
                 if (m.imagePath != null && m.imagePath!.isNotEmpty) {
-                  bubble = _ImageMessageBubble(
+                  // Use the new status-aware image bubble
+                  bubble = _StatusImageBubble(
                     imagePath: m.imagePath!,
                     from: m.from,
+                    status: m.status,
                   );
                 } else {
-                  bubble = MessageBubble(text: m.text, from: m.from);
+                  // Use the new status-aware text bubble
+                  bubble = _StatusMessageBubble(
+                    text: m.text,
+                    from: m.from,
+                    status: m.status,
+                  );
                 }
 
                 return Align(alignment: alignment, child: bubble);
@@ -193,7 +189,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         Obx(() {
           final q = controller.currentQuestion;
           if (controller.onboardingPhase.value !=
-              OnboardingPhase.askingQuestions ||
+                  OnboardingPhase.askingQuestions ||
               controller.isFinished ||
               controller.showGroupContinuationButtons ||
               q == null ||
@@ -213,12 +209,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   alignment: WrapAlignment.center,
                   children: q.options
                       .map(
-                        (o) =>
-                        ActionChip(
+                        (o) => ActionChip(
                           label: Text(o),
                           onPressed: () => controller.choose(o),
                         ),
-                  )
+                      )
                       .toList(),
                 ),
               ),
@@ -288,34 +283,25 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           Row(
             children: [
               Obx(
-                    () =>
-                    Checkbox(
-                      value: controller.hasAgreedToInitialTerms.value,
-                      onChanged: controller.toggleInitialTermsAgreement,
-                    ),
+                () => Checkbox(
+                  value: controller.hasAgreedToInitialTerms.value,
+                  onChanged: controller.toggleInitialTermsAgreement,
+                ),
               ),
               Expanded(
                 child: RichText(
                   text: TextSpan(
-                    style: Theme
-                        .of(context)
-                        .textTheme
-                        .bodyMedium,
+                    style: Theme.of(context).textTheme.bodyMedium,
                     children: [
                       const TextSpan(text: 'I agree to the '),
                       TextSpan(
                         text: 'Terms and Conditions',
                         style: TextStyle(
-                          color: Theme
-                              .of(context)
-                              .colorScheme
-                              .primary,
+                          color: Theme.of(context).colorScheme.primary,
                           decoration: TextDecoration.underline,
-                          decorationColor:
-                          Theme
-                              .of(context)
-                              .colorScheme
-                              .primary,
+                          decorationColor: Theme.of(
+                            context,
+                          ).colorScheme.primary,
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
@@ -331,16 +317,15 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           ),
           const SizedBox(height: 12),
           Obx(
-                () =>
-                FilledButton(
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  onPressed: controller.hasAgreedToInitialTerms.value
-                      ? controller.proceedAfterInitialTerms
-                      : null,
-                  child: const Text('Continue'),
-                ),
+            () => FilledButton(
+              style: FilledButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
+              onPressed: controller.hasAgreedToInitialTerms.value
+                  ? controller.proceedAfterInitialTerms
+                  : null,
+              child: const Text('Continue'),
+            ),
           ),
         ],
       ),
@@ -428,15 +413,15 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               ),
             ),
             keyboardType:
-            controller.onboardingPhase.value == OnboardingPhase.awaitingEmail
+                controller.onboardingPhase.value ==
+                    OnboardingPhase.awaitingEmail
                 ? TextInputType.emailAddress
                 : TextInputType.text,
           ),
         ),
         const SizedBox(width: 8),
         FilledButton.icon(
-          onPressed: () =>
-              controller.send(controller.textController.text),
+          onPressed: () => controller.send(controller.textController.text),
           style: FilledButton.styleFrom(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             shape: const RoundedRectangleBorder(
@@ -472,8 +457,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   }
 }
 
-// --- The rest of the file (_HeightPicker, _WeightPicker, etc.) remains unchanged ---
-// ... (omitted for brevity, no changes were needed in these widgets)
 class _HeightPicker extends StatefulWidget {
   const _HeightPicker({required this.controller});
 
@@ -495,11 +478,11 @@ class _HeightPickerState extends State<_HeightPicker> {
   // Data for pickers
   final List<int> _cmValues = List.generate(
     101,
-        (index) => 120 + index,
+    (index) => 120 + index,
   ); // 120-220 cm
   final List<int> _feetValues = List.generate(
     4,
-        (index) => 4 + index,
+    (index) => 4 + index,
   ); // 4-7 ft
   final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
 
@@ -509,13 +492,9 @@ class _HeightPickerState extends State<_HeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme
-            .of(
+        color: Theme.of(
           context,
-        )
-            .colorScheme
-            .surfaceContainerHighest
-            .withValues(alpha: 0.3),
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -631,11 +610,11 @@ class _WeightPickerState extends State<_WeightPicker> {
   // Data for pickers
   final List<double> _kgValues = List.generate(
     1101,
-        (i) => 40.0 + i * 0.1,
+    (i) => 40.0 + i * 0.1,
   ); // 40.0-150.0 kg
   final List<double> _lbsValues = List.generate(
     2401,
-        (i) => 90.0 + i * 0.1,
+    (i) => 90.0 + i * 0.1,
   ); // 90.0-330.0 lbs
 
   @override
@@ -647,13 +626,9 @@ class _WeightPickerState extends State<_WeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme
-            .of(
+        color: Theme.of(
           context,
-        )
-            .colorScheme
-            .surfaceContainerHighest
-            .withValues(alpha: 0.3),
+        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -672,7 +647,7 @@ class _WeightPickerState extends State<_WeightPicker> {
               scrollController: FixedExtentScrollController(
                 initialItem: currentValues.indexOf(
                   currentValues.firstWhere(
-                        (v) => (v - initialValue).abs() < 0.01,
+                    (v) => (v - initialValue).abs() < 0.01,
                     orElse: () => currentValues.first,
                   ),
                 ),
@@ -752,31 +727,30 @@ class _ImagePickerInput extends StatelessWidget {
   void _showImageSourceDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (dialogContext) =>
-          AlertDialog(
-            title: const Text("Select Image Source"),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.camera_alt),
-                  title: const Text("Take Photo"),
-                  onTap: () {
-                    Navigator.of(dialogContext).pop();
-                    _pickImage(ImageSource.camera);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.photo_library),
-                  title: const Text("Choose from Gallery"),
-                  onTap: () {
-                    Navigator.of(dialogContext).pop();
-                    _pickImage(ImageSource.gallery);
-                  },
-                ),
-              ],
+      builder: (dialogContext) => AlertDialog(
+        title: const Text("Select Image Source"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Take Photo"),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                _pickImage(ImageSource.camera);
+              },
             ),
-          ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text("Choose from Gallery"),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -791,23 +765,50 @@ class _ImagePickerInput extends StatelessWidget {
   }
 }
 
-class _ImageMessageBubble extends StatelessWidget {
+class _StatusImageBubble extends StatelessWidget {
   final String imagePath;
   final Sender from;
+  final Rx<MessageStatus> status;
 
-  const _ImageMessageBubble({required this.imagePath, required this.from});
+  const _StatusImageBubble({
+    required this.imagePath,
+    required this.from,
+    required this.status,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isUser = from == Sender.user;
 
+    final imageWidget = ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Image.file(
+        File(imagePath),
+        fit: BoxFit.cover,
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (wasSynchronouslyLoaded) {
+            return child;
+          }
+          return frame == null
+              ? const Padding(
+                  padding: EdgeInsets.all(48.0),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
+                )
+              : child;
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return const Padding(
+            padding: EdgeInsets.all(32.0),
+            child: Icon(Icons.broken_image, color: Colors.red, size: 40),
+          );
+        },
+      ),
+    );
+
     return Container(
       constraints: BoxConstraints(
-        maxWidth: MediaQuery
-            .of(context)
-            .size
-            .width * 0.7,
+        maxWidth: MediaQuery.of(context).size.width * 0.7,
       ),
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
@@ -816,30 +817,107 @@ class _ImageMessageBubble extends StatelessWidget {
             : theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Image.file(
-          File(imagePath),
-          fit: BoxFit.cover,
-          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-            if (wasSynchronouslyLoaded) {
-              return child;
-            }
-            return frame == null
-                ? const Padding(
-              padding: EdgeInsets.all(48.0),
-              child: Center(child: CircularProgressIndicator.adaptive()),
+      child: isUser
+          ? Obx(
+              () => Stack(
+                children: [
+                  imageWidget,
+                  Positioned(
+                    bottom: 8,
+                    right: 8,
+                    child: _MessageStatusIcon(
+                      status: status.value,
+                      isForImage: true,
+                    ),
+                  ),
+                ],
+              ),
             )
-                : child;
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return const Padding(
-              padding: EdgeInsets.all(32.0),
-              child: Icon(Icons.broken_image, color: Colors.red, size: 40),
-            );
-          },
-        ),
-      ),
+          : imageWidget,
     );
+  }
+}
+
+class _MessageStatusIcon extends StatelessWidget {
+  final MessageStatus status;
+  final bool isForImage;
+
+  const _MessageStatusIcon({required this.status, this.isForImage = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    IconData iconData;
+    Color iconColor;
+
+    switch (status) {
+      case MessageStatus.pending:
+      case MessageStatus.sending:
+        iconData = Icons.watch_later_outlined;
+        // CHANGE: Use withOpacity instead of withValues
+        iconColor = isForImage
+            ? Colors.white
+            : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7);
+        break;
+      case MessageStatus.delivered:
+        iconData = Icons.done_all;
+        iconColor = isForImage ? Colors.white : theme.colorScheme.primary;
+        break;
+      case MessageStatus.failed:
+        iconData = Icons.error_outline;
+        iconColor = isForImage ? Colors.white : theme.colorScheme.error;
+        break;
+    }
+
+    final icon = Icon(iconData, size: isForImage ? 14 : 16, color: iconColor);
+
+    if (isForImage) {
+      return Container(
+        padding: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.4),
+          shape: BoxShape.circle,
+        ),
+        child: icon,
+      );
+    }
+
+    return icon;
+  }
+}
+
+class _StatusMessageBubble extends StatelessWidget {
+  final String text;
+  final Sender from;
+  final Rx<MessageStatus> status;
+
+  const _StatusMessageBubble({
+    required this.text,
+    required this.from,
+    required this.status,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bubble = MessageBubble(text: text, from: from);
+
+    if (from != Sender.user) {
+      return bubble;
+    }
+
+    return Obx(() {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          bubble,
+          const SizedBox(width: 6),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: _MessageStatusIcon(status: status.value),
+          ),
+        ],
+      );
+    });
   }
 }

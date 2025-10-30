@@ -270,7 +270,8 @@ class TraineeOnboardingController extends BaseController {
     isTyping.value = true;
     final delayMs = (text.length * 25).clamp(400, 1500);
     await Future.delayed(Duration(milliseconds: delayMs));
-    messages.add(ChatMessage(from: Sender.bot, text: text));
+    // Bot messages are immediately delivered
+    messages.add(ChatMessage(from: Sender.bot, text: text, status: MessageStatus.delivered));
     isTyping.value = false;
     _scrollToBottom();
   }
@@ -433,7 +434,7 @@ class TraineeOnboardingController extends BaseController {
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-    _saveUserAnswer(q, option);
+    await _saveUserAnswer(q, option); // This now handles message creation and sending
     await _askNext();
   }
 
@@ -446,16 +447,21 @@ class TraineeOnboardingController extends BaseController {
     }
   }
 
-  Future<bool> _registerUser() async {
-     if (onboardingPhase.value != OnboardingPhase.awaitingEmail) return false;
+
+  Future<bool> _registerUser(ChatMessage userMessage) async {
+    if (onboardingPhase.value != OnboardingPhase.awaitingEmail) return false;
 
     isEmailLoading(true);
+    // Mark the message as 'sending' before the API call
+    userMessage.updateStatus(MessageStatus.sending);
 
     try {
       final response = await _onboardingAuthRepository.registerEmail({
         'email': userEmail.value,
       });
       await _storeUserToken(response);
+      // Mark as 'delivered' on success
+      userMessage.updateStatus(MessageStatus.delivered);
       return true;
     } catch (e) {
       if (e is ApiException) {
@@ -465,22 +471,30 @@ class TraineeOnboardingController extends BaseController {
           "An unexpected error occurred. Please try again.",
         );
       }
+      // Mark as 'failed' on error
+      userMessage.updateStatus(MessageStatus.failed);
       return false;
     } finally {
       isEmailLoading(false);
     }
   }
+  Future<void> _sendMessage(ChatMessage userMessage) async {
+    // Mark the message as sending before the API call
+    userMessage.updateStatus(MessageStatus.sending);
 
-  Future<void> _sendMessage() async {
-    try{
+    try {
+      final q = currentQuestion!;
       final answerData = {
         "trainee_profile": 1,
-        "trainee_onboarding_question": int.tryParse(currentQuestion?.id ?? '1') ?? 1,
-        "answer_text": answers['${currentQuestion?.id}'],
+        "trainee_onboarding_question": int.tryParse(q.id ?? '1') ?? 1,
+        "answer_text": answers[q.id],
         "answer_metadata": {},
       };
-      final response = await _onboardingQARepository.sendAnswers(answerData, 0); // Default value 0
-    } catch(e) {
+
+      await _onboardingQARepository.sendAnswers(answerData, 0);
+      userMessage.updateStatus(MessageStatus.delivered); // Mark as delivered on success
+    } catch (e) {
+      userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
       CustomToast.showErrorToast("Error sending message: $e");
     }
   }
@@ -492,16 +506,25 @@ class TraineeOnboardingController extends BaseController {
     if (onboardingPhase.value == OnboardingPhase.awaitingEmail) {
       if (value.isEmail) {
         userEmail.value = value;
-        messages.add(ChatMessage(from: Sender.user, text: value));
+
+        // Create the message with a pending status and add it to the list
+        final userMessage = ChatMessage(
+          from: Sender.user,
+          text: value,
+          status: MessageStatus.pending,
+        );
+        messages.add(userMessage);
+
         _scrollToBottom();
         textController.clear();
         inputText.value = '';
 
-        final bool didRegisterSuccessfully = await _registerUser();
+        // Pass the message object to _registerUser to handle status updates
+        final bool didRegisterSuccessfully = await _registerUser(userMessage);
         if (didRegisterSuccessfully) {
           await _askForInitialTerms();
         }
-        // If registration fails, the UI remains at the email entry stage.
+        // If registration fails, the message status will be updated to 'failed'
       } else {
         await _botSay("Please enter a valid email address.");
       }
@@ -535,7 +558,9 @@ class TraineeOnboardingController extends BaseController {
     }
 
     _saveUserAnswer(q, value);
-    await _sendMessage(); // Post Message Data.
+    // await _sendMessage(
+    //   ChatMessage(from: Sender.user, text: value),
+    // ); // Post Message Data.
     inputText.value = '';
     textController.clear();
     await _askNext();
@@ -550,11 +575,31 @@ class TraineeOnboardingController extends BaseController {
       !isTyping.value &&
       currentQuestionIndexInGroup.value != -1;
 
-  void _saveUserAnswer(QAItem q, String value) {
-    messages.add(ChatMessage(from: Sender.user, text: value));
-    answers[q.id] = value;
+
+  Future<void> _saveUserAnswer(QAItem q, String value) async {
+
+    final userMessage = ChatMessage(from: Sender.user, text: value, status: MessageStatus.pending);
+    messages.add(userMessage); // Add to the observable list
+
+    answers[q.id] = value; // Store the answer in your map
     _scrollToBottom();
     _updateProgresses();
+
+    await _sendMessage(userMessage);
+  }
+
+  Future<void> _saveImageAnswer(QAItem q, XFile imageFile) async {
+    final userMessage = ChatMessage(
+      from: Sender.user,
+      text: '',
+      imagePath: imageFile.path,
+      status: MessageStatus.pending,
+    );
+    messages.add(userMessage);
+    answers[q.id] = imageFile.path; // Store the image path as the answer
+    _scrollToBottom();
+    _updateProgresses();
+    await _sendMessage(userMessage); // Await the message sending
   }
 
   bool get canGoBack =>
@@ -661,15 +706,11 @@ class TraineeOnboardingController extends BaseController {
     await _askNext();
   }
 
+  // Update selectImage to use the new _saveImageAnswer method
   Future<void> selectImage(XFile imageFile) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-    answers[q.id] = imageFile.path;
-    messages.add(
-      ChatMessage(from: Sender.user, imagePath: imageFile.path, text: ''),
-    );
-    _scrollToBottom();
-    _updateProgresses();
+    await _saveImageAnswer(q, imageFile); // Use the new method
     await _askNext();
   }
 
