@@ -412,11 +412,28 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 vertical: 10,
               ),
             ),
-            keyboardType:
-                controller.onboardingPhase.value ==
-                    OnboardingPhase.awaitingEmail
-                ? TextInputType.emailAddress
-                : TextInputType.text,
+            keyboardType: () {
+              // Handle email phase first
+              if (controller.onboardingPhase.value ==
+                  OnboardingPhase.awaitingEmail) {
+                return TextInputType.emailAddress;
+              }
+
+              // Check the current question type for other phases
+              final qType = controller.currentQuestion?.type;
+
+              // For number questions (including phone numbers), show the number keyboard.
+              if (qType == QAType.number) {
+                return TextInputType.number;
+              }
+
+              if (qType == QAType.phoneNumber) {
+                return TextInputType.phone;
+              }
+
+              // Default to a standard text keyboard
+              return TextInputType.text;
+            }(),
           ),
         ),
         const SizedBox(width: 8),

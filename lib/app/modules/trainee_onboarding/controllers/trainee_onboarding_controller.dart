@@ -187,7 +187,7 @@ class TraineeOnboardingController extends BaseController {
       possibleAnswersMetadata: data.possibleAnswersMetadata,
       options: data.possibleAnswersMetadata?.choices ?? [],
       hint: null,
-      canSkip: false,
+      canSkip: false, //TODO: HANDLE SKIP.
     );
   }
 
@@ -487,7 +487,7 @@ class TraineeOnboardingController extends BaseController {
     try {
       final q = currentQuestion!;
       final answerData = {
-        "trainee_profile": 3,
+        "trainee_profile": 4,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
         // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
