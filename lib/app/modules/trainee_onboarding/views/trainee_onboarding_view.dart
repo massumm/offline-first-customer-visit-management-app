@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -120,14 +121,14 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 children: [
                   6.height,
                   Text(
-                    'Personal',
+                    controller.getCurrentGroupName ?? "Getting Started",
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 8),
                   AnimatedOnboardingStepper(
-                    totalSteps: 6,
-                    currentStep: controller.currentGroupIndex.value,
-                    stepProgress: controller.currentGroupProgress.value,
+                    totalSteps: controller.stepperTotalSteps,
+                    currentStep: controller.stepperCurrentStep,
+                    stepProgress: controller.stepperStepProgress,
                   ),
                 ],
               ),
@@ -142,21 +143,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   Widget body(BuildContext context) {
     return Column(
       children: [
-        // Obx(
-        //   () => OnboardingHeader(
-        //     avatarAsset: Assets.imagesIconLogoPink,
-        //     name: 'Mish Icon',
-        //     statusText: 'Online',
-        //     sectionTitle: controller.isFinished
-        //         ? "You're all set!"
-        //         : controller.getCurrentGroupName ?? "Just a moment...",
-        //     totalSteps: controller.totalGroups.value,
-        //     currentStep: controller.currentGroupIndex.value,
-        //     stepProgress: controller.currentGroupProgress.value,
-        //     controller: controller,
-        //   ),
-        // ),
-        // Custom Stepper For visualizing group movement
         Expanded(
           child: Obx(() {
             final items = controller.messages;
@@ -170,21 +156,17 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 if (isTypingRow) return const TypingBubble();
                 final m = items[index];
 
-                // Determine alignment
                 final alignment = m.from == Sender.user
                     ? Alignment.centerRight
                     : Alignment.centerLeft;
 
-                // Conditionally build the bubble based on message content
                 Widget bubble;
                 if (m.imagePath != null && m.imagePath!.isNotEmpty) {
-                  // If there's an image, use the new image bubble
                   bubble = _ImageMessageBubble(
                     imagePath: m.imagePath!,
                     from: m.from,
                   );
                 } else {
-                  // Otherwise, use the existing text bubble
                   bubble = MessageBubble(text: m.text, from: m.from);
                 }
 
@@ -197,8 +179,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         /// Quick replies (only for choice-type question)
         Obx(() {
           final q = controller.currentQuestion;
-          // Hide quick replies if the flow is finished, paused, or not a choice question.
-          if (controller.isFinished ||
+          if (controller.onboardingPhase.value !=
+              OnboardingPhase.askingQuestions ||
+              controller.isFinished ||
               controller.showGroupContinuationButtons ||
               q == null ||
               q.type != QAType.multipleChoice) {
@@ -218,10 +201,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   children: q.options
                       .map(
                         (o) => ActionChip(
-                          label: Text(o),
-                          onPressed: () => controller.choose(o),
-                        ),
-                      )
+                      label: Text(o),
+                      onPressed: () => controller.choose(o),
+                    ),
+                  )
                       .toList(),
                 ),
               ),
@@ -230,51 +213,50 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           );
         }),
 
-        // Input
+        // Input Area
         SafeArea(
           top: false,
           child: Obx(() {
-            // Check for the final continuation state first.
-            if (controller.isAwaitingFinalContinuation.isTrue) {
-              return _buildFinalContinueButton(context);
-            }
+            switch (controller.onboardingPhase.value) {
+              case OnboardingPhase.awaitingEmail:
+                return _buildTextInput();
 
-            // When a group is finished, show Continue/Skip buttons.
-            if (controller.showGroupContinuationButtons) {
-              return _buildContinuationButtons();
-            }
+              case OnboardingPhase.awaitingInitialTerms:
+                return _buildInitialTermsInput(context);
 
-            if (controller.isCurrentImage) {
-              // Show the image picker button
-              return _ImagePickerInput(controller: controller);
-            }
+              case OnboardingPhase.fetchingData:
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 32.0),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
+                );
 
-            // When the current question is a date type, show a date picker button.
-            if (controller.isCurrentDate) {
-              return _buildDatePickerButton(context);
-            }
+              case OnboardingPhase.askingQuestions:
+                if (controller.showGroupContinuationButtons) {
+                  return _buildContinuationButtons();
+                }
+                if (controller.isCurrentImage) {
+                  return _ImagePickerInput(controller: controller);
+                }
+                if (controller.isCurrentDate) {
+                  return _buildDatePickerButton(context);
+                }
+                if (controller.isCurrentTime) {
+                  return _buildTimePickerButton(context);
+                }
+                if (controller.isCurrentHeight) {
+                  return _HeightPicker(controller: controller);
+                }
+                if (controller.isCurrentWeight) {
+                  return _WeightPicker(controller: controller);
+                }
+                if (controller.isCurrentChoice) {
+                  return const SizedBox.shrink();
+                }
+                return _buildTextInput();
 
-            // When the current question is a time type, show a time picker button.
-            if (controller.isCurrentTime) {
-              return _buildTimePickerButton(context);
+              case OnboardingPhase.completed:
+                return _buildTextInput();
             }
-
-            //  height and weight pickers
-            if (controller.isCurrentHeight) {
-              return _HeightPicker(controller: controller);
-            }
-
-            if (controller.isCurrentWeight) {
-              return _WeightPicker(controller: controller);
-            }
-
-            // Hide the input field for Choice questions.
-            if (controller.currentQuestion?.type == QAType.multipleChoice) {
-              return SizedBox.shrink();
-            }
-
-            // Default input field for text/number questions.
-            return _buildTextInput();
           }),
         ),
         const SizedBox(height: 8),
@@ -282,7 +264,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     );
   }
 
-  Widget _buildFinalContinueButton(BuildContext context) {
+  Widget _buildInitialTermsInput(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Column(
@@ -292,9 +274,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           Row(
             children: [
               Obx(
-                () => Checkbox(
-                  value: controller.hasAgreedToTerms.value,
-                  onChanged: controller.toggleTermsAgreement,
+                    () => Checkbox(
+                  value: controller.hasAgreedToInitialTerms.value,
+                  onChanged: controller.toggleInitialTermsAgreement,
                 ),
               ),
               Expanded(
@@ -302,18 +284,20 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   text: TextSpan(
                     style: Theme.of(context).textTheme.bodyMedium,
                     children: [
-                      const TextSpan(text: 'I have read and agree to the '),
+                      const TextSpan(text: 'I agree to the '),
                       TextSpan(
                         text: 'Terms and Conditions',
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           decoration: TextDecoration.underline,
-                          decorationColor: Theme.of(
-                            context,
-                          ).colorScheme.primary,
+                          decorationColor:
+                          Theme.of(context).colorScheme.primary,
                         ),
-                        // TODO: Add a recognizer to open the terms page
-                        // recognizer: TapGestureRecognizer()..onTap = () => Get.toNamed(Routes.TERMS),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            // TODO: Navigate to your Terms and Conditions page
+                            Get.snackbar("Navigation", "Go to Terms page");
+                          },
                       ),
                     ],
                   ),
@@ -322,15 +306,13 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             ],
           ),
           const SizedBox(height: 12),
-
           Obx(
-            () => FilledButton(
+                () => FilledButton(
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              // The button is disabled if `hasAgreedToTerms` is false
-              onPressed: controller.hasAgreedToTerms.value
-                  ? controller.proceedToContinue
+              onPressed: controller.hasAgreedToInitialTerms.value
+                  ? controller.proceedAfterInitialTerms
                   : null,
               child: const Text('Continue'),
             ),
@@ -365,7 +347,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
   Widget _buildDatePickerButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ElevatedButton(
         onPressed: () async {
           final DateTime? pickedDate = await showDatePicker(
@@ -405,43 +387,38 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       children: [
         const SizedBox(width: 8),
         Expanded(
-          child: IgnorePointer(
-            ignoring: controller.isCurrentChoice,
-            child: TextField(
-              controller: controller.textController,
-              onChanged: (t) => controller.inputText.value = t,
-              onSubmitted: (t) {
-                controller.send(t);
-                controller.textController.clear();
-              },
-              decoration: InputDecoration(
-                hintText: _hintFor(),
-                border: const OutlineInputBorder(),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
+          child: TextField(
+            controller: controller.textController,
+            onChanged: (t) => controller.inputText.value = t,
+            onSubmitted: (t) {
+              controller.send(t);
+            },
+            decoration: InputDecoration(
+              hintText: _hintFor(),
+              border: const OutlineInputBorder(),
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
               ),
             ),
+            keyboardType:
+            controller.onboardingPhase.value == OnboardingPhase.awaitingEmail
+                ? TextInputType.emailAddress
+                : TextInputType.text,
           ),
         ),
         const SizedBox(width: 8),
         FilledButton.icon(
-          onPressed: () {
-            controller.send(controller.textController.text);
-            controller.textController.clear();
-          },
-          icon: const Icon(Icons.send),
+          onPressed: () => controller.send(controller.textController.text),
           style: FilledButton.styleFrom(
-            backgroundColor: controller.currentQuestion?.canSkip ?? false ?
-                Colors.grey.shade500 : null,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
           ),
-          label: Obx(
-            () => (controller.currentQuestion?.canSkip ?? false)
-                ? const Text("Skip")
-                : const Text("Send"),
-          ),
+          icon: const Icon(Icons.send),
+          label: const Text('Send'), // TODO: HANDLE SKIP
         ),
         const SizedBox(width: 8),
       ],
@@ -449,20 +426,28 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   }
 
   String _hintFor() {
-    if (controller.isFinished) {
-      return "Type anything to restart";
+    switch (controller.onboardingPhase.value) {
+      case OnboardingPhase.awaitingEmail:
+        return "Enter your email address";
+      case OnboardingPhase.completed:
+        return "Type anything to restart";
+      case OnboardingPhase.askingQuestions:
+        final q = controller.currentQuestion;
+        if (q == null) {
+          return "Just a moment...";
+        }
+        if (q.type == QAType.multipleChoice) {
+          return "Choose an option above";
+        }
+        return q.hint ?? "Type your answer";
+      default:
+        return "";
     }
-    final q = controller.currentQuestion;
-    if (q == null) {
-      return "Say hi to start";
-    }
-    if (q.type == QAType.multipleChoice) {
-      return "Choose an option above";
-    }
-    return q.hint ?? "Type your answer";
   }
 }
 
+// --- The rest of the file (_HeightPicker, _WeightPicker, etc.) remains unchanged ---
+// ... (omitted for brevity, no changes were needed in these widgets)
 class _HeightPicker extends StatefulWidget {
   const _HeightPicker({required this.controller});
 
@@ -484,11 +469,11 @@ class _HeightPickerState extends State<_HeightPicker> {
   // Data for pickers
   final List<int> _cmValues = List.generate(
     101,
-    (index) => 120 + index,
+        (index) => 120 + index,
   ); // 120-220 cm
   final List<int> _feetValues = List.generate(
     4,
-    (index) => 4 + index,
+        (index) => 4 + index,
   ); // 4-7 ft
   final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
 
@@ -616,11 +601,11 @@ class _WeightPickerState extends State<_WeightPicker> {
   // Data for pickers
   final List<double> _kgValues = List.generate(
     1101,
-    (i) => 40.0 + i * 0.1,
+        (i) => 40.0 + i * 0.1,
   ); // 40.0-150.0 kg
   final List<double> _lbsValues = List.generate(
     2401,
-    (i) => 90.0 + i * 0.1,
+        (i) => 90.0 + i * 0.1,
   ); // 90.0-330.0 lbs
 
   @override
@@ -653,7 +638,7 @@ class _WeightPickerState extends State<_WeightPicker> {
               scrollController: FixedExtentScrollController(
                 initialItem: currentValues.indexOf(
                   currentValues.firstWhere(
-                    (v) => (v - initialValue).abs() < 0.01,
+                        (v) => (v - initialValue).abs() < 0.01,
                     orElse: () => currentValues.first,
                   ),
                 ),
@@ -793,22 +778,20 @@ class _ImageMessageBubble extends StatelessWidget {
             : theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
       ),
-
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
         child: Image.file(
           File(imagePath),
           fit: BoxFit.cover,
-
           frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
             if (wasSynchronouslyLoaded) {
               return child;
             }
             return frame == null
                 ? const Padding(
-                    padding: EdgeInsets.all(48.0),
-                    child: Center(child: CircularProgressIndicator.adaptive()),
-                  )
+              padding: EdgeInsets.all(48.0),
+              child: Center(child: CircularProgressIndicator.adaptive()),
+            )
                 : child;
           },
           errorBuilder: (context, error, stackTrace) {
