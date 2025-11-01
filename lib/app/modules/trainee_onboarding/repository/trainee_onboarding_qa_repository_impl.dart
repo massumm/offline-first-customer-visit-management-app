@@ -5,7 +5,6 @@ import '../../../base/network/dio_provider.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import 'traineer_onboarding_qa_repository.dart';
 
-
 class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     implements TraineeOnboardingQARepository {
   final String? token = UserStore.to.token;
@@ -38,7 +37,10 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
   ) => TraineeOnboardingQuestionDataModel.fromJson(response.data);
 
   @override
-  Future<Map<String, dynamic>> sendAnswers(Map<String, dynamic> answers, int trainerId) {
+  Future<Map<String, dynamic>> sendAnswers(
+    Map<String, dynamic> answers,
+    int trainerId,
+  ) {
     final String endpoint =
         "${DioProvider.baseUrl}/api/trainers/onboardings/$trainerId/answers/";
 
@@ -47,6 +49,34 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     };
 
     Future<Response<dynamic>> dioCall = dioClient.post(
+      endpoint,
+      data: answers,
+      options: Options(headers: headers),
+    );
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> updateAnswers(
+    Map<String, dynamic> answers,
+    int traineeId,
+    int questionId,
+  ) {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/trainers/onboardings/$traineeId/answers/$questionId/";
+
+    final Map<String, String> headers = {
+      'Authorization': "Bearer ${token ?? ''}",
+    };
+
+    Future<Response<dynamic>> dioCall = dioClient.patch(
       endpoint,
       data: answers,
       options: Options(headers: headers),

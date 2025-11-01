@@ -56,6 +56,7 @@ class TraineeOnboardingController extends BaseController {
   final currentQuestionIndexInGroup = (-1).obs;
   final isAwaitingGroupConfirmation = false.obs;
   final pageController = ScrollController();
+  var _isRevisiting = false;
 
   // --------------- Answers ---------------
   final Map<int, String> answers = {};
@@ -64,7 +65,10 @@ class TraineeOnboardingController extends BaseController {
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
 
   //-------------------- QA Stepper --------------------
-  final RxDouble currentGroupProgress = 0.0.obs;
+  /// Holds the progress (0.0 to 1.0) for each question group.
+  final RxList<double> groupProgresses = <double>[].obs;
+
+  RxInt traineeId = 1.obs;
 
   @override
   void onInit() {
@@ -111,83 +115,107 @@ class TraineeOnboardingController extends BaseController {
     }
   }
 
-  /// Divides the flat list of questions into 5 groups.
+
   void _buildQuestionGroupsFromData(List<TraineeQuestionData> allQuestions) {
     if (allQuestions.isEmpty) {
       generatedQuestionGroups.clear();
+      groupProgresses.clear();
       return;
     }
 
-    // "Getting Started" is now handled by the initial email/terms flow.
-    final groupMetadatas = [
-      {
-        'name': 'Fitness Background',
-        'intro': "Great! Now for a bit about your fitness background.",
-      },
-      {
-        'name': 'Goals & Activity',
-        'intro': "Let's talk about your goals and activity levels.",
-      },
-      {
-        'name': 'Nutrition',
-        'intro': 'Now, a few questions about your nutrition habits.',
-      },
-      {
-        'name': 'Health & Recovery',
-        'intro': "Finally, let's talk about your health and recovery.",
-      },
-      {
-        'name': 'Body Profile',
-        'intro':
-            "Excellent! Let's get your body profile details to track progress.",
-        'conclusion': "That's everything I need to know. Thanks for sharing!",
-      },
+
+    const groupOrder = [
+      'Personal Information',
+      'Goals & Activity',
+      'Nutrition',
+      'Health & Recovery',
+      'Body Profile',
+      'general',
     ];
 
-    const int numberOfGroups = 5; // Updated from 6
-    final int questionsPerGroup = (allQuestions.length / numberOfGroups).ceil();
+
+    final groupMetadatas = {
+      'Personal Information': {
+        'intro': "Great! Now for a bit about your Personal data.",
+      },
+      'Goals & Activity': {
+        'intro': "Let's talk about your goals and activity levels.",
+      },
+      'Nutrition': {
+        'intro': 'Now, a few questions about your nutrition habits.',
+      },
+      'Health & Recovery': {
+        'intro': "Finally, let's talk about your health and recovery.",
+      },
+      'Body Profile': {
+        'intro':
+        "Excellent! Let's get your body profile details to track progress.",
+        'conclusion': "That's everything I need to know. Thanks for sharing!",
+      },
+      // Added metadata for the 'general' group to match the API data
+      'general': {
+        'intro': "Great! Let's get started with some general questions.",
+        'conclusion': "Thanks for providing the details.",
+      },
+    };
+
+
+    final Map<String, List<TraineeQuestionData>> questionsByGroup = {};
+    for (final question in allQuestions) {
+
+      final String groupName;
+      if (question.groupName.isNotEmpty) {
+        groupName = question.groupName;
+      } else {
+        groupName = 'Uncategorized';
+      }
+      (questionsByGroup[groupName] ??= []).add(question);
+    }
+
+
     final List<QuestionGroup> newGroups = [];
+    for (final groupName in groupOrder) {
+      final groupQuestionsData = questionsByGroup[groupName];
 
-    for (int i = 0; i < numberOfGroups; i++) {
-      if (i * questionsPerGroup >= allQuestions.length) break;
+      if (groupQuestionsData != null && groupQuestionsData.isNotEmpty) {
+        final groupQAItems =
+        groupQuestionsData.map((data) => _mapDataToQAItem(data)).toList();
 
-      final int start = i * questionsPerGroup;
-      final int end = (start + questionsPerGroup > allQuestions.length)
-          ? allQuestions.length
-          : start + questionsPerGroup;
-
-      final groupQuestionsData = allQuestions.sublist(start, end);
-
-      final groupQAItems = groupQuestionsData
-          .map((data) => _mapDataToQAItem(data))
-          .toList();
-
-      if (groupQAItems.isNotEmpty) {
-        final metadata = groupMetadatas[i];
-        newGroups.add(
-          QuestionGroup(
-            name: metadata['name']!,
-            introduction: metadata['intro']!,
-            conclusion: metadata['conclusion'],
-            questions: groupQAItems,
-          ),
-        );
+        final metadata = groupMetadatas[groupName];
+        if (metadata != null) {
+          newGroups.add(
+            QuestionGroup(
+              name: groupName,
+              introduction: metadata['intro']!,
+              conclusion: metadata['conclusion'],
+              questions: groupQAItems,
+            ),
+          );
+        }
       }
     }
+
+
+    if (newGroups.isEmpty) {
+      "Warning: No question groups were created. Check if the 'group_name' values from the API match the 'groupOrder' list in the controller.".log();
+    }
+
     generatedQuestionGroups.assignAll(newGroups);
+    // Initialize progress for each dynamically created group.
+    groupProgresses.assignAll(List.filled(newGroups.length, 0.0));
   }
 
   /// Maps a [TraineeQuestionData] object from the API to a [QAItem] used by the chat UI.
   QAItem _mapDataToQAItem(TraineeQuestionData data) {
     return QAItem(
-      id:  data.id ?? 1,
+      id: data.id ?? 1,
       question: data.questionText ?? 'No question text',
       type: data.questionType ?? QAType.unknown,
       questionFieldName: data.questionFieldName,
       possibleAnswersMetadata: data.possibleAnswersMetadata,
       options: data.possibleAnswersMetadata?.choices ?? [],
       hint: null,
-      canSkip: false, //TODO: HANDLE SKIP.
+      canSkip: data.isOptional,
     );
   }
 
@@ -258,10 +286,14 @@ class TraineeOnboardingController extends BaseController {
       final onboardingJson = toJson();
       Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
       CustomToast.showSuccessToast('Profile data saved successfully.');
-      Get.toNamed(
-        Routes.TRAINEE_FITNESS_REPORT_GENERATION,
-        arguments: onboardingJson,
+      Future.delayed(Duration(seconds: 1), () =>
+          Get.toNamed(
+              Routes.TRAINEE_FITNESS_REPORT_GENERATION,
+              arguments: traineeId.value
+            // onboardingJson,
+          )
       );
+
       "Proceeding to fitness report with data: $onboardingJson".log();
     } catch (e) {
       CustomToast.showErrorToast('Error saving data: $e');
@@ -273,7 +305,8 @@ class TraineeOnboardingController extends BaseController {
     final delayMs = (text.length * 25).clamp(400, 1500);
     await Future.delayed(Duration(milliseconds: delayMs));
     // Bot messages are immediately delivered
-    messages.add(ChatMessage(from: Sender.bot, text: text, status: MessageStatus.delivered));
+    messages.add(
+        ChatMessage(from: Sender.bot, text: text, status: MessageStatus.delivered));
     isTyping.value = false;
     _scrollToBottom();
   }
@@ -353,23 +386,6 @@ class TraineeOnboardingController extends BaseController {
           await _botSay(finishedGroup.conclusion!);
         }
 
-        // The user requested to remove the summary overview. This block is now commented out.
-        /*
-        final summaryLines = <String>[];
-        for (final question in finishedGroup.questions) {
-          final ans = answers[question.id];
-          if (ans != null && ans.isNotEmpty) {
-            final qt = question.question.replaceAll('?', '');
-            summaryLines.add("• $qt: **$ans**");
-          }
-        }
-        if (summaryLines.isNotEmpty) {
-          await _botSay(
-            "Here's a summary for this section:\n${summaryLines.join('\n')}",
-          );
-        }
-        */
-
         if (nextGroupIndex >= generatedQuestionGroups.length - 1) {
           await _completeOnboarding();
           return;
@@ -398,22 +414,22 @@ class TraineeOnboardingController extends BaseController {
       }
 
       final candidate =
-          generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
+      generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
 
     final bool isNewGroup =
         nextQuestionIndex == 0 &&
-        (currentGroupIndex.value != nextGroupIndex ||
-            currentQuestionIndexInGroup.value == -1);
+            (currentGroupIndex.value != nextGroupIndex ||
+                currentQuestionIndexInGroup.value == -1);
 
     if (isNewGroup) {
       await _botSay(generatedQuestionGroups[nextGroupIndex].introduction);
     }
 
     final q =
-        generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
+    generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = nextGroupIndex;
@@ -448,7 +464,6 @@ class TraineeOnboardingController extends BaseController {
     }
   }
 
-
   Future<bool> _registerUser(ChatMessage userMessage) async {
     if (onboardingPhase.value != OnboardingPhase.awaitingEmail) return false;
 
@@ -461,6 +476,7 @@ class TraineeOnboardingController extends BaseController {
         'email': userEmail.value,
       });
       await _storeUserToken(response);
+      traineeId.value = response.traineeProfile?.id ?? 1; // Store the id
       // Mark as 'delivered' on success
       userMessage.updateStatus(MessageStatus.delivered);
       return true;
@@ -487,7 +503,7 @@ class TraineeOnboardingController extends BaseController {
     try {
       final q = currentQuestion!;
       final answerData = {
-        "trainee_profile": 4,
+        "trainee_profile": traineeId.value,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
         // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
@@ -499,11 +515,42 @@ class TraineeOnboardingController extends BaseController {
       return true;
     } catch (e) {
       userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
-      CustomToast.showErrorToast("Error sending message: $e");
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      } else {
+        CustomToast.showErrorToast("Error sending message: $e");
+      }
       return false;
     }
   }
 
+  Future<bool> _updateMessage(ChatMessage userMessage) async {
+    // Mark the message as sending before the API call
+    userMessage.updateStatus(MessageStatus.sending);
+
+    try {
+      final q = currentQuestion!;
+      final answerData = {
+        "trainee_profile": traineeId.value,
+        "trainee_onboarding_question": q.id,
+        "answer_text": answers[q.id],
+        // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
+      };
+
+      await _onboardingQARepository.updateAnswers(answerData, 1, q.id);
+
+      userMessage.updateStatus(MessageStatus.delivered); // Mark as delivered on success
+      return true;
+    } catch (e) {
+      userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      } else {
+        CustomToast.showErrorToast("Error sending message: $e");
+      }
+      return false;
+    }
+  }
 
   Future<void> send(String text) async {
     final value = text.trim();
@@ -566,25 +613,14 @@ class TraineeOnboardingController extends BaseController {
 
   bool get _canAnswer =>
       onboardingPhase.value == OnboardingPhase.askingQuestions &&
-      !isFinished &&
-      !isTyping.value &&
-      currentQuestionIndexInGroup.value != -1;
-
+          !isFinished &&
+          !isTyping.value &&
+          currentQuestionIndexInGroup.value != -1;
 
   Future<void> _saveUserAnswer(QAItem q, String value) async {
-    // Create the chat message with pending status
-    final userMessage = ChatMessage(from: Sender.user, text: value, status: MessageStatus.pending);
-    messages.add(userMessage); // Add to the observable list
-
-    answers[q.id] = value;
-    _scrollToBottom();
-    _updateProgresses();
-
-    // Await the message sending and check its success
-    final bool success = await _sendMessage(userMessage);
-    if (success) {
-      await _askNext();
-    }
+    final userMessage =
+    ChatMessage(from: Sender.user, text: value, status: MessageStatus.pending);
+    await _processAnswer(q, value, userMessage);
   }
 
   Future<void> _saveImageAnswer(QAItem q, XFile imageFile) async {
@@ -594,26 +630,51 @@ class TraineeOnboardingController extends BaseController {
       imagePath: imageFile.path,
       status: MessageStatus.pending,
     );
+    await _processAnswer(q, imageFile.path, userMessage);
+  }
+
+  Future<void> _processAnswer(
+      QAItem q, String answerValue, ChatMessage userMessage) async {
     messages.add(userMessage);
-    answers[q.id] = imageFile.path; // Store the answer in your map
+
+    final bool wasRevisiting = _isRevisiting;
+
+    answers[q.id] = answerValue;
     _scrollToBottom();
     _updateProgresses();
 
-    // Await the message sending and check its success
-    final bool success = await _sendMessage(userMessage);
+    bool success = false;
+    if (wasRevisiting) {
+      // When revisiting, first attempt to update the existing answer.
+      success = await _updateMessage(userMessage);
+      if (!success) {
+        // If the update fails (e.g., the answer didn't exist on the backend),
+        // fall back to sending it as a new answer.
+        "Update failed, attempting to send as a new answer.".log();
+        success = await _updateMessage(userMessage);
+      }
+    } else {
+      // For all other cases, send it as a new answer.
+      success = await _sendMessage(userMessage);
+    }
+
+    // If either the update or the fallback send was successful, move to the next question.
+    // Otherwise, stay on the current question; the message status will show 'failed'.
     if (success) {
+      // Reset the flag after use so subsequent forward answers are "sends".
+      _isRevisiting = false;
       await _askNext();
     }
   }
 
-
   bool get canGoBack =>
       !isFinished &&
-      (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
+          (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
 
   Future<void> goBack() async {
     if (!canGoBack) return;
 
+    _isRevisiting = true; // Flag that the user is navigating back
     await _botSay("No problem—let's change that.");
 
     int targetQuestionIndex = currentQuestionIndexInGroup.value;
@@ -629,8 +690,8 @@ class TraineeOnboardingController extends BaseController {
             generatedQuestionGroups[targetGroupIndex].questions.length - 1;
       }
 
-      final candidate = generatedQuestionGroups[targetGroupIndex]
-          .questions[targetQuestionIndex];
+      final candidate =
+      generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
@@ -640,8 +701,8 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    final q = generatedQuestionGroups[targetGroupIndex]
-        .questions[targetQuestionIndex];
+    final q =
+    generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = targetGroupIndex;
@@ -768,33 +829,53 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
 
   // -------------- Stepper bindings --------------
+  /// Recalculates and updates the progress for all groups.
   void _updateProgresses() {
-    if (isFinished ||
-        currentGroupIndex.value < 0 ||
-        currentGroupIndex.value >= generatedQuestionGroups.length) {
-      currentGroupProgress.value = 0.0;
-    } else {
-      currentGroupProgress.value = _computeGroupProgress(
-        currentGroupIndex.value,
-      );
+    if (generatedQuestionGroups.isEmpty) {
+      if (groupProgresses.isNotEmpty) groupProgresses.clear();
+      return;
     }
+
+    final newProgresses = List.generate(
+      generatedQuestionGroups.length,
+          (index) => _computeGroupProgress(index),
+      growable: false,
+    );
+
+    // When onboarding is fully completed, ensure all progresses are 1.0
+    if (isFinished) {
+      for (int i = 0; i < newProgresses.length; i++) {
+        newProgresses[i] = 1.0;
+      }
+    }
+
+    groupProgresses.assignAll(newProgresses);
   }
 
   // -------------- Per-group progress (for section UIs) --------------
+  /// Computes progress for a single group with more robust logic.
   double _computeGroupProgress(int groupIndex) {
     if (groupIndex < 0 || groupIndex >= generatedQuestionGroups.length) {
       return 0.0;
     }
-    final activeQs = _activeQuestionsForGroup(groupIndex);
-    if (activeQs.isEmpty) return 1.0;
 
-    int answered = _answeredCount(activeQs);
-
-    if (isAwaitingGroupConfirmation.value &&
-        currentGroupIndex.value == groupIndex) {
-      answered = activeQs.length;
+    // Groups before the current one are considered 100% complete.
+    if (currentGroupIndex.value > groupIndex) {
+      return 1.0;
     }
 
+    final activeQs = _activeQuestionsForGroup(groupIndex);
+    if (activeQs.isEmpty) return 1.0; // An empty group is considered complete.
+
+    // If we are at the end of the current group (awaiting confirmation),
+    // it's also considered 100% complete.
+    if (isAwaitingGroupConfirmation.value &&
+        currentGroupIndex.value == groupIndex) {
+      return 1.0;
+    }
+
+    // For the current or future groups, calculate based on actual answers.
+    final answered = _answeredCount(activeQs);
     return (answered / activeQs.length).clamp(0.0, 1.0);
   }
 }

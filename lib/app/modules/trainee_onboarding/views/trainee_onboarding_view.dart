@@ -87,8 +87,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               SizedBox(
                 width: 32.0,
                 height: 32.0,
-                child: ActionPill(onTap: Get.back),
+                child: ActionPill(
+                  onTap: () => _showExitConfirmationDialog(context),
+                ),
               ),
+
               if (controller.canGoBack)
                 Padding(
                   padding: const EdgeInsets.only(left: 6.0),
@@ -140,6 +143,40 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       }),
     );
   }
+
+  void _showExitConfirmationDialog(BuildContext context) {
+    // Check if the user has sent any messages.
+    final hasAnswered = controller.messages.any((m) => m.from == Sender.user);
+
+    if (hasAnswered) {
+      showDialog(
+        context: context,
+        builder: (dialogContext) => AlertDialog(
+          icon: const Icon(Icons.warning_amber_rounded, size: 40,),
+          title: const Text('Leave Onboarding?'),
+          content: const Text(
+              'Your progress will be lost if you go back. Are you sure?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('Stay'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                Get.back();
+              },
+              child: const Text('Leave'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // If no answers have been provided, navigate back directly.
+      Get.back();
+    }
+  }
+
 
   @override
   Widget body(BuildContext context) {

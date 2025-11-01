@@ -8,4 +8,8 @@ abstract class TraineeOnboardingQARepository {
   Future<Map<String, dynamic>> sendAnswers(
       Map<String, dynamic> answers, int traineeId
       );
+
+  Future<Map<String, dynamic>> updateAnswers(
+      Map<String, dynamic> answers, int traineeId, int questionId
+      );
 }

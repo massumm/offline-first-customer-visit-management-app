@@ -13,11 +13,6 @@ class TraineeFitnessReportGenerationView
 
   @override
   Widget body(BuildContext context) {
-    return Obx(() {
-      if (controller.enableApiProgressState.isTrue) {
-        return SavingView();
-      }
-      return EmailRegistrationView();
-    });
+    return SavingView();
   }
 }

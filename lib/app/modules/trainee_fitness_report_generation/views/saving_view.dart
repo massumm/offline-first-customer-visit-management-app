@@ -101,7 +101,7 @@ class SavingView extends BaseView<TraineeFitnessReportGenerationController> {
           ),
           const SizedBox(height: 32),
           ElevatedButton(
-            onPressed: () => controller.retryReportGeneration(),
+            onPressed: () => controller.generateReport(),
             child: const Text('TRY AGAIN'),
           ),
         ],
