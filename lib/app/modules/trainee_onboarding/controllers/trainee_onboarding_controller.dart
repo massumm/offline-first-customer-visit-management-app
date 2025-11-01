@@ -67,7 +67,7 @@ class TraineeOnboardingController extends BaseController {
   //-------------------- QA Stepper --------------------
   final RxDouble currentGroupProgress = 0.0.obs;
 
-  int traineeId = 9;
+  int traineeId = 12;
 
   @override
   void onInit() {
@@ -124,8 +124,8 @@ class TraineeOnboardingController extends BaseController {
     // "Getting Started" is now handled by the initial email/terms flow.
     final groupMetadatas = [
       {
-        'name': 'Fitness Background',
-        'intro': "Great! Now for a bit about your fitness background.",
+        'name': 'Personal Information',
+        'intro': "Great! Now for a bit about your Personal data.",
       },
       {
         'name': 'Goals & Activity',
@@ -190,7 +190,7 @@ class TraineeOnboardingController extends BaseController {
       possibleAnswersMetadata: data.possibleAnswersMetadata,
       options: data.possibleAnswersMetadata?.choices ?? [],
       hint: null,
-      canSkip: false, //TODO: HANDLE SKIP.
+      canSkip: data.isOptional,
     );
   }
 
