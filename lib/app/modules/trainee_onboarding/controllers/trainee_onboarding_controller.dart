@@ -68,7 +68,7 @@ class TraineeOnboardingController extends BaseController {
   /// Holds the progress (0.0 to 1.0) for each question group.
   final RxList<double> groupProgresses = <double>[].obs;
 
-  int traineeId = 14;
+  RxInt traineeId = 1.obs;
 
   @override
   void onInit() {
@@ -472,6 +472,7 @@ class TraineeOnboardingController extends BaseController {
         'email': userEmail.value,
       });
       await _storeUserToken(response);
+      traineeId.value = response.traineeProfile?.id ?? 1; // Store the id
       // Mark as 'delivered' on success
       userMessage.updateStatus(MessageStatus.delivered);
       return true;
@@ -498,7 +499,7 @@ class TraineeOnboardingController extends BaseController {
     try {
       final q = currentQuestion!;
       final answerData = {
-        "trainee_profile": traineeId,
+        "trainee_profile": traineeId.value,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
         // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
@@ -526,7 +527,7 @@ class TraineeOnboardingController extends BaseController {
     try {
       final q = currentQuestion!;
       final answerData = {
-        "trainee_profile": traineeId,
+        "trainee_profile": traineeId.value,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
         // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
