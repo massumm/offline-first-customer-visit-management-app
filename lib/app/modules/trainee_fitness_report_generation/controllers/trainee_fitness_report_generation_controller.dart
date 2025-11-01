@@ -64,7 +64,10 @@ class TraineeFitnessReportGenerationController extends BaseController {
 
       progress.value = 1.0;
 
-      await Get.offAllNamed(Routes.FITNESS_REPORT);
+      Future.delayed(Duration(seconds: 1),
+              () async => await Get.offAllNamed(Routes.FITNESS_REPORT));
+
+
     } on ApiException catch (e) {
       errorMessage(e.message);
       hasError(true);

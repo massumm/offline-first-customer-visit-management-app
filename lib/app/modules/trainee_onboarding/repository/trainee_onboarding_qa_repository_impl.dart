@@ -76,7 +76,7 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
       'Authorization': "Bearer ${token ?? ''}",
     };
 
-    Future<Response<dynamic>> dioCall = dioClient.put(
+    Future<Response<dynamic>> dioCall = dioClient.patch(
       endpoint,
       data: answers,
       options: Options(headers: headers),

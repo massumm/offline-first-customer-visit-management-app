@@ -286,11 +286,14 @@ class TraineeOnboardingController extends BaseController {
       final onboardingJson = toJson();
       Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
       CustomToast.showSuccessToast('Profile data saved successfully.');
-      Get.toNamed(
-        Routes.TRAINEE_FITNESS_REPORT_GENERATION,
-        arguments: traineeId.value
-        // onboardingJson,
+      Future.delayed(Duration(seconds: 1), () =>
+          Get.toNamed(
+              Routes.TRAINEE_FITNESS_REPORT_GENERATION,
+              arguments: traineeId.value
+            // onboardingJson,
+          )
       );
+
       "Proceeding to fitness report with data: $onboardingJson".log();
     } catch (e) {
       CustomToast.showErrorToast('Error saving data: $e');
