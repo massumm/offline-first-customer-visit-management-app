@@ -288,7 +288,8 @@ class TraineeOnboardingController extends BaseController {
       CustomToast.showSuccessToast('Profile data saved successfully.');
       Get.toNamed(
         Routes.TRAINEE_FITNESS_REPORT_GENERATION,
-        arguments: onboardingJson,
+        arguments: traineeId.value
+        // onboardingJson,
       );
       "Proceeding to fitness report with data: $onboardingJson".log();
     } catch (e) {
