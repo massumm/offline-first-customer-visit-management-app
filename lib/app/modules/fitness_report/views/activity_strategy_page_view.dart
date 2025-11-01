@@ -162,8 +162,8 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
               ),
             ),
             LoadingButton(
-              onPressed: controller.gotToNextPage,
-              label: 'View Your Report',
+              onPressed: controller.goToCongratulationsPage,
+              label: 'Register',
             ),
           ],
         ),

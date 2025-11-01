@@ -124,8 +124,8 @@ class NutritionStrategyPageView extends BaseView<FitnessReportController> {
             ),
             8.height,
             LoadingButton(
-              onPressed: controller.gotToNextPage,
-              label: 'View your report',
+              onPressed: controller.goToCongratulationsPage,
+              label: 'Register',
             ),
           ],
         ),

@@ -20,7 +20,7 @@ class FitnessReportAppbarWidget extends StatelessWidget {
       children: [
         ActionPill(
           onTap: controller.currentPageIndex.value == 0
-              ? Get.back
+              ? () {}
               : controller.gotToPreviousPage,
         ),
         Text(

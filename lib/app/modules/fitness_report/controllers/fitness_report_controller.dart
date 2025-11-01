@@ -113,6 +113,16 @@ class FitnessReportController extends BaseController {
     }
   }
 
+  void goToCongratulationsPage() {
+    final congratulationsPageIndex = pages.length - 1;
+    pageController.animateToPage(
+      congratulationsPageIndex,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+    onPageChange(congratulationsPageIndex);
+  }
+
   void showOptionsBottomSheet() {
     final double reportTitleFontSize = 16;
     final double menuItemTitleFontSize = 14;

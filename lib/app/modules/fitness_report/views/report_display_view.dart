@@ -11,7 +11,7 @@ class ReportDisplayView extends BaseView<FitnessReportController> {
     return Scaffold(
       body: PageView.builder(
         scrollDirection: Axis.horizontal,
-        physics: const NeverScrollableScrollPhysics(),
+        physics: const PageScrollPhysics(),
         controller: controller.pageController,
         onPageChanged: controller.onPageChange,
         itemCount: controller.pages.length,

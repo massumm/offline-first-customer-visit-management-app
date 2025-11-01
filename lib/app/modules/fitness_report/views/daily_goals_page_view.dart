@@ -169,8 +169,8 @@ class DailyGoalsPageView extends BaseView<FitnessReportController> {
             16.height,
 
             LoadingButton(
-              onPressed: controller.gotToNextPage,
-              label: 'View your report',
+              onPressed: controller.goToCongratulationsPage,
+              label: 'Register',
             ),
           ],
         ),

@@ -68,7 +68,7 @@ class ProfileOverviewPageView extends BaseView<FitnessReportController> {
             ),
                     8.height,
 
-            LoadingButton(onPressed: controller.gotToNextPage, label: 'View Your Report'),
+            LoadingButton(onPressed: controller.goToCongratulationsPage, label: 'Register'),
           ],
         ),
       ),

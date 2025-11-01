@@ -52,8 +52,8 @@ class MindsetMotivationPageView extends BaseView<FitnessReportController> {
             16.height,
 
             LoadingButton(
-              onPressed: controller.gotToNextPage,
-              label: 'View Your Report',
+              onPressed: controller.goToCongratulationsPage,
+              label: 'Register',
             ),
           ],
         ),
