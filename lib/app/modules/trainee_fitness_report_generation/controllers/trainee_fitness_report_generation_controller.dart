@@ -54,7 +54,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
       progress.value = 0.0;
 
       await _reportRepository.generateReport(
-        {"trainer_profile_id": traineeId, "force": true},
+        {"trainee_id": traineeId, 'trainer_id': 1, "force": true},
         onSendProgress: (sent, total) {
           if (total != -1) {
             progress.value = sent / total;
