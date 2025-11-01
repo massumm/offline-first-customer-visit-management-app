@@ -10,6 +10,6 @@ abstract class TraineeOnboardingQARepository {
       );
 
   Future<Map<String, dynamic>> updateAnswers(
-      Map<String, dynamic> answers, int traineeId
+      Map<String, dynamic> answers, int traineeId, int questionId
       );
 }

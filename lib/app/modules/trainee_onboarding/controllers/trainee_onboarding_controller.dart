@@ -56,6 +56,7 @@ class TraineeOnboardingController extends BaseController {
   final currentQuestionIndexInGroup = (-1).obs;
   final isAwaitingGroupConfirmation = false.obs;
   final pageController = ScrollController();
+  var _isRevisiting = false;
 
   // --------------- Answers ---------------
   final Map<int, String> answers = {};
@@ -65,6 +66,8 @@ class TraineeOnboardingController extends BaseController {
 
   //-------------------- QA Stepper --------------------
   final RxDouble currentGroupProgress = 0.0.obs;
+
+  int traineeId = 9;
 
   @override
   void onInit() {
@@ -487,7 +490,7 @@ class TraineeOnboardingController extends BaseController {
     try {
       final q = currentQuestion!;
       final answerData = {
-        "trainee_profile": 5,
+        "trainee_profile": traineeId,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
         // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
@@ -499,7 +502,11 @@ class TraineeOnboardingController extends BaseController {
       return true;
     } catch (e) {
       userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
-      CustomToast.showErrorToast("Error sending message: $e");
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      } else {
+        CustomToast.showErrorToast("Error sending message: $e");
+      }
       return false;
     }
   }
@@ -512,19 +519,23 @@ class TraineeOnboardingController extends BaseController {
     try {
       final q = currentQuestion!;
       final answerData = {
-        "trainee_profile": 5,
+        "trainee_profile": traineeId,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
         // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
       };
 
-      await _onboardingQARepository.updateAnswers(answerData, 1);
+      await _onboardingQARepository.updateAnswers(answerData, 1, q.id);
 
       userMessage.updateStatus(MessageStatus.delivered); // Mark as delivered on success
       return true;
     } catch (e) {
       userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
-      CustomToast.showErrorToast("Error sending message: $e");
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      } else {
+        CustomToast.showErrorToast("Error sending message: $e");
+      }
       return false;
     }
   }
@@ -597,24 +608,8 @@ class TraineeOnboardingController extends BaseController {
 
 
   Future<void> _saveUserAnswer(QAItem q, String value) async {
-    // Create the chat message with pending status
     final userMessage = ChatMessage(from: Sender.user, text: value, status: MessageStatus.pending);
-    messages.add(userMessage); // Add to the observable list
-
-    final bool isUpdate = answers.containsKey(q.id);
-
-    answers[q.id] = value;
-    _scrollToBottom();
-    _updateProgresses();
-
-    // Await the message sending and check its success
-    final bool success = isUpdate
-        ? await _updateMessage(userMessage)
-        : await _sendMessage(userMessage);
-
-    if (success) {
-      await _askNext();
-    }
+    await _processAnswer(q, value, userMessage);
   }
 
   Future<void> _saveImageAnswer(QAItem q, XFile imageFile) async {
@@ -624,21 +619,41 @@ class TraineeOnboardingController extends BaseController {
       imagePath: imageFile.path,
       status: MessageStatus.pending,
     );
+    await _processAnswer(q, imageFile.path, userMessage);
+  }
+
+  Future<void> _processAnswer(QAItem q, String answerValue, ChatMessage userMessage) async {
     messages.add(userMessage);
 
-    final bool isUpdate = answers.containsKey(q.id);
+    final bool wasRevisiting = _isRevisiting;
 
-    answers[q.id] = imageFile.path; // Store the answer in your map
+
+    answers[q.id] = answerValue;
     _scrollToBottom();
     _updateProgresses();
 
-    // Await the message sending and check its success
-    final bool success = isUpdate
-        ? await _updateMessage(userMessage)
-        : await _sendMessage(userMessage);
+    bool success = false;
+    if (wasRevisiting) {
+      // When revisiting, first attempt to update the existing answer.
+      success = await _updateMessage(userMessage);
+      if (!success) {
+        // If the update fails (e.g., the answer didn't exist on the backend),
+        // fall back to sending it as a new answer.
+        "Update failed, attempting to send as a new answer.".log();
+        success = await _updateMessage(userMessage);
+      }
+    } else {
+      // For all other cases, send it as a new answer.
+      success = await _sendMessage(userMessage);
+    }
 
+    // If either the update or the fallback send was successful, move to the next question.
+    // Otherwise, stay on the current question; the message status will show 'failed'.
     if (success) {
+      // Reset the flag after use so subsequent forward answers are "sends".
+      _isRevisiting = false;
       await _askNext();
+
     }
   }
 
@@ -650,6 +665,7 @@ class TraineeOnboardingController extends BaseController {
   Future<void> goBack() async {
     if (!canGoBack) return;
 
+    _isRevisiting = true; // Flag that the user is navigating back
     await _botSay("No problem—let's change that.");
 
     int targetQuestionIndex = currentQuestionIndexInGroup.value;
