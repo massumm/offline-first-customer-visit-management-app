@@ -505,6 +505,31 @@ class TraineeOnboardingController extends BaseController {
   }
 
 
+  Future<bool> _updateMessage(ChatMessage userMessage) async {
+    // Mark the message as sending before the API call
+    userMessage.updateStatus(MessageStatus.sending);
+
+    try {
+      final q = currentQuestion!;
+      final answerData = {
+        "trainee_profile": 5,
+        "trainee_onboarding_question": q.id,
+        "answer_text": answers[q.id],
+        // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
+      };
+
+      await _onboardingQARepository.updateAnswers(answerData, 1);
+
+      userMessage.updateStatus(MessageStatus.delivered); // Mark as delivered on success
+      return true;
+    } catch (e) {
+      userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
+      CustomToast.showErrorToast("Error sending message: $e");
+      return false;
+    }
+  }
+
+
   Future<void> send(String text) async {
     final value = text.trim();
 
@@ -576,12 +601,17 @@ class TraineeOnboardingController extends BaseController {
     final userMessage = ChatMessage(from: Sender.user, text: value, status: MessageStatus.pending);
     messages.add(userMessage); // Add to the observable list
 
+    final bool isUpdate = answers.containsKey(q.id);
+
     answers[q.id] = value;
     _scrollToBottom();
     _updateProgresses();
 
     // Await the message sending and check its success
-    final bool success = await _sendMessage(userMessage);
+    final bool success = isUpdate
+        ? await _updateMessage(userMessage)
+        : await _sendMessage(userMessage);
+
     if (success) {
       await _askNext();
     }
@@ -595,12 +625,18 @@ class TraineeOnboardingController extends BaseController {
       status: MessageStatus.pending,
     );
     messages.add(userMessage);
+
+    final bool isUpdate = answers.containsKey(q.id);
+
     answers[q.id] = imageFile.path; // Store the answer in your map
     _scrollToBottom();
     _updateProgresses();
 
     // Await the message sending and check its success
-    final bool success = await _sendMessage(userMessage);
+    final bool success = isUpdate
+        ? await _updateMessage(userMessage)
+        : await _sendMessage(userMessage);
+
     if (success) {
       await _askNext();
     }

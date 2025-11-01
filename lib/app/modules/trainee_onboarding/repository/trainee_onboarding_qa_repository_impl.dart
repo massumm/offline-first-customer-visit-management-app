@@ -60,4 +60,28 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
       rethrow;
     }
   }
+
+  @override
+  Future<Map<String, dynamic>> updateAnswers(Map<String, dynamic> answers, int traineeId) {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/trainers/onboardings/$traineeId/answers/";
+
+    final Map<String, String> headers = {
+      'Authorization': "Bearer ${token ?? ''}",
+    };
+
+    Future<Response<dynamic>> dioCall = dioClient.put(
+      endpoint,
+      data: answers,
+      options: Options(headers: headers),
+    );
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
