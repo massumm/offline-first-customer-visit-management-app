@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/asset_icon_container.dart';
 
 class ObjectiveCardWidget extends StatelessWidget {

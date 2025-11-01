@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:icon/app/core/values/app_colors.dart';
 
 class ActionPill extends StatelessWidget {
   const ActionPill({

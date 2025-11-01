@@ -7,7 +7,6 @@ import 'package:icon/app/modules/fitness_report/controllers/fitness_report_contr
 import 'package:icon/app/modules/fitness_report/widgets/fitness_report_appbar_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/info_card_widget.dart';
 import 'package:icon/generated/assets.dart';
-import 'dart:ui';
 
 class CongratulationsMessagePageView extends BaseView<FitnessReportController> {
   CongratulationsMessagePageView({super.key});
