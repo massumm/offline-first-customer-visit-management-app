@@ -3,6 +3,8 @@ class Assets {
   Assets._();
 
   static const String activityObjectivesCircleInsideTriangle = 'assets/svg/fitness_report/activity_objectives/circle_inside_triangle.svg';
+  static const String activityObjectivesCircleInsideTriangleDark = 'assets/svg/fitness_report/activity_objectives/circle_inside_triangle_dark.svg';
+  static const String activityObjectivesDailyStepGoal = 'assets/svg/fitness_report/activity_objectives/daily_step_goal.svg';
   static const String activityObjectivesIntensityLevelCircular = 'assets/svg/fitness_report/activity_objectives/intensity_level_circular.svg';
   static const String activityObjectivesPreferredActivitiesCircular = 'assets/svg/fitness_report/activity_objectives/preferred_activities_circular.svg';
   static const String activityObjectivesPrimaryGoalCircular = 'assets/svg/fitness_report/activity_objectives/primary_goal_circular.svg';
@@ -11,10 +13,12 @@ class Assets {
   static const String activityObjectivesTrainingFocusCircular = 'assets/svg/fitness_report/activity_objectives/training_focus_circular.svg';
   static const String activityObjectivesTrainingFreqCircular = 'assets/svg/fitness_report/activity_objectives/training_freq_circular.svg';
   static const String activityObjectivesTriangle = 'assets/svg/fitness_report/activity_objectives/triangle.svg';
+  static const String activityObjectivesTriangleDark = 'assets/svg/fitness_report/activity_objectives/triangle_dark.svg';
   static const String activityObjectivesWorkoutDurationCircular = 'assets/svg/fitness_report/activity_objectives/workout_duration_circular.svg';
   static const String activityObjectivesYogaCircular = 'assets/svg/fitness_report/activity_objectives/yoga_circular.svg';
   static const String commonEnergyCircular = 'assets/svg/common/energy_circular.svg';
   static const String congratulationsCongo = 'assets/svg/fitness_report/congratulations/congo.svg';
+  static const String congratulationsCongoDark = 'assets/svg/fitness_report/congratulations/congo_dark.svg';
   static const String dailyGoalsCalorieIntakeGoal = 'assets/svg/fitness_report/daily_goals/calorie_intake_goal.svg';
   static const String dailyGoalsMoodReflectionGoal = 'assets/svg/fitness_report/daily_goals/mood_reflection_goal.svg';
   static const String dailyGoalsRepairGoal = 'assets/svg/fitness_report/daily_goals/repair_goal.svg';
@@ -26,6 +30,7 @@ class Assets {
   static const String imagesBgGradiemtpng = 'assets/images/bg-gradiemt.png.png';
   static const String imagesBgGradientCrop = 'assets/images/bg-gradient-crop.png';
   static const String imagesBodyScanner = 'assets/images/body_scanner.png';
+  static const String imagesFace = 'assets/images/face.png';
   static const String imagesFitbit = 'assets/images/fitbit.png';
   static const String imagesFitnessReportFace = 'assets/images/fitness_report_face.png';
   static const String imagesFitnessReportGradientFace = 'assets/images/fitness_report_gradient_face.png';
@@ -39,6 +44,7 @@ class Assets {
   static const String imagesOnboarding1 = 'assets/images/onboarding-1.png';
   static const String imagesOnboarding2 = 'assets/images/onboarding-2.png';
   static const String imagesOnboarding3 = 'assets/images/onboarding-3.png';
+  static const String imagesRegisterButton = 'assets/images/register_button.png';
   static const String integrationSummaryWarning = 'assets/svg/fitness_report/integration_summary/warning.svg';
   static const String jsonsProfileLoading = 'assets/jsons/profile_loading.json';
   static const String mindsetAndMotivationMindsetFocus = 'assets/svg/fitness_report/mindset_and_motivation/mindset_focus.svg';
@@ -68,6 +74,7 @@ class Assets {
   static const String svgPasswordSuccess = 'assets/svg/password_success.svg';
   static const String svgRecoveryDays = 'assets/svg/recovery_days.svg';
   static const String svgRecoveryFocus = 'assets/svg/recovery_focus.svg';
+  static const String svgRegisterButton = 'assets/svg/register_button.svg';
   static const String svgRepairStrategy = 'assets/svg/repair_strategy.svg';
   static const String svgSleepCircular = 'assets/svg/sleep_circular.svg';
   static const String svgTargetStress = 'assets/svg/target_stress.svg';

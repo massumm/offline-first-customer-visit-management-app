@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 
 class ActionPill extends StatelessWidget {
   const ActionPill({
@@ -8,6 +11,7 @@ class ActionPill extends StatelessWidget {
     this.height = 32,
     this.width = 32,
     this.iconSize = 16,
+    this.darBgColor,
   });
 
   final VoidCallback onTap;
@@ -15,6 +19,7 @@ class ActionPill extends StatelessWidget {
   final double height;
   final double width;
   final double iconSize;
+  final Color? darBgColor;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +31,9 @@ class ActionPill extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimaryContainer,
+          color: Get.isDarkMode
+              ? darBgColor ?? theme.colorScheme.onPrimaryContainer
+              : theme.colorScheme.onPrimaryContainer,
           borderRadius: BorderRadius.circular(8),
         ),
         alignment: Alignment.center,

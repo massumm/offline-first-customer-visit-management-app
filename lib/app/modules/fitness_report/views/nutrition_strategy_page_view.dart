@@ -5,10 +5,11 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/loading_button.dart';
 import 'package:icon/app/modules/fitness_report/controllers/fitness_report_controller.dart';
+import 'package:icon/app/modules/fitness_report/models/activity_strategy_models.dart';
 import 'package:icon/app/modules/fitness_report/widgets/intro_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/fitness_report_appbar_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/objective_card_widget.dart';
-import 'package:icon/app/modules/fitness_report/widgets/recovery_strategy_item_widget.dart';
+import 'package:icon/app/modules/fitness_report/widgets/objectives_item_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/profile_stats_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/info_card_widget.dart';
 import 'package:icon/generated/assets.dart';
@@ -50,70 +51,82 @@ class NutritionStrategyPageView extends BaseView<FitnessReportController> {
   ];
 
   // Nutrition Objectives Data
-  static const List<Map<String, String>> _nutritionObjectivesData = [
-    {
-      'asset': 'nutritionObjectivesCurrentWeight',
-      'title': 'Current Weight',
-      'description': '180 lbs',
-    },
-    {
-      'asset': 'nutritionObjectivesGoalWeight',
-      'title': 'Goal Weight',
-      'description': '170 lbs',
-    },
-    {
-      'asset': 'nutritionObjectivesCurrentBodyFat',
-      'title': 'Current Body Fat %',
-      'description': '18%',
-    },
-    {
-      'asset': 'nutritionObjectivesTargetBodyFat',
-      'title': 'Target Body Fat %',
-      'description': '14%',
-    },
-    {
-      'asset': 'nutritionObjectivesHydrationGoal',
-      'title': 'Hydration Goal',
-      'description': '3.5 L/day',
-    },
-    {
-      'asset': 'nutritionObjectivesEnergyObjective',
-      'title': 'Energy Objective',
-      'description': 'Feel more energetic daily',
-    },
-    {
-      'asset': 'nutritionObjectivesMealConsistency',
-      'title': 'Meal Consistency',
-      'description': 'Improve structure & prep',
-    },
-    {
-      'asset': 'nutritionObjectivesHealthyHabits',
-      'title': 'Healthy Habits',
-      'description': 'Balanced eating patterns',
-    },
+  static final List<ActivityObjective> _nutritionObjectivesData = [
+    ActivityObjective(
+      asset: Assets.nutritionObjectivesCurrentWeight,
+      title: 'Current Weight',
+      description: '180 lbs',
+    ),
+    ActivityObjective(
+      asset: Assets.nutritionObjectivesGoalWeight,
+      title: 'Goal Weight',
+      description: '170 lbs',
+    ),
+    ActivityObjective(
+      asset: Assets.nutritionObjectivesCurrentBodyFat,
+      title: 'Current Body Fat %',
+      description: '18%',
+    ),
+    ActivityObjective(
+      asset: Assets.nutritionObjectivesTargetBodyFat,
+      title: 'Target Body Fat %',
+      description: '14%',
+    ),
+    ActivityObjective(
+      asset: Assets.nutritionObjectivesHydrationGoal,
+      title: 'Hydration Goal',
+      description: '3.5 L/day',
+    ),
+    ActivityObjective(
+      asset: Assets.nutritionObjectivesEnergyObjective,
+      title: 'Energy Objective',
+      description: 'Feel more energetic daily',
+    ),
+    ActivityObjective(
+      asset: Assets.nutritionObjectivesMealConsistency,
+      title: 'Meal Consistency',
+      description: 'Improve structure & prep',
+    ),
+    ActivityObjective(
+      asset: Assets.nutritionObjectivesHealthyHabits,
+      title: 'Healthy Habits',
+      description: 'Balanced eating patterns',
+    ),
   ];
 
   @override
   Widget body(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
+      body: Container(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             appbarWidget(),
             16.height,
-            introWidget(),
-            16.height,
-            nutritionStrategiesWidget(),
-            16.height,
-            nutritionObjectivesWidget(),
-            16.height,
-            dailyTargets(),
-            16.height,
-            iconInsightWidget(),
-            16.height,
-            LoadingButton(onPressed: controller.gotToNextPage, label: 'Next'),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    introWidget(),
+                    16.height,
+                    nutritionStrategiesWidget(),
+                    16.height,
+                    nutritionObjectivesWidget(),
+                    16.height,
+                    dailyTargets(),
+                    16.height,
+                    iconInsightWidget(),
+                    8.height,
+                  ],
+                ),
+              ),
+            ),
+            8.height,
+            LoadingButton(
+              onPressed: controller.gotToNextPage,
+              label: 'View your report',
+            ),
           ],
         ),
       ),
@@ -121,10 +134,7 @@ class NutritionStrategyPageView extends BaseView<FitnessReportController> {
   }
 
   FitnessReportAppbarWidget appbarWidget() {
-    return FitnessReportAppbarWidget(
-      controller: controller,
-      title: _title,
-    );
+    return FitnessReportAppbarWidget(controller: controller, title: _title);
   }
 
   IntroWidget introWidget() {
@@ -145,30 +155,28 @@ class NutritionStrategyPageView extends BaseView<FitnessReportController> {
             _yourNutritionObjectives,
             style: Get.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
           ),
           16.height,
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.positiveBgColor,
+              color: Get.isDarkMode
+                  ? AppColors.darkBgColorPositive
+                  : AppColors.positiveBgColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.positiveBorderColor),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ..._nutritionStrategies
-                    .asMap()
-                    .entries
-                    .expand(
-                      (entry) => [
-                        RecoveryStrategyItemWidget(title: entry.value),
-                        if (entry.key < _nutritionStrategies.length - 1)
-                          16.height,
-                      ],
-                    )
-                    .toList(),
+                ..._nutritionStrategies.asMap().entries.expand(
+                  (entry) => [
+                    ObjectivesItemWidget(title: entry.value),
+                    if (entry.key < _nutritionStrategies.length - 1) 16.height,
+                  ],
+                ),
               ],
             ),
           ),
@@ -179,11 +187,13 @@ class NutritionStrategyPageView extends BaseView<FitnessReportController> {
 
   Column nutritionObjectivesWidget() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           _yourNutritionObjectives,
           style: Get.textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
+            fontSize: 18,
           ),
         ),
         16.height,
@@ -193,13 +203,13 @@ class NutritionStrategyPageView extends BaseView<FitnessReportController> {
           physics: const NeverScrollableScrollPhysics(),
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
-          childAspectRatio: 1.0,
+          childAspectRatio: 1.1,
           children: _nutritionObjectivesData
               .map(
                 (objective) => ObjectiveCardWidget(
-                  assetPath: _getNutritionAssetPath(objective['asset']!),
-                  title: objective['title']!,
-                  description: objective['description']!,
+                  assetPath: objective.asset,
+                  title: objective.title,
+                  description: objective.description,
                 ),
               )
               .toList(),
@@ -224,7 +234,10 @@ class NutritionStrategyPageView extends BaseView<FitnessReportController> {
         ProfileStatsWidget(
           title: 'Your Daily Targets',
           stats: _dailyTargetsData
-              .map((item) => StatItem(label: item['label']!, value: item['value']!))
+              .map(
+                (item) =>
+                    StatItem(label: item['label']!, value: item['value']!),
+              )
               .toList(),
           dividerColor: _dividerColor,
         ),
@@ -232,34 +245,14 @@ class NutritionStrategyPageView extends BaseView<FitnessReportController> {
         ProfileStatsWidget(
           title: 'Nutrition Approach',
           stats: _nutritionApproachData
-              .map((item) => StatItem(label: item['label']!, value: item['value']!))
+              .map(
+                (item) =>
+                    StatItem(label: item['label']!, value: item['value']!),
+              )
               .toList(),
           dividerColor: _dividerColor,
         ),
       ],
     );
-  }
-
-  String _getNutritionAssetPath(String assetName) {
-    switch (assetName) {
-      case 'nutritionObjectivesCurrentWeight':
-        return Assets.nutritionObjectivesCurrentWeight;
-      case 'nutritionObjectivesGoalWeight':
-        return Assets.nutritionObjectivesGoalWeight;
-      case 'nutritionObjectivesCurrentBodyFat':
-        return Assets.nutritionObjectivesCurrentBodyFat;
-      case 'nutritionObjectivesTargetBodyFat':
-        return Assets.nutritionObjectivesTargetBodyFat;
-      case 'nutritionObjectivesHydrationGoal':
-        return Assets.nutritionObjectivesHydrationGoal;
-      case 'nutritionObjectivesEnergyObjective':
-        return Assets.nutritionObjectivesEnergyObjective;
-      case 'nutritionObjectivesMealConsistency':
-        return Assets.nutritionObjectivesMealConsistency;
-      case 'nutritionObjectivesHealthyHabits':
-        return Assets.nutritionObjectivesHealthyHabits;
-      default:
-        return Assets.nutritionObjectivesCurrentWeight;
-    }
   }
 }

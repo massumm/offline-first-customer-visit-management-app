@@ -1,14 +1,20 @@
+import 'dart:math' as Math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/loading_button.dart';
 import 'package:icon/app/modules/fitness_report/controllers/fitness_report_controller.dart';
+import 'package:icon/app/modules/fitness_report/models/activity_strategy_models.dart';
 import 'package:icon/app/modules/fitness_report/widgets/fitness_report_appbar_widget.dart';
+import 'package:icon/app/modules/fitness_report/widgets/info_card_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/intro_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/objective_card_widget.dart';
-import 'package:icon/app/modules/fitness_report/widgets/recovery_strategy_item_widget.dart';
+import 'package:icon/app/modules/fitness_report/widgets/objectives_item_widget.dart';
+import 'package:icon/app/modules/fitness_report/widgets/strategy_section_widget.dart';
 import 'package:icon/generated/assets.dart';
 
 class ActivityStrategyPageView extends BaseView<FitnessReportController> {
@@ -31,9 +37,9 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
       "You want to tone your body and build strength  let's start with a 6-week foundational strength phase. After that, we'll transition to a hypertrophy approach to maximize definition and energy output.";
   static const String _trainingDays = 'Training Days';
 
-  static const List<Map<String, String>> _recommendedTrainingPlanList = [
-    {'title': 'Frequency', 'description': '4 days per week'},
-    {'title': 'Session Duration', 'description': '45–60 mins'},
+  static final List<TrainingPlan> _recommendedTrainingPlanList = [
+    TrainingPlan(title: 'Frequency', description: '4 days per week'),
+    TrainingPlan(title: 'Session Duration', description: '45–60 mins'),
   ];
 
   static const List<String> _trainingDaysList = [
@@ -44,48 +50,54 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
     'Saturday',
   ];
 
+  static final List<String> _primaryFocusAreaList = [
+    "Upper Body Strength",
+    "Core Stability",
+    "Cardiovascular Health",
+  ];
+
   // Activity Objectives Data
-  static const List<Map<String, String>> _activityObjectivesData = [
-    {
-      'asset': 'activityObjectivesPrimaryGoalCircular',
-      'title': 'PRIMARY GOAL',
-      'description': 'Build Strength & Endurance',
-    },
-    {
-      'asset': 'activityObjectivesTrainingFreqCircular',
-      'title': 'TRAINING FREQUENCY',
-      'description': '4 days/week',
-    },
-    {
-      'asset': 'activityObjectivesWorkoutDurationCircular',
-      'title': 'WORKOUT DURATION',
-      'description': '45–60 mins',
-    },
-    {
-      'asset': 'activityObjectivesTrainingFocusCircular',
-      'title': 'TRAINING FOCUS',
-      'description': 'Full-Body + Core Stability',
-    },
-    {
-      'asset': 'activityObjectivesPreferredActivitiesCircular',
-      'title': 'PREFERRED ACTIVITIES',
-      'description': 'Weights, Running, Yoga',
-    },
-    {
-      'asset': 'activityObjectivesIntensityLevelCircular',
-      'title': 'INTENSITY LEVEL',
-      'description': 'Moderate to High',
-    },
-    {
-      'asset': 'activityObjectivesResistanceTrainingCircular',
-      'title': 'DAILY STEP GOAL',
-      'description': '7,000 steps/day',
-    },
-    {
-      'asset': 'commonEnergyCircular',
-      'title': 'ENERGY SYSTEM',
-      'description': 'Glycolytic & Aerobic Focus',
-    },
+  static final List<ActivityObjective> _activityObjectivesData = [
+    ActivityObjective(
+      asset: Assets.activityObjectivesPrimaryGoalCircular,
+      title: 'PRIMARY GOAL',
+      description: 'Build Strength & Endurance',
+    ),
+    ActivityObjective(
+      asset: Assets.activityObjectivesTrainingFreqCircular,
+      title: 'TRAINING FREQUENCY',
+      description: '4 days/week',
+    ),
+    ActivityObjective(
+      asset: Assets.activityObjectivesWorkoutDurationCircular,
+      title: 'WORKOUT DURATION',
+      description: '45–60 mins',
+    ),
+    ActivityObjective(
+      asset: Assets.activityObjectivesTrainingFocusCircular,
+      title: 'TRAINING FOCUS',
+      description: 'Full-Body + Core Stability',
+    ),
+    ActivityObjective(
+      asset: Assets.activityObjectivesPreferredActivitiesCircular,
+      title: 'PREFERRED ACTIVITIES',
+      description: 'Weights, Running, Yoga',
+    ),
+    ActivityObjective(
+      asset: Assets.activityObjectivesIntensityLevelCircular,
+      title: 'INTENSITY LEVEL',
+      description: 'Moderate to High',
+    ),
+    ActivityObjective(
+      asset: Assets.activityObjectivesDailyStepGoal,
+      title: 'DAILY STEP GOAL',
+      description: '7,000 steps/day',
+    ),
+    ActivityObjective(
+      asset: Assets.commonEnergyCircular,
+      title: 'ENERGY SYSTEM',
+      description: 'Glycolytic & Aerobic Focus',
+    ),
   ];
 
   static const List<String> _activityObjectiveStrategies = [
@@ -94,22 +106,25 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
     'Improve performance and movement quality over time',
   ];
 
-  static const List<String> _primaryFocusAreaList = [
-    "Upper Body Strength",
-    "Core Stability",
-    "Cardiovascular Endurance",
+  static final List<EnergySystemFocus> _energySystemFocusList = [
+    EnergySystemFocus(title: "Aerobic", value: 50.0),
+    EnergySystemFocus(title: "Glycolytic (Lactic-Acid)", value: 25.0),
+    EnergySystemFocus(title: "Phosphagen (ATP-PC)", value: 50.0),
   ];
 
-  static const List<Map<String, dynamic>> _energySystemFocusList = [
-    {'title': "Aerobic", 'value': 25.0},
-    {'title': "Glycolytic (Lactic Acid)", 'value': 25.0},
-    {'title': "Phosphagen (ATP-PC)", 'value': 50.0},
-  ];
-
-  static const List<Map<String, String>> _preferredActivitiesList = [
-    {'asset': 'resistanceTrainingCircular', 'title': 'Weights'},
-    {'asset': 'runningCircular', 'title': 'Running'},
-    {'asset': 'yogaCircular', 'title': 'Yoga'},
+  static final List<PreferredActivity> _preferredActivitiesList = [
+    PreferredActivity(
+      asset: Assets.activityObjectivesResistanceTrainingCircular,
+      title: 'Resistance Training',
+    ),
+    PreferredActivity(
+      asset: Assets.activityObjectivesRunningCircular,
+      title: 'Running',
+    ),
+    PreferredActivity(
+      asset: Assets.activityObjectivesYogaCircular,
+      title: 'Yoga',
+    ),
   ];
 
   @override
@@ -117,25 +132,40 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              appbarWidget(),
-              16.height,
-              introWidget(),
-              16.height,
-              activityObjectivesWidget1(),
-              16.height,
-              activityObjectivesWidget2(),
-              16.height,
-              recommendedTrainingPlanWidget(),
-              16.height,
-              preferredActivitiesWidget(),
-              16.height,
-              LoadingButton(onPressed: controller.gotToNextPage, label: 'Next'),
-            ],
-          ),
+        child: Column(
+          children: [
+            appbarWidget(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    16.height,
+                    introWidget(),
+                    16.height,
+                    activityObjectivesWidget1(),
+                    16.height,
+                    activityObjectivesWidget2(),
+                    16.height,
+                    recommendedTrainingPlanWidget(),
+                    16.height,
+                    primaryFocusAreaWidget(),
+                    16.height,
+                    preferredActivitiesWidget(),
+                    16.height,
+                    energySystemFocusWidget(),
+                    16.height,
+                    iconInsightWidget(),
+                    16.height,
+                  ],
+                ),
+              ),
+            ),
+            LoadingButton(
+              onPressed: controller.gotToNextPage,
+              label: 'View Your Report',
+            ),
+          ],
         ),
       ),
     );
@@ -143,6 +173,7 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
 
   Column activityObjectivesWidget2() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           _yourActivityObjectives,
@@ -155,13 +186,13 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
           physics: const NeverScrollableScrollPhysics(),
           mainAxisSpacing: 8,
           crossAxisSpacing: 8,
-          childAspectRatio: .9,
+          childAspectRatio: 1.1,
           children: _activityObjectivesData
               .map(
                 (objective) => ObjectiveCardWidget(
-                  assetPath: _getAssetPath(objective['asset']!),
-                  title: objective['title']!,
-                  description: objective['description']!,
+                  assetPath: objective.asset,
+                  title: objective.title,
+                  description: objective.description,
                 ),
               )
               .toList(),
@@ -184,30 +215,29 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
             _yourActivityObjectives,
             style: Get.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.bold,
+              fontSize: 18,
             ),
           ),
           16.height,
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.positiveBgColor,
+              color: Get.isDarkMode
+                  ? AppColors.darkBgColorPositive
+                  : AppColors.positiveBgColor,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(color: AppColors.positiveBorderColor),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ..._activityObjectiveStrategies
-                    .asMap()
-                    .entries
-                    .expand(
-                      (entry) => [
-                        RecoveryStrategyItemWidget(title: entry.value),
-                        if (entry.key < _activityObjectiveStrategies.length - 1)
-                          16.height,
-                      ],
-                    )
-                    .toList(),
+                ..._activityObjectiveStrategies.asMap().entries.expand(
+                  (entry) => [
+                    ObjectivesItemWidget(title: entry.value),
+                    if (entry.key < _activityObjectiveStrategies.length - 1)
+                      16.height,
+                  ],
+                ),
               ],
             ),
           ),
@@ -228,117 +258,22 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
   }
 
   Widget recommendedTrainingPlanWidget() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Get.theme.cardTheme.color,
-        borderRadius: BorderRadius.circular(12),
+    return StrategySectionWidget(
+      title: _recommendedTrainingPlan,
+      description: _recommendedTrainingPlanDesc,
+      cardItems: _recommendedTrainingPlanList,
+      childAspectRatio: 1.5,
+      cardBuilder: (objective) => ObjectiveCardWidget(
+        title: objective.title,
+        titleColor: Get.theme.primaryColor,
+        description: objective.description,
+        bgColor: Get.isDarkMode
+            ? AppColors.darkBgColor
+            : AppColors.lightBgColorSecondary,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _recommendedTrainingPlan,
-            style: Get.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          8.height,
-          Text(_recommendedTrainingPlanDesc, style: Get.textTheme.bodyMedium),
-          8.height,
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.7,
-            children: _recommendedTrainingPlanList
-                .map(
-                  (objective) => ObjectiveCardWidget(
-                    title: objective['title']!,
-                    titleColor: Get.theme.primaryColor,
-                    description: objective['description']!,
-                    bgColor: Get.isDarkMode
-                        ? AppColors.darkBgColorSecondary
-                        : AppColors.lightBgColorSecondary,
-                  ),
-                )
-                .toList(),
-          ),
-          16.height,
-          // Training days
-          Text(
-            _trainingDays,
-            style: Get.textTheme.bodyLarge?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          8.height,
-          Wrap(
-            children: _trainingDaysList
-                .map(
-                  (trainingDay) => Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.only(right: 8, bottom: 8),
-                    decoration: BoxDecoration(
-                      color: AppColors.iconBgColorLight,
-                      borderRadius: BorderRadius.circular(25),
-                      border: Border.all(
-                        color: Get.theme.primaryColor,
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Text(
-                      trainingDay,
-                      style: Get.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Get.theme.primaryColor,
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        ],
-      ),
+      tagSectionTitle: _trainingDays,
+      tagItems: _trainingDaysList,
     );
-  }
-
-  String _getAssetPath(String assetName) {
-    switch (assetName) {
-      case 'activityObjectivesPrimaryGoalCircular':
-        return Assets.activityObjectivesPrimaryGoalCircular;
-      case 'activityObjectivesTrainingFreqCircular':
-        return Assets.activityObjectivesTrainingFreqCircular;
-      case 'activityObjectivesWorkoutDurationCircular':
-        return Assets.activityObjectivesWorkoutDurationCircular;
-      case 'activityObjectivesTrainingFocusCircular':
-        return Assets.activityObjectivesTrainingFocusCircular;
-      case 'activityObjectivesPreferredActivitiesCircular':
-        return Assets.activityObjectivesPreferredActivitiesCircular;
-      case 'activityObjectivesIntensityLevelCircular':
-        return Assets.activityObjectivesIntensityLevelCircular;
-      case 'activityObjectivesResistanceTrainingCircular':
-        return Assets.activityObjectivesResistanceTrainingCircular;
-      case 'commonEnergyCircular':
-        return Assets.commonEnergyCircular;
-      default:
-        return Assets.commonEnergyCircular;
-    }
-  }
-
-  String _getPreferredActivityAssetPath(String assetName) {
-    switch (assetName) {
-      case 'resistanceTrainingCircular':
-        return Assets.activityObjectivesResistanceTrainingCircular;
-      case 'runningCircular':
-        return Assets.activityObjectivesRunningCircular;
-      case 'yogaCircular':
-        return Assets.activityObjectivesYogaCircular;
-      default:
-        return Assets.activityObjectivesResistanceTrainingCircular;
-    }
   }
 
   Widget preferredActivitiesWidget() {
@@ -358,48 +293,264 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
             ),
           ),
           8.height,
-          GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 0.85,
-            ),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: _preferredActivitiesList.length,
-            itemBuilder: (context, index) {
-              final activity = _preferredActivitiesList[index];
-              final isLast = index == _preferredActivitiesList.length - 1;
+          Column(
+            children: [
+              GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 8,
+                  crossAxisSpacing: 8,
+                  childAspectRatio: 1.5,
+                ),
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _preferredActivitiesList.length - 1,
+                itemBuilder: (context, index) {
+                  final activity = _preferredActivitiesList[index];
 
-              return isLast
-                  ? SizedBox(
-                      height: 200,
-                      child: ObjectiveCardWidget(
-                        assetPath: _getPreferredActivityAssetPath(
-                          activity['asset']!,
-                        ),
-                        title: activity['title']!,
-                        description: '',
-                        bgColor: Get.isDarkMode
-                            ? AppColors.darkBgColorSecondary
-                            : AppColors.lightBgColorSecondary,
-                      ),
-                    )
-                  : ObjectiveCardWidget(
-                      assetPath: _getPreferredActivityAssetPath(
-                        activity['asset']!,
-                      ),
-                      title: activity['title']!,
-                      description: '',
-                      bgColor: Get.isDarkMode
-                          ? AppColors.darkBgColorSecondary
-                          : AppColors.lightBgColorSecondary,
-                    );
-            },
+                  return ObjectiveCardWidget(
+                    assetPath: activity.asset,
+                    title: activity.title,
+                    titleFontSize: 12,
+                    description: '',
+                    bgColor: Get.isDarkMode
+                        ? AppColors.darkBgColor
+                        : AppColors.lightBgColorSecondary,
+                    isCentered: true,
+                    padding: 8,
+                  );
+                },
+              ),
+              8.height,
+              SizedBox(
+                width: double.infinity,
+                height: Get.width / 3.5,
+                child: ObjectiveCardWidget(
+                  assetPath: _preferredActivitiesList.last.asset,
+                  title: _preferredActivitiesList.last.title,
+                  titleFontSize: 12,
+                  description: '',
+                  bgColor: Get.isDarkMode
+                      ? AppColors.darkBgColor
+                      : AppColors.lightBgColorSecondary,
+                  isCentered: true,
+                ),
+              ),
+            ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget primaryFocusAreaWidget() {
+    return StrategySectionWidget(
+      cardBuilder: (objective) => ObjectiveCardWidget(
+        title: objective.title,
+        description: objective.description,
+        bgColor: Get.isDarkMode
+            ? AppColors.darkBgColorSecondary
+            : AppColors.lightBgColorSecondary,
+      ),
+      tagSectionTitle: _primaryFocusArea,
+      tagItems: _primaryFocusAreaList,
+    );
+  }
+
+  Widget iconInsightWidget() {
+    return InfoCardWidget(
+      icon: Assets.imagesFitnessReportFace,
+      title: _iconInsightTitle,
+      description: _iconInsightDesc,
+      isGradient: true,
+      iconType: IconType.asset,
+    );
+  }
+
+  double _calculateCircleHorizontalPosition() {
+    // For a ternary diagram:
+    // Left corner (0,0) = 100% Glycolytic
+    // Right corner (width,0) = 100% Phosphagen
+    // Top corner (width/2, height) = 100% Aerobic
+
+    final glycolytic = _energySystemFocusList[1].value; // Left
+    final phosphagen = _energySystemFocusList[2].value; // Right
+    final aerobic = _energySystemFocusList[0].value; // Top
+
+    // X position: weighted blend of phosphagen (right) and aerobic contributes to centering
+    final triangleWidth = 344.0; // Adjust to your actual triangle width
+
+    // Barycentric to Cartesian conversion for X
+    return triangleWidth * (phosphagen + aerobic * 0.5) / 100;
+  }
+
+  double _calculateCircleVerticalPosition() {
+    final aerobic = _energySystemFocusList[0].value;
+    final triangleHeight = 298.0; // Adjust to your actual triangle height
+
+    // Y position: higher aerobic = lower Y value (closer to top)
+    // Using equilateral triangle height formula
+    return triangleHeight * (1 - (aerobic * Math.sqrt(3) / 2) / 100);
+  }
+
+  Widget energySystemFocusWidget() {
+    const String energySystemFocusTitle = 'Energy System Focus';
+    const double titleFontSize = 18;
+    const String energySystemFocusDescription =
+        'Your plan targets multiple energy systems for optimal performance.';
+    const double descriptionFontSize = 16;
+    const double valueFontSize = 22;
+    const double title2FontSize = 14;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              energySystemFocusTitle,
+              style: Get.textTheme.bodyLarge?.copyWith(
+                fontSize: titleFontSize,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const Spacer(),
+            GestureDetector(
+              onTap: controller.showEnergySystemInfoDialog,
+              child: Text(
+                'More Info',
+                style: Get.textTheme.bodyMedium?.copyWith(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Get.theme.primaryColor,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Get.theme.primaryColor,
+                ),
+              ),
+            ),
+          ],
+        ),
+        16.height,
+        Text(
+          energySystemFocusDescription,
+          style: Get.textTheme.bodyMedium?.copyWith(
+            fontSize: descriptionFontSize,
+          ),
+        ),
+        16.height,
+
+        SizedBox(
+          width: double.infinity,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                '${_energySystemFocusList[0].value}%',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: valueFontSize,
+                  color: Get.theme.primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              10.height,
+              Text(
+                _energySystemFocusList[0].title,
+                style: TextStyle(
+                  fontSize: title2FontSize,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: 400,
+          height: 335,
+          child: Container(
+            padding: const EdgeInsets.all(0),
+
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                if (Get.isDarkMode)
+                  SvgPicture.asset(
+                    Assets.activityObjectivesTriangleDark,
+                    width: double.infinity,
+                    height: double.infinity,
+                  )
+                else
+                  SvgPicture.asset(
+                    Assets.activityObjectivesTriangle,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                Positioned(
+                  left:
+                      _calculateCircleHorizontalPosition() -
+                      24, // Center the circle
+                  top: _calculateCircleVerticalPosition() - 23,
+                  child: Get.isDarkMode
+                      ? SvgPicture.asset(
+                          Assets.activityObjectivesCircleInsideTriangleDark,
+                        )
+                      : SvgPicture.asset(
+                          Assets.activityObjectivesCircleInsideTriangle,
+                        ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                16.height,
+                Text(
+                  '${_energySystemFocusList[1].value}%',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: valueFontSize,
+                    color: Get.theme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                10.height,
+                Text(
+                  _energySystemFocusList[1].title.split(' ').join('\n'),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: title2FontSize),
+                ),
+              ],
+            ),
+            const Spacer(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                16.height,
+                Text(
+                  '${_energySystemFocusList[2].value}%',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: valueFontSize,
+                    color: Get.theme.primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                10.height,
+                Text(
+                  _energySystemFocusList[2].title.split(' ').join('\n'),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: title2FontSize),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

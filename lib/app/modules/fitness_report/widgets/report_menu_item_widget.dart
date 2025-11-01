@@ -5,11 +5,13 @@ import 'package:icon/app/core/widgets/action_pill.dart';
 class ReportMenuItemWidget extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
+  final double? titleFontSize;
 
   const ReportMenuItemWidget({
     super.key,
     required this.title,
     required this.onTap,
+    this.titleFontSize = 16,
   });
 
   @override
@@ -25,7 +27,13 @@ class ReportMenuItemWidget extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title),
+            Text(
+              title,
+              style: Get.textTheme.bodyLarge?.copyWith(
+                fontSize: titleFontSize,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
             ActionPill(onTap: onTap, icon: Icons.arrow_forward_ios),
           ],
         ),

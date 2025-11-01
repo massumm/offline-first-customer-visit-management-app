@@ -19,38 +19,47 @@ class IntroductionPageView extends BaseView<FitnessReportController> {
         color: Get.theme.scaffoldBackgroundColor,
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             FitnessReportAppbarWidget(
               controller: controller,
               title: 'Introduction (by Icon)',
             ),
-            16.height,
-            IntroWidget(
-              body:
-                  'This comprehensive report is designed to give you insights into your fitness journey and help you achieve your goals.',
-            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  16.height,
+                  IntroWidget(
+                    body:
+                        'This comprehensive report is designed to give you insights into your fitness journey and help you achieve your goals.',
+                  ),
+                  const Spacer(),
 
-            Spacer(),
-            // Add more introduction content here
-            InfoCardWidget(
-              icon: Assets.svgUserCircularIcon,
-              title: 'User\'s Current State',
-              description:
-                  'You\'re starting from a strong foundation motivated, determined, and ready to make real progress. The details you shared have given me a clear picture of where you are right now, and what matters most to you.',
-              iconType: IconType.svg,
+                  InfoCardWidget(
+                    icon: Assets.svgUserCircularIcon,
+                    title: 'User\'s Current State',
+                    description:
+                        'You\'re starting from a strong foundation motivated, determined, and ready to make real progress. The details you shared have given me a clear picture of where you are right now, and what matters most to you.',
+                    iconType: IconType.svg,
+                  ),
+                  16.height,
+                  InfoCardWidget(
+                    icon: Assets.imagesFitnessReportFace,
+                    title: 'How Icon Will Help',
+                    description:
+                        'You\'re starting from a strong foundation motivated, determined, and ready to make real progress. The details you shared have given me a clear picture of where you are right now, and what matters most to you.',
+                    isGradient: true,
+                    iconType: IconType.asset,
+                  ),
+                  8.height,
+                ],
+              ),
             ),
-            16.height,
-            InfoCardWidget(
-              icon: Assets.imagesFitnessReportFace,
-              title: 'How Icon Will Help',
-              description:
-                  'You\'re starting from a strong foundation motivated, determined, and ready to make real progress. The details you shared have given me a clear picture of where you are right now, and what matters most to you.',
-              isGradient: true,
-              iconType: IconType.asset,
+            8.height,
+            LoadingButton(
+              onPressed: controller.gotToNextPage,
+              label: 'View Your Report',
             ),
-            16.height,
-            LoadingButton(onPressed: controller.gotToNextPage, label: 'Next'),
           ],
         ),
       ),

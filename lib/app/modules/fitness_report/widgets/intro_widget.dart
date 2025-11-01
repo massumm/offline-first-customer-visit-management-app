@@ -6,6 +6,7 @@ class IntroWidget extends StatelessWidget {
   const IntroWidget({super.key, required this.body});
 
   final String body;
+  final double bodyFontSize = 16;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,9 @@ class IntroWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
             body,
-            style: Theme.of(context).textTheme.labelLarge,
+            style: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(fontSize: bodyFontSize),
             textAlign: TextAlign.center,
           ),
         ),

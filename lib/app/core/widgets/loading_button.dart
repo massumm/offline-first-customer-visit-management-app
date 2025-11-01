@@ -7,7 +7,7 @@ class LoadingButton extends StatelessWidget {
     this.isLoading,
     required this.label,
     this.width = double.infinity,
-    this.borderRadius = 8,
+    this.borderRadius = 16,
     this.loadingSize = 20,
     this.loadingStrokeWidth = 2,
     this.loadingColor = Colors.white,
@@ -60,6 +60,7 @@ class LoadingButton extends StatelessWidget {
 
     return SizedBox(
       width: width,
+      height: 50,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(

@@ -13,6 +13,8 @@ class ProfileStatsWidget extends StatelessWidget {
   final String title;
   final List<StatItem> stats;
   final Color dividerColor;
+  final double titleFontSize = 18;
+  final double itemFontSize = 14;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class ProfileStatsWidget extends StatelessWidget {
           Text(
             title,
             style: Get.textTheme.bodyLarge?.copyWith(
+              fontSize: titleFontSize, 
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -38,19 +41,25 @@ class ProfileStatsWidget extends StatelessWidget {
               children: [
                 12.height,
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
                       stats[index].label,
                       style: Get.textTheme.bodySmall?.copyWith(
+                        fontSize: itemFontSize,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      stats[index].value,
-                      style: Get.textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Get.theme.primaryColor,
+                    const Spacer(),
+                    Expanded(
+                      child: Text(
+                        stats[index].value,
+                        style: Get.textTheme.bodySmall?.copyWith(
+                          fontSize: itemFontSize,
+                          fontWeight: FontWeight.bold,
+                          color: Get.theme.primaryColor,
+                        ),
+                        textAlign: TextAlign.right,
                       ),
                     ),
                   ],

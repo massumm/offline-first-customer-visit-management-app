@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/asset_icon_container.dart';
 
 class InfoCardWidget extends StatelessWidget {
   const InfoCardWidget({
@@ -18,6 +18,8 @@ class InfoCardWidget extends StatelessWidget {
   final String description;
   final bool isGradient;
   final IconType iconType;
+  final double titleFontSize = 16;
+  final double descriptionFontSize = 14;
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +57,7 @@ class InfoCardWidget extends StatelessWidget {
                 title,
                 style: Get.textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
+                  fontSize: titleFontSize,
                 ),
               ),
             ],
@@ -62,7 +65,9 @@ class InfoCardWidget extends StatelessWidget {
           16.height,
           Text(
             description,
-            style: Get.textTheme.bodySmall,
+            style: Get.textTheme.bodySmall?.copyWith(
+              fontSize: descriptionFontSize,
+            ),
           ),
         ],
       ),
@@ -71,17 +76,9 @@ class InfoCardWidget extends StatelessWidget {
 
   Widget _buildIcon() {
     if (iconType == IconType.svg) {
-      return SvgPicture.asset(
-        icon,
-        height: 40,
-        width: 40,
-      );
+      return AssetIconContainer(iconPath: icon);
     }
-    return Image.asset(
-      icon,
-      height: 40,
-      width: 40,
-    );
+    return Image.asset(icon, height: 40, width: 40);
   }
 }
 

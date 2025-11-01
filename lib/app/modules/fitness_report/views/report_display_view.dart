@@ -10,7 +10,7 @@ class ReportDisplayView extends BaseView<FitnessReportController> {
   Widget body(BuildContext context) {
     return Scaffold(
       body: PageView.builder(
-        scrollDirection: Axis.vertical,
+        scrollDirection: Axis.horizontal,
         physics: const NeverScrollableScrollPhysics(),
         controller: controller.pageController,
         onPageChanged: controller.onPageChange,

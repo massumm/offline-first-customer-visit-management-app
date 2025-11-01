@@ -3,20 +3,22 @@ import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 
-class RecoveryStrategyItemWidget extends StatelessWidget {
-  const RecoveryStrategyItemWidget({
+class ObjectivesItemWidget extends StatelessWidget {
+  const ObjectivesItemWidget({
     super.key,
     required this.title,
     this.icon = Icons.check,
     this.iconColor = AppColors.positiveBorderColor,
-    this.backgroundColor = AppColors.positiveBgColor,
+    this.backgroundColor,
     this.borderColor = AppColors.positiveBorderColor,
   });
+
+  final titleFontSize = 14.0;
 
   final String title;
   final IconData icon;
   final Color iconColor;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final Color borderColor;
 
   @override
@@ -30,7 +32,10 @@ class RecoveryStrategyItemWidget extends StatelessWidget {
             title,
             maxLines: null,
             overflow: TextOverflow.visible,
-            style: Get.textTheme.bodySmall?.copyWith(color: borderColor),
+            style: Get.textTheme.bodySmall?.copyWith(
+              color: borderColor,
+              fontSize: titleFontSize,
+            ),
           ),
         ),
       ],

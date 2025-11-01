@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/values/app_colors.dart' show AppColors;
 import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/modules/fitness_report/widgets/report_menu_item_widget.dart';
 import '../services/fitness_report_service.dart';
@@ -44,13 +45,25 @@ class FitnessReportController extends BaseController {
     ActivityStrategyPageView(),
     DailyGoalsPageView(),
     MindsetMotivationPageView(),
-    IntegrationSummaryPageView(),
+    // IntegrationSummaryPageView(),
     CongratulationsMessagePageView(),
   ];
 
   final currentPageIndex = 0.obs;
   final menuCloseDelay = const Duration(milliseconds: 200);
   bool _isNavigating = false;
+
+  static const List<String> menuTitles = [
+    'Introduction (by Icon)',
+    'Your Profile Overview',
+    'Recovery Strategy',
+    'Nutrition Strategy',
+    'Activity Strategy',
+    'Daily Goals',
+    'Mindset & Motivation',
+    // 'Integration Summary',
+    'Icon Closing Message',
+  ];
 
   void onPageChange(int pageIndex) {
     if (_isNavigating || pageIndex == currentPageIndex.value) {
@@ -101,6 +114,8 @@ class FitnessReportController extends BaseController {
   }
 
   void showOptionsBottomSheet() {
+    final double reportTitleFontSize = 16;
+    final double menuItemTitleFontSize = 14;
     Get.bottomSheet(
       Container(
         padding: const EdgeInsets.all(16),
@@ -122,6 +137,7 @@ class FitnessReportController extends BaseController {
                   'View Your Report',
                   style: Get.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
+                    fontSize: reportTitleFontSize,
                   ),
                 ),
                 ActionPill(onTap: Get.back, icon: Icons.close),
@@ -130,102 +146,95 @@ class FitnessReportController extends BaseController {
             16.height,
             Column(
               children: [
-                ReportMenuItemWidget(
-                  title: 'Introduction (by Icon)',
-                  onTap: () {
-                    Get.back();
-                    Future.delayed(menuCloseDelay, () {
-                      onPageChange(0);
-                    });
-                  },
+                ...menuTitles.asMap().entries.expand(
+                  (entry) => [
+                    ReportMenuItemWidget(
+                      title: entry.value,
+                      titleFontSize: menuItemTitleFontSize,
+                      onTap: () {
+                        Get.back();
+                        Future.delayed(menuCloseDelay, () {
+                          onPageChange(entry.key);
+                        });
+                      },
+                    ),
+                    if (entry.key < menuTitles.length - 1) 8.height,
+                  ],
                 ),
-                8.height,
-                ReportMenuItemWidget(
-                  title: 'Your Profile Overview',
-                  onTap: () {
-                    Get.back();
-                    Future.delayed(menuCloseDelay, () {
-                      onPageChange(1);
-                    });
-                  },
-                ),
-                8.height,
-                ReportMenuItemWidget(
-                  title: 'Recovery Strategy',
-                  onTap: () {
-                    Get.back();
-                    Future.delayed(menuCloseDelay, () {
-                      onPageChange(2);
-                    });
-                  },
-                ),
-                8.height,
-                ReportMenuItemWidget(
-                  title: 'Nutrition Strategy',
-                  onTap: () {
-                    Get.back();
-                    Future.delayed(menuCloseDelay, () {
-                      onPageChange(3);
-                    });
-                  },
-                ),
-                8.height,
-                ReportMenuItemWidget(
-                  title: 'Activity Strategy',
-                  onTap: () {
-                    Get.back();
-                    Future.delayed(menuCloseDelay, () {
-                      onPageChange(4);
-                    });
-                  },
-                ),
-                8.height,
-                ReportMenuItemWidget(
-                  title: 'Daily Goals',
-                  onTap: () {
-                    Get.back();
-                    Future.delayed(menuCloseDelay, () {
-                      onPageChange(5);
-                    });
-                  },
-                ),
-                8.height,
-                ReportMenuItemWidget(
-                  title: 'Mindset & Motivation',
-                  onTap: () {
-                    Get.back();
-                    Future.delayed(menuCloseDelay, () {
-                      onPageChange(6);
-                    });
-                  },
-                ),
-                8.height,
-                ReportMenuItemWidget(
-                  title: 'Integration Summary',
-                  onTap: () {
-                    Get.back();
-                    Future.delayed(menuCloseDelay, () {
-                      onPageChange(7);
-                    });
-                  },
-                ),
-                8.height,
-                ReportMenuItemWidget(
-                  title: 'Icon Closing Message',
-                  onTap: () {
-                    Get.back();
-                    Future.delayed(menuCloseDelay, () {
-                      onPageChange(8);
-                    });
-                  },
-                ),
-                8.height,
               ],
             ),
           ],
         ),
       ),
       isScrollControlled: true,
+    );
+  }
+
+  void showEnergySystemInfoDialog() {
+    Get.dialog(
+      Dialog(
+        backgroundColor: Get.theme.cardTheme.color,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Get.theme.cardTheme.color,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [ActionPill(onTap: Get.back, icon: Icons.close)],
+              ),
+              SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildEnergySystemInfo(
+                      'Aerobic',
+                      'Low/moderate intensity activities for long durations. Examples include running, swimming or cycling at long distances.',
+                    ),
+                    12.height,
+                    _buildEnergySystemInfo(
+                      'Glycolytic',
+                      'Moderate/high intensity activities for short durations, such as one or two minutes. Examples include sprinting, weightlifting and team sports.',
+                    ),
+                    12.height,
+                    _buildEnergySystemInfo(
+                      'Phosphagen',
+                      'Extremely high intensity activities lasting only 5-15 seconds. Examples include powerlifting and maximum-effort sprinting.',
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEnergySystemInfo(String title, String description) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: Get.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: Get.theme.colorScheme.primary,
+          ),
+        ),
+        4.height,
+        Text(
+          description,
+          style: Get.textTheme.bodyMedium?.copyWith(fontSize: 14),
+        ),
+      ],
     );
   }
 }

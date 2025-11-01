@@ -12,7 +12,7 @@ class FitnessReportAppbarWidget extends StatelessWidget {
 
   final FitnessReportController controller;
   final String? title;
-
+  final double titleFontSize = 18;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -27,6 +27,7 @@ class FitnessReportAppbarWidget extends StatelessWidget {
           title ?? '',
           style: Get.theme.textTheme.titleSmall?.copyWith(
             fontWeight: FontWeight.bold,
+            fontSize: titleFontSize,
           ),
         ),
         // add hamburger icon

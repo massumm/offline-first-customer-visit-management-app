@@ -33,7 +33,7 @@ class IconDarkTheme {
       fontSize: 28,
       fontWeight: FontWeight.w400,
       color: AppColors.darkTextSecondaryColor,
-      height: 1.3
+      height: 1.3,
     ),
     headlineSmall: GoogleFonts.inter(
       fontSize: 24,
@@ -106,11 +106,7 @@ class IconDarkTheme {
     scaffoldBackgroundColor: AppColors.darkBgColor,
     cardColor: AppColors.cardBgColor,
     useMaterial3: true,
-    iconTheme: IconThemeData(
-      color: AppColors.darkTextPrimaryColor,
-      size: 24
-
-    ),
+    iconTheme: IconThemeData(color: AppColors.darkTextPrimaryColor, size: 24),
     iconButtonTheme: IconButtonThemeData(
       style: IconButton.styleFrom(
         foregroundColor: AppColors.darkTextPrimaryColor,
@@ -137,7 +133,7 @@ class IconDarkTheme {
 
     cardTheme: CardThemeData(
       elevation: 2,
-      color: AppColors.cardBgColor,
+      color: AppColors.darkBgColorSecondary,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
 
@@ -203,7 +199,6 @@ class IconDarkTheme {
         borderRadius: BorderRadius.circular(15),
         borderSide: BorderSide(color: AppColors.warningColor, width: 0.5),
       ),
-
     ),
     elevatedButtonTheme: appElevatedButtonTheme,
   );
