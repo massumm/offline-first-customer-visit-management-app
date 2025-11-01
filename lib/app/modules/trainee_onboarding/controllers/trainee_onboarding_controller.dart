@@ -8,38 +8,57 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/repository/traineer_onboarding_qa_repository.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
 import '../../../data/local/preference/store/trainee_data_store.dart';
+import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
+import '../../login/models/login_response_model.dart';
 import '../models/onboarding_qa_model.dart';
 import '../models/trainee_onboarding_questions_model.dart';
+
+enum OnboardingPhase {
+  awaitingEmail,
+  awaitingInitialTerms,
+  fetchingData,
+  askingQuestions,
+  completed,
+}
 
 class TraineeOnboardingController extends BaseController {
   // --------------- Repository ---------------
   final TraineeOnboardingQARepository _onboardingQARepository = Get.find(
     tag: (TraineeOnboardingQARepository).toString(),
   );
+
+  final TraineeOnboardingAuthRepository _onboardingAuthRepository = Get.find(
+    tag: (TraineeOnboardingAuthRepository).toString(),
+  );
   final textController = TextEditingController();
 
   // --------------- Dynamic Data ---------------
   /// This will hold the groups generated from the fetched API data.
   final RxList<QuestionGroup> generatedQuestionGroups = <QuestionGroup>[].obs;
+
   /// This holds the raw fetched data for reference.
   final RxList<TraineeQuestionData> questionData = <TraineeQuestionData>[].obs;
 
   // --------------- UI State ---------------
+  final Rx<OnboardingPhase> onboardingPhase = OnboardingPhase.awaitingEmail.obs;
+  final RxString userEmail = ''.obs;
+  final RxBool hasAgreedToInitialTerms = false.obs;
+
   final RxBool isLoading = true.obs;
+  final RxBool isEmailLoading = true.obs;
   final messages = <ChatMessage>[].obs;
   final isTyping = false.obs;
   final inputText = ''.obs;
-  final currentGroupIndex = 0.obs;
+  final currentGroupIndex = (-1).obs;
   final currentQuestionIndexInGroup = (-1).obs;
   final isAwaitingGroupConfirmation = false.obs;
-  final isAwaitingFinalContinuation = false.obs;
-  final hasAgreedToTerms = false.obs;
   final pageController = ScrollController();
 
   // --------------- Answers ---------------
-  final Map<String, String> answers = {};
+  final Map<int, String> answers = {};
 
   /// True when the UI should show the "Continue" and "Skip" buttons.
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
@@ -59,25 +78,29 @@ class TraineeOnboardingController extends BaseController {
   @override
   void onReady() {
     super.onReady();
-    _initializeOnboarding();
+    start();
   }
 
   /// Fetches data, builds question groups, and starts the conversation.
-  Future<void> _initializeOnboarding() async {
+  Future<void> _fetchAndSetupQuestions() async {
+    onboardingPhase.value = OnboardingPhase.fetchingData;
     isLoading(true);
     try {
       // Fetch the flat list of questions from the repository
-      final questionResponse =
-      await _onboardingQARepository.fetchQuestionsData(1);
+      final questionResponse = await _onboardingQARepository.fetchQuestionsData(
+        1,
+      );
       questionData.assignAll(questionResponse.questionsData);
 
       // Build the structured QuestionGroup list from the flat data
       _buildQuestionGroupsFromData(questionData);
 
       // Start the conversation flow
-      start();
+      onboardingPhase.value = OnboardingPhase.askingQuestions;
+      await _askNext();
     } catch (error) {
-      // Handle API or other errors
+      // Revert state on error so user can try again
+      onboardingPhase.value = OnboardingPhase.awaitingInitialTerms;
       if (error is ApiException) {
         apiErrorHandler(fallbackMessage: error.description);
       } else {
@@ -88,43 +111,40 @@ class TraineeOnboardingController extends BaseController {
     }
   }
 
-  /// Divides the flat list of questions into 6 groups.
+  /// Divides the flat list of questions into 5 groups.
   void _buildQuestionGroupsFromData(List<TraineeQuestionData> allQuestions) {
     if (allQuestions.isEmpty) {
       generatedQuestionGroups.clear();
       return;
     }
 
-    // Predefined titles and intros for the 6 groups. You can customize these.
+    // "Getting Started" is now handled by the initial email/terms flow.
     final groupMetadatas = [
       {
-        'name': 'Getting Started',
-        'intro': "To start, let's get some personal details."
-      },
-      {
         'name': 'Fitness Background',
-        'intro': "Great! Now for a bit about your fitness background."
+        'intro': "Great! Now for a bit about your fitness background.",
       },
       {
         'name': 'Goals & Activity',
-        'intro': "Let's talk about your goals and activity levels."
+        'intro': "Let's talk about your goals and activity levels.",
       },
       {
         'name': 'Nutrition',
-        'intro': 'Now, a few questions about your nutrition habits.'
+        'intro': 'Now, a few questions about your nutrition habits.',
       },
       {
         'name': 'Health & Recovery',
-        'intro': "Finally, let's talk about your health and recovery."
+        'intro': "Finally, let's talk about your health and recovery.",
       },
       {
         'name': 'Body Profile',
-        'intro': "Excellent! Let's get your body profile details to track progress.",
-        'conclusion': "That's everything I need to know. Thanks for sharing!"
+        'intro':
+            "Excellent! Let's get your body profile details to track progress.",
+        'conclusion': "That's everything I need to know. Thanks for sharing!",
       },
     ];
 
-    const int numberOfGroups = 6;
+    const int numberOfGroups = 5; // Updated from 6
     final int questionsPerGroup = (allQuestions.length / numberOfGroups).ceil();
     final List<QuestionGroup> newGroups = [];
 
@@ -138,8 +158,9 @@ class TraineeOnboardingController extends BaseController {
 
       final groupQuestionsData = allQuestions.sublist(start, end);
 
-      final groupQAItems =
-      groupQuestionsData.map((data) => _mapDataToQAItem(data)).toList();
+      final groupQAItems = groupQuestionsData
+          .map((data) => _mapDataToQAItem(data))
+          .toList();
 
       if (groupQAItems.isNotEmpty) {
         final metadata = groupMetadatas[i];
@@ -159,14 +180,14 @@ class TraineeOnboardingController extends BaseController {
   /// Maps a [TraineeQuestionData] object from the API to a [QAItem] used by the chat UI.
   QAItem _mapDataToQAItem(TraineeQuestionData data) {
     return QAItem(
-      // Use questionFieldName as the unique ID for the answer map
-      id: data.questionFieldName ?? data.id.toString(),
+      id:  data.id ?? 1,
       question: data.questionText ?? 'No question text',
       type: data.questionType ?? QAType.unknown,
+      questionFieldName: data.questionFieldName,
+      possibleAnswersMetadata: data.possibleAnswersMetadata,
       options: data.possibleAnswersMetadata?.choices ?? [],
-      // These fields are not available from the API, so we use defaults.
       hint: null,
-      canSkip: false, // Set to false as we can't determine this from the API data
+      canSkip: false, //TODO: HANDLE SKIP.
     );
   }
 
@@ -185,41 +206,54 @@ class TraineeOnboardingController extends BaseController {
     await _completeOnboarding();
   }
 
-  void toggleTermsAgreement(bool? newValue) {
-    hasAgreedToTerms.value = newValue ?? false;
+  void toggleInitialTermsAgreement(bool? newValue) {
+    hasAgreedToInitialTerms.value = newValue ?? false;
   }
 
-  void start() async {
-    messages.clear();
-    answers.clear();
-    currentGroupIndex.value = 0;
-    currentQuestionIndexInGroup.value = -1;
-    hasAgreedToTerms.value = false;
-    isAwaitingFinalContinuation.value = false;
-    isAwaitingGroupConfirmation.value = false;
-    _updateProgresses();
-    await _botSay("Hello 👋");
-    await _askNext();
-  }
-
-  Future<void> _completeOnboarding() async {
-    currentGroupIndex.value = generatedQuestionGroups.length; // done
-    _updateProgresses();
-    await _botSay("All set! 🎉 Thanks for the info.");
-    await _botSay("Grading and storing all your information...");
-    await _botSay(
-      "To save your progress and create your personalized icon profile, you'll need to agree out terms and conditions to continue.",
-    );
-    isAwaitingFinalContinuation.value = true;
-  }
-
-  void proceedToContinue() {
-    if (!hasAgreedToTerms.value) {
+  void proceedAfterInitialTerms() {
+    if (!hasAgreedToInitialTerms.value) {
       CustomToast.showErrorToast(
         "Please agree to the terms and conditions to continue.",
       );
       return;
     }
+    // User has agreed, now fetch questions and proceed.
+    _fetchAndSetupQuestions();
+  }
+
+  void start() async {
+    // Reset all state for a fresh start
+    messages.clear();
+    answers.clear();
+    userEmail.value = '';
+    hasAgreedToInitialTerms.value = false;
+    currentGroupIndex.value = -1;
+    currentQuestionIndexInGroup.value = -1;
+    isAwaitingGroupConfirmation.value = false;
+    _updateProgresses();
+
+    // Begin the new onboarding flow
+    onboardingPhase.value = OnboardingPhase.awaitingEmail;
+    await _botSay("Hello 👋");
+    await _botSay("To get started, please enter your email address.");
+    isLoading(false); // Ensure loading is false for initial interaction
+  }
+
+  Future<void> _askForInitialTerms() async {
+    onboardingPhase.value = OnboardingPhase.awaitingInitialTerms;
+    await _botSay(
+      "Great. Please review and agree to our terms and conditions to continue.",
+    );
+  }
+
+  Future<void> _completeOnboarding() async {
+    onboardingPhase.value = OnboardingPhase.completed;
+    currentGroupIndex.value = generatedQuestionGroups.length; // Mark as done
+    _updateProgresses();
+    await _botSay("All set! 🎉 Thanks for the info.");
+    await _botSay("Grading and storing all your information...");
+
+    // Since terms are agreed to at the start, we can proceed directly.
     try {
       final onboardingJson = toJson();
       Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
@@ -238,31 +272,19 @@ class TraineeOnboardingController extends BaseController {
     isTyping.value = true;
     final delayMs = (text.length * 25).clamp(400, 1500);
     await Future.delayed(Duration(milliseconds: delayMs));
-    messages.add(ChatMessage(from: Sender.bot, text: text));
+    // Bot messages are immediately delivered
+    messages.add(ChatMessage(from: Sender.bot, text: text, status: MessageStatus.delivered));
     isTyping.value = false;
     _scrollToBottom();
   }
 
-  // -------------------- Skip rules (single source of truth) --------------------
-  /// NOTE: The complex, hardcoded skip logic has been removed.
-  /// With dynamic questions from an API, it's not safe to assume which questions
-  /// will exist or what their dependencies are. This function now returns false,
-  /// meaning all fetched questions will be asked sequentially.
-  /// You can re-introduce skip logic here based on the `question_field_name`
-  /// if you have guaranteed dependencies in your API data.
   bool _shouldSkipQuestion(QAItem q) {
-    // Example of how you could add new skip logic:
-    // if (q.id == 'dietary_restrictions_other' && answers['current_dietary_restrictions'] != 'Other') {
-    //   return true;
-    // }
     return false;
   }
 
-  // -------------------- Active/answered helpers --------------------
   List<QAItem> _activeQuestionsForGroup(int gi) {
     if (gi < 0 || gi >= generatedQuestionGroups.length) return const [];
-    return generatedQuestionGroups[gi]
-        .questions
+    return generatedQuestionGroups[gi].questions
         .where((q) => !_shouldSkipQuestion(q))
         .toList();
   }
@@ -276,7 +298,6 @@ class TraineeOnboardingController extends BaseController {
     return c;
   }
 
-  /// Global progress across the entire flow (0..1) based on answered, non-skipped questions.
   double _globalProgress() {
     if (generatedQuestionGroups.isEmpty) return 0.0;
 
@@ -295,16 +316,22 @@ class TraineeOnboardingController extends BaseController {
       totalAnswered += _answeredCount(activeQs);
     }
 
-    if (isFinished || isAwaitingFinalContinuation.value) return 1.0;
+    if (isFinished) return 1.0;
     if (totalActive == 0) return 0.0;
 
     final gp = totalAnswered / totalActive;
     return gp.clamp(0.0, 1.0);
   }
 
-  // -------------------- Core flow --------------------
   Future<void> _askNext() async {
+    if (onboardingPhase.value != OnboardingPhase.askingQuestions) return;
     if (isAwaitingGroupConfirmation.value) return;
+
+    // This is the first question after setup, set indices to start
+    if (currentGroupIndex.value < 0) {
+      currentGroupIndex.value = 0;
+      currentQuestionIndexInGroup.value = -1;
+    }
 
     int nextQuestionIndex = currentQuestionIndexInGroup.value;
     int nextGroupIndex = currentGroupIndex.value;
@@ -326,6 +353,8 @@ class TraineeOnboardingController extends BaseController {
           await _botSay(finishedGroup.conclusion!);
         }
 
+        // The user requested to remove the summary overview. This block is now commented out.
+        /*
         final summaryLines = <String>[];
         for (final question in finishedGroup.questions) {
           final ans = answers[question.id];
@@ -339,6 +368,7 @@ class TraineeOnboardingController extends BaseController {
             "Here's a summary for this section:\n${summaryLines.join('\n')}",
           );
         }
+        */
 
         if (nextGroupIndex >= generatedQuestionGroups.length - 1) {
           await _completeOnboarding();
@@ -347,10 +377,12 @@ class TraineeOnboardingController extends BaseController {
 
         isAwaitingGroupConfirmation.value = true;
 
-        final remainingGroups =
-        generatedQuestionGroups.sublist(nextGroupIndex + 1);
-        final remainingGroupNames =
-        remainingGroups.map((g) => "• ${g.name}").join('\n');
+        final remainingGroups = generatedQuestionGroups.sublist(
+          nextGroupIndex + 1,
+        );
+        final remainingGroupNames = remainingGroups
+            .map((g) => "• ${g.name}")
+            .join('\n');
 
         await _botSay(
           "Great job! To create the best plan, we still need to cover these topics:\n$remainingGroupNames",
@@ -366,12 +398,13 @@ class TraineeOnboardingController extends BaseController {
       }
 
       final candidate =
-      generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
+          generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
 
-    final bool isNewGroup = nextQuestionIndex == 0 &&
+    final bool isNewGroup =
+        nextQuestionIndex == 0 &&
         (currentGroupIndex.value != nextGroupIndex ||
             currentQuestionIndexInGroup.value == -1);
 
@@ -380,7 +413,7 @@ class TraineeOnboardingController extends BaseController {
     }
 
     final q =
-    generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
+        generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = nextGroupIndex;
@@ -403,12 +436,100 @@ class TraineeOnboardingController extends BaseController {
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-    _saveUserAnswer(q, option);
-    await _askNext();
+    await _saveUserAnswer(q, option);
   }
+
+  Future<void> _storeUserToken(LoginResponseModel response) async {
+    try {
+      await UserStore.to.saveProfileAndToken(response);
+    } catch (e) {
+      "Failed to store user token: ${e.toString()}".log();
+      CustomToast.showErrorToast("Failed to save session. Please try again.");
+    }
+  }
+
+
+  Future<bool> _registerUser(ChatMessage userMessage) async {
+    if (onboardingPhase.value != OnboardingPhase.awaitingEmail) return false;
+
+    isEmailLoading(true);
+    // Mark the message as 'sending' before the API call
+    userMessage.updateStatus(MessageStatus.sending);
+
+    try {
+      final response = await _onboardingAuthRepository.registerEmail({
+        'email': userEmail.value,
+      });
+      await _storeUserToken(response);
+      // Mark as 'delivered' on success
+      userMessage.updateStatus(MessageStatus.delivered);
+      return true;
+    } catch (e) {
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      } else {
+        CustomToast.showErrorToast(
+          "An unexpected error occurred. Please try again.",
+        );
+      }
+      // Mark as 'failed' on error
+      userMessage.updateStatus(MessageStatus.failed);
+      return false;
+    } finally {
+      isEmailLoading(false);
+    }
+  }
+
+  Future<bool> _sendMessage(ChatMessage userMessage) async {
+    // Mark the message as sending before the API call
+    userMessage.updateStatus(MessageStatus.sending);
+
+    try {
+      final q = currentQuestion!;
+      final answerData = {
+        "trainee_profile": 4,
+        "trainee_onboarding_question": q.id,
+        "answer_text": answers[q.id],
+        // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
+      };
+
+      await _onboardingQARepository.sendAnswers(answerData, 1);
+
+      userMessage.updateStatus(MessageStatus.delivered); // Mark as delivered on success
+      return true;
+    } catch (e) {
+      userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
+      CustomToast.showErrorToast("Error sending message: $e");
+      return false;
+    }
+  }
+
 
   Future<void> send(String text) async {
     final value = text.trim();
+
+    // Handle email submission phase (already correctly handles success/failure for _registerUser)
+    if (onboardingPhase.value == OnboardingPhase.awaitingEmail) {
+      if (value.isEmail) {
+        userEmail.value = value;
+        final userMessage = ChatMessage(
+          from: Sender.user,
+          text: value,
+          status: MessageStatus.pending,
+        );
+        messages.add(userMessage);
+        _scrollToBottom();
+        textController.clear();
+        inputText.value = '';
+        final bool didRegisterSuccessfully = await _registerUser(userMessage);
+        if (didRegisterSuccessfully) {
+          await _askForInitialTerms();
+        }
+      } else {
+        await _botSay("Please enter a valid email address.");
+      }
+      return;
+    }
 
     if (isFinished) {
       messages.add(ChatMessage(from: Sender.user, text: value));
@@ -423,9 +544,9 @@ class TraineeOnboardingController extends BaseController {
 
     if (value.isEmpty) {
       if (q.canSkip) {
-        _saveUserAnswer(q, "Skip");
+        await _saveUserAnswer(q, "Skip");
         inputText.value = '';
-        await _askNext();
+        textController.clear();
       }
       return;
     }
@@ -435,28 +556,60 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    _saveUserAnswer(q, value);
     inputText.value = '';
-    await _askNext();
+    textController.clear();
+    await _saveUserAnswer(q, value);
   }
 
   // --- Helper Getters and Methods ---
-  bool get isFinished =>
-      currentGroupIndex.value >= generatedQuestionGroups.length;
+  bool get isFinished => onboardingPhase.value == OnboardingPhase.completed;
 
   bool get _canAnswer =>
-      !isFinished && !isTyping.value && currentQuestionIndexInGroup.value != -1;
+      onboardingPhase.value == OnboardingPhase.askingQuestions &&
+      !isFinished &&
+      !isTyping.value &&
+      currentQuestionIndexInGroup.value != -1;
 
-  void _saveUserAnswer(QAItem q, String value) {
-    messages.add(ChatMessage(from: Sender.user, text: value));
+
+  Future<void> _saveUserAnswer(QAItem q, String value) async {
+    // Create the chat message with pending status
+    final userMessage = ChatMessage(from: Sender.user, text: value, status: MessageStatus.pending);
+    messages.add(userMessage); // Add to the observable list
+
     answers[q.id] = value;
     _scrollToBottom();
     _updateProgresses();
+
+    // Await the message sending and check its success
+    final bool success = await _sendMessage(userMessage);
+    if (success) {
+      await _askNext();
+    }
   }
+
+  Future<void> _saveImageAnswer(QAItem q, XFile imageFile) async {
+    final userMessage = ChatMessage(
+      from: Sender.user,
+      text: '',
+      imagePath: imageFile.path,
+      status: MessageStatus.pending,
+    );
+    messages.add(userMessage);
+    answers[q.id] = imageFile.path; // Store the answer in your map
+    _scrollToBottom();
+    _updateProgresses();
+
+    // Await the message sending and check its success
+    final bool success = await _sendMessage(userMessage);
+    if (success) {
+      await _askNext();
+    }
+  }
+
 
   bool get canGoBack =>
       !isFinished &&
-          (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
+      (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
 
   Future<void> goBack() async {
     if (!canGoBack) return;
@@ -476,8 +629,8 @@ class TraineeOnboardingController extends BaseController {
             generatedQuestionGroups[targetGroupIndex].questions.length - 1;
       }
 
-      final candidate =
-      generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
+      final candidate = generatedQuestionGroups[targetGroupIndex]
+          .questions[targetQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
@@ -487,8 +640,8 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    final q =
-    generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
+    final q = generatedQuestionGroups[targetGroupIndex]
+        .questions[targetQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = targetGroupIndex;
@@ -502,6 +655,7 @@ class TraineeOnboardingController extends BaseController {
     });
 
     return {
+      'email': userEmail.value,
       'answers': processedAnswers,
       'completed': isFinished,
       'timestamp': DateTime.now().toIso8601String(),
@@ -513,16 +667,14 @@ class TraineeOnboardingController extends BaseController {
     final q = currentQuestion!;
     final formattedDate =
         "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-    _saveUserAnswer(q, formattedDate);
-    await _askNext();
+    await _saveUserAnswer(q, formattedDate);
   }
 
   Future<void> selectTime(TimeOfDay time, BuildContext context) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     final formattedTime = time.format(context);
-    _saveUserAnswer(q, formattedTime);
-    await _askNext();
+    await _saveUserAnswer(q, formattedTime);
   }
 
   Future<void> selectHeight({int? cm, int? feet, int? inches}) async {
@@ -535,38 +687,28 @@ class TraineeOnboardingController extends BaseController {
     } else if (feet != null && inches != null) {
       formattedHeight = "$feet' $inches\"";
     } else {
-      _saveUserAnswer(q, "Skipped");
-      await _askNext();
+      await _saveUserAnswer(q, "Skipped");
       return;
     }
 
-    _saveUserAnswer(q, formattedHeight);
-    await _askNext();
+    await _saveUserAnswer(q, formattedHeight);
   }
 
   Future<void> selectWeight({double? weight, String? unit}) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     if (weight == null || unit == null) {
-      _saveUserAnswer(q, "Skipped");
-      await _askNext();
+      await _saveUserAnswer(q, "Skipped");
       return;
     }
     final formattedWeight = "${weight.toStringAsFixed(1)} $unit";
-    _saveUserAnswer(q, formattedWeight);
-    await _askNext();
+    await _saveUserAnswer(q, formattedWeight);
   }
 
   Future<void> selectImage(XFile imageFile) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-    answers[q.id] = imageFile.path;
-    messages.add(
-      ChatMessage(from: Sender.user, imagePath: imageFile.path, text: ''),
-    );
-    _scrollToBottom();
-    _updateProgresses();
-    await _askNext();
+    await _saveImageAnswer(q, imageFile); // Use the new method
   }
 
   int get stepperTotalSteps => generatedQuestionGroups.length;
@@ -594,6 +736,7 @@ class TraineeOnboardingController extends BaseController {
   // ------------ Convenience flags for input UI ------------
   QAItem? get currentQuestion {
     if (isFinished ||
+        currentGroupIndex.value < 0 ||
         currentGroupIndex.value >= generatedQuestionGroups.length ||
         currentQuestionIndexInGroup.value < 0 ||
         currentQuestionIndexInGroup.value >=
@@ -613,15 +756,21 @@ class TraineeOnboardingController extends BaseController {
   }
 
   bool get isCurrentChoice => currentQuestion?.type == QAType.multipleChoice;
+
   bool get isCurrentDate => currentQuestion?.type == QAType.date;
+
   bool get isCurrentTime => currentQuestion?.type == QAType.time;
+
   bool get isCurrentHeight => currentQuestion?.type == QAType.height;
+
   bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
+
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
 
   // -------------- Stepper bindings --------------
   void _updateProgresses() {
     if (isFinished ||
+        currentGroupIndex.value < 0 ||
         currentGroupIndex.value >= generatedQuestionGroups.length) {
       currentGroupProgress.value = 0.0;
     } else {

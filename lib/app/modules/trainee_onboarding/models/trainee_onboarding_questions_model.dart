@@ -8,6 +8,7 @@ enum QAType {
   height,
   weight,
   image,
+  phoneNumber,
   unknown,
 }
 
@@ -48,6 +49,8 @@ class TraineeQuestionData {
     required this.questionFieldName,
     required this.possibleAnswersMetadata,
     required this.index,
+    required this.isOptional,
+    required this.groupName,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -60,6 +63,8 @@ class TraineeQuestionData {
   final String? questionFieldName;
   final PossibleAnswersMetadata? possibleAnswersMetadata;
   final int? index;
+  final bool isOptional;
+  final String groupName;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -72,6 +77,8 @@ class TraineeQuestionData {
     String? questionFieldName,
     PossibleAnswersMetadata? possibleAnswersMetadata,
     int? index,
+    bool? isOptional,
+    String? groupName,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -85,6 +92,8 @@ class TraineeQuestionData {
       possibleAnswersMetadata:
           possibleAnswersMetadata ?? this.possibleAnswersMetadata,
       index: index ?? this.index,
+      isOptional: isOptional ?? this.isOptional,
+      groupName: groupName ?? this.groupName,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
@@ -112,6 +121,8 @@ class TraineeQuestionData {
           return QAType.weight;
         case "image":
           return QAType.image;
+        case "phone_number":
+          return QAType.phoneNumber;
         default:
           return QAType.unknown;
       }
@@ -122,6 +133,8 @@ class TraineeQuestionData {
       traineeOnboarding: json["trainee_onboarding"],
       questionType: parseQAType(json["question_type"]),
       questionText: json["question_text"],
+      isOptional: json["is_optional"],
+      groupName: json["group_name"],
       questionMetadata: json["question_metadata"] == null
           ? QuestionMetadata(json: {})
           : QuestionMetadata.fromJson(json["question_metadata"]),
@@ -157,6 +170,15 @@ class PossibleAnswersMetadata {
           : List<String>.from(json["choices"].map((x) => x.toString())),
     );
   }
+
+// toJson method
+  Map<String, dynamic> toJson() {
+    return {
+      'choices': choices,
+    };
+  }
+
+
 
   @override
   String toString() => choices.toString();

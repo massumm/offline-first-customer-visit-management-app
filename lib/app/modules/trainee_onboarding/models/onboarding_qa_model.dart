@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 
 import 'trainee_onboarding_questions_model.dart';
 
@@ -16,17 +17,22 @@ class QuestionGroup {
 }
 
 class QAItem {
-  final String id;
+  final int id;
   final String question;
   final QAType type;
   final List<String> options; // used for choice type
   final String? hint;
   final bool canSkip;
+  final String? questionFieldName;
+  final PossibleAnswersMetadata? possibleAnswersMetadata;
+
 
   const QAItem({
     required this.id,
     required this.question,
     required this.type,
+    required this.questionFieldName,
+    this.possibleAnswersMetadata,
     this.options = const [],
     this.hint,
     this.canSkip = false,
@@ -35,12 +41,24 @@ class QAItem {
 
 enum Sender { bot, user }
 
+enum MessageStatus { pending, sending, delivered, failed }
+
 class ChatMessage {
   final Sender from;
   final String text;
   final String? imagePath;
-  final DateTime at;
 
-  ChatMessage({required this.from, required this.text, this.imagePath, DateTime? at})
-    : at = at ?? DateTime.now();
+  // final DateTime at;
+  final Rx<MessageStatus> status;
+
+  ChatMessage({
+    required this.from,
+    required this.text,
+    this.imagePath,
+    MessageStatus status = MessageStatus.pending,
+  }) : status = status.obs;
+
+  void updateStatus(MessageStatus newStatus) {
+    status.value = newStatus;
+  }
 }

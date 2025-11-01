@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -65,8 +66,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text('Mish Icon',
-                      style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    'Mish Icon',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                   Text(
                     'Online',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -120,14 +123,14 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 children: [
                   6.height,
                   Text(
-                    'Personal',
+                    controller.getCurrentGroupName ?? "Getting Started",
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                   const SizedBox(height: 8),
                   AnimatedOnboardingStepper(
-                    totalSteps: 6,
-                    currentStep: controller.currentGroupIndex.value,
-                    stepProgress: controller.currentGroupProgress.value,
+                    totalSteps: controller.stepperTotalSteps,
+                    currentStep: controller.stepperCurrentStep,
+                    stepProgress: controller.stepperStepProgress,
                   ),
                 ],
               ),
@@ -142,21 +145,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   Widget body(BuildContext context) {
     return Column(
       children: [
-        // Obx(
-        //   () => OnboardingHeader(
-        //     avatarAsset: Assets.imagesIconLogoPink,
-        //     name: 'Mish Icon',
-        //     statusText: 'Online',
-        //     sectionTitle: controller.isFinished
-        //         ? "You're all set!"
-        //         : controller.getCurrentGroupName ?? "Just a moment...",
-        //     totalSteps: controller.totalGroups.value,
-        //     currentStep: controller.currentGroupIndex.value,
-        //     stepProgress: controller.currentGroupProgress.value,
-        //     controller: controller,
-        //   ),
-        // ),
-        // Custom Stepper For visualizing group movement
         Expanded(
           child: Obx(() {
             final items = controller.messages;
@@ -170,22 +158,25 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 if (isTypingRow) return const TypingBubble();
                 final m = items[index];
 
-                // Determine alignment
                 final alignment = m.from == Sender.user
                     ? Alignment.centerRight
                     : Alignment.centerLeft;
 
-                // Conditionally build the bubble based on message content
                 Widget bubble;
                 if (m.imagePath != null && m.imagePath!.isNotEmpty) {
-                  // If there's an image, use the new image bubble
-                  bubble = _ImageMessageBubble(
+                  // Use the new status-aware image bubble
+                  bubble = _StatusImageBubble(
                     imagePath: m.imagePath!,
                     from: m.from,
+                    status: m.status,
                   );
                 } else {
-                  // Otherwise, use the existing text bubble
-                  bubble = MessageBubble(text: m.text, from: m.from);
+                  // Use the new status-aware text bubble
+                  bubble = _StatusMessageBubble(
+                    text: m.text,
+                    from: m.from,
+                    status: m.status,
+                  );
                 }
 
                 return Align(alignment: alignment, child: bubble);
@@ -197,8 +188,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         /// Quick replies (only for choice-type question)
         Obx(() {
           final q = controller.currentQuestion;
-          // Hide quick replies if the flow is finished, paused, or not a choice question.
-          if (controller.isFinished ||
+          if (controller.onboardingPhase.value !=
+                  OnboardingPhase.askingQuestions ||
+              controller.isFinished ||
               controller.showGroupContinuationButtons ||
               q == null ||
               q.type != QAType.multipleChoice) {
@@ -230,51 +222,50 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           );
         }),
 
-        // Input
+        // Input Area
         SafeArea(
           top: false,
           child: Obx(() {
-            // Check for the final continuation state first.
-            if (controller.isAwaitingFinalContinuation.isTrue) {
-              return _buildFinalContinueButton(context);
-            }
+            switch (controller.onboardingPhase.value) {
+              case OnboardingPhase.awaitingEmail:
+                return _buildTextInput();
 
-            // When a group is finished, show Continue/Skip buttons.
-            if (controller.showGroupContinuationButtons) {
-              return _buildContinuationButtons();
-            }
+              case OnboardingPhase.awaitingInitialTerms:
+                return _buildInitialTermsInput(context);
 
-            if (controller.isCurrentImage) {
-              // Show the image picker button
-              return _ImagePickerInput(controller: controller);
-            }
+              case OnboardingPhase.fetchingData:
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 32.0),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
+                );
 
-            // When the current question is a date type, show a date picker button.
-            if (controller.isCurrentDate) {
-              return _buildDatePickerButton(context);
-            }
+              case OnboardingPhase.askingQuestions:
+                if (controller.showGroupContinuationButtons) {
+                  return _buildContinuationButtons();
+                }
+                if (controller.isCurrentImage) {
+                  return _ImagePickerInput(controller: controller);
+                }
+                if (controller.isCurrentDate) {
+                  return _buildDatePickerButton(context);
+                }
+                if (controller.isCurrentTime) {
+                  return _buildTimePickerButton(context);
+                }
+                if (controller.isCurrentHeight) {
+                  return _HeightPicker(controller: controller);
+                }
+                if (controller.isCurrentWeight) {
+                  return _WeightPicker(controller: controller);
+                }
+                if (controller.isCurrentChoice) {
+                  return const SizedBox.shrink();
+                }
+                return _buildTextInput();
 
-            // When the current question is a time type, show a time picker button.
-            if (controller.isCurrentTime) {
-              return _buildTimePickerButton(context);
+              case OnboardingPhase.completed:
+                return _buildTextInput();
             }
-
-            //  height and weight pickers
-            if (controller.isCurrentHeight) {
-              return _HeightPicker(controller: controller);
-            }
-
-            if (controller.isCurrentWeight) {
-              return _WeightPicker(controller: controller);
-            }
-
-            // Hide the input field for Choice questions.
-            if (controller.currentQuestion?.type == QAType.multipleChoice) {
-              return SizedBox.shrink();
-            }
-
-            // Default input field for text/number questions.
-            return _buildTextInput();
           }),
         ),
         const SizedBox(height: 8),
@@ -282,7 +273,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     );
   }
 
-  Widget _buildFinalContinueButton(BuildContext context) {
+  Widget _buildInitialTermsInput(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Column(
@@ -293,8 +284,8 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             children: [
               Obx(
                 () => Checkbox(
-                  value: controller.hasAgreedToTerms.value,
-                  onChanged: controller.toggleTermsAgreement,
+                  value: controller.hasAgreedToInitialTerms.value,
+                  onChanged: controller.toggleInitialTermsAgreement,
                 ),
               ),
               Expanded(
@@ -302,7 +293,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   text: TextSpan(
                     style: Theme.of(context).textTheme.bodyMedium,
                     children: [
-                      const TextSpan(text: 'I have read and agree to the '),
+                      const TextSpan(text: 'I agree to the '),
                       TextSpan(
                         text: 'Terms and Conditions',
                         style: TextStyle(
@@ -312,8 +303,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                             context,
                           ).colorScheme.primary,
                         ),
-                        // TODO: Add a recognizer to open the terms page
-                        // recognizer: TapGestureRecognizer()..onTap = () => Get.toNamed(Routes.TERMS),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            // TODO: Navigate to your Terms and Conditions page
+                            Get.snackbar("Navigation", "Go to Terms page");
+                          },
                       ),
                     ],
                   ),
@@ -322,15 +316,13 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             ],
           ),
           const SizedBox(height: 12),
-
           Obx(
             () => FilledButton(
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 16),
               ),
-              // The button is disabled if `hasAgreedToTerms` is false
-              onPressed: controller.hasAgreedToTerms.value
-                  ? controller.proceedToContinue
+              onPressed: controller.hasAgreedToInitialTerms.value
+                  ? controller.proceedAfterInitialTerms
                   : null,
               child: const Text('Continue'),
             ),
@@ -365,7 +357,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
   Widget _buildDatePickerButton(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       child: ElevatedButton(
         onPressed: () async {
           final DateTime? pickedDate = await showDatePicker(
@@ -405,43 +397,56 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       children: [
         const SizedBox(width: 8),
         Expanded(
-          child: IgnorePointer(
-            ignoring: controller.isCurrentChoice,
-            child: TextField(
-              controller: controller.textController,
-              onChanged: (t) => controller.inputText.value = t,
-              onSubmitted: (t) {
-                controller.send(t);
-                controller.textController.clear();
-              },
-              decoration: InputDecoration(
-                hintText: _hintFor(),
-                border: const OutlineInputBorder(),
-                isDense: true,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
-                ),
+          child: TextField(
+            controller: controller.textController,
+            onChanged: (t) => controller.inputText.value = t,
+            onSubmitted: (t) {
+              controller.send(t);
+            },
+            decoration: InputDecoration(
+              hintText: _hintFor(),
+              border: const OutlineInputBorder(),
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
               ),
             ),
+            keyboardType: () {
+              // Handle email phase first
+              if (controller.onboardingPhase.value ==
+                  OnboardingPhase.awaitingEmail) {
+                return TextInputType.emailAddress;
+              }
+
+              // Check the current question type for other phases
+              final qType = controller.currentQuestion?.type;
+
+              // For number questions (including phone numbers), show the number keyboard.
+              if (qType == QAType.number) {
+                return TextInputType.number;
+              }
+
+              if (qType == QAType.phoneNumber) {
+                return TextInputType.phone;
+              }
+
+              // Default to a standard text keyboard
+              return TextInputType.text;
+            }(),
           ),
         ),
         const SizedBox(width: 8),
         FilledButton.icon(
-          onPressed: () {
-            controller.send(controller.textController.text);
-            controller.textController.clear();
-          },
-          icon: const Icon(Icons.send),
+          onPressed: () => controller.send(controller.textController.text),
           style: FilledButton.styleFrom(
-            backgroundColor: controller.currentQuestion?.canSkip ?? false ?
-                Colors.grey.shade500 : null,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(8)),
+            ),
           ),
-          label: Obx(
-            () => (controller.currentQuestion?.canSkip ?? false)
-                ? const Text("Skip")
-                : const Text("Send"),
-          ),
+          icon: const Icon(Icons.send),
+          label: const Text('Send'), // TODO: HANDLE SKIP
         ),
         const SizedBox(width: 8),
       ],
@@ -449,17 +454,23 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   }
 
   String _hintFor() {
-    if (controller.isFinished) {
-      return "Type anything to restart";
+    switch (controller.onboardingPhase.value) {
+      case OnboardingPhase.awaitingEmail:
+        return "Enter your email address";
+      case OnboardingPhase.completed:
+        return "Type anything to restart";
+      case OnboardingPhase.askingQuestions:
+        final q = controller.currentQuestion;
+        if (q == null) {
+          return "Just a moment...";
+        }
+        if (q.type == QAType.multipleChoice) {
+          return "Choose an option above";
+        }
+        return q.hint ?? "Type your answer";
+      default:
+        return "";
     }
-    final q = controller.currentQuestion;
-    if (q == null) {
-      return "Say hi to start";
-    }
-    if (q.type == QAType.multipleChoice) {
-      return "Choose an option above";
-    }
-    return q.hint ?? "Type your answer";
   }
 }
 
@@ -718,7 +729,7 @@ class _ImagePickerInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
       child: ElevatedButton.icon(
         icon: const Icon(Icons.camera_alt),
         label: const Text("Upload Photo"),
@@ -771,16 +782,46 @@ class _ImagePickerInput extends StatelessWidget {
   }
 }
 
-class _ImageMessageBubble extends StatelessWidget {
+class _StatusImageBubble extends StatelessWidget {
   final String imagePath;
   final Sender from;
+  final Rx<MessageStatus> status;
 
-  const _ImageMessageBubble({required this.imagePath, required this.from});
+  const _StatusImageBubble({
+    required this.imagePath,
+    required this.from,
+    required this.status,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isUser = from == Sender.user;
+
+    final imageWidget = ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Image.file(
+        File(imagePath),
+        fit: BoxFit.cover,
+        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+          if (wasSynchronouslyLoaded) {
+            return child;
+          }
+          return frame == null
+              ? const Padding(
+                  padding: EdgeInsets.all(48.0),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
+                )
+              : child;
+        },
+        errorBuilder: (context, error, stackTrace) {
+          return const Padding(
+            padding: EdgeInsets.all(32.0),
+            child: Icon(Icons.broken_image, color: Colors.red, size: 40),
+          );
+        },
+      ),
+    );
 
     return Container(
       constraints: BoxConstraints(
@@ -793,32 +834,107 @@ class _ImageMessageBubble extends StatelessWidget {
             : theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
       ),
-
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Image.file(
-          File(imagePath),
-          fit: BoxFit.cover,
-
-          frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-            if (wasSynchronouslyLoaded) {
-              return child;
-            }
-            return frame == null
-                ? const Padding(
-                    padding: EdgeInsets.all(48.0),
-                    child: Center(child: CircularProgressIndicator.adaptive()),
-                  )
-                : child;
-          },
-          errorBuilder: (context, error, stackTrace) {
-            return const Padding(
-              padding: EdgeInsets.all(32.0),
-              child: Icon(Icons.broken_image, color: Colors.red, size: 40),
-            );
-          },
-        ),
-      ),
+      child: isUser
+          ? Obx(
+              () => Stack(
+                children: [
+                  imageWidget,
+                  Positioned(
+                    bottom: 8,
+                    right: 8,
+                    child: _MessageStatusIcon(
+                      status: status.value,
+                      isForImage: true,
+                    ),
+                  ),
+                ],
+              ),
+            )
+          : imageWidget,
     );
+  }
+}
+
+class _MessageStatusIcon extends StatelessWidget {
+  final MessageStatus status;
+  final bool isForImage;
+
+  const _MessageStatusIcon({required this.status, this.isForImage = false});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    IconData iconData;
+    Color iconColor;
+
+    switch (status) {
+      case MessageStatus.pending:
+      case MessageStatus.sending:
+        iconData = Icons.watch_later_outlined;
+        // CHANGE: Use withOpacity instead of withValues
+        iconColor = isForImage
+            ? Colors.white
+            : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7);
+        break;
+      case MessageStatus.delivered:
+        iconData = Icons.done_all;
+        iconColor = isForImage ? Colors.white : theme.colorScheme.primary;
+        break;
+      case MessageStatus.failed:
+        iconData = Icons.error_outline;
+        iconColor = isForImage ? Colors.white : theme.colorScheme.error;
+        break;
+    }
+
+    final icon = Icon(iconData, size: isForImage ? 14 : 16, color: iconColor);
+
+    if (isForImage) {
+      return Container(
+        padding: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.4),
+          shape: BoxShape.circle,
+        ),
+        child: icon,
+      );
+    }
+
+    return icon;
+  }
+}
+
+class _StatusMessageBubble extends StatelessWidget {
+  final String text;
+  final Sender from;
+  final Rx<MessageStatus> status;
+
+  const _StatusMessageBubble({
+    required this.text,
+    required this.from,
+    required this.status,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final bubble = MessageBubble(text: text, from: from);
+
+    if (from != Sender.user) {
+      return bubble;
+    }
+
+    return Obx(() {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          bubble,
+          const SizedBox(width: 6),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: _MessageStatusIcon(status: status.value),
+          ),
+        ],
+      );
+    });
   }
 }
