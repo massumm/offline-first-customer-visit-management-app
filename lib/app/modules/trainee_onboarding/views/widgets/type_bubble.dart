@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:ui' show lerpDouble;
 import 'package:flutter/material.dart';
 
 class TypingBubble extends StatefulWidget {
@@ -24,7 +25,7 @@ class _TypingBubbleState extends State<TypingBubble>
   @override
   Widget build(BuildContext context) {
     final bg = Theme.of(context).colorScheme.primary;
-    final fg = Theme.of(context).colorScheme.surfaceContainerHighest; // or onPrimary for stronger contrast
+    final fg = Theme.of(context).colorScheme.surfaceContainerHighest;
 
     return Align(
       alignment: Alignment.centerLeft,
@@ -40,59 +41,83 @@ class _TypingBubbleState extends State<TypingBubble>
             bottomLeft: Radius.circular(2),
           ),
         ),
-        child: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
-            final t = _controller.value; // 0..1
-            double wave(int i) {
-              // Staggered sine wave (0..1)
-              final s = math.sin(2 * math.pi * (t + i / 6));
-              return (s + 1) / 2;
-            }
-
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // --- 3 animated dots ---
-                ...List.generate(3, (i) {
-                  final w = wave(i);
-                  final opacity = 0.35 + 0.65 * w;     // 0.35 → 1.0
-                  final scale   = 0.85 + 0.35 * w;     // 0.85 → 1.20
-                  final dy      = -2.0 * w;            // lift up slightly
-
-                  return Padding(
-                    padding: EdgeInsets.only(right: i == 2 ? 0 : 6),
-                    child: Opacity(
-                      opacity: opacity.clamp(0.35, 1.0),
-                      child: Transform.translate(
-                        offset: Offset(0, dy),
-                        child: Transform.scale(
-                          scale: scale,
-                          child: Icon(Icons.circle, size: 8, color: fg),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-
-                const SizedBox(width: 8),
-
-                // --- "Mesh Typing" label ---
-                Text(
-                  'Mish typing...',
-                  style: TextStyle(
-                    color: fg,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.2,
-                  ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RepaintBoundary(
+              child: CustomPaint(
+                size: const Size(28, 10),
+                painter: _TypingDotsPainter(
+                  color: fg,
+                  animation: _controller,
                 ),
-              ],
-            );
-          },
+              ),
+            ),
+            const SizedBox(width: 6),
+            Text(
+              'Mish typing...',
+              style: TextStyle(
+                color: fg,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.2,
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+}
+
+class _TypingDotsPainter extends CustomPainter {
+  _TypingDotsPainter({
+    required this.color,
+    required this.animation,
+  }) : super(repaint: animation);
+
+  final Color color;
+  final Animation<double> animation;
+
+  static const double _r = 3.0;
+  static const double _gap = 5.0;
+  static const double _lift = 1.6;
+  static const double _phase = 0.18;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()..isAntiAlias = true;
+    final totalW = (2 * _r) * 3 + _gap * 2;
+    final startX = (size.width - totalW) / 2 + _r;
+    final centerY = size.height / 2;
+
+    // 0..1 looping time
+    final t = animation.value;
+
+    // smooth 0..1..0 wave (cosine ease)
+    double wave(double x) => 0.5 - 0.5 * math.cos(2 * math.pi * x);
+
+    for (int i = 0; i < 3; i++) {
+      final phase = (t + i * _phase) % 1.0;
+      final w = wave(phase);
+
+      final alpha = lerpDouble(0.35, 1.0, w)!;
+      final scale = lerpDouble(0.85, 1.20, w)!;
+      final dy = -_lift * w;
+
+      paint.color = color.withValues(alpha: alpha);
+
+      final x = startX + i * ((2 * _r) + _gap);
+      canvas.save();
+      canvas.translate(x, centerY + dy);
+      canvas.drawCircle(Offset.zero, _r * scale, paint);
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _TypingDotsPainter oldDelegate) {
+    // color changes should repaint; animation handled by `repaint:`
+    return oldDelegate.color != color;
   }
 }
