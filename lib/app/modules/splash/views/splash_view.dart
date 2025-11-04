@@ -1,3 +1,4 @@
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,96 +14,187 @@ class SplashView extends GetView<SplashController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: AppColors.colorPrimary,
-        elevation: 0,
-        surfaceTintColor: AppColors.colorPrimary,
-        actions: [
-          TrainerBadgeWithPopup(),
-        ],
-      ),
-      body: Container(
-        height: Get.height,
-        width: Get.width,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [AppColors.colorPrimary, Color(0xffFF8869)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(),
-                Center(child: SuperImage(Assets.imagesIconLogo)),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 32.0,
-                    left: 16.0,
-                    right: 16.0,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Get.toNamed(Routes.ONBOARDING);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                        ),
-                        child: Text('Begin',
-                            style: TextStyle(color: Colors.black)),
-                      ),
-                      8.height,
-                      Text.rich(
-                        TextSpan(
-                          text: 'Have an account? ',
-                          style: TextStyle(color: Colors.black),
-                          children: [
-                            TextSpan(
-                              text: 'Login',
-                              style: TextStyle(
-                                color: Colors.white,
-                                decorationColor: Colors.white,
-                                decoration: TextDecoration.underline,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Get.toNamed(Routes.LOGIN);
-                                },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            // Positioned(
-            //   top: 8,
-            //   right: 12,
-            //   child: ,
-            // ),
-          ],
-        ),
-      ),
+      body: _AnimatedSplashBody(),
     );
   }
 }
 
-/// Small “Trainer?” pill that reveals a speech-bubble popup using an Overlay.
-/// Uses CompositedTransformTarget/Follower so the bubble stays anchored even
-/// when the layout changes.
+class _AnimatedSplashBody extends StatefulWidget {
+  const _AnimatedSplashBody();
+
+  @override
+  __AnimatedSplashBodyState createState() => __AnimatedSplashBodyState();
+}
+
+class __AnimatedSplashBodyState extends State<_AnimatedSplashBody>
+    with TickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _logoFadeInAnim;
+  late final Animation<double> _backgroundAndLogoColorAnim;
+  late final Animation<double> _uiElementsAnim;
+  late final Animation<Offset> _uiSlideAnim;
+  late final Animation<Color?> _logoColorTween;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 3500),
+      vsync: this,
+    );
+
+    _logoFadeInAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.28, curve: Curves.easeOut),
+      ),
+    );
+
+
+    _backgroundAndLogoColorAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.28, 0.71, curve: Curves.easeInOut),
+      ),
+    );
+    _logoColorTween = ColorTween(
+      begin: Colors.transparent,
+      end: Colors.white,
+    ).animate(_backgroundAndLogoColorAnim);
+
+
+    final uiCurve = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.71, 1.0, curve: Curves.easeOutCubic),
+    );
+    _uiElementsAnim = Tween<double>(begin: 0.0, end: 1.0).animate(uiCurve);
+    _uiSlideAnim = Tween<Offset>(
+      begin: const Offset(0, 0.5),
+      end: Offset.zero,
+    ).animate(uiCurve);
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        // The orange gradient background that will fade in
+        FadeTransition(
+          opacity: _backgroundAndLogoColorAnim,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.colorPrimary, const Color(0xffFF8869)],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+          ),
+        ),
+
+        // The main content
+        SafeArea(
+          child: Column(
+            children: [
+              FadeTransition(
+                opacity: _uiElementsAnim,
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: TrainerBadgeWithPopup(),
+                ),
+              ),
+
+              // Logo in the center
+              Expanded(
+                child: Center(
+                  // Fade in the logo first
+                  child: FadeTransition(
+                    opacity: _logoFadeInAnim,
+                    // Then, animate its color to white
+                    child: AnimatedBuilder(
+                      animation: _logoColorTween,
+                      builder: (context, child) {
+                        return ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                            _logoColorTween.value ?? Colors.transparent,
+                            BlendMode.srcATop,
+                          ),
+                          child: child,
+                        );
+                      },
+                      child: SuperImage(Assets.imagesIconLogo),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Bottom UI Elements
+              FadeTransition(
+                opacity: _uiElementsAnim,
+                child: SlideTransition(
+                  position: _uiSlideAnim,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 32.0,
+                      left: 16.0,
+                      right: 16.0,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () => Get.toNamed(Routes.ONBOARDING),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                          child: const Text('Begin',
+                              style: TextStyle(color: Colors.black)),
+                        ),
+                        8.height,
+                        Text.rich(
+                          TextSpan(
+                            text: 'Have an account? ',
+                            style: const TextStyle(color: Colors.black),
+                            children: [
+                              TextSpan(
+                                text: 'Login',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  decorationColor: Colors.white,
+                                  decoration: TextDecoration.underline,
+                                ),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () => Get.toNamed(Routes.LOGIN),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class TrainerBadgeWithPopup extends StatefulWidget {
   const TrainerBadgeWithPopup({
     super.key,
@@ -120,9 +212,20 @@ class TrainerBadgeWithPopup extends StatefulWidget {
   State<TrainerBadgeWithPopup> createState() => _TrainerBadgeWithPopupState();
 }
 
-class _TrainerBadgeWithPopupState extends State<TrainerBadgeWithPopup> {
+class _TrainerBadgeWithPopupState extends State<TrainerBadgeWithPopup>
+    with SingleTickerProviderStateMixin {
   final LayerLink _link = LayerLink();
   OverlayEntry? _entry;
+  late final AnimationController _animationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 250),
+    );
+  }
 
   void _show() {
     if (_entry != null) return;
@@ -131,10 +234,8 @@ class _TrainerBadgeWithPopupState extends State<TrainerBadgeWithPopup> {
 
     _entry = OverlayEntry(
       builder: (context) {
-        // Full-screen Stack to allow a tap-outside barrier
         return Stack(
           children: [
-            // Tap outside to close
             Positioned.fill(
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
@@ -145,17 +246,24 @@ class _TrainerBadgeWithPopupState extends State<TrainerBadgeWithPopup> {
             // The anchored bubble
             CompositedTransformFollower(
               link: _link,
-              // Use anchors for robust positioning instead of a hardcoded offset.
-              // This aligns the top-right of the popup to the bottom-right
-              // of the "Trainer?" button.
               targetAnchor: Alignment.bottomRight,
               followerAnchor: Alignment.topRight,
-              offset: const Offset(0, 8), // Add some space below the button
+              offset: const Offset(0, 8),
               showWhenUnlinked: false,
-              child: _SpeechBubbleCard(
-                title: widget.title,
-                body: widget.body,
-                onClose: _hide,
+              child: FadeTransition(
+                opacity: _animationController,
+                child: ScaleTransition(
+                  alignment: Alignment.topRight,
+                  scale: CurvedAnimation(
+                    parent: _animationController,
+                    curve: Curves.easeOutBack,
+                  ),
+                  child: _SpeechBubbleCard(
+                    title: widget.title,
+                    body: widget.body,
+                    onClose: _hide,
+                  ),
+                ),
               ),
             ),
           ],
@@ -164,16 +272,23 @@ class _TrainerBadgeWithPopupState extends State<TrainerBadgeWithPopup> {
     );
 
     overlay.insert(_entry!);
+    _animationController.forward();
   }
 
   void _hide() {
-    _entry?.remove();
-    _entry = null;
+    _animationController.reverse().then((_) {
+      _entry?.remove();
+      _entry = null;
+    });
   }
 
   @override
   void dispose() {
-    _hide();
+    // Ensure the overlay entry is removed if the widget is disposed.
+    if (_entry != null) {
+      _entry?.remove();
+    }
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -197,7 +312,6 @@ class _TrainerBadgeWithPopupState extends State<TrainerBadgeWithPopup> {
   }
 }
 
-/// White rounded card with a small pointer tail (speech bubble look).
 class _SpeechBubbleCard extends StatelessWidget {
   const _SpeechBubbleCard({
     required this.title,
@@ -211,7 +325,6 @@ class _SpeechBubbleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Card size similar to the screenshot
     const double width = 260;
     const double tailSize = 10;
 
@@ -290,7 +403,6 @@ class _SpeechBubbleCard extends StatelessWidget {
   }
 }
 
-/// Draws a small triangular tail that aligns with the card’s top edge.
 class _BubbleTailPainter extends CustomPainter {
   _BubbleTailPainter({required this.color});
   final Color color;
@@ -307,7 +419,6 @@ class _BubbleTailPainter extends CustomPainter {
       ..color = color
       ..style = PaintingStyle.fill;
 
-    // soft shadow under the tail for depth
     canvas.drawShadow(path, Colors.black.withValues(alpha: 0.2), 3, true);
     canvas.drawPath(path, paint);
   }
