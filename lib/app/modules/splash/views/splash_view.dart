@@ -1,4 +1,3 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -88,7 +87,6 @@ class __AnimatedSplashBodyState extends State<_AnimatedSplashBody>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // The orange gradient background that will fade in
         FadeTransition(
           opacity: _backgroundAndLogoColorAnim,
           child: Container(
@@ -114,26 +112,39 @@ class __AnimatedSplashBodyState extends State<_AnimatedSplashBody>
                 ),
               ),
 
-              // Logo in the center
               Expanded(
                 child: Center(
-                  // Fade in the logo first
-                  child: FadeTransition(
-                    opacity: _logoFadeInAnim,
-                    // Then, animate its color to white
-                    child: AnimatedBuilder(
-                      animation: _logoColorTween,
-                      builder: (context, child) {
-                        return ColorFiltered(
-                          colorFilter: ColorFilter.mode(
-                            _logoColorTween.value ?? Colors.transparent,
-                            BlendMode.srcATop,
-                          ),
-                          child: child,
-                        );
-                      },
-                      child: SuperImage(Assets.imagesIconLogo),
-                    ),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      AnimatedBuilder(
+                        animation: _controller,
+                        builder: (context, child) {
+                          final opacity = _logoFadeInAnim.value * (1.0 - _backgroundAndLogoColorAnim.value);
+                          return Opacity(
+                            opacity: opacity.clamp(0.0, 1.0),
+                            child: SuperImage(Assets.svgLogo),
+                          );
+                        },
+                      ),
+
+                      FadeTransition(
+                        opacity: _backgroundAndLogoColorAnim,
+                        child: AnimatedBuilder(
+                          animation: _logoColorTween,
+                          builder: (context, child) {
+                            return ColorFiltered(
+                              colorFilter: ColorFilter.mode(
+                                _logoColorTween.value ?? Colors.transparent,
+                                BlendMode.srcATop,
+                              ),
+                              child: child,
+                            );
+                          },
+                          child: SuperImage(Assets.imagesIconLogo),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
