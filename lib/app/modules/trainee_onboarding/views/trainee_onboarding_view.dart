@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
+import '../../../core/widgets/chat_room_shimmer.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
 import '../models/trainee_onboarding_questions_model.dart';
@@ -183,8 +184,15 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   Widget body(BuildContext context) {
     return Column(
       children: [
+        // ------------------ MESSAGES ----------
         Expanded(
           child: Obx(() {
+            // ------------------- MESSAGE LOADING STATE --------
+            if(controller.onboardingPhase.value == OnboardingPhase.fetchingData){
+              return ChatRoomShimmer();
+            }
+
+            // ------------------- DATA STATE ------------------
             final items = controller.messages;
             final typing = controller.isTyping.value;
             return ListView.builder(
@@ -326,12 +334,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     return _buildInitialTermsInput(context);
 
                   case OnboardingPhase.fetchingData:
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 32.0),
-                      child: Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      ),
-                    );
+                    return const SizedBox.shrink();
 
                   case OnboardingPhase.askingQuestions:
                     if (controller.showGroupContinuationButtons) {
@@ -364,7 +367,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             ),
           ),
         ),
-
         const SizedBox(height: 8),
       ],
     );
