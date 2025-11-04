@@ -283,7 +283,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 parent: animation,
                 curve: Curves.easeOutCubic,
               );
-              // ReverseAnimation turns 1→0 into 0→1, perfect for driving "out" tweens
               final outCurved = CurvedAnimation(
                 parent: ReverseAnimation(animation),
                 curve: Curves.easeInCubic,
