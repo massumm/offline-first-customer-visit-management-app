@@ -260,52 +260,92 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           );
         }),
 
-        // Input Area
-        SafeArea(
-          top: false,
-          child: Obx(() {
-            switch (controller.onboardingPhase.value) {
-              case OnboardingPhase.awaitingEmail:
-                return _buildTextInput();
+          AnimatedSwitcher(
+          duration: const Duration(milliseconds: 500),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          transitionBuilder: (Widget child, Animation<double> animation) {
 
-              case OnboardingPhase.awaitingInitialTerms:
-                return _buildInitialTermsInput(context);
+            final slideIn = Tween<Offset>(
+              begin: const Offset(0.0, 1.0), // Start from bottom
+              end: Offset.zero,
+            ).animate(animation);
 
-              case OnboardingPhase.fetchingData:
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32.0),
-                  child: Center(child: CircularProgressIndicator.adaptive()),
-                );
+            // Animation for the old widget sliding DOWN off the screen
+            final slideOut = Tween<Offset>(
+              begin: Offset.zero,
+              end: const Offset(0.0, 1.0),
+            ).animate(animation);
 
-              case OnboardingPhase.askingQuestions:
-                if (controller.showGroupContinuationButtons) {
-                  return _buildContinuationButtons();
-                }
-                if (controller.isCurrentImage) {
-                  return _ImagePickerInput(controller: controller);
-                }
-                if (controller.isCurrentDate) {
-                  return _buildDatePickerButton(context);
-                }
-                if (controller.isCurrentTime) {
-                  return _buildTimePickerButton(context);
-                }
-                if (controller.isCurrentHeight) {
-                  return _HeightPicker(controller: controller);
-                }
-                if (controller.isCurrentWeight) {
-                  return _WeightPicker(controller: controller);
-                }
-                if (controller.isCurrentChoice) {
-                  return const SizedBox.shrink();
-                }
-                return _buildTextInput();
-
-              case OnboardingPhase.completed:
-                return _buildTextInput();
+            // When animation.status is 'reverse', it's the old child.
+            if (animation.status == AnimationStatus.reverse) {
+              return ClipRect(
+                child: SlideTransition(
+                  position: slideOut,
+                  child: child,
+                ),
+              );
+            } else {
+              return ClipRect(
+                child: SlideTransition(
+                  position: slideIn,
+                  child: child,
+                ),
+              );
             }
-          }),
+          },
+          child: SafeArea(
+            key: ValueKey(
+              '${controller.onboardingPhase.value}-${controller.currentQuestion?.id}',
+            ),
+            top: false,
+            child: Obx(() {
+              switch (controller.onboardingPhase.value) {
+                case OnboardingPhase.awaitingEmail:
+                  return _buildTextInput();
+
+                case OnboardingPhase.awaitingInitialTerms:
+                  return _buildInitialTermsInput(context);
+
+                case OnboardingPhase.fetchingData:
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32.0),
+                    child: Center(child: CircularProgressIndicator.adaptive()),
+                  );
+
+                case OnboardingPhase.askingQuestions:
+                  if (controller.showGroupContinuationButtons) {
+                    return _buildContinuationButtons();
+                  }
+                  if (controller.isCurrentImage) {
+                    return _ImagePickerInput(controller: controller);
+                  }
+                  if (controller.isCurrentDate) {
+                    return _buildDatePickerButton(context);
+                  }
+                  if (controller.isCurrentTime) {
+                    return _buildTimePickerButton(context);
+                  }
+                  if (controller.isCurrentHeight) {
+                    return _HeightPicker(controller: controller);
+                  }
+                  if (controller.isCurrentWeight) {
+                    return _WeightPicker(controller: controller);
+                  }
+                  if (controller.isCurrentChoice) {
+                    return const SizedBox.shrink();
+                  }
+                  return _buildTextInput();
+
+                case OnboardingPhase.completed:
+                  return _buildTextInput();
+              }
+            }),
+          ),
         ),
+
+
+
         const SizedBox(height: 8),
       ],
     );
