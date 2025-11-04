@@ -260,6 +260,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           );
         }),
 
+        // ----------------- Input Sections ----------
         AnimatedSize(
           duration: const Duration(milliseconds: 220),
           curve: Curves.easeOutCubic,
