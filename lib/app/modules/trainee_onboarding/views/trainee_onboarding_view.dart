@@ -402,8 +402,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            // TODO: Navigate to your Terms and Conditions page
-                            Get.snackbar("Navigation", "Go to Terms page");
+                            CustomToast.showToast(message: 'Terms and Conditions');
                           },
                       ),
                     ],
@@ -414,10 +413,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           ),
           const SizedBox(height: 12),
           Obx(
-            () => FilledButton(
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
+            () => ElevatedButton(
               onPressed: controller.hasAgreedToInitialTerms.value
                   ? controller.proceedAfterInitialTerms
                   : null,
