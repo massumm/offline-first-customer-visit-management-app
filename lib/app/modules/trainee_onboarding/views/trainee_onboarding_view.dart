@@ -337,18 +337,24 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     if (controller.showGroupContinuationButtons) {
                       return _buildContinuationButtons();
                     }
-                    if (controller.isCurrentImage)
+                    if (controller.isCurrentImage) {
                       return _ImagePickerInput(controller: controller);
-                    if (controller.isCurrentDate)
+                    }
+                    if (controller.isCurrentDate) {
                       return _buildDatePickerButton(context);
-                    if (controller.isCurrentTime)
+                    }
+                    if (controller.isCurrentTime) {
                       return _buildTimePickerButton(context);
-                    if (controller.isCurrentHeight)
+                    }
+                    if (controller.isCurrentHeight) {
                       return _HeightPicker(controller: controller);
-                    if (controller.isCurrentWeight)
+                    }
+                    if (controller.isCurrentWeight) {
                       return _WeightPicker(controller: controller);
-                    if (controller.isCurrentChoice)
+                    }
+                    if (controller.isCurrentChoice) {
                       return const SizedBox.shrink();
+                    }
                     return _buildTextInput();
 
                   case OnboardingPhase.completed:

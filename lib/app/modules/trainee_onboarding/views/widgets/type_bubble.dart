@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:ui' show lerpDouble;
 import 'package:flutter/material.dart';
 
 class TypingBubble extends StatefulWidget {
@@ -25,7 +24,7 @@ class _TypingBubbleState extends State<TypingBubble>
   @override
   Widget build(BuildContext context) {
     final bg = Theme.of(context).colorScheme.primary;
-    final fg = Theme.of(context).colorScheme.surfaceContainerHighest;
+    final fg = Theme.of(context).colorScheme.onSurfaceVariant;
 
     return Align(
       alignment: Alignment.centerLeft,
@@ -70,6 +69,7 @@ class _TypingBubbleState extends State<TypingBubble>
   }
 }
 
+
 class _TypingDotsPainter extends CustomPainter {
   _TypingDotsPainter({
     required this.color,
@@ -79,45 +79,90 @@ class _TypingDotsPainter extends CustomPainter {
   final Color color;
   final Animation<double> animation;
 
-  static const double _r = 3.0;
-  static const double _gap = 5.0;
-  static const double _lift = 1.6;
-  static const double _phase = 0.18;
+  static const double _r = 3.0;      // radius
+  static const double _gap = 5.0;    // space between dots
+  static const double _lift = 3.0;   // vertical travel in px
+  static const double _phase = 0.20; // stagger per dot (0..1 fraction)
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..isAntiAlias = true;
+    final paint = Paint()
+      ..isAntiAlias = true
+      ..color = color;
+
     final totalW = (2 * _r) * 3 + _gap * 2;
     final startX = (size.width - totalW) / 2 + _r;
     final centerY = size.height / 2;
-
-    // 0..1 looping time
     final t = animation.value;
 
-    // smooth 0..1..0 wave (cosine ease)
-    double wave(double x) => 0.5 - 0.5 * math.cos(2 * math.pi * x);
+    // sine wave for smooth up/down motion
+    double yOffset(double phase) => -_lift * math.sin(2 * math.pi * phase);
 
     for (int i = 0; i < 3; i++) {
       final phase = (t + i * _phase) % 1.0;
-      final w = wave(phase);
-
-      final alpha = lerpDouble(0.35, 1.0, w)!;
-      final scale = lerpDouble(0.85, 1.20, w)!;
-      final dy = -_lift * w;
-
-      paint.color = color.withValues(alpha: alpha);
-
       final x = startX + i * ((2 * _r) + _gap);
+      final dy = yOffset(phase);
+
       canvas.save();
       canvas.translate(x, centerY + dy);
-      canvas.drawCircle(Offset.zero, _r * scale, paint);
+      canvas.drawCircle(Offset.zero, _r, paint);
       canvas.restore();
     }
   }
 
   @override
-  bool shouldRepaint(covariant _TypingDotsPainter oldDelegate) {
-    // color changes should repaint; animation handled by `repaint:`
-    return oldDelegate.color != color;
-  }
+  bool shouldRepaint(covariant _TypingDotsPainter old) => old.color != color;
 }
+
+
+// class _TypingDotsPainter extends CustomPainter {
+//   _TypingDotsPainter({
+//     required this.color,
+//     required this.animation,
+//   }) : super(repaint: animation);
+//
+//   final Color color;
+//   final Animation<double> animation;
+//
+//   static const double _r = 3.0;
+//   static const double _gap = 5.0;
+//   static const double _lift = 1.6;
+//   static const double _phase = 0.18;
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     final paint = Paint()..isAntiAlias = true;
+//     final totalW = (2 * _r) * 3 + _gap * 2;
+//     final startX = (size.width - totalW) / 2 + _r;
+//     final centerY = size.height / 2;
+//
+//     // 0..1 looping time
+//     final t = animation.value;
+//
+//     // smooth 0..1..0 wave (cosine ease)
+//     double wave(double x) => 0.5 - 0.5 * math.cos(2 * math.pi * x);
+//
+//     for (int i = 0; i < 3; i++) {
+//       final phase = (t + i * _phase) % 1.0;
+//       final w = wave(phase);
+//
+//       final alpha = lerpDouble(0.35, 1.0, w)!;
+//       final scale = lerpDouble(0.85, 1.20, w)!;
+//       final dy = -_lift * w;
+//
+//       paint.color = color.withValues(alpha: alpha);
+//
+//       final x = startX + i * ((2 * _r) + _gap);
+//       canvas.save();
+//       canvas.translate(x, centerY + dy);
+//       canvas.drawCircle(Offset.zero, _r * scale, paint);
+//       canvas.restore();
+//     }
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant _TypingDotsPainter oldDelegate) {
+//     // color changes should repaint; animation handled by `repaint:`
+//     return oldDelegate.color != color;
+//   }
+// }

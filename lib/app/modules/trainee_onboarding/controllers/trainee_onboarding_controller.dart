@@ -302,14 +302,16 @@ class TraineeOnboardingController extends BaseController {
 
   Future<void> _botSay(String text) async {
     isTyping.value = true;
+    _scrollToBottom(); // Scroll down to show the typing indicator
     final delayMs = (text.length * 25).clamp(400, 1500);
     await Future.delayed(Duration(milliseconds: delayMs));
-    // Bot messages are immediately delivered
+
     messages.add(
         ChatMessage(from: Sender.bot, text: text, status: MessageStatus.delivered));
     isTyping.value = false;
-    _scrollToBottom();
+    _scrollToBottom(); // Scroll down again to show the newly added message
   }
+
 
   bool _shouldSkipQuestion(QAItem q) {
     return false;
@@ -437,17 +439,34 @@ class TraineeOnboardingController extends BaseController {
     _updateProgresses();
   }
 
+  // void _scrollToBottom() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (pageController.hasClients) {
+  //       pageController.animateTo(
+  //         pageController.position.maxScrollExtent + 100,
+  //         duration: const Duration(milliseconds: 250),
+  //         curve: Curves.easeOut,
+  //       );
+  //     }
+  //   });
+  // }
+
+  // Add this method to your TraineeOnboardingController
+
+  /// Scrolls the chat view to the bottom to show the latest message.
   void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // A short delay ensures that the UI has had time to update before scrolling.
+    Future.delayed(const Duration(milliseconds: 100), () {
       if (pageController.hasClients) {
         pageController.animateTo(
-          pageController.position.maxScrollExtent + 100,
-          duration: const Duration(milliseconds: 250),
+          pageController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }
     });
   }
+
 
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
