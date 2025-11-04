@@ -68,12 +68,22 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 children: [
                   Text(
                     'Mish Icon',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleMedium,
                   ),
                   Text(
                     'Online',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(
+                      color: Theme
+                          .of(context)
+                          .colorScheme
+                          .onSurfaceVariant,
                     ),
                   ),
                 ],
@@ -127,7 +137,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   6.height,
                   Text(
                     controller.getCurrentGroupName ?? "Getting Started",
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .headlineMedium,
                   ),
                   const SizedBox(height: 8),
                   AnimatedOnboardingStepper(
@@ -151,25 +164,26 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     if (hasAnswered) {
       showDialog(
         context: context,
-        builder: (dialogContext) => AlertDialog(
-          icon: const Icon(Icons.warning_amber_rounded, size: 40,),
-          title: const Text('Leave Onboarding?'),
-          content: const Text(
-              'Your progress will be lost if you go back. Are you sure?'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Stay'),
+        builder: (dialogContext) =>
+            AlertDialog(
+              icon: const Icon(Icons.warning_amber_rounded, size: 40,),
+              title: const Text('Leave Onboarding?'),
+              content: const Text(
+                  'Your progress will be lost if you go back. Are you sure?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('Stay'),
+                ),
+                FilledButton(
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                    Get.back();
+                  },
+                  child: const Text('Leave'),
+                ),
+              ],
             ),
-            FilledButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                Get.back();
-              },
-              child: const Text('Leave'),
-            ),
-          ],
-        ),
       );
     } else {
       // If no answers have been provided, navigate back directly.
@@ -226,7 +240,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         Obx(() {
           final q = controller.currentQuestion;
           if (controller.onboardingPhase.value !=
-                  OnboardingPhase.askingQuestions ||
+              OnboardingPhase.askingQuestions ||
               controller.isFinished ||
               controller.showGroupContinuationButtons ||
               q == null ||
@@ -246,11 +260,12 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   alignment: WrapAlignment.center,
                   children: q.options
                       .map(
-                        (o) => ActionChip(
+                        (o) =>
+                        ActionChip(
                           label: Text(o),
                           onPressed: () => controller.choose(o),
                         ),
-                      )
+                  )
                       .toList(),
                 ),
               ),
@@ -320,25 +335,35 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           Row(
             children: [
               Obx(
-                () => Checkbox(
-                  value: controller.hasAgreedToInitialTerms.value,
-                  onChanged: controller.toggleInitialTermsAgreement,
-                ),
+                    () =>
+                    Checkbox(
+                      value: controller.hasAgreedToInitialTerms.value,
+                      onChanged: controller.toggleInitialTermsAgreement,
+                    ),
               ),
               Expanded(
                 child: RichText(
                   text: TextSpan(
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .bodyMedium,
                     children: [
                       const TextSpan(text: 'I agree to the '),
                       TextSpan(
                         text: 'Terms and Conditions',
                         style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
+                          color: Theme
+                              .of(context)
+                              .colorScheme
+                              .primary,
                           decoration: TextDecoration.underline,
-                          decorationColor: Theme.of(
+                          decorationColor: Theme
+                              .of(
                             context,
-                          ).colorScheme.primary,
+                          )
+                              .colorScheme
+                              .primary,
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
@@ -354,15 +379,16 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           ),
           const SizedBox(height: 12),
           Obx(
-            () => FilledButton(
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              onPressed: controller.hasAgreedToInitialTerms.value
-                  ? controller.proceedAfterInitialTerms
-                  : null,
-              child: const Text('Continue'),
-            ),
+                () =>
+                FilledButton(
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  onPressed: controller.hasAgreedToInitialTerms.value
+                      ? controller.proceedAfterInitialTerms
+                      : null,
+                  child: const Text('Continue'),
+                ),
           ),
         ],
       ),
@@ -430,65 +456,108 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   }
 
   Widget _buildTextInput() {
-    return Row(
-      children: [
-        const SizedBox(width: 8),
-        Expanded(
-          child: TextField(
-            controller: controller.textController,
-            onChanged: (t) => controller.inputText.value = t,
-            onSubmitted: (t) {
-              controller.send(t);
-            },
-            decoration: InputDecoration(
-              hintText: _hintFor(),
-              border: const OutlineInputBorder(),
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
-              ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12),
+      child: TextField(
+        controller: controller.textController,
+        onChanged: (t) => controller.inputText.value = t,
+        onSubmitted: (t) {
+          controller.send(t);
+        },
+        decoration: InputDecoration(
+          suffixIcon: SizedBox(
+            // give room for 3 compact icon buttons
+            width: 120,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // MIC
+                IconButton(
+                  tooltip: 'Voice input',
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.mic_outlined, size: 20),
+                  onPressed: () async {
+                  },
+                ),
+
+                 Opacity(
+                   opacity: 0.5,
+                  child: IconButton(
+                    tooltip: 'Insert docs',
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    icon: const Icon(Icons.link_outlined, size: 20),
+                    onPressed: null,
+                  ),
+                ),
+
+                Opacity(
+                  opacity: 0.5,
+                  child: IconButton(
+                    tooltip: 'Attach photo',
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    icon: const Icon(Icons.camera_alt_outlined, size: 20),
+                    onPressed: null,
+                  ),
+                ),
+              ],
             ),
-            keyboardType: () {
-              // Handle email phase first
-              if (controller.onboardingPhase.value ==
-                  OnboardingPhase.awaitingEmail) {
-                return TextInputType.emailAddress;
-              }
-
-              // Check the current question type for other phases
-              final qType = controller.currentQuestion?.type;
-
-              // For number questions (including phone numbers), show the number keyboard.
-              if (qType == QAType.number) {
-                return TextInputType.number;
-              }
-
-              if (qType == QAType.phoneNumber) {
-                return TextInputType.phone;
-              }
-
-              // Default to a standard text keyboard
-              return TextInputType.text;
-            }(),
           ),
+
+          // important: relax the default 48x48 constraint so the Row fits
+          suffixIconConstraints: const BoxConstraints(minWidth: 0, minHeight: 0),
+
+          hintText: _hintFor(),
+          border: const OutlineInputBorder(),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         ),
-        const SizedBox(width: 8),
-        FilledButton.icon(
-          onPressed: () => controller.send(controller.textController.text),
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-          ),
-          icon: const Icon(Icons.send),
-          label: const Text('Send'), // TODO: HANDLE SKIP
-        ),
-        const SizedBox(width: 8),
-      ],
+
+        keyboardType: () {
+          // Handle email phase first
+          if (controller.onboardingPhase.value ==
+              OnboardingPhase.awaitingEmail) {
+            return TextInputType.emailAddress;
+          }
+
+          // Check the current question type for other phases
+          final qType = controller.currentQuestion?.type;
+
+          // For number questions (including phone numbers), show the number keyboard.
+          if (qType == QAType.number) {
+            return TextInputType.number;
+          }
+
+          if (qType == QAType.phoneNumber) {
+            return TextInputType.phone;
+          }
+
+          // Default to a standard text keyboard
+          return TextInputType.text;
+        }(),
+      ),
     );
+
   }
+
+  // const SizedBox(width: 8),
+  // FilledButton.icon(
+  //   onPressed: () => controller.send(controller.textController.text),
+  //   style: FilledButton.styleFrom(
+  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.all(Radius.circular(8)),
+  //     ),
+  //   ),
+  //   icon: const Icon(Icons.send),
+  //   label: const Text('Send'), // TODO: HANDLE SKIP
+  // ),
+  // const SizedBox(width: 8),
 
   String _hintFor() {
     switch (controller.onboardingPhase.value) {
@@ -532,11 +601,11 @@ class _HeightPickerState extends State<_HeightPicker> {
   // Data for pickers
   final List<int> _cmValues = List.generate(
     101,
-    (index) => 120 + index,
+        (index) => 120 + index,
   ); // 120-220 cm
   final List<int> _feetValues = List.generate(
     4,
-    (index) => 4 + index,
+        (index) => 4 + index,
   ); // 4-7 ft
   final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
 
@@ -546,9 +615,13 @@ class _HeightPickerState extends State<_HeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(
+        color: Theme
+            .of(
           context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        )
+            .colorScheme
+            .surfaceContainerHighest
+            .withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -664,11 +737,11 @@ class _WeightPickerState extends State<_WeightPicker> {
   // Data for pickers
   final List<double> _kgValues = List.generate(
     1101,
-    (i) => 40.0 + i * 0.1,
+        (i) => 40.0 + i * 0.1,
   ); // 40.0-150.0 kg
   final List<double> _lbsValues = List.generate(
     2401,
-    (i) => 90.0 + i * 0.1,
+        (i) => 90.0 + i * 0.1,
   ); // 90.0-330.0 lbs
 
   @override
@@ -680,9 +753,13 @@ class _WeightPickerState extends State<_WeightPicker> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(
+        color: Theme
+            .of(
           context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        )
+            .colorScheme
+            .surfaceContainerHighest
+            .withValues(alpha: 0.3),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Column(
@@ -701,7 +778,7 @@ class _WeightPickerState extends State<_WeightPicker> {
               scrollController: FixedExtentScrollController(
                 initialItem: currentValues.indexOf(
                   currentValues.firstWhere(
-                    (v) => (v - initialValue).abs() < 0.01,
+                        (v) => (v - initialValue).abs() < 0.01,
                     orElse: () => currentValues.first,
                   ),
                 ),
@@ -781,30 +858,31 @@ class _ImagePickerInput extends StatelessWidget {
   void _showImageSourceDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text("Select Image Source"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text("Take Photo"),
-              onTap: () {
-                Navigator.of(dialogContext).pop();
-                _pickImage(ImageSource.camera);
-              },
+      builder: (dialogContext) =>
+          AlertDialog(
+            title: const Text("Select Image Source"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.camera_alt),
+                  title: const Text("Take Photo"),
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    _pickImage(ImageSource.camera);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.photo_library),
+                  title: const Text("Choose from Gallery"),
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    _pickImage(ImageSource.gallery);
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text("Choose from Gallery"),
-              onTap: () {
-                Navigator.of(dialogContext).pop();
-                _pickImage(ImageSource.gallery);
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
     );
   }
 
@@ -846,9 +924,9 @@ class _StatusImageBubble extends StatelessWidget {
           }
           return frame == null
               ? const Padding(
-                  padding: EdgeInsets.all(48.0),
-                  child: Center(child: CircularProgressIndicator.adaptive()),
-                )
+            padding: EdgeInsets.all(48.0),
+            child: Center(child: CircularProgressIndicator.adaptive()),
+          )
               : child;
         },
         errorBuilder: (context, error, stackTrace) {
@@ -862,7 +940,10 @@ class _StatusImageBubble extends StatelessWidget {
 
     return Container(
       constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.7,
+        maxWidth: MediaQuery
+            .of(context)
+            .size
+            .width * 0.7,
       ),
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
@@ -873,20 +954,21 @@ class _StatusImageBubble extends StatelessWidget {
       ),
       child: isUser
           ? Obx(
-              () => Stack(
-                children: [
-                  imageWidget,
-                  Positioned(
-                    bottom: 8,
-                    right: 8,
-                    child: _MessageStatusIcon(
-                      status: status.value,
-                      isForImage: true,
-                    ),
+            () =>
+            Stack(
+              children: [
+                imageWidget,
+                Positioned(
+                  bottom: 8,
+                  right: 8,
+                  child: _MessageStatusIcon(
+                    status: status.value,
+                    isForImage: true,
                   ),
-                ],
-              ),
-            )
+                ),
+              ],
+            ),
+      )
           : imageWidget,
     );
   }

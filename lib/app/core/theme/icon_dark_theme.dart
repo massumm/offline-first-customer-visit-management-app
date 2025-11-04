@@ -184,19 +184,19 @@ class IconDarkTheme {
       // Your border definitions are good, but you might want to adjust the
       // enabledBorder color to be less prominent in a dark theme.
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(color: AppColors.darkStockColor, width: 1),
       ),
       enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(color: AppColors.darkStockColor, width: 1),
       ),
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(color: AppColors.colorPrimary, width: 0.5),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(color: AppColors.warningColor, width: 0.5),
       ),
 
