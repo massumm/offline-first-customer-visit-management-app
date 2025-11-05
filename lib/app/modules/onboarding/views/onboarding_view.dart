@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/super_image.dart';
 
 import '../../../core/values/app_colors.dart';
 import '../controllers/onboarding_controller.dart';
@@ -49,22 +48,17 @@ class OnboardingView extends BaseView<OnboardingController> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      data["title"]!,
+                      data.title,
                       style: Get.textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     20.height,
-                    Text(data["desc"]!, style: Get.textTheme.bodyMedium),
+                    Text(data.description, style: Get.textTheme.bodyMedium),
                     10.height,
                     const Spacer(),
                     Center(
-                      child: SuperImage(
-                        data['image'],
-                        height: 340,
-                        width: 250,
-                        radius: 12,
-                      ),
+                      child: data.imageWidget,
                     ),
                     const Spacer(),
                   ],
@@ -106,9 +100,7 @@ class OnboardingView extends BaseView<OnboardingController> {
                 ),
               ),
               child: Text(
-                controller.onboardingData[controller
-                    .currentPage
-                    .value]["button"]!,
+                controller.onboardingData[controller.currentPage.value].buttonLabel,
                 style: const TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),

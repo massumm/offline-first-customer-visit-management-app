@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/gradient_text_button.dart';
 import 'package:icon/app/modules/fitness_report/controllers/fitness_report_controller.dart';
 import 'package:icon/app/modules/fitness_report/widgets/fitness_report_appbar_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/info_card_widget.dart';
@@ -60,9 +61,9 @@ class CongratulationsMessagePageView extends BaseView<FitnessReportController> {
               ),
             ),
             8.height,
-            GestureDetector(
-              onTap: controller.gotToNextPage,
-              child: Image.asset(Assets.imagesRegisterButton),
+            GradientTextButton(
+              text: 'Register',
+              onPressed: controller.gotToNextPage,
             ),
           ],
         ),
