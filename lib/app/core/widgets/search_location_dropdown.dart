@@ -5,6 +5,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+
+
+
+/// Suggestion item model
 class LocationSuggestion {
   final String id; // Google place_id
   final String primaryText; // full description
@@ -19,8 +23,8 @@ class LocationSuggestion {
 
 class GooglePlacesService {
   GooglePlacesService({required this.apiKey, Dio? dio})
-    : _dio =
-          dio ??
+      : _dio =
+      dio ??
           Dio(
             BaseOptions(
               baseUrl: 'https://maps.googleapis.com',
@@ -33,10 +37,10 @@ class GooglePlacesService {
   final Dio _dio;
 
   Future<List<LocationSuggestion>> autocomplete(
-    String input, {
-    String? language,
-    String? countryBias,
-  }) async {
+      String input, {
+        String? language,
+        String? countryBias,
+      }) async {
     final res = await _dio.get(
       '/maps/api/place/autocomplete/json',
       queryParameters: <String, String?>{
@@ -51,8 +55,8 @@ class GooglePlacesService {
     final data = res.data is Map<String, dynamic>
         ? res.data as Map<String, dynamic>
         : (res.data is String
-              ? json.decode(res.data as String) as Map<String, dynamic>
-              : <String, dynamic>{});
+        ? json.decode(res.data as String) as Map<String, dynamic>
+        : <String, dynamic>{});
 
     final status = data['status'] as String?;
     if (status != 'OK' && status != 'ZERO_RESULTS') {
@@ -62,14 +66,14 @@ class GooglePlacesService {
     final predictions = (data['predictions'] as List?) ?? const [];
     return predictions
         .map<LocationSuggestion>((p) {
-          return LocationSuggestion(
-            id: p['place_id'] as String,
-            primaryText: p['description'] as String,
-            secondaryText:
-                (p['structured_formatting']?['secondary_text'] as String?) ??
-                '',
-          );
-        })
+      return LocationSuggestion(
+        id: p['place_id'] as String,
+        primaryText: p['description'] as String,
+        secondaryText:
+        (p['structured_formatting']?['secondary_text'] as String?) ??
+            '',
+      );
+    })
         .toList(growable: false);
   }
 
@@ -79,15 +83,15 @@ class GooglePlacesService {
       queryParameters: <String, String>{
         'place_id': placeId,
         'fields': 'geometry/location,name,formatted_address',
-        'key': apiKey,
+        'key': "AIzaSyAKyeZuBoMyWihoLPGe2VOAklRvLHaqQMs",
       },
     );
 
     final data = res.data is Map<String, dynamic>
         ? res.data as Map<String, dynamic>
         : (res.data is String
-              ? json.decode(res.data as String) as Map<String, dynamic>
-              : <String, dynamic>{});
+        ? json.decode(res.data as String) as Map<String, dynamic>
+        : <String, dynamic>{});
     if (data['status'] != 'OK') return null;
     final result = data['result'] as Map<String, dynamic>;
     final loc = result['geometry']?['location'] as Map<String, dynamic>?;
@@ -108,7 +112,6 @@ class PlaceDetails {
   const PlaceDetails({this.name, this.address, this.lat, this.lng});
 }
 
-/// Reusable searchable dropdown with async suggestions and overlay list
 class SearchableLocationDropdown extends StatefulWidget {
   const SearchableLocationDropdown({
     super.key,
@@ -244,48 +247,49 @@ class _SearchableLocationDropdownState
     _focusNode.unfocus();
   }
 
-  // void _onKeyDown(RawKeyEvent e) {
-  //   if (e.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-  //     setState(
-  //       () =>
-  //           _highlightIndex = (_highlightIndex + 1).clamp(0, _items.length - 1),
-  //     );
-  //     _rebuildOverlay();
-  //   } else if (e.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-  //     setState(
-  //       () =>
-  //           _highlightIndex = (_highlightIndex - 1).clamp(0, _items.length - 1),
-  //     );
-  //     _rebuildOverlay();
-  //   } else if (e.isKeyPressed(LogicalKeyboardKey.enter)) {
-  //     if (_items.isNotEmpty && _highlightIndex >= 0)
-  //       _select(_items[_highlightIndex]);
-  //   } else if (e.isKeyPressed(LogicalKeyboardKey.escape)) {
-  //     _focusNode.unfocus();
-  //   }
-  // }
+  void _onKeyDown(RawKeyEvent e) {
+    if (e.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+      setState(
+            () =>
+        _highlightIndex = (_highlightIndex + 1).clamp(0, _items.length - 1),
+      );
+      _rebuildOverlay();
+    } else if (e.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+      setState(
+            () =>
+        _highlightIndex = (_highlightIndex - 1).clamp(0, _items.length - 1),
+      );
+      _rebuildOverlay();
+    } else if (e.isKeyPressed(LogicalKeyboardKey.enter)) {
+      if (_items.isNotEmpty && _highlightIndex >= 0)
+        _select(_items[_highlightIndex]);
+    } else if (e.isKeyPressed(LogicalKeyboardKey.escape)) {
+      _focusNode.unfocus();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final inputDecoration = (widget.decoration ?? const InputDecoration())
         .copyWith(
-          hintText: widget.hintText,
-          suffixIcon: _controller.text.isEmpty
-              ? const Icon(Icons.search)
-              : IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () {
-                    _controller.clear();
-                    _onChanged('');
-                    _select(null);
-                  },
-                ),
-        );
+      hintText: widget.hintText,
+      suffixIcon: _controller.text.isEmpty
+          ? const Icon(Icons.search)
+          : IconButton(
+        icon: const Icon(Icons.close),
+        onPressed: () {
+          _controller.clear();
+          _onChanged('');
+          _select(null);
+        },
+      ),
+    );
 
     return CompositedTransformTarget(
       link: _layerLink,
-      child: KeyboardListener(
+      child: RawKeyboardListener(
         focusNode: FocusNode(),
+        onKey: _onKeyDown,
         child: KeyedSubtree(
           key: _fieldKey,
           child: TextField(
@@ -308,27 +312,27 @@ class _SearchableLocationDropdownState
         (_fieldKey.currentContext?.findRenderObject() as RenderBox?)
             ?.size
             .width ??
-        360;
+            360;
 
     Widget content;
     if (_isLoading) {
       content =
           widget.loadingBuilder?.call(context) ??
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: Center(child: CircularProgressIndicator()),
-          );
+              const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(child: CircularProgressIndicator()),
+              );
     } else if (_lastError != null) {
       content =
           widget.errorBuilder?.call(context, _lastError!) ??
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text('Error: $_lastError'),
-          );
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text('Error: $_lastError'),
+              );
     } else if (_items.isEmpty) {
       content =
           widget.emptyBuilder?.call(context) ??
-          const Padding(padding: EdgeInsets.all(16), child: Text('No results'));
+              const Padding(padding: EdgeInsets.all(16), child: Text('No results'));
     } else {
       content = ConstrainedBox(
         constraints: BoxConstraints(maxHeight: widget.overlayMaxHeight),

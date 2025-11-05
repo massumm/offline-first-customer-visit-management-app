@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:icon/app/modules/trainee_onboarding/services/location_service.dart';
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository_impl.dart';
 import '../controllers/trainee_onboarding_controller.dart';
@@ -17,6 +18,11 @@ class TraineeOnboardingBinding extends Bindings {
     Get.lazyPut<TraineeOnboardingAuthRepository>(
       () => TraineeOnboardingAuthRepositoryImpl(),
       tag: (TraineeOnboardingAuthRepository).toString(),
+    );
+
+    // ------------- Services --------------------
+    Get.lazyPut<LocationService>(
+        () => LocationService()
     );
 
     Get.lazyPut<TraineeOnboardingController>(

@@ -6,6 +6,7 @@ import 'package:icon/app/base/network/network_error/api_error_handler.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/repository/traineer_onboarding_qa_repository.dart';
+import 'package:icon/app/modules/trainee_onboarding/services/location_service.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
@@ -33,6 +34,9 @@ class TraineeOnboardingController extends BaseController {
   final TraineeOnboardingAuthRepository _onboardingAuthRepository = Get.find(
     tag: (TraineeOnboardingAuthRepository).toString(),
   );
+  // --------------- Service --------------------
+  final LocationService _locationService = Get.find<LocationService>();
+  LocationService get locationService => _locationService;
   final textController = TextEditingController();
 
   // --------------- Dynamic Data ---------------
@@ -73,6 +77,8 @@ class TraineeOnboardingController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+    // Init servives
+    _locationService.attach(this);
     // Progress updates are now tied to the dynamic groups
     currentGroupIndex.listen((_) => _updateProgresses());
     currentQuestionIndexInGroup.listen((_) => _updateProgresses());
@@ -846,6 +852,7 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
 
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
+  bool get isCurrentLocation => currentQuestion?.type == QAType.location;
 
   // -------------- Stepper bindings --------------
   /// Recalculates and updates the progress for all groups.

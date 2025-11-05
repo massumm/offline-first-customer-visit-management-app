@@ -9,6 +9,7 @@ enum QAType {
   weight,
   image,
   phoneNumber,
+  location,
   unknown,
 }
 
@@ -104,6 +105,10 @@ class TraineeQuestionData {
     QAType parseQAType(String? type) {
       switch (type) {
         case "text":
+          // TODO: DEMO ONLY
+          if(json["question_field_name"] == 'address'){
+            return QAType.location;
+          }
           return QAType.text;
         case "number":
           return QAType.number;

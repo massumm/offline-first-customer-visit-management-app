@@ -13,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
 import '../../../core/widgets/chat_room_shimmer.dart';
+import '../../../core/widgets/search_location_dropdown.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
 import '../models/trainee_onboarding_questions_model.dart';
@@ -188,7 +189,8 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         Expanded(
           child: Obx(() {
             // ------------------- MESSAGE LOADING STATE --------
-            if(controller.onboardingPhase.value == OnboardingPhase.fetchingData){
+            if (controller.onboardingPhase.value ==
+                OnboardingPhase.fetchingData) {
               return ChatRoomShimmer();
             }
 
@@ -358,6 +360,24 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     if (controller.isCurrentChoice) {
                       return const SizedBox.shrink();
                     }
+
+                    // TODO: DEMO CHECK
+                    if (controller.isCurrentLocation ||
+                        controller.currentQuestion?.id == 4) {
+                      return InkWell(
+                        onTap: () async {
+
+                          final PlaceDetails? result =  await openLocationBottomSheet(controller, context);
+
+                          if(result != null) {
+                            controller.inputText.value = result.address ?? "";
+                            controller.textController.text = result.address ?? "";
+                            controller.send(controller.textController.text);
+                          }
+                        },
+                        child: IgnorePointer(child: _buildTextInput()),
+                      );
+                    }
                     return _buildTextInput();
 
                   case OnboardingPhase.completed:
@@ -404,7 +424,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            CustomToast.showToast(message: 'Terms and Conditions');
+                            CustomToast.showToast(
+                              message: 'Terms and Conditions',
+                            );
                           },
                       ),
                     ],
@@ -449,6 +471,89 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       ),
     );
   }
+  Future<PlaceDetails?> openLocationBottomSheet(TraineeOnboardingController controller, BuildContext context) async {
+    final theme = Theme.of(context);
+    final result = await Get.bottomSheet<PlaceDetails>(
+      backgroundColor: theme.colorScheme.surface,
+      SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 12,
+            right: 12,
+            top: 12,
+            bottom: MediaQuery.of(Get.context!).viewInsets.bottom + 16,
+          ),
+          child: SizedBox(
+            height: Get.height * 0.5,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Drag handle
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: theme.iconTheme.color,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+
+                // Title
+                const Text(
+                  'Choose a location',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 12),
+
+                SearchableLocationDropdown(
+                  hintText: 'Search a city, area, or place',
+                  debounce: const Duration(milliseconds: 300),
+                  fetchSuggestions: controller.locationService.placesAutocomplete,
+                  onChanged: (suggestion) async {
+                    if (suggestion == null) return;
+
+                    try {
+                      final details = await controller.locationService.places
+                          .placeDetails(suggestion.id);
+
+                      if (details == null) {
+                        CustomToast.showErrorToast(
+                          'Unable to fetch details. Please try another place.',
+                        );
+                        return;
+                      }
+                      // Close the sheet and return the details to the caller
+                      if (context.mounted) {
+                        Navigator.pop(context, details);
+                      }
+                    } catch (e) {
+                     CustomToast.showErrorToast(
+                        'Failed to load place details.'
+
+                      );
+                    }
+                  },
+
+                ),
+
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        ),
+      ),
+      isScrollControlled: true,
+      elevation: 8,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+    );
+
+    return result;
+  }
+
 
   Widget _buildDatePickerButton(BuildContext context) {
     return Padding(
