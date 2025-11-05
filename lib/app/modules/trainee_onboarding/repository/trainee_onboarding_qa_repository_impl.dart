@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:icon/app/base/base_remote_source.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/models/trainee_onboarding_questions_model.dart';
 import '../../../base/network/dio_provider.dart';
 import '../../../data/local/preference/store/user_store.dart';
@@ -14,6 +15,7 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     final String endpoint =
         "${DioProvider.baseUrl}/api/trainers/onboardings/$trainerId/questions/";
 
+    "Token: $token".log();
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",
     };

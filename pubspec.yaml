@@ -29,7 +29,11 @@ dependencies:
 
   # Font
   google_fonts: ^6.3.2
+
   image_picker: ^1.2.0
+
+  #GOOGLE MAP
+  awesome_place_search: ^2.1.0
 
 dev_dependencies:
   flutter_test:
