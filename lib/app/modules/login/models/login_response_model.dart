@@ -1,18 +1,21 @@
 class LoginResponseModel {
-  LoginResponseModel({this.refresh, this.access, this.traineeProfile});
+  LoginResponseModel({this.refresh, this.access, this.traineeProfile, this.twoFaEnabled});
 
   final String? refresh;
   final String? access;
+  final bool? twoFaEnabled;
   final TraineeProfile? traineeProfile;
 
   LoginResponseModel copyWith({
     String? refresh,
     String? access,
+    bool? twoFaEnabled,
     TraineeProfile? traineeProfile,
   }) {
     return LoginResponseModel(
       refresh: refresh ?? this.refresh,
       access: access ?? this.access,
+      twoFaEnabled: twoFaEnabled ?? this.twoFaEnabled,
       traineeProfile: traineeProfile ?? this.traineeProfile,
     );
   }
@@ -21,6 +24,7 @@ class LoginResponseModel {
     return LoginResponseModel(
       refresh: json["refresh"] ?? json['refresh_token'],
       access: json["access"] ?? json['token'],
+      twoFaEnabled: json["2fa_required"] ?? false,
       traineeProfile: json["trainee_profile"] != null
           ? TraineeProfile.fromJson(json["trainee_profile"])
           : null,
@@ -30,6 +34,7 @@ class LoginResponseModel {
   Map<String, dynamic> toJson() => {
     "refresh": refresh,
     "access": access,
+    "2fa_required": twoFaEnabled,
     "trainee_profile": traineeProfile?.toJson(),
   };
 }

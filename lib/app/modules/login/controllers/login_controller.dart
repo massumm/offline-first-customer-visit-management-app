@@ -3,8 +3,11 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/services/theme_service.dart';
+import '../../../base/network/exceptions/api_exception.dart';
+import '../../../base/network/exceptions/base_exception.dart';
+import '../../../base/network/exceptions/network_exception.dart';
+import '../../../base/network/exceptions/not_found_exception.dart';
 import '../../../base/widgets/custom_toast.dart';
-import '../../../data/local/preference/store/trainee_data_store.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
 import '../repository/login_repository.dart';
@@ -132,7 +135,7 @@ class LoginController extends BaseController {
           CustomToast.showSuccessToast('Login successful');
           try{
             UserStore.to.saveProfileAndToken(response).whenComplete(() {
-              _handleRoute();
+              _handleRoute(response.twoFaEnabled ?? false);
             });
           } catch (e) {
             CustomToast.showErrorToast('An unexpected error occurred');
@@ -147,32 +150,23 @@ class LoginController extends BaseController {
       } catch (error) {
         isLoading.value = false;
         CustomToast.showErrorToast('An unexpected error occurred');
-
-
-        // // Handle different types of exceptions
-        // if (error is NotFoundException) {
-        //   CustomToast.showWarningToast((error as BaseException).description);
-        // } else if (error is ApiException) {
-        //   CustomToast.showWarningToast((error as BaseException).description);
-        // } else if (error is NetworkException) {
-        //   CustomToast.showErrorToast('Network error occurred');
-        // }
+        // Handle different types of exceptions
+        if (error is NotFoundException) {
+          CustomToast.showWarningToast((error as BaseException).description);
+        } else if (error is ApiException) {
+          CustomToast.showWarningToast((error as BaseException).description);
+        } else if (error is NetworkException) {
+          CustomToast.showErrorToast('Network error occurred');
+        }
       }
     }
   }
 
-  void _handleRoute() {
-    // Check if there is pending onboarding data for the trainee.
-    final onboardingData = TraineeDataStore.to.onboardingDataValue;
-
-    if (onboardingData != null) {
-      // If data exists, the user likely just finished onboarding before logging in.
-      // Navigate them to the profile creation flow, clearing the login stack.
-      Get.offAllNamed(Routes.PROFILE_CREATE_ANIMATION);
+  void _handleRoute(bool twoFaEnabled) {
+    if(twoFaEnabled) {
+       Get.offAndToNamed(Routes.EMAIL_VERIFICATION_OTP); // TODO:HANDLE THE ROUTE
     } else {
-      // If no onboarding data is found, the user is a returning user.
-      // Navigate them directly to the home screen, clearing the login stack.
-      Get.offAllNamed(Routes.HOME);
+      Get.offAndToNamed(Routes.HOME);
     }
   }
 
