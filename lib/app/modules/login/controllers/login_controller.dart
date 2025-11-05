@@ -164,7 +164,7 @@ class LoginController extends BaseController {
 
   void _handleRoute(bool twoFaEnabled) {
     if(twoFaEnabled) {
-       Get.offAndToNamed(Routes.EMAIL_VERIFICATION_OTP); // TODO:HANDLE THE ROUTE
+       Get.offAndToNamed(Routes.EMAIL_VERIFICATION_OTP, arguments: emailCtr.text ); // TODO:HANDLE THE ROUTE
     } else {
       Get.offAndToNamed(Routes.HOME);
     }
