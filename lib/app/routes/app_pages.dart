@@ -1,4 +1,3 @@
-
 import 'package:get/get.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
@@ -15,6 +14,8 @@ import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
+import '../modules/otp_validation/bindings/otp_validation_binding.dart';
+import '../modules/otp_validation/views/otp_validation_view.dart';
 import '../modules/profile_create_animation/bindings/profile_create_animation_binding.dart';
 import '../modules/profile_create_animation/views/profile_create_animation_view.dart';
 import '../modules/register/bindings/register_binding.dart';
@@ -126,6 +127,11 @@ class AppPages {
       name: _Paths.TRAINEE_FITNESS_REPORT_GENERATION,
       page: () => TraineeFitnessReportGenerationView(),
       binding: TraineeFitnessReportGenerationBinding(),
+    ),
+    GetPage(
+      name: _Paths.OTP_VALIDATION,
+      page: () =>  OtpValidationView(),
+      binding: OtpValidationBinding(),
     ),
   ];
 }
