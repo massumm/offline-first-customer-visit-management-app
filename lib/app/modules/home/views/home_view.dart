@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
@@ -27,15 +28,17 @@ class HomeView extends BaseView<HomeController> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const _Header(),
-              const SizedBox(height: 16),
+              16.height,
               _UserHeader(username: controller.username, day: 12, level: 7),
-              const SizedBox(height: 16),
+              16.height,
               DailyProcressIndicators(controller: controller),
-              const SizedBox(height: 16),
-              TrainerRegCard(onPressed: () {
-                Get.toNamed(Routes.TRAINER_ONBOARDING);
-              }),
-              const SizedBox(height: 16),
+              16.height,
+              TrainerRegCard(
+                onPressed: () {
+                  Get.toNamed(Routes.TRAINER_ONBOARDING);
+                },
+              ),
+              16.height,
               LayoutBuilder(
                 builder: (context, constraints) {
                   final isWide = constraints.maxWidth > 520;
@@ -70,7 +73,7 @@ class HomeView extends BaseView<HomeController> {
                     return Row(
                       children: [
                         Expanded(child: actionCards[0]),
-                        const SizedBox(width: 16),
+                        16.width,
                         Expanded(child: actionCards[1]),
                       ],
                     );
@@ -85,7 +88,7 @@ class HomeView extends BaseView<HomeController> {
                             // Example: Card takes 80% of screen width
                             child: actionCards[0],
                           ),
-                          const SizedBox(width: 16),
+                          16.width,
                           SizedBox(
                             width: constraints.maxWidth * 0.8,
                             // Example: Card takes 80% of screen width
@@ -98,12 +101,12 @@ class HomeView extends BaseView<HomeController> {
                   }
                 },
               ),
-              const SizedBox(height: 16),
+              16.height,
 
               _GoalsCard(onPressed: () {}, ringValue: 0.64),
-              const SizedBox(height: 16),
+              16.height,
               _CommunityCard(color: cs.secondary),
-              const SizedBox(height: 58),
+              58.height,
             ],
           ),
         ),
@@ -186,8 +189,9 @@ class _UserHeader extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.ligthBorderGrayColor, width: 2),
       ),
       child: Row(
         children: [
@@ -199,12 +203,15 @@ class _UserHeader extends StatelessWidget {
                   'Good morning,',
                   style: Theme.of(
                     context,
-                  ).textTheme.bodyLarge!.copyWith(color: Colors.white70),
+                  ).textTheme.bodyLarge?.copyWith(fontSize: 16),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   username,
-                  style: Theme.of(context).textTheme.headlineSmall,
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontSize: 22,
+                    decoration: TextDecoration.underline,
+                  ),
                 ),
               ],
             ),
@@ -240,7 +247,7 @@ class _InfoChip extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SuperImage(icon),
+          SizedBox(width: 37, height: 33, child: SvgPicture.asset(icon)),
           const SizedBox(width: 6),
           Text(label, style: style),
         ],
@@ -259,14 +266,14 @@ class DayCard extends StatelessWidget {
     final isToday = item.isToday;
 
     return Container(
-      width: 80,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      width: 60,
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
       decoration: BoxDecoration(
-        color: isToday ? const Color(0xFF3A1E1E) : Theme.of(context).cardColor,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: isToday
-            ? Border.all(color: const Color(0xFFE35D5D), width: 1)
-            : null,
+            ? Border.all(color: const Color(0xFFE35D5D), width: 2)
+            : Border.all(color: AppColors.ligthBorderGrayColor, width: 2),
       ),
       child: FittedBox(
         fit: BoxFit.scaleDown,
@@ -279,18 +286,26 @@ class DayCard extends StatelessWidget {
               child: ProgressRing(
                 value: item.progress,
                 thickness: 4,
-                trackColor: Colors.white10,
-                valueColor: isToday
-                    ? AppColors.redProgressColor
-                    : AppColors.greenColor,
+                trackColor: AppColors.ligthBorderGrayColor,
+                valueColor: AppColors.redProgressColor,
+                valueGradient: AppColors.redGradient,
               ),
             ),
             const SizedBox(height: 10),
-            Text(item.label, style: const TextStyle(color: Colors.white70)),
+            Text(
+              item.label,
+              style: Get.theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: isToday ? FontWeight.bold : null,
+                fontSize: isToday ? 14 : 12,
+              ),
+            ),
             const SizedBox(height: 2),
             Text(
               '${item.date}',
-              style: const TextStyle(fontWeight: FontWeight.w600),
+              style: Get.theme.textTheme.bodyMedium?.copyWith(
+                fontWeight: isToday ? FontWeight.bold : FontWeight.w600,
+                fontSize: isToday ? 14 : 12,
+              ),
             ),
           ],
         ),
@@ -307,6 +322,7 @@ class ProgressRing extends StatelessWidget {
     this.thickness = 4,
     this.trackColor = Colors.white10,
     this.valueColor = const Color(0xFF6EE7B7),
+    this.valueGradient,
     this.child,
   });
 
@@ -314,6 +330,7 @@ class ProgressRing extends StatelessWidget {
   final double thickness;
   final Color trackColor;
   final Color valueColor;
+  final LinearGradient? valueGradient;
   final Widget? child;
 
   @override
@@ -324,6 +341,7 @@ class ProgressRing extends StatelessWidget {
         thickness: thickness,
         track: trackColor,
         fill: valueColor,
+        gradient: valueGradient,
       ),
       child: child,
     );
@@ -336,12 +354,14 @@ class _RingPainter extends CustomPainter {
     required this.thickness,
     required this.track,
     required this.fill,
+    this.gradient,
   });
 
   final double value;
   final double thickness;
   final Color track;
   final Color fill;
+  final LinearGradient? gradient;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -360,6 +380,10 @@ class _RingPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = thickness
       ..strokeCap = StrokeCap.round;
+
+    if (gradient != null) {
+      valuePaint.shader = gradient!.createShader(rect);
+    }
 
     // Track
     canvas.drawArc(
@@ -397,16 +421,25 @@ class _Header extends StatelessWidget {
       children: [
         SvgPicture.asset(Assets.svgLogo, height: 40),
         const Spacer(),
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.notifications_outlined),
+        GestureDetector(
+          onTap: () {},
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white,
+              border: Border.all(
+                color: AppColors.ligthBorderGrayColor,
+                width: 2,
+              ),
+            ),
+            child: SvgPicture.asset(Assets.homeNotificationIconWithAlert),
+          ),
         ),
       ],
     );
   }
 }
-
-
 
 class TrainerRegCard extends StatelessWidget {
   final VoidCallback onPressed;
@@ -550,13 +583,19 @@ class _ActionsCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title,
-                  style: TextStyle(
-                    color: fg.withValues(alpha: 0.9),
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  )),
-              Icon(Icons.arrow_outward, color: fg.withValues(alpha: 0.9), size: 18),
+              Text(
+                title,
+                style: TextStyle(
+                  color: fg.withValues(alpha: 0.9),
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+              ),
+              Icon(
+                Icons.arrow_outward,
+                color: fg.withValues(alpha: 0.9),
+                size: 18,
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -589,17 +628,16 @@ class _ActionsCard extends StatelessWidget {
           const SizedBox(height: 12),
           // Bullet-ish lines
           ...lines.map(
-                (t) =>
-                Padding(
-                  padding: const EdgeInsets.only(top: 6),
-                  child: Text(
-                    t,
-                    style: TextStyle(
-                      color: fg.withValues(alpha: 0.92),
-                      fontSize: 13,
-                    ),
-                  ),
+            (t) => Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                t,
+                style: TextStyle(
+                  color: fg.withValues(alpha: 0.92),
+                  fontSize: 13,
                 ),
+              ),
+            ),
           ),
         ],
       ),
@@ -664,7 +702,8 @@ class _ProgressRing extends StatelessWidget {
   const _ProgressRing({
     required this.value,
     this.size = 72,
-    this.color, required this.stroke,
+    this.color,
+    required this.stroke,
   });
 
   @override

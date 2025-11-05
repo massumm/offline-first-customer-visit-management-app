@@ -36,6 +36,7 @@ abstract class AppColors {
   static const Color iconBgColorLight = Color(0xFFFFEBE5);
   static const Color lightBgColorSecondary = Color(0xFFF2F2F2);
   static const Color lightWarningColorBG = Color(0XFFFEF7E8);
+  static const Color ligthBorderGrayColor = Color(0xFFE1E4E9);
 
   // ----------------- Dark Theme Colors ----------------------
 
@@ -83,4 +84,14 @@ abstract class AppColors {
   static const Color positiveBorderColor = Color(0XFF0CAC2E);
   static const Color positiveBgColor = Color(0XFFE8FBEC);
   static const Color darkBgColorPositive = Color(0XFF0D0D0D);
+
+  // Gradient colors
+  static const Color gradientRedStart = Color(0xFFD93B3B);
+  static const Color gradientRedEnd = Color(0xFFF29191);
+
+  static const LinearGradient redGradient = LinearGradient(
+    colors: [gradientRedStart, gradientRedEnd],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
 }
