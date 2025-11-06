@@ -327,63 +327,64 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 '${controller.onboardingPhase.value}-${controller.currentQuestion?.id}',
               ),
               top: false,
-              child: Obx(() {
-                switch (controller.onboardingPhase.value) {
-                  case OnboardingPhase.awaitingEmail:
-                    return _buildTextInput();
-
-                  case OnboardingPhase.awaitingInitialTerms:
-                    return _buildInitialTermsInput(context);
-
-                  case OnboardingPhase.fetchingData:
-                    return const SizedBox.shrink();
-
-                  case OnboardingPhase.askingQuestions:
-                    if (controller.showGroupContinuationButtons) {
-                      return _buildContinuationButtons();
-                    }
-                    if (controller.isCurrentImage) {
-                      return _ImagePickerInput(controller: controller);
-                    }
-                    if (controller.isCurrentDate) {
-                      return _buildDatePickerButton(context);
-                    }
-                    if (controller.isCurrentTime) {
-                      return _buildTimePickerButton(context);
-                    }
-                    if (controller.isCurrentHeight) {
-                      return _HeightPicker(controller: controller);
-                    }
-                    if (controller.isCurrentWeight) {
-                      return _WeightPicker(controller: controller);
-                    }
-                    if (controller.isCurrentChoice) {
-                      return const SizedBox.shrink();
-                    }
-
-                    // TODO: DEMO CHECK
-                    if (controller.isCurrentLocation ||
-                        controller.currentQuestion?.id == 4) {
-                      return InkWell(
-                        onTap: () async {
-
-                          final PlaceDetails? result =  await openLocationBottomSheet(controller, context);
-
-                          if(result != null) {
-                            controller.inputText.value = result.address ?? "";
-                            controller.textController.text = result.address ?? "";
-                            controller.send(controller.textController.text);
-                          }
-                        },
-                        child: IgnorePointer(child: _buildTextInput()),
-                      );
-                    }
-                    return _buildTextInput();
-
-                  case OnboardingPhase.completed:
-                    return _buildTextInput();
-                }
-              }),
+              child: _buildTextInput(context, enableImageBtn: true, typingEnabled: false),
+              // Obx(() {
+              //   switch (controller.onboardingPhase.value) {
+              //     case OnboardingPhase.awaitingEmail:
+              //       return _buildTextInput();
+              //
+              //     case OnboardingPhase.awaitingInitialTerms:
+              //       return _buildInitialTermsInput(context);
+              //
+              //     case OnboardingPhase.fetchingData:
+              //       return const SizedBox.shrink();
+              //
+              //     case OnboardingPhase.askingQuestions:
+              //       if (controller.showGroupContinuationButtons) {
+              //         return _buildContinuationButtons();
+              //       }
+              //       if (controller.isCurrentImage) {
+              //         return _ImagePickerInput(controller: controller);
+              //       }
+              //       if (controller.isCurrentDate) {
+              //         return _buildDatePickerButton(context);
+              //       }
+              //       if (controller.isCurrentTime) {
+              //         return _buildTimePickerButton(context);
+              //       }
+              //       if (controller.isCurrentHeight) {
+              //         return _HeightPicker(controller: controller);
+              //       }
+              //       if (controller.isCurrentWeight) {
+              //         return _WeightPicker(controller: controller);
+              //       }
+              //       if (controller.isCurrentChoice) {
+              //         return const SizedBox.shrink();
+              //       }
+              //
+              //       // TODO: DEMO CHECK
+              //       if (controller.isCurrentLocation ||
+              //           controller.currentQuestion?.id == 4) {
+              //         return InkWell(
+              //           onTap: () async {
+              //
+              //             final PlaceDetails? result =  await openLocationBottomSheet(controller, context);
+              //
+              //             if(result != null) {
+              //               controller.inputText.value = result.address ?? "";
+              //               controller.textController.text = result.address ?? "";
+              //               controller.send(controller.textController.text);
+              //             }
+              //           },
+              //           child: IgnorePointer(child: _buildTextInput()),
+              //         );
+              //       }
+              //       return _buildTextInput();
+              //
+              //     case OnboardingPhase.completed:
+              //       return _buildTextInput();
+              //   }
+              // }),
             ),
           ),
         ),
@@ -592,11 +593,27 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     );
   }
 
-  Widget _buildTextInput() {
+  Widget _buildTextInput(
+      BuildContext context, {
+        bool enableImageBtn = false,
+        bool typingEnabled = true,
+      }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
       child: TextField(
         controller: controller.textController,
+        readOnly: !typingEnabled,
+        enableInteractiveSelection: typingEnabled,
+        showCursor: typingEnabled,
+        mouseCursor:
+        typingEnabled ? SystemMouseCursors.text : SystemMouseCursors.forbidden,
+        onTap: () {
+          if (!typingEnabled) {
+            // prevent focus from sticking / keyboard popping up on mobile
+            FocusScope.of(context).unfocus();
+          }
+        },
+
         onChanged: (t) => controller.inputText.value = t,
         onSubmitted: (t) {
           controller.send(t);
@@ -610,77 +627,78 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               switchInCurve: Curves.easeOut,
               switchOutCurve: Curves.easeIn,
               child: hasText
-                  // --- SEND BUTTON STATE ---
                   ? SizedBox(
-                      key: const ValueKey('send'),
-                      width: 56,
+                key: const ValueKey('send'),
+                width: 56,
+                child: IconButton(
+                  tooltip: 'Send',
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                  icon: const Icon(Icons.send_rounded, size: 20),
+                  onPressed: () {
+                    final msg = controller.textController.text.trim();
+                    if (msg.isEmpty) return;
+                    controller.send(msg);
+                    controller.textController.clear();
+                    controller.inputText.value = '';
+                  },
+                ),
+              )
+              // --- IDLE BUTTONS STATE ---
+                  : SizedBox(
+                key: const ValueKey('idle'),
+                width: 120,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // MIC
+                    Opacity(
+                      opacity: enableImageBtn ? 0.5 : 1,
                       child: IconButton(
-                        tooltip: 'Send',
+                        tooltip: 'Voice input',
                         visualDensity: VisualDensity.compact,
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
-                        icon: const Icon(Icons.send_rounded, size: 20),
-                        onPressed: () {
-                          final msg = controller.textController.text.trim();
-                          if (msg.isEmpty) return;
-                          controller.send(msg);
-                          controller.textController.clear();
-                          controller.inputText.value = '';
+                        icon: const Icon(Icons.mic_outlined, size: 20),
+                        onPressed: enableImageBtn
+                            ? null
+                            : () {
+                          CustomToast.showToast(
+                              message: 'Coming soon');
                         },
                       ),
-                    )
-                  // --- IDLE BUTTONS STATE ---
-                  : SizedBox(
-                      key: const ValueKey('idle'),
-                      width: 120,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          // MIC
-                          IconButton(
-                            tooltip: 'Voice input',
-                            visualDensity: VisualDensity.compact,
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            icon: const Icon(Icons.mic_outlined, size: 20),
-                            onPressed: () {
-                              CustomToast.showToast(message: 'Coming soon');
-                            },
-                          ),
-                          // DOC
-                          Opacity(
-                            opacity: 0.5,
-                            child: IconButton(
-                              tooltip: 'Insert link (disabled)',
-                              visualDensity: VisualDensity.compact,
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              icon: const Icon(Icons.link_outlined, size: 20),
-                              onPressed: null,
-                            ),
-                          ),
-                          // CAMERA
-                          Opacity(
-                            opacity: 0.5,
-                            child: IconButton(
-                              tooltip: 'Attach photo (disabled)',
-                              visualDensity: VisualDensity.compact,
-                              padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              icon: const Icon(
-                                Icons.camera_alt_outlined,
-                                size: 20,
-                              ),
-                              onPressed: null,
-                            ),
-                          ),
-                        ],
+                    ),
+                    // DOC
+                    const Opacity(
+                      opacity: 0.5,
+                      child: IconButton(
+                        tooltip: 'Insert link (disabled)',
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                        icon: Icon(Icons.link_outlined, size: 20),
+                        onPressed: null,
                       ),
                     ),
+                    // CAMERA
+                    Opacity(
+                      opacity: enableImageBtn ? 1 : 0.5,
+                      child: IconButton(
+                        tooltip: 'Attach photo',
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        icon: const Icon(Icons.camera_alt_outlined, size: 20),
+                        onPressed: () => _showImageSourceDialog(context),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             );
           }),
 
-          // let the row or send button size itself (avoid the default 48x48 clamp)
           suffixIconConstraints: const BoxConstraints(
             minWidth: 0,
             minHeight: 0,
@@ -696,44 +714,57 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         ),
 
         keyboardType: () {
-          // Handle email phase first
-          if (controller.onboardingPhase.value ==
-              OnboardingPhase.awaitingEmail) {
+          if (controller.onboardingPhase.value == OnboardingPhase.awaitingEmail) {
             return TextInputType.emailAddress;
           }
-
-          // Check the current question type for other phases
           final qType = controller.currentQuestion?.type;
-
-          // For number questions (including phone numbers), show the number keyboard.
-          if (qType == QAType.number) {
-            return TextInputType.number;
-          }
-
-          if (qType == QAType.phoneNumber) {
-            return TextInputType.phone;
-          }
-
-          // Default to a standard text keyboard
+          if (qType == QAType.number) return TextInputType.number;
+          if (qType == QAType.phoneNumber) return TextInputType.phone;
           return TextInputType.text;
         }(),
       ),
     );
   }
 
-  // const SizedBox(width: 8),
-  // FilledButton.icon(
-  //   onPressed: () => controller.send(controller.textController.text),
-  //   style: FilledButton.styleFrom(
-  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.all(Radius.circular(8)),
-  //     ),
-  //   ),
-  //   icon: const Icon(Icons.send),
-  //   label: const Text('Send'), // TODO: HANDLE SKIP
-  // ),
-  // const SizedBox(width: 8),
+  void _showImageSourceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text("Select Image Source"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Take Photo"),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text("Choose from Gallery"),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    // Pick an image.
+    final XFile? image = await picker.pickImage(source: source);
+
+    if (image != null) {
+      controller.selectImage(image);
+    }
+  }
 
   String _hintFor() {
     switch (controller.onboardingPhase.value) {
@@ -1000,67 +1031,6 @@ class _WeightPickerState extends State<_WeightPicker> {
         ],
       ),
     );
-  }
-}
-
-class _ImagePickerInput extends StatelessWidget {
-  final TraineeOnboardingController controller;
-
-  const _ImagePickerInput({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.camera_alt),
-        label: const Text("Upload Photo"),
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(double.infinity, 50),
-        ),
-        onPressed: () => _showImageSourceDialog(context),
-      ),
-    );
-  }
-
-  void _showImageSourceDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text("Select Image Source"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text("Take Photo"),
-              onTap: () {
-                Navigator.of(dialogContext).pop();
-                _pickImage(ImageSource.camera);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text("Choose from Gallery"),
-              onTap: () {
-                Navigator.of(dialogContext).pop();
-                _pickImage(ImageSource.gallery);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _pickImage(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
-    // Pick an image.
-    final XFile? image = await picker.pickImage(source: source);
-
-    if (image != null) {
-      controller.selectImage(image);
-    }
   }
 }
 
