@@ -142,6 +142,10 @@ class IconDarkTheme {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
 
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: AppColors.darkShapeColor,
+    ),
+
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.colorPrimary,
       brightness: Brightness.dark,

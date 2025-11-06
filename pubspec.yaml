@@ -32,8 +32,12 @@ dependencies:
 
   image_picker: ^1.2.0
 
-  #GOOGLE MAP
+  #GOOGLE MAP/Location
   awesome_place_search: ^2.1.0
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+
+  phone_form_field: ^10.0.12
 
 dev_dependencies:
   flutter_test:

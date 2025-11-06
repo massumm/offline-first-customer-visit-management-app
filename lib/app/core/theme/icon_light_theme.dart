@@ -145,6 +145,9 @@ class IconLightTheme {
       // Corrected: Use a light color for dialogs in light theme
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
     ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: AppColors.lightShapeColor,
+    ),
 
     tabBarTheme: TabBarThemeData(
       indicator: UnderlineTabIndicator(

@@ -8,7 +8,9 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/input_widgets/custom_phone_field.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:phone_form_field/phone_form_field.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
@@ -327,64 +329,77 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 '${controller.onboardingPhase.value}-${controller.currentQuestion?.id}',
               ),
               top: false,
-              child:
-              Obx(() {
-                switch (controller.onboardingPhase.value) {
-                  case OnboardingPhase.awaitingEmail:
-                    return _buildTextInput(context);
-
-                  case OnboardingPhase.awaitingInitialTerms:
-                    return _buildInitialTermsInput(context);
-
-                  case OnboardingPhase.fetchingData:
-                    return const SizedBox.shrink();
-
-                  case OnboardingPhase.askingQuestions:
-                    if (controller.showGroupContinuationButtons) {
-                      return _buildContinuationButtons();
-                    }
-                    if (controller.isCurrentImage) {
-                      return _buildTextInput(context, enableImageBtn: true, typingEnabled: false);
-                    }
-                    if (controller.isCurrentDate) {
-                      return _buildDatePickerButton(context);
-                    }
-                    if (controller.isCurrentTime) {
-                      return _buildTimePickerButton(context);
-                    }
-                    if (controller.isCurrentHeight) {
-                      return _HeightPicker(controller: controller);
-                    }
-                    if (controller.isCurrentWeight) {
-                      return _WeightPicker(controller: controller);
-                    }
-                    if (controller.isCurrentChoice) {
-                      return const SizedBox.shrink();
-                    }
-
-                    // TODO: DEMO CHECK
-                    if (controller.isCurrentLocation ||
-                        controller.currentQuestion?.id == 4) {
-                      return InkWell(
-                        onTap: () async {
-
-                          final PlaceDetails? result =  await openLocationBottomSheet(controller, context);
-
-                          if(result != null) {
-                            controller.inputText.value = result.address ?? "";
-                            controller.textController.text = result.address ?? "";
-                            controller.send(controller.textController.text);
-                          }
-                        },
-                        child: IgnorePointer(child: _buildTextInput(context)),
-                      );
-                    }
-                    return _buildTextInput(context);
-
-                  case OnboardingPhase.completed:
-                    return _buildTextInput(context);
-                }
-              }),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+                child: PhoneField(
+                  suffixIcon: IconButton(
+                    tooltip: 'Voice input',
+                    visualDensity: VisualDensity.compact,
+                    padding: EdgeInsets.zero,
+                    constraints: BoxConstraints(),
+                    icon: Icon(Icons.send, size: 20),
+                    onPressed: () {},
+                  ),
+                  onInputChanged: (PhoneNumber number) {},
+                ),
+              ),
+              // Obx(() {
+              //   switch (controller.onboardingPhase.value) {
+              //     case OnboardingPhase.awaitingEmail:
+              //       return _buildTextInput(context);
+              //
+              //     case OnboardingPhase.awaitingInitialTerms:
+              //       return _buildInitialTermsInput(context);
+              //
+              //     case OnboardingPhase.fetchingData:
+              //       return const SizedBox.shrink();
+              //
+              //     case OnboardingPhase.askingQuestions:
+              //       if (controller.showGroupContinuationButtons) {
+              //         return _buildContinuationButtons();
+              //       }
+              //       if (controller.isCurrentImage) {
+              //         return _buildTextInput(context, enableImageBtn: true, typingEnabled: false);
+              //       }
+              //       if (controller.isCurrentDate) {
+              //         return _buildDatePickerButton(context);
+              //       }
+              //       if (controller.isCurrentTime) {
+              //         return _buildTimePickerButton(context);
+              //       }
+              //       if (controller.isCurrentHeight) {
+              //         return _HeightPicker(controller: controller);
+              //       }
+              //       if (controller.isCurrentWeight) {
+              //         return _WeightPicker(controller: controller);
+              //       }
+              //       if (controller.isCurrentChoice) {
+              //         return const SizedBox.shrink();
+              //       }
+              //
+              //       // TODO: DEMO CHECK
+              //       if (controller.isCurrentLocation ||
+              //           controller.currentQuestion?.id == 4) {
+              //         return InkWell(
+              //           onTap: () async {
+              //
+              //             final PlaceDetails? result =  await openLocationBottomSheet(controller, context);
+              //
+              //             if(result != null) {
+              //               controller.inputText.value = result.address ?? "";
+              //               controller.textController.text = result.address ?? "";
+              //               controller.send(controller.textController.text);
+              //             }
+              //           },
+              //           child: IgnorePointer(child: _buildTextInput(context)),
+              //         );
+              //       }
+              //       return _buildTextInput(context);
+              //
+              //     case OnboardingPhase.completed:
+              //       return _buildTextInput(context);
+              //   }
+              // }),
             ),
           ),
         ),
@@ -472,7 +487,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       ),
     );
   }
-  Future<PlaceDetails?> openLocationBottomSheet(TraineeOnboardingController controller, BuildContext context) async {
+
+  Future<PlaceDetails?> openLocationBottomSheet(
+    TraineeOnboardingController controller,
+    BuildContext context,
+  ) async {
     final theme = Theme.of(context);
     final result = await Get.bottomSheet<PlaceDetails>(
       backgroundColor: theme.colorScheme.surface,
@@ -511,7 +530,8 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 SearchableLocationDropdown(
                   hintText: 'Search a city, area, or place',
                   debounce: const Duration(milliseconds: 300),
-                  fetchSuggestions: controller.locationService.placesAutocomplete,
+                  fetchSuggestions:
+                      controller.locationService.placesAutocomplete,
                   onChanged: (suggestion) async {
                     if (suggestion == null) return;
 
@@ -530,13 +550,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                         Navigator.pop(context, details);
                       }
                     } catch (e) {
-                     CustomToast.showErrorToast(
-                        'Failed to load place details.'
-
+                      CustomToast.showErrorToast(
+                        'Failed to load place details.',
                       );
                     }
                   },
-
                 ),
 
                 const SizedBox(height: 8),
@@ -554,7 +572,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
     return result;
   }
-
 
   Widget _buildDatePickerButton(BuildContext context) {
     return Padding(
@@ -594,10 +611,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   }
 
   Widget _buildTextInput(
-      BuildContext context, {
-        bool enableImageBtn = false,
-        bool typingEnabled = true,
-      }) {
+    BuildContext context, {
+    bool enableImageBtn = false,
+    bool typingEnabled = true,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
       child: TextField(
@@ -605,8 +622,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         readOnly: !typingEnabled,
         enableInteractiveSelection: typingEnabled,
         showCursor: typingEnabled,
-        mouseCursor:
-        typingEnabled ? SystemMouseCursors.text : SystemMouseCursors.forbidden,
+        mouseCursor: typingEnabled
+            ? SystemMouseCursors.text
+            : SystemMouseCursors.forbidden,
         onTap: () {
           if (!typingEnabled) {
             // prevent focus from sticking / keyboard popping up on mobile
@@ -628,74 +646,78 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               switchOutCurve: Curves.easeIn,
               child: hasText
                   ? SizedBox(
-                key: const ValueKey('send'),
-                width: 56,
-                child: IconButton(
-                  tooltip: 'Send',
-                  visualDensity: VisualDensity.compact,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  icon: const Icon(Icons.send_rounded, size: 20),
-                  onPressed: () {
-                    final msg = controller.textController.text.trim();
-                    if (msg.isEmpty) return;
-                    controller.send(msg);
-                    controller.textController.clear();
-                    controller.inputText.value = '';
-                  },
-                ),
-              )
-              // --- IDLE BUTTONS STATE ---
-                  : SizedBox(
-                key: const ValueKey('idle'),
-                width: 120,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // MIC
-                    Opacity(
-                      opacity: enableImageBtn ? 0.5 : 1,
+                      key: const ValueKey('send'),
+                      width: 56,
                       child: IconButton(
-                        tooltip: 'Voice input',
+                        tooltip: 'Send',
                         visualDensity: VisualDensity.compact,
                         padding: EdgeInsets.zero,
                         constraints: const BoxConstraints(),
-                        icon: const Icon(Icons.mic_outlined, size: 20),
-                        onPressed: enableImageBtn
-                            ? null
-                            : () {
-                          CustomToast.showToast(
-                              message: 'Coming soon');
+                        icon: const Icon(Icons.send_rounded, size: 20),
+                        onPressed: () {
+                          final msg = controller.textController.text.trim();
+                          if (msg.isEmpty) return;
+                          controller.send(msg);
+                          controller.textController.clear();
+                          controller.inputText.value = '';
                         },
                       ),
-                    ),
-                    // DOC
-                    const Opacity(
-                      opacity: 0.5,
-                      child: IconButton(
-                        tooltip: 'Insert link (disabled)',
-                        visualDensity: VisualDensity.compact,
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
-                        icon: Icon(Icons.link_outlined, size: 20),
-                        onPressed: null,
+                    )
+                  // --- IDLE BUTTONS STATE ---
+                  : SizedBox(
+                      key: const ValueKey('idle'),
+                      width: 120,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // MIC
+                          Opacity(
+                            opacity: enableImageBtn ? 0.5 : 1,
+                            child: IconButton(
+                              tooltip: 'Voice input',
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              icon: const Icon(Icons.mic_outlined, size: 20),
+                              onPressed: enableImageBtn
+                                  ? null
+                                  : () {
+                                      CustomToast.showToast(
+                                        message: 'Coming soon',
+                                      );
+                                    },
+                            ),
+                          ),
+                          // DOC
+                          const Opacity(
+                            opacity: 0.5,
+                            child: IconButton(
+                              tooltip: 'Insert link (disabled)',
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              constraints: BoxConstraints(),
+                              icon: Icon(Icons.link_outlined, size: 20),
+                              onPressed: null,
+                            ),
+                          ),
+                          // CAMERA
+                          Opacity(
+                            opacity: enableImageBtn ? 1 : 0.5,
+                            child: IconButton(
+                              tooltip: 'Attach photo',
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              icon: const Icon(
+                                Icons.camera_alt_outlined,
+                                size: 20,
+                              ),
+                              onPressed: () => _showImageSourceDialog(context),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    // CAMERA
-                    Opacity(
-                      opacity: enableImageBtn ? 1 : 0.5,
-                      child: IconButton(
-                        tooltip: 'Attach photo',
-                        visualDensity: VisualDensity.compact,
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
-                        icon: const Icon(Icons.camera_alt_outlined, size: 20),
-                        onPressed: () => _showImageSourceDialog(context),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
             );
           }),
 
@@ -714,7 +736,8 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         ),
 
         keyboardType: () {
-          if (controller.onboardingPhase.value == OnboardingPhase.awaitingEmail) {
+          if (controller.onboardingPhase.value ==
+              OnboardingPhase.awaitingEmail) {
             return TextInputType.emailAddress;
           }
           final qType = controller.currentQuestion?.type;
