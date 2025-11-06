@@ -368,6 +368,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     }
 
                     if (controller.isCurrentChoice) {
+                       // Handle for other options selection
+                      if(controller.isOtherOptionSelected.isTrue){
+                        return _buildTextInput(context);
+                      }
                       return const SizedBox.shrink();
                     }
 
