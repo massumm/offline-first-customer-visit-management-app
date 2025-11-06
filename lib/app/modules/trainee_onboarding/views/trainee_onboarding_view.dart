@@ -329,82 +329,97 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 '${controller.onboardingPhase.value}-${controller.currentQuestion?.id}',
               ),
               top: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
-                child: PhoneField(
-                  suffixIcon: IconButton(
-                    tooltip: 'Voice input',
-                    visualDensity: VisualDensity.compact,
-                    padding: EdgeInsets.zero,
-                    constraints: BoxConstraints(),
-                    icon: Icon(Icons.send, size: 20),
-                    onPressed: () {},
-                  ),
-                  onInputChanged: (PhoneNumber number) {},
-                ),
-              ),
-              // Obx(() {
-              //   switch (controller.onboardingPhase.value) {
-              //     case OnboardingPhase.awaitingEmail:
-              //       return _buildTextInput(context);
-              //
-              //     case OnboardingPhase.awaitingInitialTerms:
-              //       return _buildInitialTermsInput(context);
-              //
-              //     case OnboardingPhase.fetchingData:
-              //       return const SizedBox.shrink();
-              //
-              //     case OnboardingPhase.askingQuestions:
-              //       if (controller.showGroupContinuationButtons) {
-              //         return _buildContinuationButtons();
-              //       }
-              //       if (controller.isCurrentImage) {
-              //         return _buildTextInput(context, enableImageBtn: true, typingEnabled: false);
-              //       }
-              //       if (controller.isCurrentDate) {
-              //         return _buildDatePickerButton(context);
-              //       }
-              //       if (controller.isCurrentTime) {
-              //         return _buildTimePickerButton(context);
-              //       }
-              //       if (controller.isCurrentHeight) {
-              //         return _HeightPicker(controller: controller);
-              //       }
-              //       if (controller.isCurrentWeight) {
-              //         return _WeightPicker(controller: controller);
-              //       }
-              //       if (controller.isCurrentChoice) {
-              //         return const SizedBox.shrink();
-              //       }
-              //
-              //       // TODO: DEMO CHECK
-              //       if (controller.isCurrentLocation ||
-              //           controller.currentQuestion?.id == 4) {
-              //         return InkWell(
-              //           onTap: () async {
-              //
-              //             final PlaceDetails? result =  await openLocationBottomSheet(controller, context);
-              //
-              //             if(result != null) {
-              //               controller.inputText.value = result.address ?? "";
-              //               controller.textController.text = result.address ?? "";
-              //               controller.send(controller.textController.text);
-              //             }
-              //           },
-              //           child: IgnorePointer(child: _buildTextInput(context)),
-              //         );
-              //       }
-              //       return _buildTextInput(context);
-              //
-              //     case OnboardingPhase.completed:
-              //       return _buildTextInput(context);
-              //   }
-              // }),
+              child: Obx(() {
+                switch (controller.onboardingPhase.value) {
+                  case OnboardingPhase.awaitingEmail:
+                    return _buildTextInput(context);
+
+                  case OnboardingPhase.awaitingInitialTerms:
+                    return _buildInitialTermsInput(context);
+
+                  case OnboardingPhase.fetchingData:
+                    return const SizedBox.shrink();
+
+                  case OnboardingPhase.askingQuestions:
+                    if (controller.showGroupContinuationButtons) {
+                      return _buildContinuationButtons();
+                    }
+                    if (controller.isCurrentImage) {
+                      return _buildTextInput(
+                        context,
+                        enableImageBtn: true,
+                        typingEnabled: false,
+                      );
+                    }
+                    if (controller.isCurrentDate) {
+                      return _buildDatePickerButton(context);
+                    }
+                    if (controller.isCurrentTime) {
+                      return _buildTimePickerButton(context);
+                    }
+                    if (controller.isCurrentHeight) {
+                      return _HeightPicker(controller: controller);
+                    }
+                    if (controller.isCurrentWeight) {
+                      return _WeightPicker(controller: controller);
+                    }
+                    if (controller.isCurrentPhoneNumber) {
+                      return _buildPhoneField();
+                    }
+
+                    if (controller.isCurrentChoice) {
+                      return const SizedBox.shrink();
+                    }
+
+                    // TODO: DEMO CHECK
+                    if (controller.isCurrentLocation ||
+                        controller.currentQuestion?.id == 4) {
+                      return InkWell(
+                        onTap: () async {
+                          final PlaceDetails? result =
+                              await openLocationBottomSheet(
+                                controller,
+                                context,
+                              );
+
+                          if (result != null) {
+                            controller.inputText.value = result.address ?? "";
+                            controller.textController.text =
+                                result.address ?? "";
+                            controller.send(controller.textController.text);
+                          }
+                        },
+                        child: IgnorePointer(child: _buildTextInput(context)),
+                      );
+                    }
+                    return _buildTextInput(context);
+
+                  case OnboardingPhase.completed:
+                    return _buildTextInput(context);
+                }
+              }),
             ),
           ),
         ),
         const SizedBox(height: 8),
       ],
+    );
+  }
+
+  Padding _buildPhoneField() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+      child: PhoneField(
+        suffixIcon: IconButton(
+          tooltip: 'Voice input',
+          visualDensity: VisualDensity.compact,
+          padding: EdgeInsets.zero,
+          constraints: BoxConstraints(),
+          icon: Icon(Icons.send, size: 20),
+          onPressed: () {},
+        ),
+        onInputChanged: (PhoneNumber number) {},
+      ),
     );
   }
 

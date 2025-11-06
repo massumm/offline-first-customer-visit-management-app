@@ -853,6 +853,7 @@ class TraineeOnboardingController extends BaseController {
 
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
   bool get isCurrentLocation => currentQuestion?.type == QAType.location;
+  bool get isCurrentPhoneNumber => currentQuestion?.type == QAType.phoneNumber;
 
   // -------------- Stepper bindings --------------
   /// Recalculates and updates the progress for all groups.
