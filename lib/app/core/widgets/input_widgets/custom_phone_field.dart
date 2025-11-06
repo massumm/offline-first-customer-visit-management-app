@@ -64,7 +64,7 @@ class _PhoneFieldState extends State<PhoneField> {
     final resolved = IsoCode.fromJson(iso);
 
     //  Seed the controller instead of using initialValue
-    _controller.value = PhoneNumber(isoCode: resolved, nsn: '+1');
+    _controller.value = PhoneNumber(isoCode: resolved, nsn: '');
 
     // Rebuild so the flag/dial code shows immediately
     setState(() => _defaultIso = resolved);
@@ -88,7 +88,7 @@ class _PhoneFieldState extends State<PhoneField> {
     return PhoneFormField(
       controller: _controller,
       decoration: InputDecoration(
-        hintText: 'e.g. +1712345678',
+        hintText: 'e.g. +${_controller.value.countryCode} 1234',
         suffixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
         suffixIcon: widget.suffixIcon,
         border: OutlineInputBorder(
