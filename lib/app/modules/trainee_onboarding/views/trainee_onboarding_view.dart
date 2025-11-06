@@ -367,9 +367,56 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                       return _buildPhoneField();
                     }
 
+                    if (controller.isCurrentReminder) {
+                      return Obx(() {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Wrap(
+                              spacing: 8,
+                              runSpacing: 8,
+                              alignment: WrapAlignment.center,
+                              children: [
+                                ActionChip(
+                                  label: Text('Yes'),
+                                  onPressed: () {
+                                    controller.onReminder('Yes');
+                                    controller.enableReminderTimePicker(true);
+                                  },
+                                ),
+                                ActionChip(
+                                  label: Text('No'),
+                                  onPressed: () {
+                                    controller.onReminder('No');
+                                    controller.enableReminderTimePicker(false);
+                                  },
+                                ),
+                              ],
+                            ),
+                            AnimatedCrossFade(
+                              secondChild: SizedBox.shrink(),
+                              firstChild: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  8.height,
+                                  _buildTimePickerButton(context),
+                                ],
+                              ),
+                              crossFadeState:
+                                  controller.enableReminderTimePicker.isTrue
+                                  ? CrossFadeState.showFirst
+                                  : CrossFadeState.showSecond,
+                              duration: const Duration(milliseconds: 300),
+                            ),
+                            8.height,
+                          ],
+                        );
+                      });
+                    }
+
                     if (controller.isCurrentChoice) {
-                       // Handle for other options selection
-                      if(controller.isOtherOptionSelected.isTrue){
+                      // Handle for other options selection
+                      if (controller.isOtherOptionSelected.isTrue) {
                         return _buildTextInput(context);
                       }
                       return const SizedBox.shrink();

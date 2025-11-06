@@ -70,6 +70,7 @@ class TraineeOnboardingController extends BaseController {
   /// True when the UI should show the "Continue" and "Skip" buttons.
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
   final RxBool isOtherOptionSelected = false.obs;
+  final RxBool enableReminderTimePicker = false.obs;
 
   //-------------------- QA Stepper --------------------
   /// Holds the progress (0.0 to 1.0) for each question group.
@@ -476,6 +477,22 @@ class TraineeOnboardingController extends BaseController {
     });
   }
 
+  void onReminder(String option){
+    if (!_canAnswer) return;
+
+    if(option.contains('Yes')){
+      final userMessage = ChatMessage(
+        from: Sender.user,
+        text: option,
+        status: MessageStatus.delivered,
+      );
+      messages.add(userMessage);
+      return;
+    }
+
+    send(option);
+  }
+
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
@@ -876,6 +893,8 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentLocation => currentQuestion?.type == QAType.location;
 
   bool get isCurrentPhoneNumber => currentQuestion?.type == QAType.phoneNumber;
+  bool get isCurrentReminder => true;
+      // currentQuestion?.type == QAType.reminder;
 
   // -------------- Stepper bindings --------------
   /// Recalculates and updates the progress for all groups.
