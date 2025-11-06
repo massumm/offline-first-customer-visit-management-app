@@ -72,6 +72,9 @@ class TraineeOnboardingController extends BaseController {
   final RxBool isOtherOptionSelected = false.obs;
   final RxBool enableReminderTimePicker = false.obs;
 
+  final RxSet<String> selectedBodyParts = <String>{}.obs;
+
+
   //-------------------- QA Stepper --------------------
   /// Holds the progress (0.0 to 1.0) for each question group.
   final RxList<double> groupProgresses = <double>[].obs;
@@ -893,8 +896,8 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentLocation => currentQuestion?.type == QAType.location;
 
   bool get isCurrentPhoneNumber => currentQuestion?.type == QAType.phoneNumber;
-  bool get isCurrentReminder => true;
-      // currentQuestion?.type == QAType.reminder;
+  bool get isCurrentReminder => currentQuestion?.type == QAType.reminder;
+  bool get isCurrentBodyPart => currentQuestion?.type == QAType.bodyParts;
 
   // -------------- Stepper bindings --------------
   /// Recalculates and updates the progress for all groups.

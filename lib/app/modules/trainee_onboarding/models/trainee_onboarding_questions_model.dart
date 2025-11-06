@@ -11,6 +11,7 @@ enum QAType {
   phoneNumber,
   location, //
   reminder, //
+  bodyParts, //
   unknown,
 }
 
@@ -109,6 +110,12 @@ class TraineeQuestionData {
           // TODO: DEMO ONLY
           if (json["question_field_name"] == 'address') {
             return QAType.location;
+          }
+          if (json["question_field_name"] == 'focus_body_parts') {
+            return QAType.bodyParts;
+          }
+          if (json["question_field_name"] == 'phone_number') {
+            return QAType.phoneNumber;
           }
           return QAType.text;
         case "number":

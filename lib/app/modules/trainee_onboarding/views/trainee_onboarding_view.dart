@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bodychart_heatmap/bodychart_heatmap.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/input_widgets/custom_phone_field.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_form_field/phone_form_field.dart';
@@ -368,50 +370,88 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     }
 
                     if (controller.isCurrentReminder) {
-                      return Obx(() {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Wrap(
-                              spacing: 8,
-                              runSpacing: 8,
-                              alignment: WrapAlignment.center,
-                              children: [
-                                ActionChip(
-                                  label: Text('Yes'),
-                                  onPressed: () {
-                                    controller.onReminder('Yes');
-                                    controller.enableReminderTimePicker(true);
-                                  },
-                                ),
-                                ActionChip(
-                                  label: Text('No'),
-                                  onPressed: () {
-                                    controller.onReminder('No');
-                                    controller.enableReminderTimePicker(false);
-                                  },
-                                ),
-                              ],
-                            ),
-                            AnimatedCrossFade(
-                              secondChild: SizedBox.shrink(),
-                              firstChild: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  8.height,
-                                  _buildTimePickerButton(context),
-                                ],
+                      return _buildReminder(context);
+                    }
+
+                    if (controller.isCurrentBodyPart) {
+                      return Column(
+                        children: [
+                          6.height,
+                          BodyChart(
+                            selectedParts: controller.selectedBodyParts,
+                            selectedColor: AppColors.colorPrimary,
+                            unselectedColor: Colors.grey.shade300,
+                            viewType: BodyViewType.both,
+                            width: 250,
+                          ),
+                          6.height,
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.center,
+                            children: [
+                              ActionChip(
+                                label: Text('Full Body'),
+                                onPressed: () => controller.selectedBodyParts
+                                    .add('full body'),
                               ),
-                              crossFadeState:
-                                  controller.enableReminderTimePicker.isTrue
-                                  ? CrossFadeState.showFirst
-                                  : CrossFadeState.showSecond,
-                              duration: const Duration(milliseconds: 300),
-                            ),
-                            8.height,
-                          ],
-                        );
-                      });
+                              ActionChip(
+                                label: Text('Chest'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('chest'),
+                              ),
+                              ActionChip(
+                                label: Text('Arm'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('arm'),
+                              ),
+                              ActionChip(
+                                label: Text('Abs'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('abs'),
+                              ),
+                              ActionChip(
+                                label: Text('Neck'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('neck'),
+                              ),
+                              ActionChip(
+                                label: Text('Shoulder'),
+                                onPressed: () => controller.selectedBodyParts
+                                    .add('shoulder'),
+                              ),
+                              ActionChip(
+                                label: Text('Back'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('back'),
+                              ),
+                              ActionChip(
+                                label: Text('Glutes'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('glutes'),
+                              ),
+                              ActionChip(
+                                label: Text('Calves'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('calves'),
+                              ),
+                              ActionChip(
+                                label: Text('Quads'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('quads'),
+                              ),
+                              ActionChip(
+                                label: Text('Other'),
+                                onPressed:
+                                    () => //TODO: HANDLE THIS.
+                                    controller.selectedBodyParts.add(
+                                      'other',
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
                     }
 
                     if (controller.isCurrentChoice) {
@@ -457,7 +497,51 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     );
   }
 
+  Obx _buildReminder(BuildContext context) {
+    return Obx(() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.center,
+            children: [
+              ActionChip(
+                label: Text('Yes'),
+                onPressed: () {
+                  controller.onReminder('Yes');
+                  controller.enableReminderTimePicker(true);
+                },
+              ),
+              ActionChip(
+                label: Text('No'),
+                onPressed: () {
+                  controller.onReminder('No');
+                  controller.enableReminderTimePicker(false);
+                },
+              ),
+            ],
+          ),
+          AnimatedCrossFade(
+            secondChild: SizedBox.shrink(),
+            firstChild: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [8.height, _buildTimePickerButton(context)],
+            ),
+            crossFadeState: controller.enableReminderTimePicker.isTrue
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 300),
+          ),
+          8.height,
+        ],
+      );
+    });
+  }
+
   Padding _buildPhoneField() {
+    String phoneNumber = '';
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
       child: PhoneField(
@@ -467,9 +551,17 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           padding: EdgeInsets.zero,
           constraints: BoxConstraints(),
           icon: Icon(Icons.send, size: 20),
-          onPressed: () {},
+          onPressed: () {
+            if (phoneNumber.isEmpty) {
+              CustomToast.showToast(message: 'Please type a valid input');
+              return;
+            }
+            controller.send(phoneNumber);
+          },
         ),
-        onInputChanged: (PhoneNumber number) {},
+        onInputChanged: (PhoneNumber number) {
+          phoneNumber = number.international;
+        },
       ),
     );
   }
