@@ -82,14 +82,14 @@ flutter:
   # Splash Screen
 flutter_native_splash:
   color: "#FFFFFF"
-  image: assets/images/icon-splash.png
+  image: assets/images/splash_icon.png
   color_dark: "#FFFFFF"
-  image_dark: assets/images/icon-splash.png
+  image_dark: assets/images/splash_icon.png
 
   android_12:
     color: "#FFFFFF"
-    image: assets/images/icon-splash.png
-    image_dark: assets/images/icon-splash.png
+    image: assets/images/splash_icon.png
+    image_dark: assets/images/splash_icon.png
 
 
 flutter_launcher_icons:
