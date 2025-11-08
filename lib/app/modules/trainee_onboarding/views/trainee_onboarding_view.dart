@@ -193,12 +193,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         // ------------------ MESSAGES ----------
         Expanded(
           child: Obx(() {
-            // ------------------- MESSAGE LOADING STATE --------
-            if (controller.onboardingPhase.value ==
-                OnboardingPhase.fetchingData) {
-              return AgentLoadingIndicator();
-            }
-
             // ------------------- DATA STATE ------------------
             final items = controller.messages;
             final typing = controller.isTyping.value;
@@ -333,6 +327,18 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               ),
               top: false,
               child: Obx(() {
+                // ------------------- MESSAGE LOADING STATE --------
+                if (controller.onboardingPhase.value ==
+                    OnboardingPhase.fetchingData) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      AgentLoadingIndicator(),
+                      8.height,
+                    ],
+                  );
+                }
+
                 switch (controller.onboardingPhase.value) {
                   case OnboardingPhase.awaitingEmail:
                     return _buildTextInput(context);

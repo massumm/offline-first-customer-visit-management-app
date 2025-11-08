@@ -95,6 +95,10 @@ class TraineeOnboardingController extends BaseController {
   @override
   void onReady() {
     super.onReady();
+    // // listener that scrolls to the bottom whenever a new message is added.
+    // messages.listen((_) {
+    //   _scrollToBottom();
+    // });
     start();
   }
 
@@ -474,7 +478,7 @@ class TraineeOnboardingController extends BaseController {
         pageController.animateTo(
           pageController.position.maxScrollExtent,
           duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
+          curve: Curves.easeOutCubic,
         );
       }
     });
