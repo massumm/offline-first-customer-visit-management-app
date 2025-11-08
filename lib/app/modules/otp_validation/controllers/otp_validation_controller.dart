@@ -62,16 +62,18 @@ class OtpValidationController extends BaseController {
     isLoading(true);
 
     await _repository
-        .varifyOtp({'otp': otp, 'email': email})
+        .varifyOtp({'code': otp, 'email': email})
         .then(
-          (response) {},
+          (response) {
+            CustomToast.showSuccessToast('Email verified successfully!');
+            Get.offAllNamed(Routes.HOME);
+          },
           onError: (e) {
             if (e is ApiException) {
               emailOtpError.value = e.toString();
-              CustomToast.showWarningToast(e.description);
+              CustomToast.showErrorToast(e.description);
               return;
             }
-
             CustomToast.showErrorToast(e.toString());
           },
         )
