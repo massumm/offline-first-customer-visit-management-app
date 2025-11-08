@@ -132,7 +132,9 @@ class LoginController extends BaseController {
             .login(requestBody)
             .then(
               (response) {
-                CustomToast.showSuccessToast('Login successful');
+                CustomToast.showSuccessToast(
+                  response.details ?? 'Login successful',
+                );
                 try {
                   UserStore.to.saveProfileAndToken(response).whenComplete(() {
                     _handleRoute(response.twoFaEnabled ?? false);

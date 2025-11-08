@@ -4,4 +4,6 @@ abstract class OtpVerificationsRepository{
 
   Future<LoginResponseModel> varifyOtp(Map<String, dynamic> payload);
 
+  Future<void> otpRequest(Map<String, String> map);
+
 }

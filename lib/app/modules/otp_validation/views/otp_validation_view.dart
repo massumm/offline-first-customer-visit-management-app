@@ -134,12 +134,12 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                     : controller.verifyEmailOtp,
                 child: controller.isLoading.isTrue
                     ? const Padding(
-                        padding: EdgeInsets.all(4.0),
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
-                      )
+                  padding: EdgeInsets.all(4.0),
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
                     : const Text("Verify"),
               );
             }),
@@ -149,21 +149,35 @@ class OtpValidationView extends BaseView<OtpValidationController> {
           // Resend OTP
           Center(
             child: Obx(() {
-              return TextButton(
-                onPressed: controller.canResend.value
-                    ? controller.resendEmailOtp
-                    : null,
-                child: Text(
-                  controller.canResend.value
-                      ? "Didn't receive OTP? Resend"
-                      : "Didn't receive OTP? Resend in ${_formatTime(controller.resendTimer.value)} sec",
-                  style: Get.textTheme.bodyMedium?.copyWith(
-                    color: controller.canResend.value
-                        ? Get.theme.primaryColor
-                        : Colors.grey,
+              final canResend = controller.canResend.value;
+              if (canResend) {
+                // Enabled state with "Resend" highlighted
+                return TextButton(
+                  onPressed: controller.resendEmailOtp,
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Didn't receive OTP? ",
+                      style: Get.textTheme.bodyMedium,
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'Resend',
+                          style: TextStyle(color: Get.theme.primaryColor),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                // Disabled state with countdown timer
+                return TextButton(
+                  onPressed: null, // Button is disabled
+                  child: Text(
+                    "Didn't receive OTP? Resend in ${_formatTime(controller.resendTimer.value)} sec",
+                    style: Get.textTheme.bodyMedium
+                        ?.copyWith(color: Colors.grey),
+                  ),
+                );
+              }
             }),
           ),
         ],

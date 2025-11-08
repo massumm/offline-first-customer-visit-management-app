@@ -28,4 +28,19 @@ class OtpVerificationsRepositoryImpl extends BaseRemoteSource
   LoginResponseModel _parseLoginResponse(Response<dynamic> response) {
     return LoginResponseModel.fromJson(response.data);
   }
+
+  @override
+  Future<void> otpRequest(Map<String, String> payload) {
+    final String endpoint = "${DioProvider.baseUrl}/api/accounts/otp/request/";
+
+    Future<Response<dynamic>> dioCall = dioClient.post(endpoint, data: payload);
+
+    try {
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

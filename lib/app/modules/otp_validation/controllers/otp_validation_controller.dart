@@ -34,12 +34,45 @@ class OtpValidationController extends BaseController {
 
   var emailOtpError = RxnString();
 
-  var resendTimer = 60.obs;
-  var canResend = false.obs;
+  static const _initialTimerSeconds = 60;
+
+  // Controls the enabled/disabled state of the resend button
+  final canResend = false.obs;
+
+  // Holds the current countdown value
+  final resendTimer = _initialTimerSeconds.obs;
   Timer? _timer;
 
   var isLoading = false.obs;
   var isVerifying = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Start the countdown timer as soon as the controller is initialized
+    startResendTimer();
+  }
+
+  void startResendTimer() {
+    // Reset the state
+    canResend.value = false;
+    resendTimer.value = _initialTimerSeconds;
+
+    // Cancel any existing timer
+    _timer?.cancel();
+
+    // Start a new periodic timer
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendTimer.value > 0) {
+        // Decrement the timer
+        resendTimer.value--;
+      } else {
+        // When the timer reaches 0, enable the resend button and stop the timer
+        canResend.value = true;
+        timer.cancel();
+      }
+    });
+  }
 
   void verifyEmailOtp() async {
     if (isLoading.isTrue) return;
@@ -82,47 +115,30 @@ class OtpValidationController extends BaseController {
           _clearOtpFields();
           emailOtpError.value = null;
         });
-
-    // Future.delayed(const Duration(seconds: 1), () {
-    //   isLoading.value = false;
-    //   _clearOtpFields();
-    //   emailOtpError.value = null;
-    //   _timer?.cancel();
-    //   Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
-    //   CustomToast.showSuccessToast('Email verified successfully!');
-    // });
   }
 
   void resendEmailOtp() {
     if (!canResend.value) return;
 
-    // TODO: Call API to resend OTP
-    CustomToast.showSuccessToast('OTP sent to your email');
-    _startResendTimer();
-  }
-
-  void sendVerificationEmail() {
-    if (isVerifying.isTrue) return;
-
-    isVerifying(true);
-
-    _repository.varifyOtp({}).then((value) {});
-
-    _startResendTimer();
-  }
-
-  void _startResendTimer() {
-    canResend.value = false;
-    resendTimer.value = 60;
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (resendTimer.value > 0) {
-        resendTimer.value--;
-      } else {
-        canResend.value = true;
-        timer.cancel();
-      }
-    });
+    isLoading(true);
+    _repository
+        .otpRequest({'email': email})
+        .then(
+          (response) {
+            CustomToast.showSuccessToast('OTP sent to your email');
+            startResendTimer();
+            isLoading.value = false;
+          },
+          onError: (e) {
+            isLoading.value = false;
+            if (e is ApiException) {
+              emailOtpError.value = e.toString();
+              CustomToast.showErrorToast(e.description);
+              return;
+            }
+            CustomToast.showErrorToast(e.toString());
+          },
+        );
   }
 
   void _clearOtpFields() {
