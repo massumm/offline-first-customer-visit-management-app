@@ -271,14 +271,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
         // ----------------- Input Sections ----------
         AnimatedSize(
-          duration: const Duration(milliseconds: 220),
-          curve: Curves.easeOutCubic,
+          duration: const Duration(milliseconds: 350),
+          curve: Curves.easeInOut,
           alignment: Alignment.topCenter,
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            switchInCurve: Curves.easeOutCubic,
-            switchOutCurve: Curves.easeInCubic,
-
+            duration: const Duration(milliseconds: 350),
             // Make sure old and new are stacked during the swap
             layoutBuilder: (currentChild, previousChildren) => Stack(
               alignment: Alignment.topCenter,
@@ -287,40 +284,41 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 if (currentChild != null) currentChild,
               ],
             ),
-
             transitionBuilder: (Widget child, Animation<double> animation) {
-              final inCurved = CurvedAnimation(
-                parent: animation,
-                curve: Curves.easeOutCubic,
-              );
-              final outCurved = CurvedAnimation(
-                parent: ReverseAnimation(animation),
-                curve: Curves.easeInCubic,
-              );
+              // New child slides up from the bottom and fades in.
+              final slideIn =
+                  Tween<Offset>(
+                    begin: const Offset(0.0, 0.6),
+                    end: Offset.zero,
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeOutCubic,
+                    ),
+                  );
 
-              // New child: slide UP from bottom
-              final slideIn = Tween<Offset>(
-                begin: const Offset(0, 1), // from bottom
-                end: Offset.zero,
-              ).animate(inCurved);
-
-              // Old child: slide DOWN off-screen
-              final slideOut = Tween<Offset>(
-                begin: Offset.zero,
-                end: const Offset(0, 1), // to bottom
-              ).animate(outCurved);
-
-              // Choose which tween to use based on the animation direction
-              final isIncoming = animation.status == AnimationStatus.forward;
-
-              return ClipRect(
+              // Old child slides up toward the top and fades out.
+              final slideOut =
+                  Tween<Offset>(
+                    begin: const Offset(0.0, -0.6),
+                    // Final position (off-screen top)
+                    end: Offset.zero, // Initial position
+                  ).animate(
+                    CurvedAnimation(
+                      parent: animation,
+                      curve: Curves.easeInCubic,
+                    ),
+                  );
+              return FadeTransition(
+                opacity: animation,
                 child: SlideTransition(
-                  position: isIncoming ? slideIn : slideOut,
+                  position: animation.status == AnimationStatus.reverse
+                      ? slideOut
+                      : slideIn,
                   child: child,
                 ),
               );
             },
-
             child: SafeArea(
               key: ValueKey(
                 '${controller.onboardingPhase.value}-${controller.currentQuestion?.id}',
@@ -332,10 +330,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     OnboardingPhase.fetchingData) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      AgentLoadingIndicator(),
-                      8.height,
-                    ],
+                    children: [AgentLoadingIndicator(), 8.height],
                   );
                 }
 
@@ -499,6 +494,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             ),
           ),
         ),
+
         const SizedBox(height: 8),
       ],
     );
