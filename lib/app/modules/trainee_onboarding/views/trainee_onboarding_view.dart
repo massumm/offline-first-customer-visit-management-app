@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,7 +12,8 @@ import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
 import '../models/trainee_onboarding_questions_model.dart';
 import 'widgets/animated_onboarding_stepper.dart';
-import 'widgets/message_bubble.dart';
+import 'widgets/status_image_bubble.dart';
+import 'widgets/status_message_bubble.dart';
 import 'widgets/type_bubble.dart';
 
 class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
@@ -202,14 +202,14 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 Widget bubble;
                 if (m.imagePath != null && m.imagePath!.isNotEmpty) {
                   // Use the new status-aware image bubble
-                  bubble = _StatusImageBubble(
+                  bubble = StatusImageBubble(
                     imagePath: m.imagePath!,
                     from: m.from,
                     status: m.status,
                   );
                 } else {
                   // Use the new status-aware text bubble
-                  bubble = _StatusMessageBubble(
+                  bubble = StatusMessageBubble(
                     text: m.text,
                     from: m.from,
                     status: m.status,
@@ -264,162 +264,5 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         const SizedBox(height: 8),
       ],
     );
-  }
-}
-
-class _StatusImageBubble extends StatelessWidget {
-  final String imagePath;
-  final Sender from;
-  final Rx<MessageStatus> status;
-
-  const _StatusImageBubble({
-    required this.imagePath,
-    required this.from,
-    required this.status,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isUser = from == Sender.user;
-
-    final imageWidget = ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Image.file(
-        File(imagePath),
-        fit: BoxFit.cover,
-        frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-          if (wasSynchronouslyLoaded) {
-            return child;
-          }
-          return frame == null
-              ? const Padding(
-                  padding: EdgeInsets.all(48.0),
-                  child: Center(child: CircularProgressIndicator.adaptive()),
-                )
-              : child;
-        },
-        errorBuilder: (context, error, stackTrace) {
-          return const Padding(
-            padding: EdgeInsets.all(32.0),
-            child: Icon(Icons.broken_image, color: Colors.red, size: 40),
-          );
-        },
-      ),
-    );
-
-    return Container(
-      constraints: BoxConstraints(
-        maxWidth: MediaQuery.of(context).size.width * 0.7,
-      ),
-      margin: const EdgeInsets.symmetric(vertical: 4),
-      decoration: BoxDecoration(
-        color: isUser
-            ? theme.colorScheme.primaryContainer
-            : theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: isUser
-          ? Obx(
-              () => Stack(
-                children: [
-                  imageWidget,
-                  Positioned(
-                    bottom: 8,
-                    right: 8,
-                    child: _MessageStatusIcon(
-                      status: status.value,
-                      isForImage: true,
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : imageWidget,
-    );
-  }
-}
-
-class _MessageStatusIcon extends StatelessWidget {
-  final MessageStatus status;
-  final bool isForImage;
-
-  const _MessageStatusIcon({required this.status, this.isForImage = false});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    IconData iconData;
-    Color iconColor;
-
-    switch (status) {
-      case MessageStatus.pending:
-      case MessageStatus.sending:
-        iconData = Icons.watch_later_outlined;
-        // CHANGE: Use withOpacity instead of withValues
-        iconColor = isForImage
-            ? Colors.white
-            : theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.7);
-        break;
-      case MessageStatus.delivered:
-        iconData = Icons.done_all;
-        iconColor = isForImage ? Colors.white : theme.colorScheme.primary;
-        break;
-      case MessageStatus.failed:
-        iconData = Icons.error_outline;
-        iconColor = isForImage ? Colors.white : theme.colorScheme.error;
-        break;
-    }
-
-    final icon = Icon(iconData, size: isForImage ? 14 : 16, color: iconColor);
-
-    if (isForImage) {
-      return Container(
-        padding: const EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: Colors.black.withValues(alpha: 0.4),
-          shape: BoxShape.circle,
-        ),
-        child: icon,
-      );
-    }
-
-    return icon;
-  }
-}
-
-class _StatusMessageBubble extends StatelessWidget {
-  final String text;
-  final Sender from;
-  final Rx<MessageStatus> status;
-
-  const _StatusMessageBubble({
-    required this.text,
-    required this.from,
-    required this.status,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final bubble = MessageBubble(text: text, from: from);
-
-    if (from != Sender.user) {
-      return bubble;
-    }
-
-    return Obx(() {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          bubble,
-          const SizedBox(width: 6),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: _MessageStatusIcon(status: status.value),
-          ),
-        ],
-      );
-    });
   }
 }
