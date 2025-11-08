@@ -37,6 +37,7 @@ abstract class AppColors {
   static const Color lightBgColorSecondary = Color(0xFFF2F2F2);
   static const Color lightWarningColorBG = Color(0XFFFEF7E8);
   static const Color ligthBorderGrayColor = Color(0xFFE1E4E9);
+  static const Color lightCardBgColor = Color(0xFFF5F5F5);
 
   // ----------------- Dark Theme Colors ----------------------
 
@@ -87,11 +88,35 @@ abstract class AppColors {
 
   // Gradient colors
   static const Color gradientRedStart = Color(0xFFD93B3B);
+  static const Color gradientRedMiddle = Color(0xFFE47A7B);
   static const Color gradientRedEnd = Color(0xFFF29191);
 
+  static const Color gradientBlueStart = Color(0xFF3E8CC3);
+  static const Color gradientBlueMiddle = Color(0xFF82BBDF);
+  static const Color gradientBlueEnd = Color(0xFFB9DCF6);
+
+  static const Color gradientGreenStart = Color(0xFF3BAB55);
+  static const Color gradientGreenMiddle = Color(0xFF75CC88);
+  static const Color gradientGreenEnd = Color(0xFFBEF7CD);
+
   static const LinearGradient redGradient = LinearGradient(
-    colors: [gradientRedStart, gradientRedEnd],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+    colors: [gradientRedStart, gradientRedMiddle, gradientRedEnd],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    stops: [0.0, 0.5, 1.0],
+  );
+
+  static const LinearGradient blueGradient = LinearGradient(
+    colors: [gradientBlueStart, gradientBlueMiddle, gradientBlueEnd],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    stops: [0.0, 0.5, 1.0],
+  );
+
+  static const LinearGradient greenGradient = LinearGradient(
+    colors: [gradientGreenStart, gradientGreenMiddle, gradientGreenEnd],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    stops: [0.0, 0.5, 1.0],
   );
 }

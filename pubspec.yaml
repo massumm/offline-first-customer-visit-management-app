@@ -30,6 +30,8 @@ dependencies:
   google_fonts: ^6.3.2
   image_picker: ^1.2.0
 
+  dashed_progress_bar: ^0.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -45,6 +47,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/home/
     - assets/images/splash_screen_light/
     - assets/images/splash_screen_dark/
     - assets/svg/

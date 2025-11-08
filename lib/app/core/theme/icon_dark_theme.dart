@@ -9,89 +9,89 @@ class IconDarkTheme {
   /// This ensures a consistent look and feel for all text elements in the app.
   static final TextTheme _darkTextTheme = TextTheme(
     displayLarge: GoogleFonts.inter(
-      fontSize: 57,
+      fontSize: 56,
       fontWeight: FontWeight.w400,
       color: Colors.white,
     ),
     displayMedium: GoogleFonts.inter(
-      fontSize: 45,
+      fontSize: 36,
       fontWeight: FontWeight.w400,
       color: Colors.white,
     ),
     displaySmall: GoogleFonts.inter(
-      fontSize: 36,
+      fontSize: 32,
       fontWeight: FontWeight.w400,
       color: Colors.white,
     ),
 
     headlineLarge: GoogleFonts.inter(
-      fontSize: 32,
+      fontSize: 28,
       fontWeight: FontWeight.w400,
       color: Colors.white,
     ),
     headlineMedium: GoogleFonts.inter(
-      fontSize: 28,
+      fontSize: 24,
       fontWeight: FontWeight.w400,
       color: AppColors.darkTextSecondaryColor,
       height: 1.3,
     ),
     headlineSmall: GoogleFonts.inter(
-      fontSize: 24,
+      fontSize: 22,
       fontWeight: FontWeight.w400,
       color: Colors.white,
     ),
 
     titleLarge: GoogleFonts.inter(
-      fontSize: 22,
+      fontSize: 20,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     ),
     titleMedium: GoogleFonts.inter(
-      fontSize: 16,
+      fontSize: 18,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.15,
       color: Colors.white,
     ),
     titleSmall: GoogleFonts.inter(
-      fontSize: 14,
+      fontSize: 16,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
       color: Colors.white,
     ),
 
     bodyLarge: GoogleFonts.inter(
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.5,
       color: Colors.white.withValues(alpha: 0.9),
     ),
     bodyMedium: GoogleFonts.inter(
-      fontSize: 14,
+      fontSize: 12,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.25,
       color: Colors.white.withValues(alpha: 0.9),
     ),
     bodySmall: GoogleFonts.inter(
-      fontSize: 12,
+      fontSize: 10,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.4,
       color: Colors.white.withValues(alpha: 0.9),
     ),
 
     labelLarge: GoogleFonts.inter(
-      fontSize: 14,
+      fontSize: 9,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
       color: Colors.white,
     ),
     labelMedium: GoogleFonts.inter(
-      fontSize: 12,
+      fontSize: 8,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.5,
       color: Colors.white,
     ),
     labelSmall: GoogleFonts.inter(
-      fontSize: 11,
+      fontSize: 8,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.5,
       color: Colors.white,

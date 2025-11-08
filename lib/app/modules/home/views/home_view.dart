@@ -1,17 +1,21 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/super_image.dart';
+import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
 import '../controllers/home_controller.dart';
+import '../widgets/actions_card.dart';
+import '../widgets/community_card.dart';
+import '../widgets/goals_card.dart';
+import '../widgets/header.dart';
+import '../widgets/progress_ring.dart';
+import '../widgets/trainer_info_card.dart';
 
 class HomeView extends BaseView<HomeController> {
   HomeView({super.key});
@@ -27,85 +31,19 @@ class HomeView extends BaseView<HomeController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const _Header(),
+              const Header(),
               16.height,
-              _UserHeader(username: controller.username, day: 12, level: 7),
+              _UserHeader(),
               16.height,
-              DailyProcressIndicators(controller: controller),
+              DailyProcressIndicators(),
               16.height,
-              TrainerRegCard(
-                onPressed: () {
-                  Get.toNamed(Routes.TRAINER_ONBOARDING);
-                },
-              ),
+              TrainerInfoCard(onPressed: () {}),
               16.height,
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  final isWide = constraints.maxWidth > 520;
-                  final actionCards = [
-                    GestureDetector(
-                      onTap: () => Get.toNamed(Routes.ACTIVITY_TRACKER),
-                      child: _ActionsCard(
-                        title: 'Activity',
-                        color: const Color(0xFF6E7416), // olive-ish
-                        percent: 0.85,
-                        lines: const [
-                          'Workouts: 2 / 4 this week',
-                          'Today: 5.3 km Run',
-                          'Record: New 5K Best Time!',
-                        ],
-                      ),
-                    ),
-                    _ActionsCard(
-                      title: 'Recovery',
-                      color: const Color(0xFFD0473D), // red-ish
-                      percent: 0.78,
-                      lines: const [
-                        'Readiness Score: 78 / 100',
-                        'Sleep: 7h 20m',
-                        'HRV: 65 ms',
-                      ],
-                    ),
-                  ];
-
-                  if (isWide) {
-                    // Wide layout: Row with Expanded children
-                    return Row(
-                      children: [
-                        Expanded(child: actionCards[0]),
-                        16.width,
-                        Expanded(child: actionCards[1]),
-                      ],
-                    );
-                  } else {
-                    // Narrow layout: Horizontally scrolling Row
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: constraints.maxWidth * 0.8,
-                            // Example: Card takes 80% of screen width
-                            child: actionCards[0],
-                          ),
-                          16.width,
-                          SizedBox(
-                            width: constraints.maxWidth * 0.8,
-                            // Example: Card takes 80% of screen width
-                            child: actionCards[1],
-                          ),
-                          // Add more cards here if needed, and they will scroll horizontally
-                        ],
-                      ),
-                    );
-                  }
-                },
-              ),
+              HealthProgreesIndicator(),
               16.height,
-
-              _GoalsCard(onPressed: () {}, ringValue: 0.64),
+              GoalsCard(onPressed: () {}),
               16.height,
-              _CommunityCard(color: cs.secondary),
+              CommunityCard(color: cs.secondary),
               58.height,
             ],
           ),
@@ -148,17 +86,49 @@ class HomeView extends BaseView<HomeController> {
     );
   }
 
+  SingleChildScrollView HealthProgreesIndicator() {
+    final controller = Get.find<HomeController>();
+    
+    return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  ActionsCard(
+                    title: controller.actionCards[0].title,
+                    color: controller.actionCards[0].color,
+                    percent: controller.actionCards[0].percent,
+                    gradient: controller.actionCards[0].gradient,
+                  ),
+                  16.width,
+                  ActionsCard(
+                    title: controller.actionCards[1].title,
+                    color: controller.actionCards[1].color,
+                    percent: controller.actionCards[1].percent,
+                    gradient: controller.actionCards[1].gradient,
+                  ),
+                  16.width,
+                  ActionsCard(
+                    title: controller.actionCards[2].title,
+                    color: controller.actionCards[2].color,
+                    percent: controller.actionCards[2].percent,
+                    gradient: controller.actionCards[2].gradient,
+                  ),
+                ],
+              ),
+            );
+  }
+
   @override
   PreferredSizeWidget? appBar(BuildContext context) => null;
 }
 
 class DailyProcressIndicators extends StatelessWidget {
-  const DailyProcressIndicators({super.key, required this.controller});
-
-  final HomeController controller;
+  const DailyProcressIndicators({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.find<HomeController>();
+    
     return SizedBox(
       height: 112,
       child: ListView.separated(
@@ -172,19 +142,12 @@ class DailyProcressIndicators extends StatelessWidget {
 }
 
 class _UserHeader extends StatelessWidget {
-  const _UserHeader({
-    required this.username,
-    required this.day,
-    required this.level,
-  });
-
-  final String username;
-  final int day;
-  final int level;
+  const _UserHeader();
 
   @override
   Widget build(BuildContext context) {
-    final chipStyle = Theme.of(context).textTheme.bodyMedium;
+    final controller = Get.find<HomeController>();
+    final chipStyle = AppTextTheme.bodyMediumMedium;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -199,17 +162,12 @@ class _UserHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Good morning,',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(fontSize: 16),
-                ),
+                Text('Good morning,', style: AppTextTheme.titleSmallRegular),
                 const SizedBox(height: 4),
                 Text(
-                  username,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontSize: 22,
+                  controller.username,
+                  style: AppTextTheme.headlineSmallBold.copyWith(
+                    color: AppColors.black,
                     decoration: TextDecoration.underline,
                   ),
                 ),
@@ -218,13 +176,13 @@ class _UserHeader extends StatelessWidget {
           ),
           _InfoChip(
             icon: Assets.svgMorningIcon,
-            label: 'Day $day',
+            label: 'Day ${controller.currentDay}',
             style: chipStyle,
           ),
           const SizedBox(width: 8),
           _InfoChip(
             icon: Assets.svgLevel7,
-            label: 'Level $level',
+            label: 'Level ${controller.currentLevel}',
             style: chipStyle,
           ),
         ],
@@ -248,7 +206,7 @@ class _InfoChip extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SizedBox(width: 37, height: 33, child: SvgPicture.asset(icon)),
-          const SizedBox(width: 6),
+          const SizedBox(width: 16),
           Text(label, style: style),
         ],
       ),
@@ -294,443 +252,19 @@ class DayCard extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               item.label,
-              style: Get.theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: isToday ? FontWeight.bold : null,
-                fontSize: isToday ? 14 : 12,
-              ),
+              style: isToday
+                  ? AppTextTheme.bodyLargeBold
+                  : AppTextTheme.bodyMediumRegular,
             ),
             const SizedBox(height: 2),
             Text(
               '${item.date}',
-              style: Get.theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: isToday ? FontWeight.bold : FontWeight.w600,
-                fontSize: isToday ? 14 : 12,
-              ),
+              style: isToday
+                  ? AppTextTheme.bodyLargeSemiBold
+                  : AppTextTheme.bodyMediumSemiBold,
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-/// Minimal circular progress ring (no packages).
-class ProgressRing extends StatelessWidget {
-  const ProgressRing({
-    super.key,
-    required this.value,
-    this.thickness = 4,
-    this.trackColor = Colors.white10,
-    this.valueColor = const Color(0xFF6EE7B7),
-    this.valueGradient,
-    this.child,
-  });
-
-  final double value; // 0..1
-  final double thickness;
-  final Color trackColor;
-  final Color valueColor;
-  final LinearGradient? valueGradient;
-  final Widget? child;
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _RingPainter(
-        value: value.clamp(0.0, 1.0),
-        thickness: thickness,
-        track: trackColor,
-        fill: valueColor,
-        gradient: valueGradient,
-      ),
-      child: child,
-    );
-  }
-}
-
-class _RingPainter extends CustomPainter {
-  _RingPainter({
-    required this.value,
-    required this.thickness,
-    required this.track,
-    required this.fill,
-    this.gradient,
-  });
-
-  final double value;
-  final double thickness;
-  final Color track;
-  final Color fill;
-  final LinearGradient? gradient;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = size.center(Offset.zero);
-    final radius = math.min(size.width, size.height) / 2;
-    final rect = Rect.fromCircle(center: center, radius: radius);
-
-    final trackPaint = Paint()
-      ..color = track
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = thickness
-      ..strokeCap = StrokeCap.round;
-
-    final valuePaint = Paint()
-      ..color = fill
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = thickness
-      ..strokeCap = StrokeCap.round;
-
-    if (gradient != null) {
-      valuePaint.shader = gradient!.createShader(rect);
-    }
-
-    // Track
-    canvas.drawArc(
-      rect.deflate(thickness / 2),
-      -math.pi / 2,
-      2 * math.pi,
-      false,
-      trackPaint,
-    );
-
-    // Progress arc
-    canvas.drawArc(
-      rect.deflate(thickness / 2),
-      -math.pi / 2,
-      2 * math.pi * value,
-      false,
-      valuePaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _RingPainter old) =>
-      old.value != value ||
-      old.fill != fill ||
-      old.track != track ||
-      old.thickness != thickness;
-}
-
-class _Header extends StatelessWidget {
-  const _Header();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SvgPicture.asset(Assets.svgLogo, height: 40),
-        const Spacer(),
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.white,
-              border: Border.all(
-                color: AppColors.ligthBorderGrayColor,
-                width: 2,
-              ),
-            ),
-            child: SvgPicture.asset(Assets.homeNotificationIconWithAlert),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class TrainerRegCard extends StatelessWidget {
-  final VoidCallback onPressed;
-
-  const TrainerRegCard({super.key, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      width: Get.width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        gradient: LinearGradient(
-          colors: [Color(0xFF1F1F1F), AppColors.colorPrimarySwatch.shade300],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        border: Border.all(color: Color(0XFF2B2B2B)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Apply to Become a Trainer',
-            style: Theme.of(
-              context,
-            ).textTheme.titleLarge!.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Share your passion for fitness and help others reach their goals. Join our community of certified trainers.',
-            textAlign: TextAlign.center,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium!.copyWith(color: Colors.white70),
-          ),
-          const SizedBox(height: 12),
-          FilledButton(
-            onPressed: onPressed,
-            child: const Text(
-              'Apply Now',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _GoalsCard extends StatelessWidget {
-  final double ringValue;
-  final VoidCallback onPressed;
-
-  const _GoalsCard({required this.ringValue, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Your Daily Goals',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    ' 2/6 (64%) complete • Keep it up!',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall!.copyWith(color: Colors.white70),
-                  ),
-                  const SizedBox(height: 12),
-                  TextButton.icon(
-                    onPressed: onPressed,
-                    label: const Text('Add Goals'),
-                    icon: const Icon(Icons.add),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            _ProgressRing(
-              size: 74,
-              value: ringValue,
-              color: AppColors.greenColor,
-              stroke: 4,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ActionsCard extends StatelessWidget {
-  const _ActionsCard({
-    required this.title,
-    required this.color,
-    required this.percent,
-    required this.lines,
-  });
-
-  final String title;
-  final Color color;
-  final double percent;
-  final List<String> lines;
-
-  @override
-  Widget build(BuildContext context) {
-    final fg = Colors.white;
-    final bg = color.withValues(alpha: 0.18);
-    final barBg = Colors.white.withValues(alpha: 0.25);
-
-    return Container(
-      decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: color.withValues(alpha: 0.4), width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
-            blurRadius: 16,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: fg.withValues(alpha: 0.9),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-              ),
-              Icon(
-                Icons.arrow_outward,
-                color: fg.withValues(alpha: 0.9),
-                size: 18,
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          // Big percentage
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${(percent * 100).round()}%',
-                style: const TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.5,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: LinearProgressIndicator(
-                    value: percent.clamp(0, 1),
-                    minHeight: 10,
-                    backgroundColor: barBg,
-                    valueColor: AlwaysStoppedAnimation<Color>(fg),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          // Bullet-ish lines
-          ...lines.map(
-            (t) => Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Text(
-                t,
-                style: TextStyle(
-                  color: fg.withValues(alpha: 0.92),
-                  fontSize: 13,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _CommunityCard extends StatelessWidget {
-  final Color color;
-
-  const _CommunityCard({required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 22,
-              backgroundColor: color.withValues(alpha: .2),
-              child: Icon(Icons.group_add_outlined, color: color),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Community Spotlight',
-                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    'Join the weekly challenge and share your progress.',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall!.copyWith(color: Colors.white70),
-                  ),
-                ],
-              ),
-            ),
-            const Icon(Icons.chevron_right),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ProgressRing extends StatelessWidget {
-  final double value; // 0..1
-  final double size;
-  final double stroke;
-  final Color? color;
-
-  const _ProgressRing({
-    required this.value,
-    this.size = 72,
-    this.color,
-    required this.stroke,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final ringColor = color ?? cs.primary;
-    return SizedBox(
-      height: size,
-      width: size,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SizedBox(
-            height: size,
-            width: size,
-            child: CircularProgressIndicator(
-              value: value,
-              strokeWidth: stroke,
-              backgroundColor: Colors.white10,
-              valueColor: AlwaysStoppedAnimation<Color>(ringColor),
-            ),
-          ),
-          Text(
-            '${(value * 100).round()}%',
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
-        ],
       ),
     );
   }

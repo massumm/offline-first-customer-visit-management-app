@@ -10,89 +10,89 @@ class IconLightTheme {
   /// This ensures a consistent look and feel for all text elements in the app.
   static final TextTheme _lightTextTheme = TextTheme(
     displayLarge: GoogleFonts.inter(
-      fontSize: 57,
+      fontSize: 56,
       fontWeight: FontWeight.w400,
       color: Colors.black,
     ),
     displayMedium: GoogleFonts.inter(
-      fontSize: 45,
+      fontSize: 36,
       fontWeight: FontWeight.w400,
       color: Colors.black,
     ),
     displaySmall: GoogleFonts.inter(
-      fontSize: 36,
+      fontSize: 32,
       fontWeight: FontWeight.w400,
       color: Colors.black,
     ),
 
     headlineLarge: GoogleFonts.inter(
-      fontSize: 32,
+      fontSize: 28,
       fontWeight: FontWeight.w400,
       color: Colors.black,
     ),
     headlineMedium: GoogleFonts.inter(
-      fontSize: 28,
+      fontSize: 24,
       fontWeight: FontWeight.w400,
       color: AppColors.lightTextSecondaryColor,
       height: 1.3,
     ),
     headlineSmall: GoogleFonts.inter(
-      fontSize: 24,
+      fontSize: 22,
       fontWeight: FontWeight.w400,
       color: Colors.black,
     ),
 
     titleLarge: GoogleFonts.inter(
-      fontSize: 22,
+      fontSize: 20,
       fontWeight: FontWeight.w500,
       color: AppColors.lightTextPrimaryColor,
     ),
     titleMedium: GoogleFonts.inter(
-      fontSize: 16,
+      fontSize: 18,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.15,
       color: AppColors.lightTextPrimaryColor,
     ),
     titleSmall: GoogleFonts.inter(
-      fontSize: 14,
+      fontSize: 16,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
       color: AppColors.lightTextPrimaryColor,
     ),
 
     bodyLarge: GoogleFonts.inter(
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.5,
       color: AppColors.lightTextSecondaryColor,
     ),
     bodyMedium: GoogleFonts.inter(
-      fontSize: 14,
+      fontSize: 12,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.25,
       color: AppColors.lightTextSecondaryColor,
     ),
     bodySmall: GoogleFonts.inter(
-      fontSize: 12,
+      fontSize: 10,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.4,
       color: AppColors.lightTextSecondaryColor,
     ),
 
     labelLarge: GoogleFonts.inter(
-      fontSize: 14,
+      fontSize: 9,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
       color: AppColors.lightTextSecondaryColor,
     ),
     labelMedium: GoogleFonts.inter(
-      fontSize: 12,
+      fontSize: 8,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.5,
       color: AppColors.lightTextSecondaryColor,
     ),
     labelSmall: GoogleFonts.inter(
-      fontSize: 11,
+      fontSize: 8,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.5,
       color: AppColors.lightTextSecondaryColor,
