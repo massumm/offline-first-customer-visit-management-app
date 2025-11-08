@@ -8,7 +8,7 @@ enum QAType {
   height,
   weight,
   image,
-  phoneNumber,
+  phoneNumber, //
   location, //
   reminder, //
   bodyParts, //
