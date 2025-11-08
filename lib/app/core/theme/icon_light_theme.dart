@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -145,6 +144,9 @@ class IconLightTheme {
       backgroundColor: AppColors.lightShapeColor,
       // Corrected: Use a light color for dialogs in light theme
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    ),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: AppColors.lightShapeColor,
     ),
 
     tabBarTheme: TabBarThemeData(

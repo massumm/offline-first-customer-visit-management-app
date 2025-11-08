@@ -156,15 +156,7 @@ class ForgotPasswordController extends BaseController {
     }
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
   void verifyOtp() {
     final otp =

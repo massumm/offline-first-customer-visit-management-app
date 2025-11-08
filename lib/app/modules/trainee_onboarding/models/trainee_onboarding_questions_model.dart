@@ -8,7 +8,10 @@ enum QAType {
   height,
   weight,
   image,
-  phoneNumber,
+  phoneNumber, //
+  location, //
+  reminder, //
+  bodyParts, //
   unknown,
 }
 
@@ -104,6 +107,16 @@ class TraineeQuestionData {
     QAType parseQAType(String? type) {
       switch (type) {
         case "text":
+          // TODO: DEMO ONLY
+          if (json["question_field_name"] == 'address') {
+            return QAType.location;
+          }
+          if (json["question_field_name"] == 'focus_body_parts') {
+            return QAType.bodyParts;
+          }
+          if (json["question_field_name"] == 'phone_number') {
+            return QAType.phoneNumber;
+          }
           return QAType.text;
         case "number":
           return QAType.number;
@@ -123,6 +136,8 @@ class TraineeQuestionData {
           return QAType.image;
         case "phone_number":
           return QAType.phoneNumber;
+        case "reminder":
+          return QAType.reminder;
         default:
           return QAType.unknown;
       }
@@ -171,14 +186,10 @@ class PossibleAnswersMetadata {
     );
   }
 
-// toJson method
+  // toJson method
   Map<String, dynamic> toJson() {
-    return {
-      'choices': choices,
-    };
+    return {'choices': choices};
   }
-
-
 
   @override
   String toString() => choices.toString();

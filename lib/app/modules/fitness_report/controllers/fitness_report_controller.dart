@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/values/app_colors.dart' show AppColors;
 import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/modules/fitness_report/widgets/report_menu_item_widget.dart';
 import '../services/fitness_report_service.dart';
@@ -13,7 +12,6 @@ import '../views/nutrition_strategy_page_view.dart';
 import '../views/activity_strategy_page_view.dart';
 import '../views/daily_goals_page_view.dart';
 import '../views/mindset_motivation_page_view.dart';
-import '../views/integration_summary_page_view.dart';
 import '../views/congratulations_page_view.dart';
 
 class FitnessReportController extends BaseController {

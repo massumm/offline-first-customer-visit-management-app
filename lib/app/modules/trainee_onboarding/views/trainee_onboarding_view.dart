@@ -1,16 +1,23 @@
 import 'dart:io';
 
+import 'package:bodychart_heatmap/bodychart_heatmap.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/values/app_colors.dart';
+import 'package:icon/app/core/widgets/input_widgets/custom_phone_field.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:phone_form_field/phone_form_field.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
+import '../../../core/widgets/chat_room_shimmer.dart';
+import '../../../core/widgets/search_location_dropdown.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
 import '../models/trainee_onboarding_questions_model.dart';
@@ -152,10 +159,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
       showDialog(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          icon: const Icon(Icons.warning_amber_rounded, size: 40,),
+          icon: const Icon(Icons.warning_amber_rounded, size: 40),
           title: const Text('Leave Onboarding?'),
           content: const Text(
-              'Your progress will be lost if you go back. Are you sure?'),
+            'Your progress will be lost if you go back. Are you sure?',
+          ),
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
@@ -177,13 +185,20 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     }
   }
 
-
   @override
   Widget body(BuildContext context) {
     return Column(
       children: [
+        // ------------------ MESSAGES ----------
         Expanded(
           child: Obx(() {
+            // ------------------- MESSAGE LOADING STATE --------
+            if (controller.onboardingPhase.value ==
+                OnboardingPhase.fetchingData) {
+              return ChatRoomShimmer();
+            }
+
+            // ------------------- DATA STATE ------------------
             final items = controller.messages;
             final typing = controller.isTyping.value;
             return ListView.builder(
@@ -259,54 +274,295 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           );
         }),
 
-        // Input Area
-        SafeArea(
-          top: false,
-          child: Obx(() {
-            switch (controller.onboardingPhase.value) {
-              case OnboardingPhase.awaitingEmail:
-                return _buildTextInput();
+        // ----------------- Input Sections ----------
+        AnimatedSize(
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+          alignment: Alignment.topCenter,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
 
-              case OnboardingPhase.awaitingInitialTerms:
-                return _buildInitialTermsInput(context);
+            // Make sure old and new are stacked during the swap
+            layoutBuilder: (currentChild, previousChildren) => Stack(
+              alignment: Alignment.topCenter,
+              children: <Widget>[
+                ...previousChildren,
+                if (currentChild != null) currentChild,
+              ],
+            ),
 
-              case OnboardingPhase.fetchingData:
-                return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 32.0),
-                  child: Center(child: CircularProgressIndicator.adaptive()),
-                );
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              final inCurved = CurvedAnimation(
+                parent: animation,
+                curve: Curves.easeOutCubic,
+              );
+              final outCurved = CurvedAnimation(
+                parent: ReverseAnimation(animation),
+                curve: Curves.easeInCubic,
+              );
 
-              case OnboardingPhase.askingQuestions:
-                if (controller.showGroupContinuationButtons) {
-                  return _buildContinuationButtons();
-                }
-                if (controller.isCurrentImage) {
-                  return _ImagePickerInput(controller: controller);
-                }
-                if (controller.isCurrentDate) {
-                  return _buildDatePickerButton(context);
-                }
-                if (controller.isCurrentTime) {
-                  return _buildTimePickerButton(context);
-                }
-                if (controller.isCurrentHeight) {
-                  return _HeightPicker(controller: controller);
-                }
-                if (controller.isCurrentWeight) {
-                  return _WeightPicker(controller: controller);
-                }
-                if (controller.isCurrentChoice) {
-                  return const SizedBox.shrink();
-                }
-                return _buildTextInput();
+              // New child: slide UP from bottom
+              final slideIn = Tween<Offset>(
+                begin: const Offset(0, 1), // from bottom
+                end: Offset.zero,
+              ).animate(inCurved);
 
-              case OnboardingPhase.completed:
-                return _buildTextInput();
-            }
-          }),
+              // Old child: slide DOWN off-screen
+              final slideOut = Tween<Offset>(
+                begin: Offset.zero,
+                end: const Offset(0, 1), // to bottom
+              ).animate(outCurved);
+
+              // Choose which tween to use based on the animation direction
+              final isIncoming = animation.status == AnimationStatus.forward;
+
+              return ClipRect(
+                child: SlideTransition(
+                  position: isIncoming ? slideIn : slideOut,
+                  child: child,
+                ),
+              );
+            },
+
+            child: SafeArea(
+              key: ValueKey(
+                '${controller.onboardingPhase.value}-${controller.currentQuestion?.id}',
+              ),
+              top: false,
+              child: Obx(() {
+                switch (controller.onboardingPhase.value) {
+                  case OnboardingPhase.awaitingEmail:
+                    return _buildTextInput(context);
+
+                  case OnboardingPhase.awaitingInitialTerms:
+                    return _buildInitialTermsInput(context);
+
+                  case OnboardingPhase.fetchingData:
+                    return const SizedBox.shrink();
+
+                  case OnboardingPhase.askingQuestions:
+                    if (controller.showGroupContinuationButtons) {
+                      return _buildContinuationButtons();
+                    }
+                    if (controller.isCurrentImage) {
+                      return _buildTextInput(
+                        context,
+                        enableImageBtn: true,
+                        typingEnabled: false,
+                      );
+                    }
+                    if (controller.isCurrentDate) {
+                      return _buildDatePickerButton(context);
+                    }
+                    if (controller.isCurrentTime) {
+                      return _buildTimePickerButton(context);
+                    }
+                    if (controller.isCurrentHeight) {
+                      return _HeightPicker(controller: controller);
+                    }
+                    if (controller.isCurrentWeight) {
+                      return _WeightPicker(controller: controller);
+                    }
+                    if (controller.isCurrentPhoneNumber) {
+                      return _buildPhoneField();
+                    }
+
+                    if (controller.isCurrentReminder) {
+                      return _buildReminder(context);
+                    }
+
+                    if (controller.isCurrentBodyPart) {
+                      return Column(
+                        children: [
+                          6.height,
+                          BodyChart(
+                            selectedParts: controller.selectedBodyParts,
+                            selectedColor: AppColors.colorPrimary,
+                            unselectedColor: Colors.grey.shade300,
+                            viewType: BodyViewType.both,
+                            width: 250,
+                          ),
+                          6.height,
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            alignment: WrapAlignment.center,
+                            children: [
+                              ActionChip(
+                                label: Text('Full Body'),
+                                onPressed: () => controller.selectedBodyParts
+                                    .add('full body'),
+                              ),
+                              ActionChip(
+                                label: Text('Chest'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('chest'),
+                              ),
+                              ActionChip(
+                                label: Text('Arm'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('arm'),
+                              ),
+                              ActionChip(
+                                label: Text('Abs'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('abs'),
+                              ),
+                              ActionChip(
+                                label: Text('Neck'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('neck'),
+                              ),
+                              ActionChip(
+                                label: Text('Shoulder'),
+                                onPressed: () => controller.selectedBodyParts
+                                    .add('shoulder'),
+                              ),
+                              ActionChip(
+                                label: Text('Back'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('back'),
+                              ),
+                              ActionChip(
+                                label: Text('Glutes'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('glutes'),
+                              ),
+                              ActionChip(
+                                label: Text('Calves'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('calves'),
+                              ),
+                              ActionChip(
+                                label: Text('Quads'),
+                                onPressed: () =>
+                                    controller.selectedBodyParts.add('quads'),
+                              ),
+                              ActionChip(
+                                label: Text('Other'),
+                                onPressed:
+                                    () => //TODO: HANDLE THIS.
+                                    controller.selectedBodyParts.add(
+                                      'other',
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      );
+                    }
+
+                    if (controller.isCurrentChoice) {
+                      // Handle for other options selection
+                      if (controller.isOtherOptionSelected.isTrue) {
+                        return _buildTextInput(context);
+                      }
+                      return const SizedBox.shrink();
+                    }
+
+                    // TODO: DEMO CHECK
+                    if (controller.isCurrentLocation ||
+                        controller.currentQuestion?.id == 4) {
+                      return InkWell(
+                        onTap: () async {
+                          final PlaceDetails? result =
+                              await openLocationBottomSheet(
+                                controller,
+                                context,
+                              );
+
+                          if (result != null) {
+                            controller.inputText.value = result.address ?? "";
+                            controller.textController.text =
+                                result.address ?? "";
+                            controller.send(controller.textController.text);
+                          }
+                        },
+                        child: IgnorePointer(child: _buildTextInput(context)),
+                      );
+                    }
+                    return _buildTextInput(context);
+
+                  case OnboardingPhase.completed:
+                    return _buildTextInput(context);
+                }
+              }),
+            ),
+          ),
         ),
         const SizedBox(height: 8),
       ],
+    );
+  }
+
+  Obx _buildReminder(BuildContext context) {
+    return Obx(() {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.center,
+            children: [
+              ActionChip(
+                label: Text('Yes'),
+                onPressed: () {
+                  controller.onReminder('Yes');
+                  controller.enableReminderTimePicker(true);
+                },
+              ),
+              ActionChip(
+                label: Text('No'),
+                onPressed: () {
+                  controller.onReminder('No');
+                  controller.enableReminderTimePicker(false);
+                },
+              ),
+            ],
+          ),
+          AnimatedCrossFade(
+            secondChild: SizedBox.shrink(),
+            firstChild: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [8.height, _buildTimePickerButton(context)],
+            ),
+            crossFadeState: controller.enableReminderTimePicker.isTrue
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
+            duration: const Duration(milliseconds: 300),
+          ),
+          8.height,
+        ],
+      );
+    });
+  }
+
+  Padding _buildPhoneField() {
+    String phoneNumber = '';
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+      child: PhoneField(
+        suffixIcon: IconButton(
+          tooltip: 'Voice input',
+          visualDensity: VisualDensity.compact,
+          padding: EdgeInsets.zero,
+          constraints: BoxConstraints(),
+          icon: Icon(Icons.send, size: 20),
+          onPressed: () {
+            if (phoneNumber.isEmpty) {
+              CustomToast.showToast(message: 'Please type a valid input');
+              return;
+            }
+            controller.send(phoneNumber);
+          },
+        ),
+        onInputChanged: (PhoneNumber number) {
+          phoneNumber = number.international;
+        },
+      ),
     );
   }
 
@@ -342,8 +598,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                         ),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
-                            // TODO: Navigate to your Terms and Conditions page
-                            Get.snackbar("Navigation", "Go to Terms page");
+                            CustomToast.showToast(
+                              message: 'Terms and Conditions',
+                            );
                           },
                       ),
                     ],
@@ -354,10 +611,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           ),
           const SizedBox(height: 12),
           Obx(
-            () => FilledButton(
-              style: FilledButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
+            () => ElevatedButton(
               onPressed: controller.hasAgreedToInitialTerms.value
                   ? controller.proceedAfterInitialTerms
                   : null,
@@ -390,6 +644,91 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         ],
       ),
     );
+  }
+
+  Future<PlaceDetails?> openLocationBottomSheet(
+    TraineeOnboardingController controller,
+    BuildContext context,
+  ) async {
+    final theme = Theme.of(context);
+    final result = await Get.bottomSheet<PlaceDetails>(
+      backgroundColor: theme.colorScheme.surface,
+      SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 12,
+            right: 12,
+            top: 12,
+            bottom: MediaQuery.of(Get.context!).viewInsets.bottom + 16,
+          ),
+          child: SizedBox(
+            height: Get.height * 0.5,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Drag handle
+                Container(
+                  width: 40,
+                  height: 4,
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: theme.iconTheme.color,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+
+                // Title
+                const Text(
+                  'Choose a location',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 12),
+
+                SearchableLocationDropdown(
+                  hintText: 'Search a city, area, or place',
+                  debounce: const Duration(milliseconds: 300),
+                  fetchSuggestions:
+                      controller.locationService.placesAutocomplete,
+                  onChanged: (suggestion) async {
+                    if (suggestion == null) return;
+
+                    try {
+                      final details = await controller.locationService.places
+                          .placeDetails(suggestion.id);
+
+                      if (details == null) {
+                        CustomToast.showErrorToast(
+                          'Unable to fetch details. Please try another place.',
+                        );
+                        return;
+                      }
+                      // Close the sheet and return the details to the caller
+                      if (context.mounted) {
+                        Navigator.pop(context, details);
+                      }
+                    } catch (e) {
+                      CustomToast.showErrorToast(
+                        'Failed to load place details.',
+                      );
+                    }
+                  },
+                ),
+
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        ),
+      ),
+      isScrollControlled: true,
+      elevation: 8,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+    );
+
+    return result;
   }
 
   Widget _buildDatePickerButton(BuildContext context) {
@@ -429,65 +768,183 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
     );
   }
 
-  Widget _buildTextInput() {
-    return Row(
-      children: [
-        const SizedBox(width: 8),
-        Expanded(
-          child: TextField(
-            controller: controller.textController,
-            onChanged: (t) => controller.inputText.value = t,
-            onSubmitted: (t) {
-              controller.send(t);
-            },
-            decoration: InputDecoration(
-              hintText: _hintFor(),
-              border: const OutlineInputBorder(),
-              isDense: true,
-              contentPadding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 10,
-              ),
-            ),
-            keyboardType: () {
-              // Handle email phase first
-              if (controller.onboardingPhase.value ==
-                  OnboardingPhase.awaitingEmail) {
-                return TextInputType.emailAddress;
-              }
+  Widget _buildTextInput(
+    BuildContext context, {
+    bool enableImageBtn = false,
+    bool typingEnabled = true,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+      child: TextField(
+        controller: controller.textController,
+        readOnly: !typingEnabled,
+        enableInteractiveSelection: typingEnabled,
+        showCursor: typingEnabled,
+        mouseCursor: typingEnabled
+            ? SystemMouseCursors.text
+            : SystemMouseCursors.forbidden,
+        onTap: () {
+          if (!typingEnabled) {
+            // prevent focus from sticking / keyboard popping up on mobile
+            FocusScope.of(context).unfocus();
+          }
+        },
 
-              // Check the current question type for other phases
-              final qType = controller.currentQuestion?.type;
+        onChanged: (t) => controller.inputText.value = t,
+        onSubmitted: (t) {
+          controller.send(t);
+        },
+        decoration: InputDecoration(
+          suffixIcon: Obx(() {
+            final hasText = controller.inputText.value.trim().isNotEmpty;
 
-              // For number questions (including phone numbers), show the number keyboard.
-              if (qType == QAType.number) {
-                return TextInputType.number;
-              }
+            return AnimatedSwitcher(
+              duration: const Duration(milliseconds: 250),
+              switchInCurve: Curves.easeOut,
+              switchOutCurve: Curves.easeIn,
+              child: hasText
+                  ? SizedBox(
+                      key: const ValueKey('send'),
+                      width: 56,
+                      child: IconButton(
+                        tooltip: 'Send',
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        icon: const Icon(Icons.send_rounded, size: 20),
+                        onPressed: () {
+                          final msg = controller.textController.text.trim();
+                          if (msg.isEmpty) return;
+                          controller.send(msg);
+                          controller.textController.clear();
+                          controller.inputText.value = '';
+                        },
+                      ),
+                    )
+                  // --- IDLE BUTTONS STATE ---
+                  : SizedBox(
+                      key: const ValueKey('idle'),
+                      width: 120,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // MIC
+                          Opacity(
+                            opacity: enableImageBtn ? 0.5 : 1,
+                            child: IconButton(
+                              tooltip: 'Voice input',
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              icon: const Icon(Icons.mic_outlined, size: 20),
+                              onPressed: enableImageBtn
+                                  ? null
+                                  : () {
+                                      CustomToast.showToast(
+                                        message: 'Coming soon',
+                                      );
+                                    },
+                            ),
+                          ),
+                          // DOC
+                          const Opacity(
+                            opacity: 0.5,
+                            child: IconButton(
+                              tooltip: 'Insert link (disabled)',
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              constraints: BoxConstraints(),
+                              icon: Icon(Icons.link_outlined, size: 20),
+                              onPressed: null,
+                            ),
+                          ),
+                          // CAMERA
+                          Opacity(
+                            opacity: enableImageBtn ? 1 : 0.5,
+                            child: IconButton(
+                              tooltip: 'Attach photo',
+                              visualDensity: VisualDensity.compact,
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              icon: const Icon(
+                                Icons.camera_alt_outlined,
+                                size: 20,
+                              ),
+                              onPressed: () => _showImageSourceDialog(context),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+            );
+          }),
 
-              if (qType == QAType.phoneNumber) {
-                return TextInputType.phone;
-              }
+          suffixIconConstraints: const BoxConstraints(
+            minWidth: 0,
+            minHeight: 0,
+          ),
 
-              // Default to a standard text keyboard
-              return TextInputType.text;
-            }(),
+          hintText: _hintFor(),
+          border: const OutlineInputBorder(),
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 12,
+            vertical: 14,
           ),
         ),
-        const SizedBox(width: 8),
-        FilledButton.icon(
-          onPressed: () => controller.send(controller.textController.text),
-          style: FilledButton.styleFrom(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-          ),
-          icon: const Icon(Icons.send),
-          label: const Text('Send'), // TODO: HANDLE SKIP
-        ),
-        const SizedBox(width: 8),
-      ],
+
+        keyboardType: () {
+          if (controller.onboardingPhase.value ==
+              OnboardingPhase.awaitingEmail) {
+            return TextInputType.emailAddress;
+          }
+          final qType = controller.currentQuestion?.type;
+          if (qType == QAType.number) return TextInputType.number;
+          if (qType == QAType.phoneNumber) return TextInputType.phone;
+          return TextInputType.text;
+        }(),
+      ),
     );
+  }
+
+  void _showImageSourceDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text("Select Image Source"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt),
+              title: const Text("Take Photo"),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                _pickImage(ImageSource.camera);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_library),
+              title: const Text("Choose from Gallery"),
+              onTap: () {
+                Navigator.of(dialogContext).pop();
+                _pickImage(ImageSource.gallery);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final ImagePicker picker = ImagePicker();
+    // Pick an image.
+    final XFile? image = await picker.pickImage(source: source);
+
+    if (image != null) {
+      controller.selectImage(image);
+    }
   }
 
   String _hintFor() {
@@ -755,67 +1212,6 @@ class _WeightPickerState extends State<_WeightPicker> {
         ],
       ),
     );
-  }
-}
-
-class _ImagePickerInput extends StatelessWidget {
-  final TraineeOnboardingController controller;
-
-  const _ImagePickerInput({required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.camera_alt),
-        label: const Text("Upload Photo"),
-        style: ElevatedButton.styleFrom(
-          minimumSize: const Size(double.infinity, 50),
-        ),
-        onPressed: () => _showImageSourceDialog(context),
-      ),
-    );
-  }
-
-  void _showImageSourceDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text("Select Image Source"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text("Take Photo"),
-              onTap: () {
-                Navigator.of(dialogContext).pop();
-                _pickImage(ImageSource.camera);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text("Choose from Gallery"),
-              onTap: () {
-                Navigator.of(dialogContext).pop();
-                _pickImage(ImageSource.gallery);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _pickImage(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
-    // Pick an image.
-    final XFile? image = await picker.pickImage(source: source);
-
-    if (image != null) {
-      controller.selectImage(image);
-    }
   }
 }
 

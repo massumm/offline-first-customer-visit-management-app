@@ -6,6 +6,7 @@ import 'package:icon/app/base/network/network_error/api_error_handler.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/repository/traineer_onboarding_qa_repository.dart';
+import 'package:icon/app/modules/trainee_onboarding/services/location_service.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
@@ -33,6 +34,11 @@ class TraineeOnboardingController extends BaseController {
   final TraineeOnboardingAuthRepository _onboardingAuthRepository = Get.find(
     tag: (TraineeOnboardingAuthRepository).toString(),
   );
+
+  // --------------- Service --------------------
+  final LocationService _locationService = Get.find<LocationService>();
+
+  LocationService get locationService => _locationService;
   final textController = TextEditingController();
 
   // --------------- Dynamic Data ---------------
@@ -63,6 +69,11 @@ class TraineeOnboardingController extends BaseController {
 
   /// True when the UI should show the "Continue" and "Skip" buttons.
   bool get showGroupContinuationButtons => isAwaitingGroupConfirmation.value;
+  final RxBool isOtherOptionSelected = false.obs;
+  final RxBool enableReminderTimePicker = false.obs;
+
+  final RxSet<String> selectedBodyParts = <String>{}.obs;
+
 
   //-------------------- QA Stepper --------------------
   /// Holds the progress (0.0 to 1.0) for each question group.
@@ -73,6 +84,8 @@ class TraineeOnboardingController extends BaseController {
   @override
   void onInit() {
     super.onInit();
+    // Init servives
+    _locationService.attach(this);
     // Progress updates are now tied to the dynamic groups
     currentGroupIndex.listen((_) => _updateProgresses());
     currentQuestionIndexInGroup.listen((_) => _updateProgresses());
@@ -115,14 +128,12 @@ class TraineeOnboardingController extends BaseController {
     }
   }
 
-
   void _buildQuestionGroupsFromData(List<TraineeQuestionData> allQuestions) {
     if (allQuestions.isEmpty) {
       generatedQuestionGroups.clear();
       groupProgresses.clear();
       return;
     }
-
 
     const groupOrder = [
       'Personal Information',
@@ -132,7 +143,6 @@ class TraineeOnboardingController extends BaseController {
       'Body Profile',
       'general',
     ];
-
 
     final groupMetadatas = {
       'Personal Information': {
@@ -149,7 +159,7 @@ class TraineeOnboardingController extends BaseController {
       },
       'Body Profile': {
         'intro':
-        "Excellent! Let's get your body profile details to track progress.",
+            "Excellent! Let's get your body profile details to track progress.",
         'conclusion': "That's everything I need to know. Thanks for sharing!",
       },
       // Added metadata for the 'general' group to match the API data
@@ -159,10 +169,8 @@ class TraineeOnboardingController extends BaseController {
       },
     };
 
-
     final Map<String, List<TraineeQuestionData>> questionsByGroup = {};
     for (final question in allQuestions) {
-
       final String groupName;
       if (question.groupName.isNotEmpty) {
         groupName = question.groupName;
@@ -172,14 +180,14 @@ class TraineeOnboardingController extends BaseController {
       (questionsByGroup[groupName] ??= []).add(question);
     }
 
-
     final List<QuestionGroup> newGroups = [];
     for (final groupName in groupOrder) {
       final groupQuestionsData = questionsByGroup[groupName];
 
       if (groupQuestionsData != null && groupQuestionsData.isNotEmpty) {
-        final groupQAItems =
-        groupQuestionsData.map((data) => _mapDataToQAItem(data)).toList();
+        final groupQAItems = groupQuestionsData
+            .map((data) => _mapDataToQAItem(data))
+            .toList();
 
         final metadata = groupMetadatas[groupName];
         if (metadata != null) {
@@ -195,9 +203,9 @@ class TraineeOnboardingController extends BaseController {
       }
     }
 
-
     if (newGroups.isEmpty) {
-      "Warning: No question groups were created. Check if the 'group_name' values from the API match the 'groupOrder' list in the controller.".log();
+      "Warning: No question groups were created. Check if the 'group_name' values from the API match the 'groupOrder' list in the controller."
+          .log();
     }
 
     generatedQuestionGroups.assignAll(newGroups);
@@ -286,12 +294,13 @@ class TraineeOnboardingController extends BaseController {
       final onboardingJson = toJson();
       Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
       CustomToast.showSuccessToast('Profile data saved successfully.');
-      Future.delayed(Duration(seconds: 1), () =>
-          Get.toNamed(
-              Routes.TRAINEE_FITNESS_REPORT_GENERATION,
-              arguments: traineeId.value
-            // onboardingJson,
-          )
+      Future.delayed(
+        Duration(seconds: 1),
+        () => Get.toNamed(
+          Routes.TRAINEE_FITNESS_REPORT_GENERATION,
+          arguments: traineeId.value,
+          // onboardingJson,
+        ),
       );
 
       "Proceeding to fitness report with data: $onboardingJson".log();
@@ -302,13 +311,19 @@ class TraineeOnboardingController extends BaseController {
 
   Future<void> _botSay(String text) async {
     isTyping.value = true;
+    _scrollToBottom(); // Scroll down to show the typing indicator
     final delayMs = (text.length * 25).clamp(400, 1500);
     await Future.delayed(Duration(milliseconds: delayMs));
-    // Bot messages are immediately delivered
+
     messages.add(
-        ChatMessage(from: Sender.bot, text: text, status: MessageStatus.delivered));
+      ChatMessage(
+        from: Sender.bot,
+        text: text,
+        status: MessageStatus.delivered,
+      ),
+    );
     isTyping.value = false;
-    _scrollToBottom();
+    _scrollToBottom(); // Scroll down again to show the newly added message
   }
 
   bool _shouldSkipQuestion(QAItem q) {
@@ -414,22 +429,22 @@ class TraineeOnboardingController extends BaseController {
       }
 
       final candidate =
-      generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
+          generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
 
     final bool isNewGroup =
         nextQuestionIndex == 0 &&
-            (currentGroupIndex.value != nextGroupIndex ||
-                currentQuestionIndexInGroup.value == -1);
+        (currentGroupIndex.value != nextGroupIndex ||
+            currentQuestionIndexInGroup.value == -1);
 
     if (isNewGroup) {
       await _botSay(generatedQuestionGroups[nextGroupIndex].introduction);
     }
 
     final q =
-    generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
+        generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = nextGroupIndex;
@@ -437,16 +452,48 @@ class TraineeOnboardingController extends BaseController {
     _updateProgresses();
   }
 
+  // void _scrollToBottom() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     if (pageController.hasClients) {
+  //       pageController.animateTo(
+  //         pageController.position.maxScrollExtent + 100,
+  //         duration: const Duration(milliseconds: 250),
+  //         curve: Curves.easeOut,
+  //       );
+  //     }
+  //   });
+  // }
+
+  // Add this method to your TraineeOnboardingController
+
+  /// Scrolls the chat view to the bottom to show the latest message.
   void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // A short delay ensures that the UI has had time to update before scrolling.
+    Future.delayed(const Duration(milliseconds: 100), () {
       if (pageController.hasClients) {
         pageController.animateTo(
-          pageController.position.maxScrollExtent + 100,
-          duration: const Duration(milliseconds: 250),
+          pageController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }
     });
+  }
+
+  void onReminder(String option){
+    if (!_canAnswer) return;
+
+    if(option.contains('Yes')){
+      final userMessage = ChatMessage(
+        from: Sender.user,
+        text: option,
+        status: MessageStatus.delivered,
+      );
+      messages.add(userMessage);
+      return;
+    }
+
+    send(option);
   }
 
   Future<void> choose(String option) async {
@@ -511,7 +558,9 @@ class TraineeOnboardingController extends BaseController {
 
       await _onboardingQARepository.sendAnswers(answerData, 1);
 
-      userMessage.updateStatus(MessageStatus.delivered); // Mark as delivered on success
+      userMessage.updateStatus(
+        MessageStatus.delivered,
+      ); // Mark as delivered on success
       return true;
     } catch (e) {
       userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
@@ -539,7 +588,9 @@ class TraineeOnboardingController extends BaseController {
 
       await _onboardingQARepository.updateAnswers(answerData, 1, q.id);
 
-      userMessage.updateStatus(MessageStatus.delivered); // Mark as delivered on success
+      userMessage.updateStatus(
+        MessageStatus.delivered,
+      ); // Mark as delivered on success
       return true;
     } catch (e) {
       userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
@@ -613,13 +664,16 @@ class TraineeOnboardingController extends BaseController {
 
   bool get _canAnswer =>
       onboardingPhase.value == OnboardingPhase.askingQuestions &&
-          !isFinished &&
-          !isTyping.value &&
-          currentQuestionIndexInGroup.value != -1;
+      !isFinished &&
+      !isTyping.value &&
+      currentQuestionIndexInGroup.value != -1;
 
   Future<void> _saveUserAnswer(QAItem q, String value) async {
-    final userMessage =
-    ChatMessage(from: Sender.user, text: value, status: MessageStatus.pending);
+    final userMessage = ChatMessage(
+      from: Sender.user,
+      text: value,
+      status: MessageStatus.pending,
+    );
     await _processAnswer(q, value, userMessage);
   }
 
@@ -634,7 +688,10 @@ class TraineeOnboardingController extends BaseController {
   }
 
   Future<void> _processAnswer(
-      QAItem q, String answerValue, ChatMessage userMessage) async {
+    QAItem q,
+    String answerValue,
+    ChatMessage userMessage,
+  ) async {
     messages.add(userMessage);
 
     final bool wasRevisiting = _isRevisiting;
@@ -642,6 +699,14 @@ class TraineeOnboardingController extends BaseController {
     answers[q.id] = answerValue;
     _scrollToBottom();
     _updateProgresses();
+
+    // Handle Other option selection
+    if (answerValue.contains('Other')) {
+      isOtherOptionSelected.value = true;
+      return;
+    } else {
+      isOtherOptionSelected.value = false;
+    }
 
     bool success = false;
     if (wasRevisiting) {
@@ -669,7 +734,7 @@ class TraineeOnboardingController extends BaseController {
 
   bool get canGoBack =>
       !isFinished &&
-          (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
+      (currentGroupIndex.value > 0 || currentQuestionIndexInGroup.value > 0);
 
   Future<void> goBack() async {
     if (!canGoBack) return;
@@ -690,8 +755,8 @@ class TraineeOnboardingController extends BaseController {
             generatedQuestionGroups[targetGroupIndex].questions.length - 1;
       }
 
-      final candidate =
-      generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
+      final candidate = generatedQuestionGroups[targetGroupIndex]
+          .questions[targetQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
     }
@@ -701,8 +766,8 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    final q =
-    generatedQuestionGroups[targetGroupIndex].questions[targetQuestionIndex];
+    final q = generatedQuestionGroups[targetGroupIndex]
+        .questions[targetQuestionIndex];
     await _botSay(q.question);
 
     currentGroupIndex.value = targetGroupIndex;
@@ -828,6 +893,12 @@ class TraineeOnboardingController extends BaseController {
 
   bool get isCurrentImage => currentQuestion?.type == QAType.image;
 
+  bool get isCurrentLocation => currentQuestion?.type == QAType.location;
+
+  bool get isCurrentPhoneNumber => currentQuestion?.type == QAType.phoneNumber;
+  bool get isCurrentReminder => currentQuestion?.type == QAType.reminder;
+  bool get isCurrentBodyPart => currentQuestion?.type == QAType.bodyParts;
+
   // -------------- Stepper bindings --------------
   /// Recalculates and updates the progress for all groups.
   void _updateProgresses() {
@@ -838,7 +909,7 @@ class TraineeOnboardingController extends BaseController {
 
     final newProgresses = List.generate(
       generatedQuestionGroups.length,
-          (index) => _computeGroupProgress(index),
+      (index) => _computeGroupProgress(index),
       growable: false,
     );
 

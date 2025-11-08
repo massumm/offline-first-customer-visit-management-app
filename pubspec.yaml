@@ -21,14 +21,24 @@ dependencies:
   dio: ^5.9.0
   flutter_svg: ^2.2.1
   cached_network_image: ^3.4.1
-  font_awesome_flutter: ^10.10.0
+  font_awesome_flutter: ^10.12.0
   intl: ^0.20.2
   web_socket_channel: ^3.0.3
   lottie: ^3.3.2
+  shimmer: ^3.0.0
 
   # Font
   google_fonts: ^6.3.2
+
   image_picker: ^1.2.0
+
+  #GOOGLE MAP/Location
+  awesome_place_search: ^2.1.0
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+
+  phone_form_field: ^10.0.12
+  bodychart_heatmap: ^1.1.0
 
   dashed_progress_bar: ^0.0.1
 
@@ -36,7 +46,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  flutter_native_splash: ^2.4.6
+  flutter_native_splash: ^2.4.7
   flutter_launcher_icons: ^0.14.4
 
 
