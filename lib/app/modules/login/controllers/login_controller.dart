@@ -12,7 +12,6 @@ import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
 import '../repository/login_repository.dart';
 
-
 class LoginController extends BaseController {
   final emailCtr = TextEditingController();
   final passwordCtr = TextEditingController();
@@ -27,9 +26,10 @@ class LoginController extends BaseController {
   // .............Theme Data...........
   final ts = Get.find<ThemeService>();
 
-  bool  get isDarkTheme  {
+  bool get isDarkTheme {
     final platformDark =
-        WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
+        WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+        Brightness.dark;
 
     return ts.themeMode == ThemeMode.dark ||
         (ts.themeMode == ThemeMode.system && platformDark);
@@ -39,8 +39,6 @@ class LoginController extends BaseController {
   final LoginRepository _loginRepository = Get.find(
     tag: (LoginRepository).toString(),
   );
-
-  
 
   @override
   void onClose() {
@@ -88,7 +86,7 @@ class LoginController extends BaseController {
       'qwerty',
       '111111',
       'p@ssword',
-      'admin'
+      'admin',
     };
 
     if (commonPasswords.contains(password.toLowerCase())) {
@@ -98,7 +96,8 @@ class LoginController extends BaseController {
     if (email != null && email.isNotEmpty) {
       final username = email.split('@').first;
       // Avoid flagging short usernames that might appear in many words.
-      if (username.length > 3 && password.toLowerCase().contains(username.toLowerCase())) {
+      if (username.length > 3 &&
+          password.toLowerCase().contains(username.toLowerCase())) {
         return "Password cannot be too similar to your email.";
       }
     }
@@ -106,8 +105,7 @@ class LoginController extends BaseController {
     return null; // Return null if validation passes
   }
 
-
-// Add this method to be called on every keystroke in the password field.
+  // Add this method to be called on every keystroke in the password field.
   void onPasswordChanged(String password) {
     // Pass the email for the similarity check.
     passwordError.value = validatePassword(password, email: emailCtr.text);
@@ -115,7 +113,7 @@ class LoginController extends BaseController {
 
   void onLoginButtonPressed() {
     // Handle login loading
-    if(isLoading.isTrue) return;
+    if (isLoading.isTrue) return;
 
     // Trigger validation for both email and password
     emailError.value = validateEmail(emailCtr.text);
@@ -123,30 +121,33 @@ class LoginController extends BaseController {
 
     // Only proceed with login if there are no errors
     if (emailError.value == null && passwordError.value == null) {
-      try{
+      try {
         isLoading(true);
         final requestBody = {
           "username": emailCtr.text,
           "password": passwordCtr.text,
         };
 
-        _loginRepository.login(requestBody).then((response){
-
-          CustomToast.showSuccessToast('Login successful');
-          try{
-            UserStore.to.saveProfileAndToken(response).whenComplete(() {
-              _handleRoute(response.twoFaEnabled ?? false);
-            });
-          } catch (e) {
-            CustomToast.showErrorToast('An unexpected error occurred');
-            "error on save profile".log();
-          }
-          isLoading(false);
-        }, onError: (error){
-          isLoading.value = false;
-          CustomToast.showErrorToast('Invalid credentials');
-        });
-
+        _loginRepository
+            .login(requestBody)
+            .then(
+              (response) {
+                CustomToast.showSuccessToast('Login successful');
+                try {
+                  UserStore.to.saveProfileAndToken(response).whenComplete(() {
+                    _handleRoute(response.twoFaEnabled ?? false);
+                  });
+                } catch (e) {
+                  CustomToast.showErrorToast('An unexpected error occurred');
+                  "error on save profile".log();
+                }
+                isLoading(false);
+              },
+              onError: (error) {
+                isLoading.value = false;
+                CustomToast.showErrorToast('Invalid credentials');
+              },
+            );
       } catch (error) {
         isLoading.value = false;
         CustomToast.showErrorToast('An unexpected error occurred');
@@ -163,13 +164,15 @@ class LoginController extends BaseController {
   }
 
   void _handleRoute(bool twoFaEnabled) {
-    if(twoFaEnabled) {
-       Get.offAndToNamed(Routes.OTP_VALIDATION, arguments: emailCtr.text); // TODO:HANDLE THE ROUTE
+    if (twoFaEnabled) {
+      Get.offAndToNamed(
+        Routes.OTP_VALIDATION,
+        arguments: {'email': emailCtr.text},
+      );
     } else {
       Get.offAndToNamed(Routes.HOME);
     }
   }
-
 
   void toRegister() {
     Get.toNamed(Routes.REGISTER);

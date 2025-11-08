@@ -3,11 +3,21 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
 
 import '../../../base/widgets/custom_toast.dart';
 import '../../../routes/app_pages.dart';
+import '../repository/otp_verifications_repository.dart';
 
 class OtpValidationController extends BaseController {
+  // -------------- Repository -------------
+  final OtpVerificationsRepository _repository =
+      Get.find<OtpVerificationsRepository>(
+        tag: (OtpVerificationsRepository).toString(),
+      );
+
+  // -------------- Local Data --------------
+  final String email = Get.arguments['email'];
   final otp1Controller = TextEditingController();
   final otp2Controller = TextEditingController();
   final otp3Controller = TextEditingController();
@@ -31,11 +41,11 @@ class OtpValidationController extends BaseController {
   var isLoading = false.obs;
   var isVerifying = false.obs;
 
-
-  void verifyEmailOtp() {
+  void verifyEmailOtp() async {
     if (isLoading.isTrue) return;
 
-    final otp = otp1Controller.text +
+    final otp =
+        otp1Controller.text +
         otp2Controller.text +
         otp3Controller.text +
         otp4Controller.text +
@@ -51,14 +61,34 @@ class OtpValidationController extends BaseController {
     // Temporarily accept any 6-digit OTP
     isLoading(true);
 
-    Future.delayed(const Duration(seconds: 1), () {
-      isLoading.value = false;
-      _clearOtpFields();
-      emailOtpError.value = null;
-      _timer?.cancel();
-      Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
-      CustomToast.showSuccessToast('Email verified successfully!');
-    });
+    await _repository
+        .varifyOtp({'otp': otp, 'email': email})
+        .then(
+          (response) {},
+          onError: (e) {
+            if (e is ApiException) {
+              emailOtpError.value = e.toString();
+              CustomToast.showWarningToast(e.description);
+              return;
+            }
+
+            CustomToast.showErrorToast(e.toString());
+          },
+        )
+        .whenComplete(() {
+          isLoading.value = false;
+          _clearOtpFields();
+          emailOtpError.value = null;
+        });
+
+    // Future.delayed(const Duration(seconds: 1), () {
+    //   isLoading.value = false;
+    //   _clearOtpFields();
+    //   emailOtpError.value = null;
+    //   _timer?.cancel();
+    //   Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
+    //   CustomToast.showSuccessToast('Email verified successfully!');
+    // });
   }
 
   void resendEmailOtp() {
@@ -69,21 +99,14 @@ class OtpValidationController extends BaseController {
     _startResendTimer();
   }
 
-
   void sendVerificationEmail() {
     if (isVerifying.isTrue) return;
 
     isVerifying(true);
 
-    // TODO: Call API to send verification email
-    // For now, simulate sending and navigate to OTP page
-    Future.delayed(const Duration(seconds: 1), () {
-      isVerifying.value = false;
-      // Navigate to OTP page
-      // Get.toNamed(Routes.EMAIL_VERIFICATION_OTP);
-      CustomToast.showSuccessToast('Verification code sent to your email');
-      _startResendTimer();
-    });
+    _repository.varifyOtp({}).then((value) {});
+
+    _startResendTimer();
   }
 
   void _startResendTimer() {

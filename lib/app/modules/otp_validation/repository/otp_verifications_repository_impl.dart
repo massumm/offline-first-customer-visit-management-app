@@ -12,7 +12,7 @@ class OtpVerificationsRepositoryImpl extends BaseRemoteSource
 
   @override
   Future<LoginResponseModel> varifyOtp(Map<String, dynamic> payload) {
-    final String endpoint = "${DioProvider.baseUrl}/api/accounts/otp/verify//";
+    final String endpoint = "${DioProvider.baseUrl}/api/accounts/otp/verify/";
 
     Future<Response<dynamic>> dioCall = dioClient.post(endpoint, data: payload);
 

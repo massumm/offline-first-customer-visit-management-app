@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 
 import '../../../core/widgets/action_pill.dart';
 import '../../../core/widgets/input_widgets/otp_digit_field.dart';
@@ -13,6 +14,8 @@ class OtpValidationView extends BaseView<OtpValidationController> {
 
   @override
   Widget body(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -33,7 +36,6 @@ class OtpValidationView extends BaseView<OtpValidationController> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 400),
               child: Obx(() {
-                final error = controller.emailOtpError.value;
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -42,7 +44,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                         controller: controller.otp1Controller,
                         focusNode: controller.otp1FocusNode,
                         autoFocus: true,
-                        errorText: error,
+                        errorText: null,
                         isFirst: true,
                         onChanged: (_) => controller.emailOtpError.value = null,
                       ),
@@ -52,7 +54,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                       child: OtpDigitField(
                         controller: controller.otp2Controller,
                         focusNode: controller.otp2FocusNode,
-                        errorText: error,
+                        errorText: null,
                         onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
@@ -61,7 +63,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                       child: OtpDigitField(
                         controller: controller.otp3Controller,
                         focusNode: controller.otp3FocusNode,
-                        errorText: error,
+                        errorText: null,
                         onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
@@ -70,7 +72,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                       child: OtpDigitField(
                         controller: controller.otp4Controller,
                         focusNode: controller.otp4FocusNode,
-                        errorText: error,
+                        errorText: null,
                         onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
@@ -79,7 +81,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                       child: OtpDigitField(
                         controller: controller.otp5Controller,
                         focusNode: controller.otp5FocusNode,
-                        errorText: error,
+                        errorText: null,
                         onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
@@ -88,9 +90,13 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                       child: OtpDigitField(
                         controller: controller.otp6Controller,
                         focusNode: controller.otp6FocusNode,
-                        errorText: error,
+                        errorText: null,
                         isLast: true,
-                        onChanged: (_) => controller.emailOtpError.value = null,
+                        onChanged: (_) {
+                          controller.emailOtpError.value = null;
+                          controller.otp6FocusNode.unfocus();
+                          controller.verifyEmailOtp();
+                        },
                       ),
                     ),
                   ],
@@ -98,6 +104,19 @@ class OtpValidationView extends BaseView<OtpValidationController> {
               }),
             ),
           ),
+          // Error Message
+          12.height,
+          Obx(() {
+            return Visibility(
+              visible: controller.emailOtpError.value?.isNotEmpty ?? false,
+              child: Text(
+                '${controller.emailOtpError.value}',
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: AppColors.warningColor,
+                ),
+              ),
+            );
+          }),
           20.height,
 
           // Verify Button
