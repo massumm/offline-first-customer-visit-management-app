@@ -13,7 +13,7 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
   @override
   Future<TraineeOnboardingQuestionDataModel> fetchQuestionsData(int trainerId) {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/trainers/onboardings/$trainerId/questions/";
+        "${DioProvider.baseUrl}/api/trainee_onboarding/onboardings/$trainerId/questions/";
 
     "Token: $token".log();
     final Map<String, String> headers = {
