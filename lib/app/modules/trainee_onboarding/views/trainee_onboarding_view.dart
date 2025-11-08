@@ -11,6 +11,7 @@ import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/input_widgets/custom_phone_field.dart';
+import 'package:icon/app/modules/trainee_onboarding/views/widgets/agent_loading_indicator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 
@@ -195,7 +196,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             // ------------------- MESSAGE LOADING STATE --------
             if (controller.onboardingPhase.value ==
                 OnboardingPhase.fetchingData) {
-              return ChatRoomShimmer();
+              return AgentLoadingIndicator();
             }
 
             // ------------------- DATA STATE ------------------
