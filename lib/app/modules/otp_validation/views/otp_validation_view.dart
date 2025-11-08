@@ -9,7 +9,8 @@ import '../../../core/widgets/input_widgets/otp_digit_field.dart';
 import '../controllers/otp_validation_controller.dart';
 
 class OtpValidationView extends BaseView<OtpValidationController> {
-   OtpValidationView({super.key});
+  OtpValidationView({super.key});
+
   @override
   Widget body(BuildContext context) {
     return SingleChildScrollView(
@@ -43,8 +44,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                         autoFocus: true,
                         errorText: error,
                         isFirst: true,
-                        onChanged: (_) =>
-                        controller.emailOtpError.value = null,
+                        onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
                     8.width,
@@ -53,8 +53,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                         controller: controller.otp2Controller,
                         focusNode: controller.otp2FocusNode,
                         errorText: error,
-                        onChanged: (_) =>
-                        controller.emailOtpError.value = null,
+                        onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
                     8.width,
@@ -63,8 +62,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                         controller: controller.otp3Controller,
                         focusNode: controller.otp3FocusNode,
                         errorText: error,
-                        onChanged: (_) =>
-                        controller.emailOtpError.value = null,
+                        onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
                     8.width,
@@ -73,8 +71,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                         controller: controller.otp4Controller,
                         focusNode: controller.otp4FocusNode,
                         errorText: error,
-                        onChanged: (_) =>
-                        controller.emailOtpError.value = null,
+                        onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
                     8.width,
@@ -83,8 +80,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                         controller: controller.otp5Controller,
                         focusNode: controller.otp5FocusNode,
                         errorText: error,
-                        onChanged: (_) =>
-                        controller.emailOtpError.value = null,
+                        onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
                     8.width,
@@ -94,8 +90,7 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                         focusNode: controller.otp6FocusNode,
                         errorText: error,
                         isLast: true,
-                        onChanged: (_) =>
-                        controller.emailOtpError.value = null,
+                        onChanged: (_) => controller.emailOtpError.value = null,
                       ),
                     ),
                   ],
@@ -120,12 +115,12 @@ class OtpValidationView extends BaseView<OtpValidationController> {
                     : controller.verifyEmailOtp,
                 child: controller.isLoading.isTrue
                     ? const Padding(
-                  padding: EdgeInsets.all(4.0),
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                    strokeWidth: 2,
-                  ),
-                )
+                        padding: EdgeInsets.all(4.0),
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
                     : const Text("Verify"),
               );
             }),

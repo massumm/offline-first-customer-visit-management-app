@@ -48,7 +48,6 @@ class OtpValidationController extends BaseController {
       return;
     }
 
-    // TODO: Remove this temporary bypass and use actual API verification
     // Temporarily accept any 6-digit OTP
     isLoading(true);
 
@@ -60,54 +59,6 @@ class OtpValidationController extends BaseController {
       Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
       CustomToast.showSuccessToast('Email verified successfully!');
     });
-
-    /*
-    // Original API implementation - uncomment when ready to use
-    final otpRequestBody = {
-      "email": emailCtr.text,
-      "code": otp,
-    };
-
-    // Step 1: Verify OTP
-    _registrationRepository.verifyOtp(otpRequestBody).then(
-      (otpResponse) async {
-        // Step 2: Save the key from response to shared preferences
-        final String verificationKey = otpResponse['key'] ?? '';
-        if (verificationKey.isEmpty) {
-          isLoading.value = false;
-          CustomToast.showErrorToast('Invalid verification key received');
-          throw Exception('Invalid verification key');
-        }
-
-        // Save key to shared preferences
-        await StorageService.to.setString('verification_key', verificationKey);
-
-        // Step 3: Call verify email API with the saved key
-        final emailVerifyRequestBody = {
-          "key": verificationKey,
-        };
-
-        return await _registrationRepository.verifyEmail(emailVerifyRequestBody);
-      },
-    ).then(
-      (emailResponse) async {
-        isLoading.value = false;
-        _clearOtpFields();
-        _timer?.cancel();
-        // Clear the verification key from storage after successful verification
-        await StorageService.to.remove('verification_key');
-        Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
-        CustomToast.showSuccessToast('Email verified successfully!');
-      },
-    ).catchError((e) {
-      isLoading.value = false;
-      if (e is ApiException) {
-        CustomToast.showErrorToast(e.description);
-        return;
-      }
-      CustomToast.showErrorToast('An unexpected error occurred');
-    });
-    */
   }
 
   void resendEmailOtp() {
@@ -129,7 +80,7 @@ class OtpValidationController extends BaseController {
     Future.delayed(const Duration(seconds: 1), () {
       isVerifying.value = false;
       // Navigate to OTP page
-      Get.toNamed(Routes.EMAIL_VERIFICATION_OTP);
+      // Get.toNamed(Routes.EMAIL_VERIFICATION_OTP);
       CustomToast.showSuccessToast('Verification code sent to your email');
       _startResendTimer();
     });
