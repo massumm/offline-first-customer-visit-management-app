@@ -65,7 +65,7 @@ class TraineeQuestionData {
   final QuestionMetadata? questionMetadata;
   final String? questionFieldName;
   final PossibleAnswersMetadata? possibleAnswersMetadata;
-  final int? index;
+  final String? index;
   final bool isOptional;
   final String groupName;
   final DateTime? createdAt;
@@ -79,7 +79,7 @@ class TraineeQuestionData {
     QuestionMetadata? questionMetadata,
     String? questionFieldName,
     PossibleAnswersMetadata? possibleAnswersMetadata,
-    int? index,
+    String? index,
     bool? isOptional,
     String? groupName,
     DateTime? createdAt,

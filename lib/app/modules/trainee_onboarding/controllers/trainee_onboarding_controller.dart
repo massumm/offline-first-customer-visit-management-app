@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
@@ -126,6 +127,9 @@ class TraineeOnboardingController extends BaseController {
         apiErrorHandler(fallbackMessage: error.description);
       } else {
         CustomToast.showErrorToast('Error initializing onboarding: $error');
+        if(kDebugMode){
+          throw Exception(error);
+        }
       }
     } finally {
       isLoading(false);
