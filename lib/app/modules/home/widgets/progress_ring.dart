@@ -102,10 +102,6 @@ class _ProgressRingController extends GetxController {
     });
   }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 }
 
 class _RingPainter extends CustomPainter {

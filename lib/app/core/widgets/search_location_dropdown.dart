@@ -261,8 +261,9 @@ class _SearchableLocationDropdownState
       );
       _rebuildOverlay();
     } else if (e.isKeyPressed(LogicalKeyboardKey.enter)) {
-      if (_items.isNotEmpty && _highlightIndex >= 0)
+      if (_items.isNotEmpty && _highlightIndex >= 0) {
         _select(_items[_highlightIndex]);
+      }
     } else if (e.isKeyPressed(LogicalKeyboardKey.escape)) {
       _focusNode.unfocus();
     }

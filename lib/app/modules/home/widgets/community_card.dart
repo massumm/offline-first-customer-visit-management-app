@@ -4,7 +4,7 @@ import 'package:icon/app/core/theme/app_text_theme.dart';
 class CommunityCard extends StatelessWidget {
   final Color color;
 
-  const CommunityCard({required this.color});
+  const CommunityCard({super.key, required this.color});
 
   @override
   Widget build(BuildContext context) {

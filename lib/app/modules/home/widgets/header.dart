@@ -5,7 +5,7 @@ import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
 
 class Header extends StatelessWidget {
-  const Header();
+  const Header({super.key});
 
   @override
   Widget build(BuildContext context) {

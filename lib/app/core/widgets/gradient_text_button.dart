@@ -7,12 +7,12 @@ class GradientTextButton extends StatelessWidget {
   final double? width;
 
   const GradientTextButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
     this.height = 56.0,
     this.width,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
