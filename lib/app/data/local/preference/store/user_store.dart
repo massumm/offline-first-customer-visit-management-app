@@ -99,7 +99,8 @@ class UserStore extends GetxService {
       _profile.value = userProfile;
 
       if (userProfile.access != null && userProfile.access!.isNotEmpty) {
-        await saveAuthToken(userProfile.access!);
+        _token.value = userProfile.access ?? '';
+        await saveAuthToken(userProfile.access ?? '');
       }
       _isLogin.value = true;
       logger.i("UserStore: Profile and token saved for user");
