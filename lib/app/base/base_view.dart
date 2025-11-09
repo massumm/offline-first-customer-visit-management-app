@@ -46,7 +46,6 @@ abstract class BaseView<Controller extends BaseController>
   Color pageBackgroundColor(BuildContext context) =>
       Theme.of(context).scaffoldBackgroundColor;
 
-
   /// Creates the [SystemUiOverlayStyle] for the Material page.
   ///
   /// It uses the [pageBackgroundColor] and automatically sets the status bar
@@ -54,8 +53,9 @@ abstract class BaseView<Controller extends BaseController>
   SystemUiOverlayStyle getMaterialOverlayStyle(BuildContext context) {
     final Color bgColor = pageBackgroundColor(context);
     final Brightness brightness = ThemeData.estimateBrightnessForColor(bgColor);
-    final Brightness iconBrightness =
-    brightness == Brightness.dark ? Brightness.light : Brightness.dark;
+    final Brightness iconBrightness = brightness == Brightness.dark
+        ? Brightness.light
+        : Brightness.dark;
 
     return SystemUiOverlayStyle(
       statusBarColor: bgColor,
@@ -65,9 +65,7 @@ abstract class BaseView<Controller extends BaseController>
 
   @override
   Widget build(BuildContext context) {
-    return Platform.isIOS
-        ? _buildCupertino(context)
-        : _buildMaterial(context);
+    return Platform.isIOS ? _buildCupertino(context) : _buildMaterial(context);
   }
 
   /// —————————————————————

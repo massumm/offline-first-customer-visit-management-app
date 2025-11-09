@@ -10,6 +10,8 @@ import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/icon_chat/bindings/icon_chat_binding.dart';
 import '../modules/icon_chat/views/icon_chat_view.dart';
+import '../modules/icon_profile/bindings/icon_profile_binding.dart';
+import '../modules/icon_profile/views/icon_profile_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
@@ -130,8 +132,13 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.OTP_VALIDATION,
-      page: () =>  OtpValidationView(),
+      page: () => OtpValidationView(),
       binding: OtpValidationBinding(),
+    ),
+    GetPage(
+      name: _Paths.ICON_PROFILE,
+      page: () => IconProfileView(),
+      binding: IconProfileBinding(),
     ),
   ];
 }

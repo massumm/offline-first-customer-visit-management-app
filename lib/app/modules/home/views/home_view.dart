@@ -88,34 +88,34 @@ class HomeView extends BaseView<HomeController> {
 
   SingleChildScrollView HealthProgreesIndicator() {
     final controller = Get.find<HomeController>();
-    
+
     return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  ActionsCard(
-                    title: controller.actionCards[0].title,
-                    color: controller.actionCards[0].color,
-                    percent: controller.actionCards[0].percent,
-                    gradient: controller.actionCards[0].gradient,
-                  ),
-                  16.width,
-                  ActionsCard(
-                    title: controller.actionCards[1].title,
-                    color: controller.actionCards[1].color,
-                    percent: controller.actionCards[1].percent,
-                    gradient: controller.actionCards[1].gradient,
-                  ),
-                  16.width,
-                  ActionsCard(
-                    title: controller.actionCards[2].title,
-                    color: controller.actionCards[2].color,
-                    percent: controller.actionCards[2].percent,
-                    gradient: controller.actionCards[2].gradient,
-                  ),
-                ],
-              ),
-            );
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          ActionsCard(
+            title: controller.actionCards[0].title,
+            color: controller.actionCards[0].color,
+            percent: controller.actionCards[0].percent,
+            gradient: controller.actionCards[0].gradient,
+          ),
+          16.width,
+          ActionsCard(
+            title: controller.actionCards[1].title,
+            color: controller.actionCards[1].color,
+            percent: controller.actionCards[1].percent,
+            gradient: controller.actionCards[1].gradient,
+          ),
+          16.width,
+          ActionsCard(
+            title: controller.actionCards[2].title,
+            color: controller.actionCards[2].color,
+            percent: controller.actionCards[2].percent,
+            gradient: controller.actionCards[2].gradient,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -128,7 +128,7 @@ class DailyProcressIndicators extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
-    
+
     return SizedBox(
       height: 112,
       child: ListView.separated(
