@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:icon/app/modules/trainee_fitness_report_generation/bindings/trainee_fitness_report_generation_binding.dart';
+import 'package:icon/app/modules/trainee_fitness_report_generation/views/trainee_fitness_report_generation_view.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
@@ -16,8 +18,6 @@ import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/otp_validation/bindings/otp_validation_binding.dart';
 import '../modules/otp_validation/views/otp_validation_view.dart';
-import '../modules/profile_create_animation/bindings/profile_create_animation_binding.dart';
-import '../modules/profile_create_animation/views/profile_create_animation_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/email_verification_otp_page_view.dart';
 import '../modules/register/views/register_view.dart';
@@ -25,8 +25,6 @@ import '../modules/register/views/two_factor_success_page_view.dart';
 import '../modules/register/views/two_factor_verification_page_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
-import '../modules/trainee_fitness_report_generation/bindings/trainee_fitness_report_generation_binding.dart';
-import '../modules/trainee_fitness_report_generation/views/trainee_fitness_report_generation_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
 import '../modules/trainer_onboarding/bindings/trainer_onboarding_binding.dart';
@@ -94,11 +92,6 @@ class AppPages {
       binding: TrainerOnboardingBinding(),
     ),
     GetPage(
-      name: _Paths.PROFILE_CREATE_ANIMATION,
-      page: () => ProfileCreateAnimationView(),
-      binding: ProfileCreateAnimationBinding(),
-    ),
-    GetPage(
       name: _Paths.ICON_CHAT,
       page: () => const IconChatView(),
       binding: IconChatBinding(),
@@ -115,11 +108,6 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.FITNESS_REPORT,
-      page: () => ReportDisplayView(),
-      binding: FitnessReportBinding(),
-    ),
-    GetPage(
-      name: _Paths.REPORT_DISPLAY,
       page: () => ReportDisplayView(),
       binding: FitnessReportBinding(),
     ),

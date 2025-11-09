@@ -19,7 +19,6 @@ abstract class Routes {
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const FITNESS_REPORT = _Paths.FITNESS_REPORT;
   static const FITNESS_REPORT_GENERATING = _Paths.FITNESS_REPORT_GENERATING;
-  static const REPORT_DISPLAY = _Paths.REPORT_DISPLAY;
   static const TRAINEE_FITNESS_REPORT_GENERATION =
       _Paths.TRAINEE_FITNESS_REPORT_GENERATION;
   static const OTP_VALIDATION = _Paths.OTP_VALIDATION;
@@ -43,7 +42,6 @@ abstract class _Paths {
   static const FORGOT_PASSWORD = '/forgot-password';
   static const FITNESS_REPORT = '/fitness-report';
   static const FITNESS_REPORT_GENERATING = '/fitness-report-generating';
-  static const REPORT_DISPLAY = '/report-display';
   static const TRAINEE_FITNESS_REPORT_GENERATION =
       '/trainee-fitness-report-generation';
   static const OTP_VALIDATION = '/otp-validation';
