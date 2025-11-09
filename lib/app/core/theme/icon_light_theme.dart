@@ -43,18 +43,18 @@ class IconLightTheme {
 
     titleLarge: GoogleFonts.inter(
       fontSize: 20,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       color: AppColors.lightTextPrimaryColor,
     ),
     titleMedium: GoogleFonts.inter(
       fontSize: 18,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0.15,
       color: AppColors.lightTextPrimaryColor,
     ),
     titleSmall: GoogleFonts.inter(
       fontSize: 16,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w600,
       letterSpacing: 0.1,
       color: AppColors.lightTextPrimaryColor,
     ),
@@ -127,6 +127,7 @@ class IconLightTheme {
     appBarTheme: AppBarTheme(
       backgroundColor: AppColors.lightBgColor,
       elevation: 0,
+      titleTextStyle: _lightTextTheme.titleMedium,
       iconTheme: IconThemeData(
         color: AppColors.lightTextPrimaryColor,
         size: 24,

@@ -43,6 +43,7 @@ class Assets {
   static const String imagesIconLogo = 'assets/images/icon-logo.png';
   static const String imagesIconLogoPink = 'assets/images/icon-logo-pink.png';
   static const String imagesIconSplash = 'assets/images/icon-splash.png';
+  static const String imagesMishIcon = 'assets/images/mish-icon.png';
   static const String imagesOnboarding1 = 'assets/images/onboarding-1.png';
   static const String imagesOnboarding2 = 'assets/images/onboarding-2.png';
   static const String imagesOnboarding3 = 'assets/images/onboarding-3.png';
