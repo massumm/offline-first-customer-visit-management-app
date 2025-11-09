@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:logger/logger.dart';
 
 import '../../flavors/build_config.dart';
 import 'exceptions/api_exception.dart';
@@ -11,6 +10,25 @@ import 'exceptions/not_found_exception.dart';
 import 'exceptions/service_unavailable_exception.dart';
 import 'exceptions/timeout_exception.dart';
 
+class ApiErrorResponse {
+  final String? status;
+  final String? message;
+  final String? description;
+  final Map<String, dynamic>? errors; // For detailed validation errors
+
+  ApiErrorResponse({this.status, this.message, this.description, this.errors});
+
+  factory ApiErrorResponse.fromJson(Map<String, dynamic> json) {
+    return ApiErrorResponse(
+      status: json['status'] as String?,
+      message: json['message'] as String?,
+      // Prefer 'description', but fall back to 'detail' if it's not available.
+      description: json['description'] as String? ?? json['detail'] as String?,
+      errors: json, // Keep the full map for detailed error parsing
+    );
+  }
+}
+
 Exception handleError(String error) {
   final logger = BuildConfig.instance.config.logger;
   logger.e("Generic exception: $error");
@@ -19,108 +37,113 @@ Exception handleError(String error) {
 }
 
 Exception handleDioError(DioException dioError) {
+  final logger = BuildConfig.instance.config.logger;
+
   switch (dioError.type) {
     case DioExceptionType.connectionTimeout:
-      return AppException(message: "Connection timeout with API server");
     case DioExceptionType.sendTimeout:
-      return TimeoutException("Send timeout in connection with API server");
     case DioExceptionType.receiveTimeout:
-      return TimeoutException("Receive timeout in connection with API server");
-    case DioExceptionType.badCertificate:
-      return AppException(message: 'Bad certificate');
+      logger.w("Timeout occurred: ${dioError.message}");
+      return TimeoutException("Connection timeout with the server.");
     case DioExceptionType.badResponse:
+      // This is the most common case, for 4xx and 5xx errors.
       return _parseDioErrorResponse(dioError);
     case DioExceptionType.cancel:
-      return AppException(message: "Request to API server was cancelled");
+      logger.i("Request to API server was cancelled.");
+      return AppException(message: "Request was cancelled.");
     case DioExceptionType.connectionError:
-      //errorToast("Error", "Request Failed");
+      logger.e("Connection Error: ${dioError.message}");
       return NetworkException(
-          "We couldn't connect to the server. Please ensure you have an active internet connection.");
+        "Connection error. Please check your internet connection.",
+      );
+    case DioExceptionType.badCertificate:
+      logger.w("Bad certificate: ${dioError.message}");
+      return AppException(message: 'Invalid SSL certificate.');
     case DioExceptionType.unknown:
-      return NetworkException(
-          "We couldn't connect to the server. Please ensure you have an active internet connection.");
+      // The 'unknown' error can be a variety of things.
+      // A common cause is a SocketException when there's no internet connection.
+      if (dioError.error is SocketException) {
+        logger.e(
+          "SocketException: No Internet connection. ${dioError.message}",
+        );
+        return NetworkException(
+          "No internet. Please check your connection and try again.",
+        );
+      }
+      logger.e("Unknown Dio Error: ${dioError.message}");
+      return AppException(message: "An unexpected error occurred.");
   }
 }
+
 Exception _parseDioErrorResponse(DioException dioError) {
-  final Logger logger = BuildConfig.instance.config.logger;
+  final logger = BuildConfig.instance.config.logger;
   final response = dioError.response;
-  final responseData = response?.data;
-  final int statusCode = response?.statusCode ?? -1;
-
-  String? status;
-  String? serverMessage;
-  String? serverDescription;
-
-  // Safely parse the response data if it's a map
-  if (responseData is Map<String, dynamic>) {
-    status = responseData['status'] as String?;
-    serverMessage = responseData['message'] as String?;
-    // Prefer 'description', but fall back to 'detail' if it's not available.
-    serverDescription = responseData['description'] as String? ??
-        responseData['detail'] as String?;
-
-    // Special handling for 400 Bad Request (validation errors)
-    if (statusCode == HttpStatus.badRequest) {
-      final StringBuffer detailedErrors = StringBuffer();
-      if (responseData.containsKey("username") &&
-          responseData["username"] is List) {
-        detailedErrors.writeln(
-            "Username: ${List<String>.from(responseData["username"]).join(', ')}");
-      }
-      if (responseData.containsKey("email") && responseData["email"] is List) {
-        detailedErrors.writeln(
-            "Email: ${List<String>.from(responseData["email"]).join(', ')}");
-      }
-      if (responseData.containsKey("password") &&
-          responseData["password"] is List) {
-        detailedErrors.writeln(
-            "Password: ${List<String>.from(responseData["password"]).join(', ')}");
-      }
-
-      if (detailedErrors.isNotEmpty) {
-        serverDescription = detailedErrors.toString().trim();
-      }
-    }
-  } else if (responseData is String) {
-    // Handle cases where the error response is just a plain string
-    serverMessage = responseData;
-  }
+  final statusCode = response?.statusCode ?? -1;
+  final requestPath = dioError.requestOptions.path;
 
   logger.e(
-    "DioError: [$statusCode] ${dioError.requestOptions.path}\n"
-        "Response data: $responseData",
+    "API Error: [$statusCode] $requestPath\n"
+    "Response data: ${response?.data}",
   );
+
+  ApiErrorResponse? apiError;
+  if (response?.data is Map<String, dynamic>) {
+    apiError = ApiErrorResponse.fromJson(response!.data);
+  }
 
   switch (statusCode) {
     case HttpStatus.serviceUnavailable: // 503
-      return ServiceUnavailableException("Service Temporarily Unavailable");
+      return ServiceUnavailableException("Service is temporarily unavailable.");
     case HttpStatus.notFound: // 404
       return NotFoundException(
-        serverMessage ?? "Not found",
-        status ?? "",
-        serverDescription ?? "The requested resource was not found.",
+        apiError?.message ?? "Not found",
+        apiError?.status ?? "",
+        apiError?.description ?? "The requested resource was not found.",
       );
     case HttpStatus.unauthorized: // 401
-    // Handles "Authentication credentials were not provided."
       return ApiException(
         httpCode: statusCode,
-        status: status ?? "Unauthorized",
-        message: serverMessage ?? serverDescription ?? "Authentication failed.",
-        description: serverDescription ?? "You are not authorized to perform this action.",
+        status: apiError?.status ?? "Unauthorized",
+        message: apiError?.message ?? "Authentication failed.",
+        description: apiError?.description ?? "You are not authorized.",
       );
     case HttpStatus.badRequest: // 400
+      final detailedErrors = _parseValidationErrors(apiError?.errors);
       return ApiException(
         httpCode: statusCode,
-        status: status ?? "Bad Request",
-        message: serverMessage ?? "Invalid request.",
-        description: serverDescription ?? "Please check your input.",
+        status: apiError?.status ?? "Bad Request",
+        message: apiError?.message ?? "Invalid request.",
+        description:
+            detailedErrors ??
+            apiError?.description ??
+            "Please check your input.",
       );
     default:
       return ApiException(
         httpCode: statusCode,
-        status: status ?? "Error",
-        message: serverMessage ?? "An API error occurred.",
-        description: serverDescription ?? "Something went wrong. Please try again later.",
+        status: apiError?.status ?? "Error",
+        message: apiError?.message ?? "An API error occurred.",
+        description:
+            apiError?.description ?? "Something went wrong. Please try again.",
       );
   }
+}
+
+String? _parseValidationErrors(Map<String, dynamic>? errors) {
+  if (errors == null) return null;
+
+  final StringBuffer detailedErrors = StringBuffer();
+
+  errors.forEach((key, value) {
+    if (value is List) {
+      // join the error messages.
+      detailedErrors.writeln(value.join(', '));
+    }
+  });
+
+  if (detailedErrors.isNotEmpty) {
+    return detailedErrors.toString().trim();
+  }
+
+  return null;
 }

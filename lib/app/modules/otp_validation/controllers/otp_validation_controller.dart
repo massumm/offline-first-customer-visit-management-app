@@ -3,11 +3,21 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
 
 import '../../../base/widgets/custom_toast.dart';
 import '../../../routes/app_pages.dart';
+import '../repository/otp_verifications_repository.dart';
 
 class OtpValidationController extends BaseController {
+  // -------------- Repository -------------
+  final OtpVerificationsRepository _repository =
+      Get.find<OtpVerificationsRepository>(
+        tag: (OtpVerificationsRepository).toString(),
+      );
+
+  // -------------- Local Data --------------
+  final String email = Get.arguments['email'];
   final otp1Controller = TextEditingController();
   final otp2Controller = TextEditingController();
   final otp3Controller = TextEditingController();
@@ -24,18 +34,51 @@ class OtpValidationController extends BaseController {
 
   var emailOtpError = RxnString();
 
-  var resendTimer = 60.obs;
-  var canResend = false.obs;
+  static const _initialTimerSeconds = 60;
+
+  // Controls the enabled/disabled state of the resend button
+  final canResend = false.obs;
+
+  // Holds the current countdown value
+  final resendTimer = _initialTimerSeconds.obs;
   Timer? _timer;
 
   var isLoading = false.obs;
   var isVerifying = false.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    // Start the countdown timer as soon as the controller is initialized
+    startResendTimer();
+  }
 
-  void verifyEmailOtp() {
+  void startResendTimer() {
+    // Reset the state
+    canResend.value = false;
+    resendTimer.value = _initialTimerSeconds;
+
+    // Cancel any existing timer
+    _timer?.cancel();
+
+    // Start a new periodic timer
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (resendTimer.value > 0) {
+        // Decrement the timer
+        resendTimer.value--;
+      } else {
+        // When the timer reaches 0, enable the resend button and stop the timer
+        canResend.value = true;
+        timer.cancel();
+      }
+    });
+  }
+
+  void verifyEmailOtp() async {
     if (isLoading.isTrue) return;
 
-    final otp = otp1Controller.text +
+    final otp =
+        otp1Controller.text +
         otp2Controller.text +
         otp3Controller.text +
         otp4Controller.text +
@@ -48,105 +91,54 @@ class OtpValidationController extends BaseController {
       return;
     }
 
-    // TODO: Remove this temporary bypass and use actual API verification
     // Temporarily accept any 6-digit OTP
     isLoading(true);
 
-    Future.delayed(const Duration(seconds: 1), () {
-      isLoading.value = false;
-      _clearOtpFields();
-      emailOtpError.value = null;
-      _timer?.cancel();
-      Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
-      CustomToast.showSuccessToast('Email verified successfully!');
-    });
-
-    /*
-    // Original API implementation - uncomment when ready to use
-    final otpRequestBody = {
-      "email": emailCtr.text,
-      "code": otp,
-    };
-
-    // Step 1: Verify OTP
-    _registrationRepository.verifyOtp(otpRequestBody).then(
-      (otpResponse) async {
-        // Step 2: Save the key from response to shared preferences
-        final String verificationKey = otpResponse['key'] ?? '';
-        if (verificationKey.isEmpty) {
+    await _repository
+        .varifyOtp({'code': otp, 'email': email})
+        .then(
+          (response) {
+            CustomToast.showSuccessToast('Email verified successfully!');
+            Get.offAllNamed(Routes.HOME);
+          },
+          onError: (e) {
+            if (e is ApiException) {
+              emailOtpError.value = e.toString();
+              CustomToast.showErrorToast(e.description);
+              return;
+            }
+            CustomToast.showErrorToast(e.toString());
+          },
+        )
+        .whenComplete(() {
           isLoading.value = false;
-          CustomToast.showErrorToast('Invalid verification key received');
-          throw Exception('Invalid verification key');
-        }
-
-        // Save key to shared preferences
-        await StorageService.to.setString('verification_key', verificationKey);
-
-        // Step 3: Call verify email API with the saved key
-        final emailVerifyRequestBody = {
-          "key": verificationKey,
-        };
-
-        return await _registrationRepository.verifyEmail(emailVerifyRequestBody);
-      },
-    ).then(
-      (emailResponse) async {
-        isLoading.value = false;
-        _clearOtpFields();
-        _timer?.cancel();
-        // Clear the verification key from storage after successful verification
-        await StorageService.to.remove('verification_key');
-        Get.offAllNamed(Routes.TWO_FACTOR_SUCCESS);
-        CustomToast.showSuccessToast('Email verified successfully!');
-      },
-    ).catchError((e) {
-      isLoading.value = false;
-      if (e is ApiException) {
-        CustomToast.showErrorToast(e.description);
-        return;
-      }
-      CustomToast.showErrorToast('An unexpected error occurred');
-    });
-    */
+          _clearOtpFields();
+          emailOtpError.value = null;
+        });
   }
 
   void resendEmailOtp() {
     if (!canResend.value) return;
 
-    // TODO: Call API to resend OTP
-    CustomToast.showSuccessToast('OTP sent to your email');
-    _startResendTimer();
-  }
-
-
-  void sendVerificationEmail() {
-    if (isVerifying.isTrue) return;
-
-    isVerifying(true);
-
-    // TODO: Call API to send verification email
-    // For now, simulate sending and navigate to OTP page
-    Future.delayed(const Duration(seconds: 1), () {
-      isVerifying.value = false;
-      // Navigate to OTP page
-      Get.toNamed(Routes.EMAIL_VERIFICATION_OTP);
-      CustomToast.showSuccessToast('Verification code sent to your email');
-      _startResendTimer();
-    });
-  }
-
-  void _startResendTimer() {
-    canResend.value = false;
-    resendTimer.value = 60;
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (resendTimer.value > 0) {
-        resendTimer.value--;
-      } else {
-        canResend.value = true;
-        timer.cancel();
-      }
-    });
+    isLoading(true);
+    _repository
+        .otpRequest({'email': email})
+        .then(
+          (response) {
+            CustomToast.showSuccessToast('OTP sent to your email');
+            startResendTimer();
+            isLoading.value = false;
+          },
+          onError: (e) {
+            isLoading.value = false;
+            if (e is ApiException) {
+              emailOtpError.value = e.toString();
+              CustomToast.showErrorToast(e.description);
+              return;
+            }
+            CustomToast.showErrorToast(e.toString());
+          },
+        );
   }
 
   void _clearOtpFields() {

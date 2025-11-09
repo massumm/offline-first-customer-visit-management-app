@@ -1,9 +1,12 @@
 class LoginResponseModel {
-  LoginResponseModel({this.refresh, this.access, this.traineeProfile, this.twoFaEnabled});
+  LoginResponseModel({
+    this.details,
+    this.refresh, this.access, this.traineeProfile, this.twoFaEnabled});
 
   final String? refresh;
   final String? access;
   final bool? twoFaEnabled;
+  final String? details;
   final TraineeProfile? traineeProfile;
 
   LoginResponseModel copyWith({
@@ -22,6 +25,7 @@ class LoginResponseModel {
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
     return LoginResponseModel(
+      details: json["detail"],
       refresh: json["refresh"] ?? json['refresh_token'],
       access: json["access"] ?? json['token'],
       twoFaEnabled: json["2fa_required"] ?? false,
