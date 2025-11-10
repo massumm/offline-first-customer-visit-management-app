@@ -8,6 +8,7 @@ import 'package:icon/generated/assets.dart';
 
 import '../controllers/activity_tracker_controller.dart';
 import 'widgets/health_dashboard_card.dart';
+import 'widgets/quick_start_card.dart';
 import 'widgets/workout_recomendation_card.dart';
 
 class ActivityTrackerView extends BaseView<ActivityTrackerController> {
@@ -52,9 +53,19 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
           ),
           SliverToBoxAdapter(child: 12.height),
           SliverToBoxAdapter(child: HealthDashboardCard()),
+          SliverToBoxAdapter(child: 12.height),
+          SliverToBoxAdapter(
+            child: QuickStartCard(
+              onStartEmptyWorkout: () {},
+              onNewRoutine: () {},
+              onExplore: () {},
+            ),
+          ),
+          SliverToBoxAdapter(child: 12.height),
+          SliverToBoxAdapter(),
+          SliverToBoxAdapter(child: 1200.height),
         ],
       ),
     );
   }
 }
-

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'soft_button.dart';
+
 class HealthDashboardCard extends StatelessWidget {
   const HealthDashboardCard({super.key});
 
@@ -132,7 +134,7 @@ class MetricCard extends StatelessWidget {
           const Spacer(),
           TinyProgressBar(value: progress, color: accent),
           const Spacer(),
-          _SoftButton(text: buttonText, onPressed: onPressed),
+          SoftButton(text: buttonText, onPressed: onPressed),
         ],
       ),
     );
@@ -180,7 +182,7 @@ class HeartRateCard extends StatelessWidget {
           const SizedBox(height: 6),
           TinyProgressBar(value: clamped, color: accent),
           const Spacer(),
-          _SoftButton(text: buttonText, onPressed: onPressed),
+          SoftButton(text: buttonText, onPressed: onPressed),
         ],
       ),
     );
@@ -320,30 +322,4 @@ class TinyProgressBar extends StatelessWidget {
 
 }
 
-class _SoftButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
 
-  const _SoftButton({required this.text, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(14)),
-        border: Border.all(color: theme.colorScheme.outline),
-      ),
-      child: Center(
-        child: Text(
-          'Update Steps',
-          style: theme.textTheme.bodyMedium!.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-}
