@@ -75,7 +75,6 @@ class TraineeOnboardingController extends BaseController {
 
   final RxSet<String> selectedBodyParts = <String>{}.obs;
 
-
   //-------------------- QA Stepper --------------------
   /// Holds the progress (0.0 to 1.0) for each question group.
   final RxList<double> groupProgresses = <double>[].obs;
@@ -127,7 +126,7 @@ class TraineeOnboardingController extends BaseController {
         apiErrorHandler(fallbackMessage: error.description);
       } else {
         CustomToast.showErrorToast('Error initializing onboarding: $error');
-        if(kDebugMode){
+        if (kDebugMode) {
           throw Exception(error);
         }
       }
@@ -150,12 +149,14 @@ class TraineeOnboardingController extends BaseController {
 
     // Populate questionsByRawGroup and groupFirstIndex
     for (final question in allQuestions) {
-      final String rawGroupName = question.groupName.toLowerCase(); // Ensure consistency
-      final double questionIndex = double.tryParse(question.index ?? '0.0') ?? 0.0;
+      final String rawGroupName = question.groupName
+          .toLowerCase(); // Ensure consistency
+      final double questionIndex = double.tryParse(question.index) ?? 0.0;
 
       (questionsByRawGroup[rawGroupName] ??= []).add(question);
 
-      if (!groupFirstIndex.containsKey(rawGroupName) || questionIndex < groupFirstIndex[rawGroupName]!) {
+      if (!groupFirstIndex.containsKey(rawGroupName) ||
+          questionIndex < groupFirstIndex[rawGroupName]!) {
         groupFirstIndex[rawGroupName] = questionIndex;
       }
     }
@@ -179,17 +180,24 @@ class TraineeOnboardingController extends BaseController {
         'displayName': 'Nutrition',
         'intro': 'Now, a few questions about your nutrition habits.',
       },
-      'health': {
+      'recovery': {
         'displayName': 'Health & Recovery',
         'intro': "Finally, let's talk about your health and recovery.",
       },
-      'body': {
+      'body_profile': {
         'displayName': 'Body Profile',
-        'intro': "Excellent! Let's get your body profile details to track progress.",
+        'intro':
+            "Excellent! Let's get your body profile details to track progress.",
         'conclusion': "That's everything I need to know. Thanks for sharing!",
       },
+      'activity': {
+        'displayName': 'Activity Levels',
+        'intro': "Let's discuss your typical activity levels.",
+        'conclusion': "Thanks for the info on your activity levels.",
+      },
       'general': {
-        'displayName': 'General Questions', // Changed from 'general' for better display
+        'displayName':
+            'General Questions', // Changed from 'general' for better display
         'intro': "Great! Let's get started with some general questions.",
         'conclusion': "Thanks for providing the details.",
       },
@@ -209,7 +217,8 @@ class TraineeOnboardingController extends BaseController {
         if (metadata != null) {
           newGroups.add(
             QuestionGroup(
-              name: metadata['displayName']!, // Use the display name from metadata
+              name:
+                  metadata['displayName']!, // Use the display name from metadata
               introduction: metadata['intro']!,
               conclusion: metadata['conclusion'], // This can be null
               questions: groupQAItems,
@@ -221,7 +230,8 @@ class TraineeOnboardingController extends BaseController {
               .log();
           newGroups.add(
             QuestionGroup(
-              name: rawGroupName.capitalizeFirst!, // Capitalize for display if no metadata
+              name: rawGroupName
+                  .capitalizeFirst!, // Capitalize for display if no metadata
               introduction: '', // No intro
               conclusion: null, // No conclusion
               questions: groupQAItems,
@@ -241,17 +251,15 @@ class TraineeOnboardingController extends BaseController {
     groupProgresses.assignAll(List.filled(newGroups.length, 0.0));
   }
 
-
   /// Maps a [TraineeQuestionData] object from the API to a [QAItem] used by the chat UI.
   QAItem _mapDataToQAItem(TraineeQuestionData data) {
     return QAItem(
       id: data.id ?? 1,
-      question: data.questionText ?? 'No question text',
-      type: QAType.text,
-      // data.questionType ?? QAType.unknown,
-      questionFieldName: data.questionFieldName,
-      possibleAnswersMetadata: data.possibleAnswersMetadata,
-      options: data.possibleAnswersMetadata?.choices ?? [],
+      question: data.text,
+      type: data.type,
+      // data.questionType ?? QuestionType.unknown,
+      questionFieldName: data.fieldName,
+      metadata: data.metadata,
       hint: null,
       canSkip: data.isOptional,
     );
@@ -353,7 +361,7 @@ class TraineeOnboardingController extends BaseController {
       ),
     );
     isTyping.value = false;
-    _scrollToBottom(); // Scroll down again to show the newly added message
+    _scrollToBottom();
   }
 
   bool _shouldSkipQuestion(QAItem q) {
@@ -510,10 +518,10 @@ class TraineeOnboardingController extends BaseController {
     });
   }
 
-  void onReminder(String option){
+  void onReminder(String option) {
     if (!_canAnswer) return;
 
-    if(option.contains('Yes')){
+    if (option.contains('Yes')) {
       final userMessage = ChatMessage(
         from: Sender.user,
         text: option,
@@ -679,7 +687,7 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    if (q.type == QAType.number && int.tryParse(value) == null) {
+    if (q.type.name == "number" && int.tryParse(value) == null) {
       await _botSay("Please enter a valid number 🔢");
       return;
     }
@@ -893,7 +901,6 @@ class TraineeOnboardingController extends BaseController {
     return _computeGroupProgress(groupIndex);
   }
 
-
   QAItem? get currentQuestion {
     if (isFinished ||
         currentGroupIndex.value < 0 ||
@@ -915,23 +922,23 @@ class TraineeOnboardingController extends BaseController {
     return null;
   }
 
-  bool get isCurrentChoice => currentQuestion?.type == QAType.multipleChoice;
+  bool get isCurrentChoice => currentQuestion?.type.name == "select_multiple";
 
-  bool get isCurrentDate => currentQuestion?.type == QAType.date;
+  bool get isCurrentDate => currentQuestion?.type.name == "date";
 
-  bool get isCurrentTime => currentQuestion?.type == QAType.time;
+  bool get isCurrentTime => currentQuestion?.type.name == "time";
 
-  bool get isCurrentHeight => currentQuestion?.type == QAType.height;
+  bool get isCurrentHeight => currentQuestion?.type.name == "height";
 
-  bool get isCurrentWeight => currentQuestion?.type == QAType.weight;
+  bool get isCurrentWeight => currentQuestion?.type.name == "weight";
 
-  bool get isCurrentImage => currentQuestion?.type == QAType.image;
+  bool get isCurrentImage => currentQuestion?.type.name == "image";
 
-  bool get isCurrentLocation => currentQuestion?.type == QAType.location;
+  bool get isCurrentLocation => currentQuestion?.type.name == "location";
 
-  bool get isCurrentPhoneNumber => currentQuestion?.type == QAType.phoneNumber;
-  bool get isCurrentReminder => currentQuestion?.type == QAType.reminder;
-  bool get isCurrentBodyPart => currentQuestion?.type == QAType.bodyParts;
+  bool get isCurrentPhoneNumber => currentQuestion?.type.name == "phone_number";
+  bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
+  bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
 
   // -------------- Stepper bindings --------------
   /// Recalculates and updates the progress for all groups.

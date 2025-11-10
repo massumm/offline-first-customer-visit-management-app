@@ -38,7 +38,7 @@ class AppPages {
   AppPages._();
 
   // Todo: Change this to initial route
-  static const String INITIAL = Routes.SPLASH;
+  static const String INITIAL = Routes.TRAINEE_ONBOARDING;
 
   static final routes = [
     GetPage(

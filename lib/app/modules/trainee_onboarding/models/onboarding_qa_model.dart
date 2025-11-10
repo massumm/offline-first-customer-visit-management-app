@@ -19,20 +19,19 @@ class QuestionGroup {
 class QAItem {
   final int id;
   final String question;
-  final QAType type;
-  final List<String> options; // used for choice type
+  final QuestionType type;
+  final List<String> options;
   final String? hint;
   final bool canSkip;
   final String? questionFieldName;
-  final PossibleAnswersMetadata? possibleAnswersMetadata;
-
+  final QuestionMetadata? metadata;
 
   const QAItem({
     required this.id,
     required this.question,
     required this.type,
     required this.questionFieldName,
-    this.possibleAnswersMetadata,
+    this.metadata,
     this.options = const [],
     this.hint,
     this.canSkip = false,
