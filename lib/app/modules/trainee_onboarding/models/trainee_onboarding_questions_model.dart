@@ -60,7 +60,7 @@ class TraineeQuestionData {
 
   final int? id;
   final int? traineeOnboarding;
-  final QAType? questionType;
+  final int? questionType;
   final String? questionText;
   final QuestionMetadata? questionMetadata;
   final String? questionFieldName;
@@ -74,7 +74,7 @@ class TraineeQuestionData {
   TraineeQuestionData copyWith({
     int? id,
     int? traineeOnboarding,
-    QAType? questionType,
+    int? questionType,
     String? questionText,
     QuestionMetadata? questionMetadata,
     String? questionFieldName,
@@ -108,13 +108,13 @@ class TraineeQuestionData {
       switch (type) {
         case "text":
           // TODO: DEMO ONLY
-          if (json["question_field_name"] == 'address') {
+          if (json["field_name"] == 'address') {
             return QAType.location;
           }
-          if (json["question_field_name"] == 'focus_body_parts') {
+          if (json["field_name"] == 'focus_body_parts') {
             return QAType.bodyParts;
           }
-          if (json["question_field_name"] == 'phone_number') {
+          if (json["field_name"] == 'phone_number') {
             return QAType.phoneNumber;
           }
           return QAType.text;
@@ -146,14 +146,15 @@ class TraineeQuestionData {
     return TraineeQuestionData(
       id: json["id"],
       traineeOnboarding: json["trainee_onboarding"],
-      questionType: parseQAType(json["question_type"]),
-      questionText: json["question_text"],
+      questionType: json['type'],
+      // parseQAType(json["type"]),
+      questionText: json["text"],
       isOptional: json["is_optional"],
       groupName: json["group_name"],
-      questionMetadata: json["question_metadata"] == null
+      questionMetadata: json["metadata"] == null
           ? QuestionMetadata(json: {})
-          : QuestionMetadata.fromJson(json["question_metadata"]),
-      questionFieldName: json["question_field_name"],
+          : QuestionMetadata.fromJson(json["metadata"]),
+      questionFieldName: json["field_name"],
       possibleAnswersMetadata: json["possible_answers_metadata"] == null
           ? PossibleAnswersMetadata(choices: [])
           : PossibleAnswersMetadata.fromJson(json["possible_answers_metadata"]),
@@ -165,7 +166,7 @@ class TraineeQuestionData {
 
   @override
   String toString() {
-    return "$id, $traineeOnboarding, ${questionType?.name}, $questionText, $questionFieldName, $index";
+    return "$id, $traineeOnboarding, $questionType, $questionText, $questionFieldName, $index";
   }
 }
 

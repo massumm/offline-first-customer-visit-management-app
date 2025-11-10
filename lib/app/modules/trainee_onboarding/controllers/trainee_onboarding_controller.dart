@@ -143,67 +143,87 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    const groupOrder = [
-      'Personal Information',
-      'Goals & Activity',
-      'Nutrition',
-      'Health & Recovery',
-      'Body Profile',
-      'general',
-    ];
+    // Map to store questions grouped by their raw group_name from the API.
+    final Map<String, List<TraineeQuestionData>> questionsByRawGroup = {};
+    // Map to store the lowest index encountered for each group, used for ordering.
+    final Map<String, double> groupFirstIndex = {};
 
-    final groupMetadatas = {
-      'Personal Information': {
+    // Populate questionsByRawGroup and groupFirstIndex
+    for (final question in allQuestions) {
+      final String rawGroupName = question.groupName.toLowerCase(); // Ensure consistency
+      final double questionIndex = double.tryParse(question.index ?? '0.0') ?? 0.0;
+
+      (questionsByRawGroup[rawGroupName] ??= []).add(question);
+
+      if (!groupFirstIndex.containsKey(rawGroupName) || questionIndex < groupFirstIndex[rawGroupName]!) {
+        groupFirstIndex[rawGroupName] = questionIndex;
+      }
+    }
+
+    // Determine the dynamic order of groups based on their first question's index.
+    final List<String> dynamicGroupOrderKeys = groupFirstIndex.keys.toList()
+      ..sort((a, b) => groupFirstIndex[a]!.compareTo(groupFirstIndex[b]!));
+
+    // Define metadata for groups, using raw group names as keys.
+    // This allows for dynamic group discovery while still providing display names and intro/conclusion texts.
+    final Map<String, Map<String, String>> groupMetadataMap = {
+      'personal': {
+        'displayName': 'Personal Information',
         'intro': "Great! Now for a bit about your Personal data.",
       },
-      'Goals & Activity': {
+      'goals': {
+        'displayName': 'Goals & Activity',
         'intro': "Let's talk about your goals and activity levels.",
       },
-      'Nutrition': {
+      'nutrition': {
+        'displayName': 'Nutrition',
         'intro': 'Now, a few questions about your nutrition habits.',
       },
-      'Health & Recovery': {
+      'health': {
+        'displayName': 'Health & Recovery',
         'intro': "Finally, let's talk about your health and recovery.",
       },
-      'Body Profile': {
-        'intro':
-            "Excellent! Let's get your body profile details to track progress.",
+      'body': {
+        'displayName': 'Body Profile',
+        'intro': "Excellent! Let's get your body profile details to track progress.",
         'conclusion': "That's everything I need to know. Thanks for sharing!",
       },
-      // Added metadata for the 'general' group to match the API data
       'general': {
+        'displayName': 'General Questions', // Changed from 'general' for better display
         'intro': "Great! Let's get started with some general questions.",
         'conclusion': "Thanks for providing the details.",
       },
+      // Add other group metadata as needed
     };
 
-    final Map<String, List<TraineeQuestionData>> questionsByGroup = {};
-    for (final question in allQuestions) {
-      final String groupName;
-      if (question.groupName.isNotEmpty) {
-        groupName = question.groupName;
-      } else {
-        groupName = 'Uncategorized';
-      }
-      (questionsByGroup[groupName] ??= []).add(question);
-    }
-
     final List<QuestionGroup> newGroups = [];
-    for (final groupName in groupOrder) {
-      final groupQuestionsData = questionsByGroup[groupName];
+    for (final rawGroupName in dynamicGroupOrderKeys) {
+      final groupQuestionsData = questionsByRawGroup[rawGroupName];
 
       if (groupQuestionsData != null && groupQuestionsData.isNotEmpty) {
         final groupQAItems = groupQuestionsData
             .map((data) => _mapDataToQAItem(data))
             .toList();
 
-        final metadata = groupMetadatas[groupName];
+        final metadata = groupMetadataMap[rawGroupName];
         if (metadata != null) {
           newGroups.add(
             QuestionGroup(
-              name: groupName,
+              name: metadata['displayName']!, // Use the display name from metadata
               introduction: metadata['intro']!,
-              conclusion: metadata['conclusion'],
+              conclusion: metadata['conclusion'], // This can be null
+              questions: groupQAItems,
+            ),
+          );
+        } else {
+          // Handle groups from API that don't have predefined metadata
+          "Warning: No metadata found for group '$rawGroupName'. Using raw name and no intro/conclusion."
+              .log();
+          newGroups.add(
+            QuestionGroup(
+              name: rawGroupName.capitalizeFirst!, // Capitalize for display if no metadata
+              introduction: '', // No intro
+              conclusion: null, // No conclusion
               questions: groupQAItems,
             ),
           );
@@ -212,7 +232,7 @@ class TraineeOnboardingController extends BaseController {
     }
 
     if (newGroups.isEmpty) {
-      "Warning: No question groups were created. Check if the 'group_name' values from the API match the 'groupOrder' list in the controller."
+      "Warning: No question groups were created. Check the incoming 'group_name' values from the API."
           .log();
     }
 
@@ -221,12 +241,14 @@ class TraineeOnboardingController extends BaseController {
     groupProgresses.assignAll(List.filled(newGroups.length, 0.0));
   }
 
+
   /// Maps a [TraineeQuestionData] object from the API to a [QAItem] used by the chat UI.
   QAItem _mapDataToQAItem(TraineeQuestionData data) {
     return QAItem(
       id: data.id ?? 1,
       question: data.questionText ?? 'No question text',
-      type: data.questionType ?? QAType.unknown,
+      type: QAType.text,
+      // data.questionType ?? QAType.unknown,
       questionFieldName: data.questionFieldName,
       possibleAnswersMetadata: data.possibleAnswersMetadata,
       options: data.possibleAnswersMetadata?.choices ?? [],

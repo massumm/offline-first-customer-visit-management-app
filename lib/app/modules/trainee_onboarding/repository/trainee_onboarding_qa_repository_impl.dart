@@ -44,7 +44,7 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     int trainerId,
   ) {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/trainers/onboardings/$trainerId/answers/";
+        "${DioProvider.baseUrl}/api/trainee_onboarding/onboardings/$trainerId/answers/";
 
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",
