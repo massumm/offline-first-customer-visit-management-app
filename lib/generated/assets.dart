@@ -52,6 +52,8 @@ class Assets {
   static const String integrationSummaryWarning = 'assets/svg/fitness_report/integration_summary/warning.svg';
   static const String jsonsProfileLoading = 'assets/jsons/profile_loading.json';
   static const String mindsetAndMotivationMindsetFocus = 'assets/svg/fitness_report/mindset_and_motivation/mindset_focus.svg';
+  static const String musclesBack = 'assets/svg/muscles/back.svg';
+  static const String musclesFront = 'assets/svg/muscles/front.svg';
   static const String nutritionObjectivesCurrentBodyFat = 'assets/svg/fitness_report/nutrition_objectives/current_body_fat.svg';
   static const String nutritionObjectivesCurrentWeight = 'assets/svg/fitness_report/nutrition_objectives/current_weight.svg';
   static const String nutritionObjectivesEnergyObjective = 'assets/svg/fitness_report/nutrition_objectives/energy_objective.svg';

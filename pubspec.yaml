@@ -41,6 +41,7 @@ dependencies:
   bodychart_heatmap: ^1.1.0
 
   dashed_progress_bar: ^0.0.1
+  xml: ^6.6.1
 
 dev_dependencies:
   flutter_test:
@@ -57,13 +58,14 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/jsons/
 
     - assets/svg/
     - assets/svg/home/
     - assets/svg/splash_screen_light/
     - assets/svg/splash_screen_dark/
-    - assets/jsons/
     - assets/svg/common/
+    - assets/svg/muscles/
     - assets/svg/fitness_report/
     - assets/svg/fitness_report/activity_objectives/
     - assets/svg/fitness_report/congratulations/
