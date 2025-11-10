@@ -240,8 +240,7 @@ class _LabeledValue extends StatelessWidget {
       children: [
         Text(
           label,
-          style: text.labelSmall?.copyWith(
-            color: const Color(0xFF6B7280),
+          style: text.bodySmall?.copyWith(
             fontWeight: FontWeight.w600,
             letterSpacing: 0.1,
           ),
@@ -281,7 +280,7 @@ class _WhyNowBubble extends StatelessWidget {
         children: [
           Text(
             'Why now?',
-            style: txt.labelLarge?.copyWith(
+            style: txt.bodyMedium?.copyWith(
               fontWeight: FontWeight.w700,
               color: Colors.black87,
             ),
