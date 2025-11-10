@@ -880,16 +880,20 @@ class TraineeOnboardingController extends BaseController {
   }
 
   double get stepperStepProgress {
-    final n = generatedQuestionGroups.length;
-    if (n <= 1) return _globalProgress();
+    // If onboarding is finished, the progress of the last step is 1.0.
+    if (isFinished) return 1.0;
 
-    final gp = _globalProgress();
-    final overall = gp * (n - 1);
-    final stepProg = (overall - stepperCurrentStep).clamp(0.0, 1.0);
-    return stepProg;
+    final groupIndex = currentGroupIndex.value;
+
+    // Before starting or if groups are not set up, progress is 0.
+    if (groupIndex < 0 || groupIndex >= generatedQuestionGroups.length) {
+      return 0.0;
+    }
+
+    return _computeGroupProgress(groupIndex);
   }
 
-  // ------------ Convenience flags for input UI ------------
+
   QAItem? get currentQuestion {
     if (isFinished ||
         currentGroupIndex.value < 0 ||
