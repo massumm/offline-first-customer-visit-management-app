@@ -109,6 +109,7 @@ class Assets {
   static const String svgRegisterButton = 'assets/svg/register_button.svg';
   static const String svgRepairStrategy = 'assets/svg/repair_strategy.svg';
   static const String svgSleepCircular = 'assets/svg/sleep_circular.svg';
+  static const String svgStar = 'assets/svg/star.svg';
   static const String svgTargetStress = 'assets/svg/target_stress.svg';
   static const String svgUserCircularIcon = 'assets/svg/user-circular-icon.svg';
 

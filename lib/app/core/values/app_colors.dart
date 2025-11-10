@@ -35,9 +35,11 @@ abstract class AppColors {
   static const Color lightHintTextColor = Color(0xFF5B5B5B);
   static const Color iconBgColorLight = Color(0xFFFFEBE5);
   static const Color lightBgColorSecondary = Color(0xFFF2F2F2);
+  static const Color lightBgColorTertiary = Color(0xFFF2F4F7);
   static const Color lightWarningColorBG = Color(0XFFFEF7E8);
   static const Color ligthBorderGrayColor = Color(0xFFE1E4E9);
   static const Color lightCardBgColor = Color(0xFFF5F5F5);
+  static const Color lightAppBarBgColor = Color(0xFFD9D9D9);
 
   // ----------------- Dark Theme Colors ----------------------
 

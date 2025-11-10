@@ -22,6 +22,7 @@ abstract class Routes {
   static const TRAINEE_FITNESS_REPORT_GENERATION =
       _Paths.TRAINEE_FITNESS_REPORT_GENERATION;
   static const OTP_VALIDATION = _Paths.OTP_VALIDATION;
+  static const ICON_PROFILE = _Paths.ICON_PROFILE;
 }
 
 abstract class _Paths {
@@ -45,4 +46,5 @@ abstract class _Paths {
   static const TRAINEE_FITNESS_REPORT_GENERATION =
       '/trainee-fitness-report-generation';
   static const OTP_VALIDATION = '/otp-validation';
+  static const ICON_PROFILE = '/icon-profile';
 }
