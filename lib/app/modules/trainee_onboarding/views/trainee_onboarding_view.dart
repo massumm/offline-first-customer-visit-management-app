@@ -228,7 +228,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               controller.isFinished ||
               controller.showGroupContinuationButtons ||
               q == null ||
-              q.type.name == "select_multiple") {
+              q.type.name != "select_multiple") {
             return const SizedBox.shrink();
           }
 
@@ -242,14 +242,15 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   spacing: 8,
                   runSpacing: 8,
                   alignment: WrapAlignment.center,
-                  children: q.options
-                      .map(
-                        (o) => ActionChip(
-                          label: Text(o),
-                          onPressed: () => controller.choose(o),
-                        ),
-                      )
-                      .toList(),
+                  children:
+                      (q.metadata?.json['options'] as List<dynamic>? ?? [])
+                          .map(
+                            (o) => ActionChip(
+                              label: Text(o.toString()),
+                              onPressed: () => controller.choose(o.toString()),
+                            ),
+                          )
+                          .toList(),
                 ),
               ),
               8.height,

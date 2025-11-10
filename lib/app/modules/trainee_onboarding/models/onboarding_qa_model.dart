@@ -20,7 +20,6 @@ class QAItem {
   final int id;
   final String question;
   final QuestionType type;
-  final List<String> options;
   final String? hint;
   final bool canSkip;
   final String? questionFieldName;
@@ -32,7 +31,6 @@ class QAItem {
     required this.type,
     required this.questionFieldName,
     this.metadata,
-    this.options = const [],
     this.hint,
     this.canSkip = false,
   });
