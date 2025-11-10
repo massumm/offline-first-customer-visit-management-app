@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/generated/assets.dart';
 
 import '../controllers/activity_tracker_controller.dart';
+import 'widgets/health_dashboard_card.dart';
 import 'widgets/workout_recomendation_card.dart';
 
 class ActivityTrackerView extends BaseView<ActivityTrackerController> {
@@ -47,10 +50,11 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
               repsPerSetLabel: '8/10',
             ),
           ),
+          SliverToBoxAdapter(child: 12.height),
+          SliverToBoxAdapter(child: HealthDashboardCard()),
         ],
       ),
     );
   }
 }
-
 

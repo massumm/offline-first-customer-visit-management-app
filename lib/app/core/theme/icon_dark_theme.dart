@@ -206,5 +206,19 @@ class IconDarkTheme {
 
     ),
     elevatedButtonTheme: appElevatedButtonTheme,
+    // textButtonTheme: TextButtonThemeData(
+    //   style: TextButton.styleFrom(
+    //     backgroundColor: Colors.grey[800],
+    //     foregroundColor: Colors.white,
+    //     elevation: 2,
+    //     shadowColor: Colors.black,
+    //     shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.circular(14),
+    //     ),
+    //     textStyle: const TextStyle(
+    //       fontWeight: FontWeight.w600,
+    //     ),
+    //   ),
+    // ),
   );
 }

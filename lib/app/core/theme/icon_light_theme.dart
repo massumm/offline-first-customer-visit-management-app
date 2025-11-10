@@ -116,6 +116,7 @@ class IconLightTheme {
       onSurface: AppColors.lightTextPrimaryColor,
       // Explicitly set for text/icons on surface
       surfaceContainerHighest: Colors.white,
+      outline: AppColors.lightStockColor,
     ),
     iconTheme: IconThemeData(color: AppColors.lightTextPrimaryColor, size: 24),
     iconButtonTheme: IconButtonThemeData(
@@ -198,5 +199,32 @@ class IconLightTheme {
       ),
     ),
     elevatedButtonTheme: appElevatedButtonTheme,
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        backgroundColor: Colors.transparent,
+        foregroundColor: AppColors.lightTextPrimaryColor,
+        elevation: 1,
+        shadowColor: Colors.black12,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        textStyle:  GoogleFonts.inter(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          height: 1.50,
+        ),
+      ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        foregroundColor: AppColors.lightTextPrimaryColor,
+        textStyle:  GoogleFonts.inter(
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          height: 1.50,
+        ),
+      )
+    ),
+
   );
 }

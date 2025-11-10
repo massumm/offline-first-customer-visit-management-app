@@ -28,7 +28,7 @@ abstract class AppColors {
   // ------------- Light Theme Colors ---------------------
   static const Color lightTextPrimaryColor = Color(0xFF241814);
   static const Color lightTextSecondaryColor = Color(0xFF5B5B5B);
-  static const Color lightBgColor = Color(0xFFF2F2F2);
+  static const Color  lightBgColor = Color(0xFFF2F2F2);
   static const Color lightStockColor = Color(0xFFE8E4E2);
   static const Color lightShapeColor = Color(0xFFFFFFFF);
   static const Color lightInputBorderColor = Color(0xFFE8E4E2);

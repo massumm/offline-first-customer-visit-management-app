@@ -47,14 +47,6 @@ class WorkoutRecommendationCard extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(_radius + 1),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x1A000000),
-            offset: Offset(0, 10),
-            blurRadius: 24,
-            spreadRadius: 0,
-          ),
-        ],
       ),
       child: Container(
         margin: const EdgeInsets.all(1.5),
