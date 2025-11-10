@@ -37,8 +37,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  // Todo: Change this to initial route
-  static const String INITIAL = Routes.ACTIVITY_TRACKER;
+  static const String INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(

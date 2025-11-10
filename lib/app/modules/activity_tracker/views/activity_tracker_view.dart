@@ -6,6 +6,7 @@ import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/generated/assets.dart';
 
 import '../controllers/activity_tracker_controller.dart';
+import 'widgets/activities_card.dart';
 import 'widgets/health_dashboard_card.dart';
 import 'widgets/muscle_heat_map_card.dart';
 import 'widgets/quick_start_card.dart';
@@ -68,10 +69,11 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
           ),
           SliverToBoxAdapter(child: 12.height),
           SliverToBoxAdapter(child: MuscleHeatMapCard()),
-          SliverToBoxAdapter(child: 1200.height),
+          SliverToBoxAdapter(child: 12.height),
+          SliverToBoxAdapter(child:ActivitiesCard()),
+          SliverToBoxAdapter(child: 12.height),
         ],
       ),
     );
   }
 }
-
