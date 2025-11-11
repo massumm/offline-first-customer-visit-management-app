@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 
 class LoadingButton extends StatelessWidget {
   const LoadingButton({
@@ -12,6 +13,7 @@ class LoadingButton extends StatelessWidget {
     this.loadingStrokeWidth = 2,
     this.loadingColor = Colors.white,
     this.gradient,
+    this.backgroundColor,
   });
 
   final VoidCallback? onPressed;
@@ -23,6 +25,7 @@ class LoadingButton extends StatelessWidget {
   final double loadingStrokeWidth;
   final Color loadingColor;
   final Gradient? gradient;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +69,7 @@ class LoadingButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
           ),
+          backgroundColor: backgroundColor ?? AppColors.colorPrimary,
         ),
         onPressed: isLoading == true ? null : onPressed,
         child: isLoading == true

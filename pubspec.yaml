@@ -61,6 +61,7 @@ flutter:
     - assets/images/icon_profile/
     - assets/jsons/
     - assets/svg/
+    - assets/svg/full_body_tracker/
     - assets/svg/home/
     - assets/svg/splash_screen_light/
     - assets/svg/splash_screen_dark/

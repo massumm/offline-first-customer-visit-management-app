@@ -26,6 +26,9 @@ class Assets {
   static const String dailyGoalsStepGoal = 'assets/svg/fitness_report/daily_goals/step_goal.svg';
   static const String dailyGoalsWaterGoal = 'assets/svg/fitness_report/daily_goals/water_goal.svg';
   static const String dailyGoalsWorkoutDuration = 'assets/svg/fitness_report/daily_goals/workout_duration.svg';
+  static const String fullBodyTrackerGainMuscle = 'assets/svg/full_body_tracker/gain_muscle.svg';
+  static const String fullBodyTrackerGym = 'assets/svg/full_body_tracker/gym.svg';
+  static const String fullBodyTrackerRoutines = 'assets/svg/full_body_tracker/routines.svg';
   static const String homeCoach = 'assets/images/home/coach.png';
   static const String homeNotificationIcon = 'assets/svg/home/notification_icon.svg';
   static const String homeNotificationIconWithAlert = 'assets/svg/home/notification_icon_with_alert.svg';
