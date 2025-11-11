@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +9,6 @@ import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
-import '../models/trainee_onboarding_questions_model.dart';
 import 'widgets/animated_onboarding_stepper.dart';
 import 'widgets/status_image_bubble.dart';
 import 'widgets/status_message_bubble.dart';
@@ -230,7 +228,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               controller.isFinished ||
               controller.showGroupContinuationButtons ||
               q == null ||
-              q.type != QAType.multipleChoice) {
+              q.type.name != "select_multiple") {
             return const SizedBox.shrink();
           }
 
@@ -244,14 +242,15 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   spacing: 8,
                   runSpacing: 8,
                   alignment: WrapAlignment.center,
-                  children: q.options
-                      .map(
-                        (o) => ActionChip(
-                          label: Text(o),
-                          onPressed: () => controller.choose(o),
-                        ),
-                      )
-                      .toList(),
+                  children:
+                      (q.metadata?.json['options'] as List<dynamic>? ?? [])
+                          .map(
+                            (o) => ActionChip(
+                              label: Text(o.toString()),
+                              onPressed: () => controller.choose(o.toString()),
+                            ),
+                          )
+                          .toList(),
                 ),
               ),
               8.height,

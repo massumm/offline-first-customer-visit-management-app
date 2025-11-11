@@ -13,7 +13,7 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
   @override
   Future<TraineeOnboardingQuestionDataModel> fetchQuestionsData(int trainerId) {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/trainee_onboarding/onboardings/$trainerId/questions/";
+        "${DioProvider.baseUrl}/api/trainee_onboarding/by_trainer/$trainerId/questions/";
 
     "Token: $token".log();
     final Map<String, String> headers = {
@@ -44,7 +44,7 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     int trainerId,
   ) {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/trainee_onboarding/onboardings/$trainerId/answers/";
+        "${DioProvider.baseUrl}/api/trainee_onboarding/by_trainer/$trainerId/answers/";
 
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",
@@ -72,7 +72,7 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     int questionId,
   ) {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/trainers/onboardings/$traineeId/answers/$questionId/";
+        "${DioProvider.baseUrl}/api/trainers/by_trainer/$traineeId/answers/$questionId/";
 
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",

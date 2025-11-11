@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:bodychart_heatmap/bodychart_heatmap.dart';
@@ -16,7 +15,6 @@ import '../../../../base/widgets/custom_toast.dart';
 import '../../../../core/values/app_colors.dart';
 import '../../../../core/widgets/input_widgets/custom_phone_field.dart';
 import '../../../../core/widgets/search_location_dropdown.dart';
-import '../../models/trainee_onboarding_questions_model.dart';
 import 'agent_loading_indicator.dart';
 
 class ToInputWidget extends GetView<TraineeOnboardingController> {
@@ -403,31 +401,28 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
           children: [
             Row(
               children: [
-                Obx(
-                      () {
-                    if (Platform.isIOS) {
-                      return CupertinoSwitch(
-                        value: controller.hasAgreedToInitialTerms.value,
-                        onChanged: controller.toggleInitialTermsAgreement,
-                      );
-                    }
-                    // For Android, use the Material Checkbox.
-                    return Checkbox(
+                Obx(() {
+                  if (Platform.isIOS) {
+                    return CupertinoSwitch(
                       value: controller.hasAgreedToInitialTerms.value,
                       onChanged: controller.toggleInitialTermsAgreement,
                     );
-                  },
-                ),
+                  }
+                  // For Android, use the Material Checkbox.
+                  return Checkbox(
+                    value: controller.hasAgreedToInitialTerms.value,
+                    onChanged: controller.toggleInitialTermsAgreement,
+                  );
+                }),
                 const SizedBox(width: 8),
                 Expanded(
                   child: RichText(
                     text: TextSpan(
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Platform.isIOS
-                            ? CupertinoTheme.of(context)
-                            .textTheme
-                            .textStyle
-                            .color
+                            ? CupertinoTheme.of(
+                                context,
+                              ).textTheme.textStyle.color
                             : null,
                       ),
                       children: [
@@ -437,8 +432,9 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             decoration: TextDecoration.underline,
-                            decorationColor:
-                            Theme.of(context).colorScheme.primary,
+                            decorationColor: Theme.of(
+                              context,
+                            ).colorScheme.primary,
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
@@ -454,30 +450,27 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
               ],
             ),
             const SizedBox(height: 12),
-            Obx(
-                  () {
-                final onPressed = controller.hasAgreedToInitialTerms.value
-                    ? controller.proceedAfterInitialTerms
-                    : null;
+            Obx(() {
+              final onPressed = controller.hasAgreedToInitialTerms.value
+                  ? controller.proceedAfterInitialTerms
+                  : null;
 
-                if (Platform.isIOS) {
-                  return CupertinoButton.filled(
-                    onPressed: onPressed,
-                    child: const Text('Continue'),
-                  );
-                }
-                return ElevatedButton(
+              if (Platform.isIOS) {
+                return CupertinoButton.filled(
                   onPressed: onPressed,
                   child: const Text('Continue'),
                 );
-              },
-            ),
+              }
+              return ElevatedButton(
+                onPressed: onPressed,
+                child: const Text('Continue'),
+              );
+            }),
           ],
         ),
       ),
     );
   }
-
 
   Widget _buildContinuationButtons() {
     return Padding(
@@ -540,10 +533,10 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
   }
 
   Widget _buildTextInput(
-      BuildContext context, {
-        bool enableImageBtn = false,
-        bool typingEnabled = true,
-      }) {
+    BuildContext context, {
+    bool enableImageBtn = false,
+    bool typingEnabled = true,
+  }) {
     // Common suffix widget for both text fields
     final Widget suffix = Obx(() {
       final hasText = controller.inputText.value.trim().isNotEmpty;
@@ -554,78 +547,73 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
         switchOutCurve: Curves.easeIn,
         child: hasText
             ? SizedBox(
-          key: const ValueKey('send'),
-          width: 56,
-          child: IconButton(
-            tooltip: 'Send',
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            icon: const Icon(Icons.send_rounded, size: 20),
-            onPressed: () {
-              final msg = controller.textController.text.trim();
-              if (msg.isEmpty) return;
-              controller.send(msg);
-              controller.textController.clear();
-              controller.inputText.value = '';
-            },
-          ),
-        )
-        // --- IDLE BUTTONS STATE ---
-            : SizedBox(
-          key: const ValueKey('idle'),
-          width: 120,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // MIC
-              Opacity(
-                opacity: enableImageBtn ? 0.5 : 1,
+                key: const ValueKey('send'),
+                width: 56,
                 child: IconButton(
-                  tooltip: 'Voice input',
+                  tooltip: 'Send',
                   visualDensity: VisualDensity.compact,
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
-                  icon: const Icon(Icons.mic_outlined, size: 20),
-                  onPressed: enableImageBtn
-                      ? null
-                      : () {
-                    CustomToast.showToast(
-                      message: 'Coming soon',
-                    );
+                  icon: const Icon(Icons.send_rounded, size: 20),
+                  onPressed: () {
+                    final msg = controller.textController.text.trim();
+                    if (msg.isEmpty) return;
+                    controller.send(msg);
+                    controller.textController.clear();
+                    controller.inputText.value = '';
                   },
                 ),
-              ),
-              // DOC
-              const Opacity(
-                opacity: 0.5,
-                child: IconButton(
-                  tooltip: 'Insert link (disabled)',
-                  visualDensity: VisualDensity.compact,
-                  padding: EdgeInsets.zero,
-                  constraints: BoxConstraints(),
-                  icon: Icon(Icons.link_outlined, size: 20),
-                  onPressed: null,
+              )
+            // --- IDLE BUTTONS STATE ---
+            : SizedBox(
+                key: const ValueKey('idle'),
+                width: 120,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // MIC
+                    Opacity(
+                      opacity: enableImageBtn ? 0.5 : 1,
+                      child: IconButton(
+                        tooltip: 'Voice input',
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        icon: const Icon(Icons.mic_outlined, size: 20),
+                        onPressed: enableImageBtn
+                            ? null
+                            : () {
+                                CustomToast.showToast(message: 'Coming soon');
+                              },
+                      ),
+                    ),
+                    // DOC
+                    const Opacity(
+                      opacity: 0.5,
+                      child: IconButton(
+                        tooltip: 'Insert link (disabled)',
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: BoxConstraints(),
+                        icon: Icon(Icons.link_outlined, size: 20),
+                        onPressed: null,
+                      ),
+                    ),
+                    // CAMERA
+                    Opacity(
+                      opacity: enableImageBtn ? 1 : 0.5,
+                      child: IconButton(
+                        tooltip: 'Attach photo',
+                        visualDensity: VisualDensity.compact,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                        icon: const Icon(Icons.camera_alt_outlined, size: 20),
+                        onPressed: () => _showImageSourceDialog(context),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              // CAMERA
-              Opacity(
-                opacity: enableImageBtn ? 1 : 0.5,
-                child: IconButton(
-                  tooltip: 'Attach photo',
-                  visualDensity: VisualDensity.compact,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
-                  icon: const Icon(
-                    Icons.camera_alt_outlined,
-                    size: 20,
-                  ),
-                  onPressed: () => _showImageSourceDialog(context),
-                ),
-              ),
-            ],
-          ),
-        ),
       );
     });
 
@@ -635,8 +623,8 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
         return TextInputType.emailAddress;
       }
       final qType = controller.currentQuestion?.type;
-      if (qType == QAType.number) return TextInputType.number;
-      if (qType == QAType.phoneNumber) return TextInputType.phone;
+      if (qType?.name == "number") return TextInputType.number;
+      if (qType?.name == "phone_number") return TextInputType.phone;
       return TextInputType.text;
     }();
 
@@ -646,74 +634,73 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
       child: Material(
         color: Colors.transparent,
         child: Platform.isAndroid
-        // ANDROID IMPLEMENTATION
+            // ANDROID IMPLEMENTATION
             ? TextField(
-          controller: controller.textController,
-          readOnly: !typingEnabled,
-          enableInteractiveSelection: typingEnabled,
-          showCursor: typingEnabled,
-          mouseCursor: typingEnabled
-              ? SystemMouseCursors.text
-              : SystemMouseCursors.forbidden,
-          onTap: () {
-            if (!typingEnabled) {
-              FocusScope.of(context).unfocus();
-            }
-          },
-          onChanged: (t) => controller.inputText.value = t,
-          onSubmitted: (t) {
-            controller.send(t);
-          },
-          decoration: InputDecoration(
-            suffixIcon: suffix,
-            suffixIconConstraints: const BoxConstraints(
-              minWidth: 0,
-              minHeight: 0,
-            ),
-            hintText: _hintFor(),
-            border: const OutlineInputBorder(),
-            isDense: true,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 14,
-            ),
-          ),
-          keyboardType: keyboardType,
-        )
-        // IOS IMPLEMENTATION
+                controller: controller.textController,
+                readOnly: !typingEnabled,
+                enableInteractiveSelection: typingEnabled,
+                showCursor: typingEnabled,
+                mouseCursor: typingEnabled
+                    ? SystemMouseCursors.text
+                    : SystemMouseCursors.forbidden,
+                onTap: () {
+                  if (!typingEnabled) {
+                    FocusScope.of(context).unfocus();
+                  }
+                },
+                onChanged: (t) => controller.inputText.value = t,
+                onSubmitted: (t) {
+                  controller.send(t);
+                },
+                decoration: InputDecoration(
+                  suffixIcon: suffix,
+                  suffixIconConstraints: const BoxConstraints(
+                    minWidth: 0,
+                    minHeight: 0,
+                  ),
+                  hintText: _hintFor(),
+                  border: const OutlineInputBorder(),
+                  isDense: true,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 14,
+                  ),
+                ),
+                keyboardType: keyboardType,
+              )
+            // IOS IMPLEMENTATION
             : CupertinoTextField(
-          controller: controller.textController,
-          readOnly: !typingEnabled,
-          enableInteractiveSelection: typingEnabled,
-          showCursor: typingEnabled,
-          onTap: () {
-            if (!typingEnabled) {
-              FocusScope.of(context).unfocus();
-            }
-          },
-          onChanged: (t) => controller.inputText.value = t,
-          onSubmitted: (t) {
-            controller.send(t);
-          },
-          placeholder: _hintFor(),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: CupertinoColors.inactiveGray,
-              width: 0.5,
-            ),
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: 12,
-            vertical: 14,
-          ),
-          suffix: suffix,
-          keyboardType: keyboardType,
-        ),
+                controller: controller.textController,
+                readOnly: !typingEnabled,
+                enableInteractiveSelection: typingEnabled,
+                showCursor: typingEnabled,
+                onTap: () {
+                  if (!typingEnabled) {
+                    FocusScope.of(context).unfocus();
+                  }
+                },
+                onChanged: (t) => controller.inputText.value = t,
+                onSubmitted: (t) {
+                  controller.send(t);
+                },
+                placeholder: _hintFor(),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: CupertinoColors.inactiveGray,
+                    width: 0.5,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 14,
+                ),
+                suffix: suffix,
+                keyboardType: keyboardType,
+              ),
       ),
     );
   }
-
 
   void _showImageSourceDialog(BuildContext context) {
     showDialog(
@@ -766,7 +753,7 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
         if (q == null) {
           return "Just a moment...";
         }
-        if (q.type == QAType.multipleChoice) {
+        if (q.type.name == "select_multiple") {
           return "Choose an option above";
         }
         return q.hint ?? "Type your answer";

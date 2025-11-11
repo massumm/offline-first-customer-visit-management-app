@@ -1,20 +1,3 @@
-enum QAType {
-  text,
-  number,
-  multipleChoice,
-  date,
-  time,
-  boolean,
-  height,
-  weight,
-  image,
-  phoneNumber, //
-  location, //
-  reminder, //
-  bodyParts, //
-  unknown,
-}
-
 class TraineeOnboardingQuestionDataModel {
   final List<TraineeQuestionData> questionsData;
 
@@ -46,11 +29,10 @@ class TraineeQuestionData {
   TraineeQuestionData({
     required this.id,
     required this.traineeOnboarding,
-    required this.questionType,
-    required this.questionText,
-    required this.questionMetadata,
-    required this.questionFieldName,
-    required this.possibleAnswersMetadata,
+    required this.type,
+    required this.text,
+    required this.metadata,
+    required this.fieldName,
     required this.index,
     required this.isOptional,
     required this.groupName,
@@ -60,12 +42,11 @@ class TraineeQuestionData {
 
   final int? id;
   final int? traineeOnboarding;
-  final int? questionType;
-  final String? questionText;
-  final QuestionMetadata? questionMetadata;
-  final String? questionFieldName;
-  final PossibleAnswersMetadata? possibleAnswersMetadata;
-  final String? index;
+  final QuestionType type;
+  final String text;
+  final QuestionMetadata metadata;
+  final String fieldName;
+  final String index;
   final bool isOptional;
   final String groupName;
   final DateTime? createdAt;
@@ -74,11 +55,10 @@ class TraineeQuestionData {
   TraineeQuestionData copyWith({
     int? id,
     int? traineeOnboarding,
-    int? questionType,
-    String? questionText,
-    QuestionMetadata? questionMetadata,
-    String? questionFieldName,
-    PossibleAnswersMetadata? possibleAnswersMetadata,
+    QuestionType? type,
+    String? text,
+    QuestionMetadata? metadata,
+    String? fieldName,
     String? index,
     bool? isOptional,
     String? groupName,
@@ -88,12 +68,10 @@ class TraineeQuestionData {
     return TraineeQuestionData(
       id: id ?? this.id,
       traineeOnboarding: traineeOnboarding ?? this.traineeOnboarding,
-      questionType: questionType ?? this.questionType,
-      questionText: questionText ?? this.questionText,
-      questionMetadata: questionMetadata ?? this.questionMetadata,
-      questionFieldName: questionFieldName ?? this.questionFieldName,
-      possibleAnswersMetadata:
-          possibleAnswersMetadata ?? this.possibleAnswersMetadata,
+      type: type ?? this.type,
+      text: text ?? this.text,
+      metadata: metadata ?? this.metadata,
+      fieldName: fieldName ?? this.fieldName,
       index: index ?? this.index,
       isOptional: isOptional ?? this.isOptional,
       groupName: groupName ?? this.groupName,
@@ -103,97 +81,87 @@ class TraineeQuestionData {
   }
 
   factory TraineeQuestionData.fromJson(Map<String, dynamic> json) {
-    // Map backend question_type string to QAType enum
-    QAType parseQAType(String? type) {
-      switch (type) {
-        case "text":
-          // TODO: DEMO ONLY
-          if (json["field_name"] == 'address') {
-            return QAType.location;
-          }
-          if (json["field_name"] == 'focus_body_parts') {
-            return QAType.bodyParts;
-          }
-          if (json["field_name"] == 'phone_number') {
-            return QAType.phoneNumber;
-          }
-          return QAType.text;
-        case "number":
-          return QAType.number;
-        case "multiple_choice":
-          return QAType.multipleChoice;
-        case "date":
-          return QAType.date;
-        case "time":
-          return QAType.time;
-        case "boolean":
-          return QAType.boolean;
-        case "height":
-          return QAType.height;
-        case "weight":
-          return QAType.weight;
-        case "image":
-          return QAType.image;
-        case "phone_number":
-          return QAType.phoneNumber;
-        case "reminder":
-          return QAType.reminder;
-        default:
-          return QAType.unknown;
-      }
-    }
-
     return TraineeQuestionData(
       id: json["id"],
-      traineeOnboarding: json["trainee_onboarding"],
-      questionType: json['type'],
-      // parseQAType(json["type"]),
-      questionText: json["text"],
-      isOptional: json["is_optional"],
-      groupName: json["group_name"],
-      questionMetadata: json["metadata"] == null
-          ? QuestionMetadata(json: {})
-          : QuestionMetadata.fromJson(json["metadata"]),
-      questionFieldName: json["field_name"],
-      possibleAnswersMetadata: json["possible_answers_metadata"] == null
-          ? PossibleAnswersMetadata(choices: [])
-          : PossibleAnswersMetadata.fromJson(json["possible_answers_metadata"]),
-      index: json["index"],
+      traineeOnboarding: json["trainee_onboarding"] is Map
+          ? json["trainee_onboarding"]["id"]
+          : json["trainee_onboarding"],
+      type: QuestionType.fromJson(json["type"]),
+      text: json["text"] ?? '',
+      metadata: QuestionMetadata.fromJson(json["metadata"]),
+      fieldName: json["field_name"] ?? '',
+      index: json["index"] ?? '',
+      isOptional: json["is_optional"] ?? false,
+      groupName: json["group_name"] ?? '',
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
     );
   }
 
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'trainee_onboarding': traineeOnboarding,
+    'type': type.toJson(),
+    'text': text,
+    'metadata': metadata,
+    'field_name': fieldName,
+    'index': index,
+    'is_optional': isOptional,
+    'group_name': groupName,
+    'created_at': createdAt?.toIso8601String(),
+    'updated_at': updatedAt?.toIso8601String(),
+  };
+
   @override
   String toString() {
-    return "$id, $traineeOnboarding, $questionType, $questionText, $questionFieldName, $index";
+    return "$id, $traineeOnboarding, ${type.name}, $text, $fieldName, $index";
   }
 }
 
-class PossibleAnswersMetadata {
-  PossibleAnswersMetadata({required this.choices});
+class QuestionType {
+  final int id;
+  final String name;
+  final String description;
+  final Map<String, dynamic> metadataFields;
+  final Map<String, dynamic> responseFields;
+  final Map<String, dynamic> examples;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
 
-  final List<String> choices;
+  QuestionType({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.metadataFields,
+    required this.responseFields,
+    required this.examples,
+    this.createdAt,
+    this.updatedAt,
+  });
 
-  PossibleAnswersMetadata copyWith({List<String>? choices}) {
-    return PossibleAnswersMetadata(choices: choices ?? this.choices);
-  }
-
-  factory PossibleAnswersMetadata.fromJson(Map<String, dynamic> json) {
-    return PossibleAnswersMetadata(
-      choices: json["choices"] == null
-          ? []
-          : List<String>.from(json["choices"].map((x) => x.toString())),
+  factory QuestionType.fromJson(Map<String, dynamic> json) {
+    return QuestionType(
+      id: json['id'] ?? 0,
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      metadataFields: json['metadata_fields'] ?? {},
+      responseFields: json['response_fields'] ?? {},
+      examples: json['examples'] ?? {},
+      createdAt: DateTime.tryParse(json['created_at'] ?? ''),
+      updatedAt: DateTime.tryParse(json['updated_at'] ?? ''),
     );
   }
 
-  // toJson method
-  Map<String, dynamic> toJson() {
-    return {'choices': choices};
-  }
-
-  @override
-  String toString() => choices.toString();
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'name': name,
+    'description': description,
+    'metadata_fields': metadataFields,
+    'response_fields': responseFields,
+    'examples': examples,
+    'created_at': createdAt?.toIso8601String(),
+    'updated_at': updatedAt?.toIso8601String(),
+  };
 }
 
 class QuestionMetadata {
