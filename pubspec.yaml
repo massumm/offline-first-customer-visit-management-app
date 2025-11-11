@@ -58,8 +58,8 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/icon_profile/
     - assets/jsons/
-
     - assets/svg/
     - assets/svg/home/
     - assets/svg/splash_screen_light/
