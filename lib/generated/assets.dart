@@ -114,5 +114,4 @@ class Assets {
   static const String svgStar = 'assets/svg/star.svg';
   static const String svgTargetStress = 'assets/svg/target_stress.svg';
   static const String svgUserCircularIcon = 'assets/svg/user-circular-icon.svg';
-
 }
