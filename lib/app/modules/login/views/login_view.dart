@@ -10,6 +10,7 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/google_signin_button.dart';
 import 'package:icon/app/core/widgets/input_widgets/adaptive_text_field.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
@@ -194,21 +195,21 @@ class LoginView extends BaseView<LoginController> {
                     const SizedBox(height: 10),
 
                     // Apple button
-                    SizedBox(
-                      width: double.infinity,
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.grey[800]!),
-                          backgroundColor: Colors.grey[900],
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                        ),
-                        onPressed: () {},
-                        icon: Icon(Icons.apple, color: Colors.white, size: 24),
-                        label: Text(
-                          "Sign in with Apple",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
+                    SignInWithAppleButton(
+                      onPressed: () async {
+                        final credential =
+                            await SignInWithApple.getAppleIDCredential(
+                              scopes: [
+                                AppleIDAuthorizationScopes.email,
+                                AppleIDAuthorizationScopes.fullName,
+                              ],
+                            );
+
+                        print(credential);
+
+                        // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
+                        // after they have been validated with Apple (see `Integration` section for more information on how to do this)
+                      },
                     ),
                   ],
                   const Spacer(),
