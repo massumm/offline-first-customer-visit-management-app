@@ -62,6 +62,9 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/home/
+    - assets/images/splash_screen_light/
+    - assets/images/splash_screen_dark/
     - assets/jsons/
 
     - assets/svg/
