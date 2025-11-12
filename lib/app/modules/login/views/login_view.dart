@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -186,33 +188,29 @@ class LoginView extends BaseView<LoginController> {
                   const SizedBox(height: 20),
 
                   // Google button
-                  GoogleSignInButton(onPressed:  controller.onGoogleLogin),
+                  GoogleSignInButton(onPressed: controller.onGoogleLogin),
 
-                  // const SizedBox(height: 10),
+                  if (Platform.isIOS) ...[
+                    const SizedBox(height: 10),
 
-                  // Apple button
-                  // SizedBox(
-                  //   width: double.infinity,
-                  //   child: OutlinedButton.icon(
-                  //     style: OutlinedButton.styleFrom(
-                  //       side: BorderSide(color: Colors.grey[800]!),
-                  //       backgroundColor: Colors.grey[900],
-                  //       padding: const EdgeInsets.symmetric(vertical: 15),
-                  //     ),
-                  //     onPressed: () {},
-                  //     icon: const Icon(
-                  //       Icons.apple,
-                  //       color: Colors.white,
-                  //       size: 24,
-                  //     ),
-                  //     label: const Text(
-                  //       "Sign in with Apple",
-                  //       style: TextStyle(color: Colors.white),
-                  //     ),
-                  //   ),
-                  // ),
-
-                  // Spacer pushes the content below it to the bottom.
+                    // Apple button
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Colors.grey[800]!),
+                          backgroundColor: Colors.grey[900],
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                        ),
+                        onPressed: () {},
+                        icon: Icon(Icons.apple, color: Colors.white, size: 24),
+                        label: Text(
+                          "Sign in with Apple",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
                   const Spacer(),
 
                   // The "Don't have an account?" text, now at the bottom.

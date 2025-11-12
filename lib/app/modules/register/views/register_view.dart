@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +11,7 @@ import 'package:icon/app/core/values/app_colors.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
+import '../../../core/widgets/google_signin_button.dart';
 import '../../../core/widgets/input_widgets/adaptive_text_field.dart';
 import '../../../core/widgets/super_image.dart';
 import '../../../routes/app_pages.dart';
@@ -201,42 +204,29 @@ class RegisterView extends BaseView<RegisterController> {
                   const SizedBox(height: 20),
 
                   // Google button
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.grey[800]!),
-                        backgroundColor: Colors.grey[900],
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                      ),
-                      onPressed: () {},
-                      icon: Icon(FontAwesomeIcons.google, color: Colors.white),
-                      label: Text(
-                        "Sign in with Google",
-                        style: TextStyle(color: Colors.white),
+                  GoogleSignInButton(onPressed:  controller.onGoogleLogin),
+
+                  if(Platform.isIOS)...[
+                    const SizedBox(height: 10),
+
+                    // Apple button
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          side: BorderSide(color: Colors.grey[800]!),
+                          backgroundColor: Colors.grey[900],
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                        ),
+                        onPressed: () {},
+                        icon: Icon(Icons.apple, color: Colors.white, size: 24),
+                        label: Text(
+                          "Sign in with Apple",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // Apple button
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.grey[800]!),
-                        backgroundColor: Colors.grey[900],
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                      ),
-                      onPressed: () {},
-                      icon: Icon(Icons.apple, color: Colors.white, size: 24),
-                      label: Text(
-                        "Sign in with Apple",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
+                  ],
 
                   const Spacer(),
                   Center(
