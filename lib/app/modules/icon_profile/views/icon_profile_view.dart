@@ -242,57 +242,10 @@ class IconProfileView extends BaseView<IconProfileController> {
                     description:
                         '"Structured progression. no guesswork. you earn every result."',
                   ),
-                  16.height,
-                  Text(
-                    'Social Media',
-                    style: AppTextTheme.titleLargeSemiBold.copyWith(
-                      color: AppColors.black,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                  8.height,
+                  20.height,
                   Row(
-                    children: [
-                      Container(
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.facebook,
-                            color: AppColors.black,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                      16.width,
-                      Container(
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.instagram,
-                            color: AppColors.black,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                      16.width,
-                      Container(
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.twitter,
-                            color: AppColors.black,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                      16.width,
-                      Container(
-                        child: Center(
-                          child: FaIcon(
-                            FontAwesomeIcons.linkedin,
-                            color: AppColors.black,
-                            size: 24,
-                          ),
-                        ),
-                      ),
-                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _buildSocialMediaIcons(),
                   ),
                 ],
               ),
@@ -301,6 +254,29 @@ class IconProfileView extends BaseView<IconProfileController> {
         ),
       ],
     );
+  }
+
+  List<Widget> _buildSocialMediaIcons() {
+    final socialIcons = [
+      FontAwesomeIcons.facebook,
+      FontAwesomeIcons.instagram,
+      FontAwesomeIcons.twitter,
+      FontAwesomeIcons.linkedin,
+    ];
+
+    final List<Widget> iconWidgets = [];
+
+    for (int i = 0; i < socialIcons.length; i++) {
+      iconWidgets.add(
+        Center(child: FaIcon(socialIcons[i], color: AppColors.black, size: 36)),
+      );
+
+      if (i < socialIcons.length - 1) {
+        iconWidgets.add(16.width);
+      }
+    }
+
+    return iconWidgets;
   }
 
   Container _questionAnswers({

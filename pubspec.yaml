@@ -59,6 +59,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/icon_profile/
+    - assets/images/full_body_tracker/
     - assets/jsons/
     - assets/svg/
     - assets/svg/full_body_tracker/
