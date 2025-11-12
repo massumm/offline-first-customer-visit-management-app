@@ -93,6 +93,7 @@ class Assets {
   static const String svgBgGradientColor = 'assets/svg/bg-gradient-color.svg';
   static const String svgBgGradientColorCropped = 'assets/svg/bg-gradient-color-cropped.svg';
   static const String svgCurrentStress = 'assets/svg/current_stress.svg';
+  static const String svgGoogleIcon = 'assets/svg/google-icon.svg';
   static const String svgIconLogoDark = 'assets/svg/icon-logo-dark.svg';
   static const String svgIconLogoPink = 'assets/svg/icon-logo-pink.svg';
   static const String svgLevel7 = 'assets/svg/level-7.svg';
@@ -114,4 +115,5 @@ class Assets {
   static const String svgStar = 'assets/svg/star.svg';
   static const String svgTargetStress = 'assets/svg/target_stress.svg';
   static const String svgUserCircularIcon = 'assets/svg/user-circular-icon.svg';
+
 }
