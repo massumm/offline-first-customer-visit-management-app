@@ -23,6 +23,7 @@ abstract class Routes {
       _Paths.TRAINEE_FITNESS_REPORT_GENERATION;
   static const OTP_VALIDATION = _Paths.OTP_VALIDATION;
   static const ICON_PROFILE = _Paths.ICON_PROFILE;
+  static const FULL_BODY_TRACKER = _Paths.FULL_BODY_TRACKER;
 }
 
 abstract class _Paths {
@@ -47,4 +48,5 @@ abstract class _Paths {
       '/trainee-fitness-report-generation';
   static const OTP_VALIDATION = '/otp-validation';
   static const ICON_PROFILE = '/icon-profile';
+  static const FULL_BODY_TRACKER = '/full-body-tracker';
 }
