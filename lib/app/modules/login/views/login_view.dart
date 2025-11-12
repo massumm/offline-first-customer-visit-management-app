@@ -198,19 +198,18 @@ class LoginView extends BaseView<LoginController> {
                     SignInWithAppleButton(
                       onPressed: () async {
                         final credential =
-                            await SignInWithApple.getAppleIDCredential(
-                              scopes: [
-                                AppleIDAuthorizationScopes.email,
-                                AppleIDAuthorizationScopes.fullName,
-                              ],
-                            );
+                        await SignInWithApple.getAppleIDCredential(
+                          scopes: [
+                            AppleIDAuthorizationScopes.email,
+                            AppleIDAuthorizationScopes.fullName,
+                          ],
+                        );
 
                         debugPrint(credential.toString());
                       },
                       style: controller.isDarkTheme
-                          ? SignInWithAppleButtonStyle.white
-                          : SignInWithAppleButtonStyle.black,
-
+                          ? SignInWithAppleButtonStyle.black
+                          : SignInWithAppleButtonStyle.white,
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ],
