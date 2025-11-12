@@ -53,9 +53,10 @@ class IconLightTheme {
       color: AppColors.lightTextPrimaryColor,
     ),
     titleSmall: GoogleFonts.inter(
-      fontSize: 16,
-      fontWeight: FontWeight.w600,
+      fontSize: 14,
+      fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
+      height: 1.50,
       color: AppColors.lightTextPrimaryColor,
     ),
 
@@ -199,22 +200,22 @@ class IconLightTheme {
       ),
     ),
     elevatedButtonTheme: appElevatedButtonTheme,
-    textButtonTheme: TextButtonThemeData(
-      style: TextButton.styleFrom(
-        backgroundColor: Colors.transparent,
-        foregroundColor: AppColors.lightTextPrimaryColor,
-        elevation: 1,
-        shadowColor: Colors.black12,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-        ),
-        textStyle:  GoogleFonts.inter(
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-          height: 1.50,
-        ),
-      ),
-    ),
+    // textButtonTheme: TextButtonThemeData(
+    //   style: TextButton.styleFrom(
+    //     backgroundColor: Colors.transparent,
+    //     foregroundColor: AppColors.lightTextPrimaryColor,
+    //     elevation: 1,
+    //     shadowColor: Colors.black12,
+    //     shape: RoundedRectangleBorder(
+    //       borderRadius: BorderRadius.circular(14),
+    //     ),
+    //     textStyle:  GoogleFonts.inter(
+    //       fontWeight: FontWeight.w600,
+    //       fontSize: 14,
+    //       height: 1.50,
+    //     ),
+    //   ),
+    // ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
         foregroundColor: AppColors.lightTextPrimaryColor,

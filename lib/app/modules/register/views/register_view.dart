@@ -148,6 +148,7 @@ class RegisterView extends BaseView<RegisterController> {
                                 text: 'Terms of Service',
                                 style: theme.textTheme.titleSmall?.copyWith(
                                   decoration: TextDecoration.underline,
+                                  fontSize: 14,
                                 ),
                               ),
                               TextSpan(
@@ -158,6 +159,7 @@ class RegisterView extends BaseView<RegisterController> {
                                 text: 'Privacy Policy',
                                 style: theme.textTheme.titleSmall?.copyWith(
                                   decoration: TextDecoration.underline,
+                                  fontSize: 14,
                                 ),
                               ),
                             ],
@@ -198,15 +200,18 @@ class RegisterView extends BaseView<RegisterController> {
                   Center(
                     child: Text(
                       "Or Connect With",
-                      style: TextStyle(color: Colors.grey),
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),
 
                   // Google button
-                  GoogleSignInButton(onPressed:  controller.onGoogleLogin),
+                  GoogleSignInButton(onPressed: controller.onGoogleLogin),
 
-                  if(Platform.isIOS)...[
+                  if (Platform.isIOS) ...[
                     const SizedBox(height: 10),
 
                     // Apple button
