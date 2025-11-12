@@ -193,7 +193,9 @@ class LoginView extends BaseView<LoginController> {
                         backgroundColor: Colors.grey[900],
                         padding: const EdgeInsets.symmetric(vertical: 15),
                       ),
-                      onPressed: () {},
+                      onPressed: ()  {
+                       controller.onGoogleLogin();
+                      },
                       icon: const Icon(
                         FontAwesomeIcons.google,
                         color: Colors.white,
