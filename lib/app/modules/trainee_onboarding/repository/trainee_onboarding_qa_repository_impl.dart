@@ -66,28 +66,26 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
   }
 
   @override
-  Future<Map<String, dynamic>> updateAnswers(
-    Map<String, dynamic> answers,
-    int traineeId,
-    int questionId,
+  Future<String> getPersonalizedOnboardingGroupComment(
+    int trainerId,
+    String groupName,
   ) {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/trainers/by_trainer/$traineeId/answers/$questionId/";
+        "${DioProvider.baseUrl}/api/trainee_onboarding/by_trainer/$trainerId/generate_personalized_comment_for_question_group/$groupName/";
 
     final Map<String, String> headers = {
       'Authorization': "Bearer ${token ?? ''}",
     };
 
-    Future<Response<dynamic>> dioCall = dioClient.patch(
+    Future<Response<dynamic>> dioCall = dioClient.get(
       endpoint,
-      data: answers,
       options: Options(headers: headers),
     );
 
     try {
-      return callApiWithErrorParser(
-        dioCall,
-      ).then((Response response) => response.data);
+      return callApiWithErrorParser(dioCall).then(
+        (Response response) => response.data['personalized_comment'] as String,
+      );
     } catch (e) {
       rethrow;
     }

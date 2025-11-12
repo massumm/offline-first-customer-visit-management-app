@@ -111,10 +111,10 @@ Future<void> _setupEnvironment() {
     shouldCollectCrashLog: true,
   );
 
-  Environment environment = Environment.DEVELOPMENT;
+  Environment environment = Environment.PRODUCTION;
 
   if (kReleaseMode) {
-    environment = Environment.DEVELOPMENT;
+    environment = Environment.PRODUCTION;
   }
 
   BuildConfig.instantiate(envType: environment, envConfig: config);

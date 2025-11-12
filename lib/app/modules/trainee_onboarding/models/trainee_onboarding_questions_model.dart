@@ -38,6 +38,7 @@ class TraineeQuestionData {
     required this.groupName,
     required this.createdAt,
     required this.updatedAt,
+    required this.isLastInGroup,
   });
 
   final int? id;
@@ -51,6 +52,7 @@ class TraineeQuestionData {
   final String groupName;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final bool isLastInGroup;
 
   TraineeQuestionData copyWith({
     int? id,
@@ -64,6 +66,7 @@ class TraineeQuestionData {
     String? groupName,
     DateTime? createdAt,
     DateTime? updatedAt,
+    bool? isLastInGroup,
   }) {
     return TraineeQuestionData(
       id: id ?? this.id,
@@ -77,6 +80,7 @@ class TraineeQuestionData {
       groupName: groupName ?? this.groupName,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      isLastInGroup: isLastInGroup ?? this.isLastInGroup,
     );
   }
 
@@ -95,6 +99,7 @@ class TraineeQuestionData {
       groupName: json["group_name"] ?? '',
       createdAt: DateTime.tryParse(json["created_at"] ?? ""),
       updatedAt: DateTime.tryParse(json["updated_at"] ?? ""),
+      isLastInGroup: json["is_last_in_group"] ?? false,
     );
   }
 

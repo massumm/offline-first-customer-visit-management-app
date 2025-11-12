@@ -24,12 +24,14 @@ class QAItem {
   final bool canSkip;
   final String? questionFieldName;
   final QuestionMetadata? metadata;
+  final bool isLastInGroup;
 
   const QAItem({
     required this.id,
     required this.question,
     required this.type,
     required this.questionFieldName,
+    required this.isLastInGroup,
     this.metadata,
     this.hint,
     this.canSkip = false,

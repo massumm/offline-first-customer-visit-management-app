@@ -1,12 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/google_signin_button.dart';
 import 'package:icon/app/core/widgets/input_widgets/adaptive_text_field.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
@@ -185,51 +188,30 @@ class LoginView extends BaseView<LoginController> {
                   const SizedBox(height: 20),
 
                   // Google button
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.grey[800]!),
-                        backgroundColor: Colors.grey[900],
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                      ),
-                      onPressed: () {},
-                      icon: const Icon(
-                        FontAwesomeIcons.google,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        "Sign in with Google",
-                        style: TextStyle(color: Colors.white),
-                      ),
+                  GoogleSignInButton(onPressed: controller.onGoogleLogin),
+
+                  if (Platform.isIOS) ...[
+                    const SizedBox(height: 12),
+
+                    // Apple button
+                    SignInWithAppleButton(
+                      onPressed: () async {
+                        final credential =
+                        await SignInWithApple.getAppleIDCredential(
+                          scopes: [
+                            AppleIDAuthorizationScopes.email,
+                            AppleIDAuthorizationScopes.fullName,
+                          ],
+                        );
+
+                        debugPrint(credential.toString());
+                      },
+                      style: controller.isDarkTheme
+                          ? SignInWithAppleButtonStyle.black
+                          : SignInWithAppleButtonStyle.white,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // Apple button
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(color: Colors.grey[800]!),
-                        backgroundColor: Colors.grey[900],
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                      ),
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.apple,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                      label: const Text(
-                        "Sign in with Apple",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-
-                  // Spacer pushes the content below it to the bottom.
+                  ],
                   const Spacer(),
 
                   // The "Don't have an account?" text, now at the bottom.

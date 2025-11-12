@@ -53,9 +53,10 @@ class IconDarkTheme {
       color: Colors.white,
     ),
     titleSmall: GoogleFonts.inter(
-      fontSize: 16,
+      fontSize: 14,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
+      height: 1.50,
       color: Colors.white,
     ),
 
