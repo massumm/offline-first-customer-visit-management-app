@@ -49,5 +49,23 @@
 		<false/>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>This app needs access to location when open.</string>
+
+        <!-- Google Sign-in Section -->
+        <key>GIDClientID</key>
+        <string>150486406603-tfj2369fbgbpv2aq1phao15j93089vsf.apps.googleusercontent.com</string>
+        <key>GIDServerClientID</key>
+        <string>150486406603-5jlpj7l09mp8o1v1pfvlko3btkr5j8qq.apps.googleusercontent.com</string>
+        <key>CFBundleURLTypes</key>
+        <array>
+        	<dict>
+        		<key>CFBundleTypeRole</key>
+        		<string>Editor</string>
+        		<key>CFBundleURLSchemes</key>
+        		<array>
+        			<string>com.googleusercontent.apps.150486406603-tfj2369fbgbpv2aq1phao15j93089vsf</string>
+        		</array>
+        	</dict>
+        </array>
+        <!-- End of the Google Sign-in Section -->
 	</dict>
 </plist>

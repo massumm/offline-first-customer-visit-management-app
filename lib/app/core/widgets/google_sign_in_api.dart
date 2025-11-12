@@ -12,7 +12,7 @@ class GoogleSignInApi {
 
     // Handle client id with platform
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      clientId = "";
+      clientId = "150486406603-tfj2369fbgbpv2aq1phao15j93089vsf.apps.googleusercontent.com";
     }
 
     try {
