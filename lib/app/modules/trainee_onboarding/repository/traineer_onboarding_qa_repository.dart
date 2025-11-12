@@ -6,10 +6,12 @@ abstract class TraineeOnboardingQARepository {
   ); // Default id is 1
 
   Future<Map<String, dynamic>> sendAnswers(
-      Map<String, dynamic> answers, int traineeId
-      );
+    Map<String, dynamic> answers,
+    int traineeId,
+  );
 
-  Future<Map<String, dynamic>> updateAnswers(
-      Map<String, dynamic> answers, int traineeId, int questionId
-      );
+  Future<String> getPersonalizedOnboardingGroupComment(
+    int trainerId,
+    String groupName,
+  );
 }

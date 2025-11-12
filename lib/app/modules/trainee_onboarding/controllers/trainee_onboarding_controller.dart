@@ -63,7 +63,6 @@ class TraineeOnboardingController extends BaseController {
   final currentQuestionIndexInGroup = (-1).obs;
   final isAwaitingGroupConfirmation = false.obs;
   final pageController = ScrollController();
-  var _isRevisiting = false;
 
   // --------------- Answers ---------------
   final Map<int, String> answers = {};
@@ -80,6 +79,41 @@ class TraineeOnboardingController extends BaseController {
   final RxList<double> groupProgresses = <double>[].obs;
 
   RxInt traineeId = 1.obs;
+
+  final Map<String, Map<String, String>> groupMetadataMap = {
+    'personal': {
+      'displayName': 'Personal Information',
+      'intro': "Great! Now for a bit about your Personal data.",
+    },
+    'goals': {
+      'displayName': 'Goals & Activity',
+      'intro': "Let's talk about your goals and activity levels.",
+    },
+    'nutrition': {
+      'displayName': 'Nutrition',
+      'intro': 'Now, a few questions about your nutrition habits.',
+    },
+    'recovery': {
+      'displayName': 'Health & Recovery',
+      'intro': "Finally, let's talk about your health and recovery.",
+    },
+    'body_profile': {
+      'displayName': 'Body Profile',
+      'intro':
+          "Excellent! Let's get your body profile details to track progress.",
+      'conclusion': "That's everything I need to know. Thanks for sharing!",
+    },
+    'activity': {
+      'displayName': 'Activity Levels',
+      'intro': "Let's discuss your typical activity levels.",
+      'conclusion': "Thanks for the info on your activity levels.",
+    },
+    'general': {
+      'displayName': 'General Questions',
+      'intro': "Great! Let's get started with some general questions.",
+      'conclusion': "Thanks for providing the details.",
+    },
+  };
 
   @override
   void onInit() {
@@ -165,45 +199,6 @@ class TraineeOnboardingController extends BaseController {
     final List<String> dynamicGroupOrderKeys = groupFirstIndex.keys.toList()
       ..sort((a, b) => groupFirstIndex[a]!.compareTo(groupFirstIndex[b]!));
 
-    // Define metadata for groups, using raw group names as keys.
-    // This allows for dynamic group discovery while still providing display names and intro/conclusion texts.
-    final Map<String, Map<String, String>> groupMetadataMap = {
-      'personal': {
-        'displayName': 'Personal Information',
-        'intro': "Great! Now for a bit about your Personal data.",
-      },
-      'goals': {
-        'displayName': 'Goals & Activity',
-        'intro': "Let's talk about your goals and activity levels.",
-      },
-      'nutrition': {
-        'displayName': 'Nutrition',
-        'intro': 'Now, a few questions about your nutrition habits.',
-      },
-      'recovery': {
-        'displayName': 'Health & Recovery',
-        'intro': "Finally, let's talk about your health and recovery.",
-      },
-      'body_profile': {
-        'displayName': 'Body Profile',
-        'intro':
-            "Excellent! Let's get your body profile details to track progress.",
-        'conclusion': "That's everything I need to know. Thanks for sharing!",
-      },
-      'activity': {
-        'displayName': 'Activity Levels',
-        'intro': "Let's discuss your typical activity levels.",
-        'conclusion': "Thanks for the info on your activity levels.",
-      },
-      'general': {
-        'displayName':
-            'General Questions', // Changed from 'general' for better display
-        'intro': "Great! Let's get started with some general questions.",
-        'conclusion': "Thanks for providing the details.",
-      },
-      // Add other group metadata as needed
-    };
-
     final List<QuestionGroup> newGroups = [];
     for (final rawGroupName in dynamicGroupOrderKeys) {
       final groupQuestionsData = questionsByRawGroup[rawGroupName];
@@ -257,7 +252,7 @@ class TraineeOnboardingController extends BaseController {
       id: data.id ?? 1,
       question: data.text,
       type: data.type,
-      // data.questionType ?? QuestionType.unknown,
+      isLastInGroup: data.isLastInGroup,
       questionFieldName: data.fieldName,
       metadata: data.metadata,
       hint: null,
@@ -301,8 +296,8 @@ class TraineeOnboardingController extends BaseController {
     answers.clear();
     userEmail.value = '';
     hasAgreedToInitialTerms.value = false;
-    currentGroupIndex.value = -1;
-    currentQuestionIndexInGroup.value = -1;
+    currentGroupIndex.value = 0;
+    currentQuestionIndexInGroup.value = 0;
     isAwaitingGroupConfirmation.value = false;
     _updateProgresses();
 
@@ -384,39 +379,50 @@ class TraineeOnboardingController extends BaseController {
     return c;
   }
 
-  double _globalProgress() {
-    if (generatedQuestionGroups.isEmpty) return 0.0;
-
-    int totalActive = 0;
-    int totalAnswered = 0;
-
-    for (int gi = 0; gi < generatedQuestionGroups.length; gi++) {
-      final activeQs = _activeQuestionsForGroup(gi);
-      totalActive += activeQs.length;
-
-      if (isAwaitingGroupConfirmation.value && gi < currentGroupIndex.value) {
-        totalAnswered += activeQs.length;
-        continue;
-      }
-
-      totalAnswered += _answeredCount(activeQs);
-    }
-
-    if (isFinished) return 1.0;
-    if (totalActive == 0) return 0.0;
-
-    final gp = totalAnswered / totalActive;
-    return gp.clamp(0.0, 1.0);
-  }
-
   Future<void> _askNext() async {
     if (onboardingPhase.value != OnboardingPhase.askingQuestions) return;
     if (isAwaitingGroupConfirmation.value) return;
 
-    // This is the first question after setup, set indices to start
     if (currentGroupIndex.value < 0) {
       currentGroupIndex.value = 0;
       currentQuestionIndexInGroup.value = -1;
+    }
+
+    // Defensive index checks for personalizedComment
+    if (generatedQuestionGroups.isEmpty) {
+      await _completeOnboarding();
+      return;
+    }
+    if (currentGroupIndex.value < 0 ||
+        currentGroupIndex.value >= generatedQuestionGroups.length) {
+      currentGroupIndex.value = 0;
+    }
+    if (currentQuestionIndexInGroup.value < 0 ||
+        currentQuestionIndexInGroup.value >=
+            generatedQuestionGroups[currentGroupIndex.value].questions.length) {
+      currentQuestionIndexInGroup.value = 0;
+    }
+
+    final currentQuestion = generatedQuestionGroups[currentGroupIndex.value]
+        .questions[currentQuestionIndexInGroup.value];
+
+    if (currentGroupIndex.value >= 0 &&
+        currentQuestionIndexInGroup.value >= 0 &&
+        currentQuestion.isLastInGroup) {
+      final currentQuestionGroup =
+          generatedQuestionGroups[currentGroupIndex.value];
+
+      String personalizedComment = await _onboardingQARepository
+          .getPersonalizedOnboardingGroupComment(
+            1,
+            groupMetadataMap.entries
+                .firstWhere(
+                  (e) => e.value["displayName"] == currentQuestionGroup.name,
+                )
+                .key,
+          );
+
+      await _botSay(personalizedComment);
     }
 
     int nextQuestionIndex = currentQuestionIndexInGroup.value;
@@ -428,8 +434,6 @@ class TraineeOnboardingController extends BaseController {
     }
 
     while (true) {
-      nextQuestionIndex++;
-
       if (nextGroupIndex < generatedQuestionGroups.length &&
           nextQuestionIndex >=
               generatedQuestionGroups[nextGroupIndex].questions.length) {
@@ -470,6 +474,7 @@ class TraineeOnboardingController extends BaseController {
           generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
 
       if (!_shouldSkipQuestion(candidate)) break;
+      nextQuestionIndex++;
     }
 
     final bool isNewGroup =
@@ -489,20 +494,6 @@ class TraineeOnboardingController extends BaseController {
     currentQuestionIndexInGroup.value = nextQuestionIndex;
     _updateProgresses();
   }
-
-  // void _scrollToBottom() {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     if (pageController.hasClients) {
-  //       pageController.animateTo(
-  //         pageController.position.maxScrollExtent + 100,
-  //         duration: const Duration(milliseconds: 250),
-  //         curve: Curves.easeOut,
-  //       );
-  //     }
-  //   });
-  // }
-
-  // Add this method to your TraineeOnboardingController
 
   /// Scrolls the chat view to the bottom to show the latest message.
   void _scrollToBottom() {
@@ -611,36 +602,6 @@ class TraineeOnboardingController extends BaseController {
     }
   }
 
-  Future<bool> _updateMessage(ChatMessage userMessage) async {
-    // Mark the message as sending before the API call
-    userMessage.updateStatus(MessageStatus.sending);
-
-    try {
-      final q = currentQuestion!;
-      final answerData = {
-        "trainee_profile": traineeId.value,
-        "trainee_onboarding_question": q.id,
-        "answer_text": answers[q.id],
-        // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
-      };
-
-      await _onboardingQARepository.updateAnswers(answerData, 1, q.id);
-
-      userMessage.updateStatus(
-        MessageStatus.delivered,
-      ); // Mark as delivered on success
-      return true;
-    } catch (e) {
-      userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
-      if (e is ApiException) {
-        CustomToast.showErrorToast(e.description);
-      } else {
-        CustomToast.showErrorToast("Error sending message: $e");
-      }
-      return false;
-    }
-  }
-
   Future<void> send(String text) async {
     final value = text.trim();
 
@@ -732,8 +693,6 @@ class TraineeOnboardingController extends BaseController {
   ) async {
     messages.add(userMessage);
 
-    final bool wasRevisiting = _isRevisiting;
-
     answers[q.id] = answerValue;
     _scrollToBottom();
     _updateProgresses();
@@ -747,25 +706,12 @@ class TraineeOnboardingController extends BaseController {
     }
 
     bool success = false;
-    if (wasRevisiting) {
-      // When revisiting, first attempt to update the existing answer.
-      success = await _updateMessage(userMessage);
-      if (!success) {
-        // If the update fails (e.g., the answer didn't exist on the backend),
-        // fall back to sending it as a new answer.
-        "Update failed, attempting to send as a new answer.".log();
-        success = await _updateMessage(userMessage);
-      }
-    } else {
-      // For all other cases, send it as a new answer.
-      success = await _sendMessage(userMessage);
-    }
+    success = await _sendMessage(userMessage);
 
     // If either the update or the fallback send was successful, move to the next question.
     // Otherwise, stay on the current question; the message status will show 'failed'.
     if (success) {
-      // Reset the flag after use so subsequent forward answers are "sends".
-      _isRevisiting = false;
+      currentQuestionIndexInGroup.value++;
       await _askNext();
     }
   }
@@ -777,7 +723,6 @@ class TraineeOnboardingController extends BaseController {
   Future<void> goBack() async {
     if (!canGoBack) return;
 
-    _isRevisiting = true; // Flag that the user is navigating back
     await _botSay("No problem—let's change that.");
 
     int targetQuestionIndex = currentQuestionIndexInGroup.value;
