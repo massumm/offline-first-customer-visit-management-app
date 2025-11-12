@@ -192,7 +192,7 @@ class LoginView extends BaseView<LoginController> {
                   GoogleSignInButton(onPressed: controller.onGoogleLogin),
 
                   if (Platform.isIOS) ...[
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 12),
 
                     // Apple button
                     SignInWithAppleButton(
@@ -205,11 +205,13 @@ class LoginView extends BaseView<LoginController> {
                               ],
                             );
 
-                        print(credential);
-
-                        // Now send the credential (especially `credential.authorizationCode`) to your server to create a session
-                        // after they have been validated with Apple (see `Integration` section for more information on how to do this)
+                        debugPrint(credential.toString());
                       },
+                      style: controller.isDarkTheme
+                          ? SignInWithAppleButtonStyle.white
+                          : SignInWithAppleButtonStyle.black,
+
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ],
                   const Spacer(),
