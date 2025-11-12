@@ -265,7 +265,7 @@ class TraineeOnboardingController extends BaseController {
     isAwaitingGroupConfirmation.value = false;
 
     currentGroupIndex.value++;
-    currentQuestionIndexInGroup.value = -1;
+    currentQuestionIndexInGroup.value = 0;
     await _askNext();
   }
 
@@ -286,7 +286,6 @@ class TraineeOnboardingController extends BaseController {
       );
       return;
     }
-    // User has agreed, now fetch questions and proceed.
     _fetchAndSetupQuestions();
   }
 
@@ -383,12 +382,7 @@ class TraineeOnboardingController extends BaseController {
     if (onboardingPhase.value != OnboardingPhase.askingQuestions) return;
     if (isAwaitingGroupConfirmation.value) return;
 
-    if (currentGroupIndex.value < 0) {
-      currentGroupIndex.value = 0;
-      currentQuestionIndexInGroup.value = -1;
-    }
-
-    // Defensive index checks for personalizedComment
+    // Defensive index checks
     if (generatedQuestionGroups.isEmpty) {
       await _completeOnboarding();
       return;
@@ -397,21 +391,43 @@ class TraineeOnboardingController extends BaseController {
         currentGroupIndex.value >= generatedQuestionGroups.length) {
       currentGroupIndex.value = 0;
     }
-    if (currentQuestionIndexInGroup.value < 0 ||
-        currentQuestionIndexInGroup.value >=
-            generatedQuestionGroups[currentGroupIndex.value].questions.length) {
+    if (currentQuestionIndexInGroup.value < 0) {
       currentQuestionIndexInGroup.value = 0;
+    }
+
+    // If we've finished all questions in the current group, move to next group
+    if (currentQuestionIndexInGroup.value >=
+        generatedQuestionGroups[currentGroupIndex.value].questions.length) {
+      final finishedGroup = generatedQuestionGroups[currentGroupIndex.value];
+      if (finishedGroup.conclusion != null) {
+        await _botSay(finishedGroup.conclusion!);
+      }
+      if (currentGroupIndex.value >= generatedQuestionGroups.length - 1) {
+        await _completeOnboarding();
+        return;
+      }
+      isAwaitingGroupConfirmation.value = true;
+      final remainingGroups = generatedQuestionGroups.sublist(
+        currentGroupIndex.value + 1,
+      );
+      final remainingGroupNames = remainingGroups
+          .map((g) => "• ${g.name}")
+          .join('\n');
+      await _botSay(
+        "Great job! To create the best plan, we still need to cover these topics:\n$remainingGroupNames",
+      );
+      await _botSay("Ready to continue?");
+      _updateProgresses();
+      return;
     }
 
     final currentQuestion = generatedQuestionGroups[currentGroupIndex.value]
         .questions[currentQuestionIndexInGroup.value];
 
-    if (currentGroupIndex.value >= 0 &&
-        currentQuestionIndexInGroup.value >= 0 &&
-        currentQuestion.isLastInGroup) {
+    // If last question in group, show personalized comment
+    if (currentQuestion.isLastInGroup) {
       final currentQuestionGroup =
           generatedQuestionGroups[currentGroupIndex.value];
-
       String personalizedComment = await _onboardingQARepository
           .getPersonalizedOnboardingGroupComment(
             1,
@@ -421,77 +437,18 @@ class TraineeOnboardingController extends BaseController {
                 )
                 .key,
           );
-
       await _botSay(personalizedComment);
     }
 
-    int nextQuestionIndex = currentQuestionIndexInGroup.value;
-    int nextGroupIndex = currentGroupIndex.value;
-
-    if (generatedQuestionGroups.isEmpty) {
-      await _completeOnboarding();
-      return;
-    }
-
-    while (true) {
-      if (nextGroupIndex < generatedQuestionGroups.length &&
-          nextQuestionIndex >=
-              generatedQuestionGroups[nextGroupIndex].questions.length) {
-        final finishedGroup = generatedQuestionGroups[nextGroupIndex];
-
-        if (finishedGroup.conclusion != null) {
-          await _botSay(finishedGroup.conclusion!);
-        }
-
-        if (nextGroupIndex >= generatedQuestionGroups.length - 1) {
-          await _completeOnboarding();
-          return;
-        }
-
-        isAwaitingGroupConfirmation.value = true;
-
-        final remainingGroups = generatedQuestionGroups.sublist(
-          nextGroupIndex + 1,
-        );
-        final remainingGroupNames = remainingGroups
-            .map((g) => "• ${g.name}")
-            .join('\n');
-
-        await _botSay(
-          "Great job! To create the best plan, we still need to cover these topics:\n$remainingGroupNames",
-        );
-        await _botSay("Ready to continue?");
-        _updateProgresses();
-        return;
-      }
-
-      if (nextGroupIndex >= generatedQuestionGroups.length) {
-        await _completeOnboarding();
-        return;
-      }
-
-      final candidate =
-          generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
-
-      if (!_shouldSkipQuestion(candidate)) break;
-      nextQuestionIndex++;
-    }
-
-    final bool isNewGroup =
-        nextQuestionIndex == 0 &&
-        (currentGroupIndex.value != nextGroupIndex ||
-            currentQuestionIndexInGroup.value == -1);
-
+    // If new group, show introduction
+    final bool isNewGroup = currentQuestionIndexInGroup.value == 0;
     if (isNewGroup) {
-      await _botSay(generatedQuestionGroups[nextGroupIndex].introduction);
+      await _botSay(
+        generatedQuestionGroups[currentGroupIndex.value].introduction,
+      );
     }
 
-    final q =
-        generatedQuestionGroups[nextGroupIndex].questions[nextQuestionIndex];
-    await _botSay(q.question);
-
-    currentGroupIndex.value = nextGroupIndex;
-    currentQuestionIndexInGroup.value = nextQuestionIndex;
+    await _botSay(currentQuestion.question);
     _updateProgresses();
   }
 
