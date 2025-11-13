@@ -1,0 +1,118 @@
+name: icon
+description: "Icon - Train Smarter"
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  get: ^4.7.2
+  logger: ^2.6.2
+  shared_preferences: ^2.5.3
+  pretty_dio_logger: ^1.4.0
+  fluttertoast: ^9.0.0
+  dio: ^5.9.0
+  flutter_svg: ^2.2.1
+  cached_network_image: ^3.4.1
+  font_awesome_flutter: ^10.12.0
+  intl: ^0.20.2
+  web_socket_channel: ^3.0.3
+  lottie: ^3.3.2
+  shimmer: ^3.0.0
+  
+  # In-App Purchases
+  in_app_purchase: ^3.1.13
+
+  # Font
+  google_fonts: ^6.3.2
+
+  image_picker: ^1.2.0
+
+  #GOOGLE MAP/Location
+  awesome_place_search: ^2.1.0
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+
+  phone_form_field: ^10.0.12
+  bodychart_heatmap: ^1.1.0
+
+  dashed_progress_bar: ^0.0.1
+  xml: ^6.6.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_native_splash: ^2.4.7
+  flutter_launcher_icons: ^0.14.4
+
+
+flutter:
+  uses-material-design: true
+
+
+  assets:
+    - assets/
+    - assets/images/
+    - assets/jsons/
+
+    - assets/svg/
+    - assets/svg/home/
+    - assets/svg/splash_screen_light/
+    - assets/svg/splash_screen_dark/
+    - assets/svg/common/
+    - assets/svg/muscles/
+    - assets/svg/fitness_report/
+    - assets/svg/fitness_report/activity_objectives/
+    - assets/svg/fitness_report/congratulations/
+    - assets/svg/fitness_report/daily_goals/
+    - assets/svg/fitness_report/integration_summary/
+    - assets/svg/fitness_report/mindset_and_motivation/
+    - assets/svg/fitness_report/nutrition_objectives/
+
+
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+
+  # Splash Screen
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: assets/images/splash_icon.png
+  color_dark: "#FFFFFF"
+  image_dark: assets/images/splash_icon.png
+
+  android_12:
+    color: "#FFFFFF"
+    image: assets/images/splash_icon.png
+    image_dark: assets/images/splash_icon.png
+
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/icon-splash.png"
+  adaptive_icon_foreground: "assets/images/icon-splash.png"
+  adaptive_icon_background: "#FFFFFF"
+  remove_alpha_ios: true
+  min_sdk_android: 21
+
+flutter_assets:
+  assets_path: assets/
+  output_path: lib/generated/
+  filename: assets.dart
