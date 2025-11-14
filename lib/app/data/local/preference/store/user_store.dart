@@ -21,6 +21,13 @@ class UserStore extends GetxService {
 
   final RxString _token = ''.obs;
   String get token => _token.value;
+  
+  // Subscription/Paywall related observables
+  final RxBool _isPremium = false.obs;
+  bool get isPremium => _isPremium.value;
+  
+  final RxInt _remainingFreeMessages = 3.obs; // Default 3 free messages
+  int get remainingFreeMessages => _remainingFreeMessages.value;
 
   // final RxString authToken = ''.obs; // If this is different from _token
   // final RxString userEmail = ''.obs;
@@ -55,6 +62,7 @@ class UserStore extends GetxService {
         try {
           final decodedJson = jsonDecode(profileJson);
           _profile.value = LoginResponseModel.fromJson(decodedJson as Map<String, dynamic>);
+          _initializeSubscriptionState(); // Initialize subscription state from loaded profile
           logger.i("UserStore: Loaded profile for user"); // Example: logging username
         } catch (e) {
           logger.e("UserStore: Error decoding profile JSON: $e");
@@ -103,10 +111,102 @@ class UserStore extends GetxService {
         await saveAuthToken(userProfile.access ?? '');
       }
       _isLogin.value = true;
+      
+      // Initialize subscription state from profile
+      _initializeSubscriptionState();
+      
       logger.i("UserStore: Profile and token saved for user");
     } catch (e) {
       logger.e("UserStore: Error saving profile: $e");
     }
+  }
+
+  /// Initialize subscription state from the current profile
+  void _initializeSubscriptionState() {
+    if (_profile.value?.traineeProfile != null) {
+      final traineeProfile = _profile.value!.traineeProfile!;
+      _isPremium.value = traineeProfile.isPremium ?? false;
+      _remainingFreeMessages.value = traineeProfile.remainingFreeMessages ?? 3;
+      logger.i("UserStore: Initialized subscription state - isPremium: ${_isPremium.value}, remainingMessages: ${_remainingFreeMessages.value}");
+    } else {
+      // Default values for new users
+      _isPremium.value = false;
+      _remainingFreeMessages.value = 3;
+      logger.i("UserStore: Set default subscription state for new user");
+    }
+  }
+
+  /// Update the user's subscription status
+  Future<void> updateSubscriptionStatus(bool isPremium) async {
+    _isPremium.value = isPremium;
+    
+    if (isPremium) {
+      // Reset free message count when user becomes premium
+      _remainingFreeMessages.value = 3;
+    }
+    
+    // Update the stored profile if it exists
+    if (_profile.value?.traineeProfile != null) {
+      final updatedProfile = _profile.value!.traineeProfile!.copyWith(
+        isPremium: isPremium,
+        remainingFreeMessages: _remainingFreeMessages.value,
+      );
+      
+      final updatedLoginResponse = _profile.value!.copyWith(
+        traineeProfile: updatedProfile,
+      );
+      
+      await saveProfileAndToken(updatedLoginResponse);
+    }
+    
+    logger.i("UserStore: Updated subscription status to $isPremium");
+  }
+
+  /// Decrement the free message count
+  Future<void> decrementFreeMessages() async {
+    if (!_isPremium.value && _remainingFreeMessages.value > 0) {
+      _remainingFreeMessages.value--;
+      
+      // Update the stored profile
+      if (_profile.value?.traineeProfile != null) {
+        final updatedProfile = _profile.value!.traineeProfile!.copyWith(
+          remainingFreeMessages: _remainingFreeMessages.value,
+        );
+        
+        final updatedLoginResponse = _profile.value!.copyWith(
+          traineeProfile: updatedProfile,
+        );
+        
+        await saveProfileAndToken(updatedLoginResponse);
+      }
+      
+      logger.i("UserStore: Decremented free messages to ${_remainingFreeMessages.value}");
+    }
+  }
+
+  /// Reset free message count (e.g., for testing or admin purposes)
+  Future<void> resetFreeMessages() async {
+    _remainingFreeMessages.value = 3;
+    
+    // Update the stored profile
+    if (_profile.value?.traineeProfile != null) {
+      final updatedProfile = _profile.value!.traineeProfile!.copyWith(
+        remainingFreeMessages: _remainingFreeMessages.value,
+      );
+      
+      final updatedLoginResponse = _profile.value!.copyWith(
+        traineeProfile: updatedProfile,
+      );
+      
+      await saveProfileAndToken(updatedLoginResponse);
+    }
+    
+    logger.i("UserStore: Reset free messages to 3");
+  }
+
+  /// Check if the user can send a message (either premium or has remaining free messages)
+  bool canSendMessage() {
+    return _isPremium.value || _remainingFreeMessages.value > 0;
   }
 
   Future<void> onLogout() async {
@@ -115,6 +215,11 @@ class UserStore extends GetxService {
     _token.value = '';
     _profile.value = null;
     _isLogin.value = false;
+    
+    // Reset subscription state
+    _isPremium.value = false;
+    _remainingFreeMessages.value = 3;
+    
     // authToken.value = ''; // Clear if you have separate ones
     // userEmail.value = '';
     logger.i("UserStore: User logged out and data cleared.");

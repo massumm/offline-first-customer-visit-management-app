@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import '../controllers/icon_chat_controller.dart';
+import '../../../data/local/preference/store/user_store.dart';
 
 const scaffoldBackgroundColor = Color(0xFF121212);
 const primaryColor = Color(0xFFFFFFFF);
@@ -153,29 +154,88 @@ class CustomAppBar extends StatelessWidget {
             ],
           ),
           const SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                'Mish Icon',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: primaryColor,
-                  fontFamily: 'Inter',
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Mish Icon',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor,
+                    fontFamily: 'Inter',
+                  ),
                 ),
-              ),
-              Text(
-                'Online',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.normal,
-                  color: secondaryHeaderColor,
-                  fontFamily: 'Inter',
+                Text(
+                  'Online',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.normal,
+                    color: secondaryHeaderColor,
+                    fontFamily: 'Inter',
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+          // Subscription Status Indicator
+          Obx(() {
+            final userStore = Get.find<UserStore>();
+            if (userStore.isPremium) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF00C853).withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: const Color(0xFF00C853).withOpacity(0.3),
+                  ),
+                ),
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.star,
+                      size: 12,
+                      color: Color(0xFF00C853),
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Premium',
+                      style: TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF00C853),
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            } else {
+              final remainingMessages = userStore.remainingFreeMessages;
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: senderBubbleColor.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: senderBubbleColor.withOpacity(0.3),
+                  ),
+                ),
+                child: Text(
+                  '$remainingMessages left',
+                  style: const TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w600,
+                    color: senderBubbleColor,
+                    fontFamily: 'Inter',
+                  ),
+                ),
+              );
+            }
+          }),
         ],
       ),
       actions: [
@@ -211,51 +271,73 @@ class _ChatInputBarState extends State<ChatInputBar> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.find<IconChatController>();
+    final userStore = Get.find<UserStore>();
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: scaffoldBackgroundColor,
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: controller.textController,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: componentBackgroundColor,
-                hintText: 'Type Here...',
-                hintStyle: const TextStyle(color: secondaryHeaderColor),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
+      child: Obx(() {
+        final bool canSendMessage = userStore.isPremium || userStore.remainingFreeMessages > 0;
+        final String hintText = canSendMessage 
+            ? 'Type Here...' 
+            : 'Subscribe to continue...';
+        
+        return Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: controller.textController,
+                enabled: canSendMessage,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: canSendMessage 
+                      ? componentBackgroundColor 
+                      : componentBackgroundColor.withOpacity(0.5),
+                  hintText: hintText,
+                  hintStyle: TextStyle(
+                    color: canSendMessage 
+                        ? secondaryHeaderColor 
+                        : secondaryHeaderColor.withOpacity(0.5),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  prefixIcon: Icon(
+                    canSendMessage ? Icons.graphic_eq_rounded : Icons.lock_outlined,
+                    color: canSendMessage 
+                        ? secondaryHeaderColor 
+                        : secondaryHeaderColor.withOpacity(0.5),
+                  ),
                 ),
-                prefixIcon: const Icon(
-                  Icons.graphic_eq_rounded,
-                  color: secondaryHeaderColor,
+                style: TextStyle(
+                  color: canSendMessage 
+                      ? primaryColor 
+                      : primaryColor.withOpacity(0.5),
+                  fontSize: 16,
+                  fontFamily: 'Inter',
                 ),
+                onSubmitted: canSendMessage ? (_) {
+                  controller.optimisticSendMessage();
+                } : null,
               ),
-              style: const TextStyle(
-                color: primaryColor,
-                fontSize: 16,
-                fontFamily: 'Inter',
+            ),
+            const SizedBox(width: 8),
+            Material(
+              color: canSendMessage 
+                  ? senderBubbleColor 
+                  : senderBubbleColor.withOpacity(0.5),
+              shape: const CircleBorder(),
+              child: IconButton(
+                icon: const Icon(Icons.send, color: Colors.white),
+                onPressed: canSendMessage ? () {
+                  controller.optimisticSendMessage();
+                } : null,
               ),
-              onSubmitted: (_) {
-                controller.optimisticSendMessage();
-              },
             ),
-          ),
-          const SizedBox(width: 8),
-          Material(
-            color: senderBubbleColor,
-            shape: const CircleBorder(),
-            child: IconButton(
-              icon: const Icon(Icons.send, color: Colors.white),
-              onPressed: () {
-                controller.optimisticSendMessage();
-              },
-            ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 }

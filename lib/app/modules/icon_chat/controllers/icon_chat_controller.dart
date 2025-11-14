@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../repository/icon_chat_repository_impl.dart';
 import '../../../base/network/dio_provider.dart';
 import '../../../data/local/preference/store/user_store.dart';
+import '../../../core/services/subscription_service.dart';
+import '../../../core/widgets/paywall_dialog.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
 import 'package:web_socket_channel/io.dart';
@@ -12,6 +14,7 @@ class IconChatController extends GetxController {
   final messages = <Map<String, dynamic>>[].obs;
   final textController = TextEditingController();
   late IconChatRepositoryImpl chatRepository;
+  late SubscriptionService subscriptionService;
   WebSocketChannel? channel;
   int? roomId;
   String? roomName;
@@ -23,6 +26,7 @@ class IconChatController extends GetxController {
   void onInit() {
     super.onInit();
     chatRepository = IconChatRepositoryImpl();
+    subscriptionService = Get.find<SubscriptionService>();
     token = UserStore.to.token;
     // Get IDs from navigation arguments or user context
     final args = Get.arguments ?? {};
@@ -93,6 +97,13 @@ class IconChatController extends GetxController {
   void optimisticSendMessage() async {
     final text = textController.text.trim();
     if (text.isEmpty || roomId == null || token == null) return;
+    
+    // Check subscription status before sending message
+    if (!subscriptionService.canSendMessage()) {
+      _showPaywall();
+      return;
+    }
+    
     // Optimistically add message to UI
     messages.insert(0, {
       'content': text,
@@ -100,14 +111,26 @@ class IconChatController extends GetxController {
       'timestamp': DateTime.now().toIso8601String(),
     });
     textController.clear();
+    
     // Send to WebSocket
     try {
       channel?.sink.add(jsonEncode({'message': text}));
     } catch (_) {}
+    
     // Also send to REST API for persistence
     try {
       await chatRepository.sendMessage(roomId!, token!, text);
+      // After successful message send, decrement free message count
+      await subscriptionService.onMessageSent();
     } catch (_) {}
+  }
+  
+  /// Show paywall dialog when user runs out of free messages
+  void _showPaywall() {
+    Get.dialog(
+      const PaywallDialog(),
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+    );
   }
 
   @override
