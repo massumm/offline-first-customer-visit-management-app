@@ -14,6 +14,7 @@ class IntroductionPageView extends BaseView<FitnessReportController> {
 
   @override
   Widget body(BuildContext context) {
+    final plan = controller.currentFitnessPlan;
     return Scaffold(
       body: Container(
         color: Get.theme.scaffoldBackgroundColor,
@@ -25,34 +26,38 @@ class IntroductionPageView extends BaseView<FitnessReportController> {
               title: 'Introduction (by Icon)',
             ),
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  16.height,
-                  IntroWidget(
-                    body:
-                        'This comprehensive report is designed to give you insights into your fitness journey and help you achieve your goals.',
-                  ),
-                  const Spacer(),
-
-                  InfoCardWidget(
-                    icon: Assets.svgUserCircularIcon,
-                    title: 'User\'s Current State',
-                    description:
-                        'You\'re starting from a strong foundation motivated, determined, and ready to make real progress. The details you shared have given me a clear picture of where you are right now, and what matters most to you.',
-                    iconType: IconType.svg,
-                  ),
-                  16.height,
-                  InfoCardWidget(
-                    icon: Assets.imagesFitnessReportFace,
-                    title: 'How Icon Will Help',
-                    description:
-                        'You\'re starting from a strong foundation motivated, determined, and ready to make real progress. The details you shared have given me a clear picture of where you are right now, and what matters most to you.',
-                    isGradient: true,
-                    iconType: IconType.asset,
-                  ),
-                  8.height,
-                ],
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    16.height,
+                    IntroWidget(
+                      body:
+                          plan?.introductorySummary ??
+                          'This comprehensive report is designed to give you insights into your fitness journey and help you achieve your goals.',
+                    ),
+                    // Removed Spacer()
+                    InfoCardWidget(
+                      icon: Assets.svgUserCircularIcon,
+                      title: 'User\'s Current State',
+                      description:
+                          plan?.currentFitnessStateAnalysis ??
+                          'You\'re starting from a strong foundation motivated, determined, and ready to make real progress. The details you shared have given me a clear picture of where you are right now, and what matters most to you.',
+                      iconType: IconType.svg,
+                    ),
+                    16.height,
+                    InfoCardWidget(
+                      icon: Assets.imagesFitnessReportFace,
+                      title: 'How Icon Will Help',
+                      description:
+                          plan?.closingRemarks ??
+                          'You\'re starting from a strong foundation motivated, determined, and ready to make real progress. The details you shared have given me a clear picture of where you are right now, and what matters most to you.',
+                      isGradient: true,
+                      iconType: IconType.asset,
+                    ),
+                    8.height,
+                  ],
+                ),
               ),
             ),
             8.height,

@@ -344,16 +344,18 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
   }
 
   Widget primaryFocusAreaWidget() {
+    final strategy = controller.currentActivityStrategy;
     return StrategySectionWidget(
-      cardBuilder: (objective) => ObjectiveCardWidget(
-        title: objective.title,
-        description: objective.description,
+      cardBuilder: (focusArea) => ObjectiveCardWidget(
+        title: focusArea.focusArea,
+        description: focusArea.description,
         bgColor: Get.isDarkMode
             ? AppColors.darkBgColorSecondary
             : AppColors.lightBgColorSecondary,
       ),
       tagSectionTitle: _primaryFocusArea,
-      tagItems: _primaryFocusAreaList,
+      tagItems: [],
+      cardItems: strategy != null ? strategy.focusAreas : [],
     );
   }
 

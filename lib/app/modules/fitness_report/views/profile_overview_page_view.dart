@@ -12,8 +12,8 @@ class ProfileOverviewPageView extends BaseView<FitnessReportController> {
 
   @override
   Widget body(BuildContext context) {
+    final plan = controller.currentFitnessPlan;
     return Scaffold(
-      // backgroundColor: Get.theme.scaffoldBackgroundColor,
       body: Container(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -30,34 +30,50 @@ class ProfileOverviewPageView extends BaseView<FitnessReportController> {
                   children: [
                     IntroWidget(
                       body:
+                          plan?.introductorySummary ??
                           'Based on everything you\'ve shared, here\'s your current fitness snapshot. This will be the foundation for how your Icon builds your training,  nutrition, and recovery plan.',
                     ),
                     16.height,
                     ProfileStatsWidget(
                       title: 'Your Current Stats',
                       stats: [
-                        StatItem(label: 'Name', value: 'Alex Johnson'),
-                        StatItem(label: 'Gender', value: 'Male'),
-                        StatItem(label: 'Current Weight', value: '180 lbs'),
-                        StatItem(label: 'Body Fat %', value: '18%'),
                         StatItem(
-                          label: 'Fitness Goal',
-                          value: 'Build Strength & Lose Fat',
+                          label: 'Name',
+                          value: plan?.trainee.toString() ?? '-',
                         ),
                         StatItem(
-                          label: 'Training Schedule',
-                          value: '4 days/week — Morning',
-                        ),
-                        StatItem(label: 'Age', value: '28'),
-                        StatItem(label: 'Height', value: '5\'10" ft'),
-                        StatItem(label: 'Target Weight', value: '170 lbs'),
-                        StatItem(
-                          label: 'Activity Level',
-                          value: 'Moderately Active',
+                          label: 'Trainer',
+                          value: plan?.trainer.toString() ?? '-',
                         ),
                         StatItem(
-                          label: 'Experience Level',
-                          value: 'Intermediate',
+                          label: 'Current Fitness State',
+                          value: plan?.currentFitnessStateAnalysis ?? '-',
+                        ),
+                        StatItem(
+                          label: 'Introductory Summary',
+                          value: plan?.introductorySummary ?? '-',
+                        ),
+                        StatItem(
+                          label: 'Closing Remarks',
+                          value: plan?.closingRemarks ?? '-',
+                        ),
+                        StatItem(
+                          label: 'Recommended Mindset Principle',
+                          value: plan?.recommendedMindsetPrinciple ?? '-',
+                        ),
+                        StatItem(
+                          label: 'Mindset Principle Justification',
+                          value:
+                              plan?.recommendedMindsetPrincipleJustification ??
+                              '-',
+                        ),
+                        StatItem(
+                          label: 'Created At',
+                          value: plan?.createdAt ?? '-',
+                        ),
+                        StatItem(
+                          label: 'Updated At',
+                          value: plan?.updatedAt ?? '-',
                         ),
                       ],
                     ),
@@ -66,9 +82,11 @@ class ProfileOverviewPageView extends BaseView<FitnessReportController> {
                 ),
               ),
             ),
-                    8.height,
-
-            LoadingButton(onPressed: controller.goToCongratulationsPage, label: 'Register'),
+            8.height,
+            LoadingButton(
+              onPressed: controller.goToCongratulationsPage,
+              label: 'Register',
+            ),
           ],
         ),
       ),

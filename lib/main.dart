@@ -52,7 +52,6 @@ void main() async {
                   ? IconCupertinoTheme.darkTheme
                   : IconCupertinoTheme.lightTheme;
 
-              // Wrap with Material Theme so any Material widgets used on iOS look right
               final materialTheme = useDark
                   ? IconDarkTheme.androidDarkTheme
                   : IconLightTheme.androidLightTheme;

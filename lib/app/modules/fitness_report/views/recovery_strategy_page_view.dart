@@ -23,46 +23,7 @@ class RecoveryStrategyPageView extends BaseView<FitnessReportController> {
   static const String _introBody =
       'You recover best when your energy is steady and your stress is low. Based on your responses, here\'s a recovery approach designed around your lifestyle.';
 
-  // Recovery Objectives Strategies
-  static const List<String> _recoveryStrategies = [
-    'Improve sleep consistency and quality',
-    'Lower daily stress and improve focus',
-    'Enhance muscle repair and mobility',
-  ];
-
-  // Recovery Objectives Data
-  static final List<ActivityObjective> _recoveryObjectivesData = [
-    ActivityObjective(
-      asset: Assets.svgSleepCircular,
-      title: 'SLEEP DURATION TARGET',
-      description: '7-8 hours per night',
-    ),
-    ActivityObjective(
-      asset: Assets.commonEnergyCircular,
-      title: 'ENERGY LEVEL',
-      description: 'Moderate, peaks in morning',
-    ),
-    ActivityObjective(
-      asset: Assets.svgCurrentStress,
-      title: 'CURRENT STRESS LEVEL',
-      description: '1/10',
-    ),
-    ActivityObjective(
-      asset: Assets.svgRecoveryDays,
-      title: 'RECOVERY DAYS PER WEEK',
-      description: '2-3',
-    ),
-    ActivityObjective(
-      asset: Assets.svgTargetStress,
-      title: 'TARGET STRESS LEVEL',
-      description: '4/10',
-    ),
-    ActivityObjective(
-      asset: Assets.svgRecoveryFocus,
-      title: 'RECOVERY FOCUS',
-      description: 'Mobility & Active Rest',
-    ),
-  ];
+  // Use controller.currentRecoveryStrategy for dynamic data
 
   // Info Cards Data
   static final List<InfoCardData> _infoCardsData = [
@@ -136,6 +97,7 @@ class RecoveryStrategyPageView extends BaseView<FitnessReportController> {
   }
 
   Container recoveryStrategiesWidget() {
+    final strategy = controller.currentRecoveryStrategy;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -165,12 +127,16 @@ class RecoveryStrategyPageView extends BaseView<FitnessReportController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ..._recoveryStrategies.asMap().entries.expand(
-                  (entry) => [
-                    ObjectivesItemWidget(title: entry.value),
-                    if (entry.key < _recoveryStrategies.length - 1) 16.height,
-                  ],
-                ),
+                if (strategy != null) ...[
+                  ObjectivesItemWidget(title: strategy.generalInsights),
+                  16.height,
+                  ObjectivesItemWidget(
+                    title: strategy.generalLifestyleRecommendations,
+                  ),
+                ] else
+                  ObjectivesItemWidget(
+                    title: 'No recovery strategy data available',
+                  ),
               ],
             ),
           ),
@@ -180,6 +146,7 @@ class RecoveryStrategyPageView extends BaseView<FitnessReportController> {
   }
 
   Column recoveryObjectivesWidget() {
+    final strategy = controller.currentRecoveryStrategy;
     final recoveryObjectivestitleFontSize = 18.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,23 +159,26 @@ class RecoveryStrategyPageView extends BaseView<FitnessReportController> {
           ),
         ),
         16.height,
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1,
-          children: _recoveryObjectivesData
-              .map(
-                (objective) => ObjectiveCardWidget(
-                  assetPath: objective.asset,
-                  title: objective.title,
-                  description: objective.description,
-                ),
-              )
-              .toList(),
-        ),
+        if (strategy != null && strategy.objectives.isNotEmpty)
+          GridView.count(
+            crossAxisCount: 2,
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 1,
+            children: strategy.objectives
+                .map(
+                  (objective) => ObjectiveCardWidget(
+                    assetPath: Assets.svgRecoveryFocus,
+                    title: objective.objective,
+                    description: objective.description,
+                  ),
+                )
+                .toList(),
+          )
+        else
+          Text('No recovery objectives available'),
       ],
     );
   }
