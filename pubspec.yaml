@@ -46,6 +46,10 @@ dependencies:
   dashed_progress_bar: ^0.0.1
   xml: ^6.6.1
 
+  # Social Auth
+  google_sign_in: ^7.2.0
+  sign_in_with_apple: ^7.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -61,6 +65,11 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/full_body_tracker/
+    - assets/images/home/
+    - assets/images/icon_profile/
+    - assets/images/splash_screen_light/
+    - assets/images/splash_screen_dark/
     - assets/jsons/
 
     - assets/svg/

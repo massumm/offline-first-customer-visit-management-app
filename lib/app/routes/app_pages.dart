@@ -1,6 +1,4 @@
 import 'package:get/get.dart';
-import 'package:icon/app/modules/trainee_fitness_report_generation/bindings/trainee_fitness_report_generation_binding.dart';
-import 'package:icon/app/modules/trainee_fitness_report_generation/views/trainee_fitness_report_generation_view.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
@@ -8,6 +6,8 @@ import '../modules/fitness_report/bindings/fitness_report_binding.dart';
 import '../modules/fitness_report/views/report_display_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/forgot_password/views/forgot_password_view.dart';
+import '../modules/full_body_tracker/bindings/full_body_tracker_binding.dart';
+import '../modules/full_body_tracker/views/full_body_tracker_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/icon_chat/bindings/icon_chat_binding.dart';
@@ -27,6 +27,8 @@ import '../modules/register/views/two_factor_success_page_view.dart';
 import '../modules/register/views/two_factor_verification_page_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/trainee_fitness_report_generation/bindings/trainee_fitness_report_generation_binding.dart';
+import '../modules/trainee_fitness_report_generation/views/trainee_fitness_report_generation_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
 import '../modules/trainer_onboarding/bindings/trainer_onboarding_binding.dart';
@@ -37,6 +39,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
+  // Todo: Change this to initial route
   static const String INITIAL = Routes.SPLASH;
 
   static final routes = [
@@ -126,6 +129,11 @@ class AppPages {
       name: _Paths.ICON_PROFILE,
       page: () => IconProfileView(),
       binding: IconProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.FULL_BODY_TRACKER,
+      page: () => FullBodyTrackerView(),
+      binding: FullBodyTrackerBinding(),
     ),
   ];
 }

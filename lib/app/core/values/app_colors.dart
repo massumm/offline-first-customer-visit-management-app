@@ -15,6 +15,9 @@ abstract class AppColors {
     900: Color.fromRGBO(233, 82, 43, 1),
   });
 
+  static const Color buttonColorRedPink = Color(0xFFE11D48);
+  static const Color colorSecondary = Color(0xFFFFE2E2);
+
   static const Color subTextColor = Color(0xFFB7B7B7);
   static const Color greenColor = Color(0xFF0ECA36);
   static const Color informationColor = Color(0xFFFFAB00);
@@ -28,7 +31,7 @@ abstract class AppColors {
   // ------------- Light Theme Colors ---------------------
   static const Color lightTextPrimaryColor = Color(0xFF241814);
   static const Color lightTextSecondaryColor = Color(0xFF5B5B5B);
-  static const Color  lightBgColor = Color(0xFFF2F2F2);
+  static const Color lightBgColor = Color(0xFFF2F2F2);
   static const Color lightStockColor = Color(0xFFE8E4E2);
   static const Color lightShapeColor = Color(0xFFFFFFFF);
   static const Color lightInputBorderColor = Color(0xFFE8E4E2);

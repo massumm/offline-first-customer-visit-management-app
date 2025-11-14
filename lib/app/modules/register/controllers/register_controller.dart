@@ -9,6 +9,7 @@ import 'package:icon/app/modules/register/repository/registration_repository.dar
 import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../core/theme/services/theme_service.dart';
+import '../../../core/widgets/google_sign_in_api.dart';
 
 class RegisterController extends BaseController {
   final emailCtr = TextEditingController();
@@ -324,5 +325,20 @@ class RegisterController extends BaseController {
     otp5FocusNode.dispose();
     otp6FocusNode.dispose();
     super.onClose();
+  }
+
+  void onGoogleLogin() async {
+    try {
+      final String? token = await GoogleSignInApi.login();
+
+      if (token != null) {
+        CustomToast.showSuccessToast("Google Login Successful");
+        Get.offAndToNamed(Routes.HOME);
+      } else {
+        CustomToast.showErrorToast("Google Login Failed");
+      }
+    } catch (e) {
+      CustomToast.showErrorToast("Google Login Failed");
+    }
   }
 }

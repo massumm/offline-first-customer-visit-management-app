@@ -20,15 +20,16 @@ class IconProfileView extends BaseView<IconProfileController> {
     return CustomScrollView(
       slivers: [
         SliverAppBar(
-          expandedHeight: 300,
-          collapsedHeight: 300,
-          backgroundColor: AppColors.lightAppBarBgColor,
+          // expandedHeight: 300,
+          // collapsedHeight: 300,
+          // backgroundColor: AppColors.lightAppBarBgColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20),
               bottomRight: Radius.circular(20),
             ),
           ),
+          pinned: true,
           title: Text(
             'Icon Details',
             style: AppTextTheme.titleMediumSemiBold.copyWith(
@@ -49,11 +50,13 @@ class IconProfileView extends BaseView<IconProfileController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Your content here
+                  Image.asset(Assets.iconProfileFirst),
+                  16.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Ryan Johnson',
+                        'Mish Choudhury',
                         style: AppTextTheme.headlineMediumSemiBold.copyWith(
                           color: AppColors.black,
                         ),
@@ -67,30 +70,33 @@ class IconProfileView extends BaseView<IconProfileController> {
                     ],
                   ),
                   8.height,
-                  Text(
-                    'Lifting trainer',
-                    style: AppTextTheme.bodyMediumRegular,
-                  ),
+                  Text('Mascot Icon', style: AppTextTheme.bodyMediumRegular),
                   8.height,
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text:
-                              'I am a certified fitness trainer with years of experience helping people transform their health and lifestyle. My approach combines personalized workout plans, balanced ',
-                          style: AppTextTheme.titleSmallRegular.copyWith(
-                            color: AppColors.lightTextSecondaryColor,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'Read more...',
-                          style: AppTextTheme.titleSmallSemiBold.copyWith(
-                            color: AppColors.black,
-                          ),
-                        ),
-                      ],
+                  Text(
+                    'I am a certified trainer with years of experience helping people transform their health and lifestyle. I have helped hundreds of emergency service workers improve their fitness, and am a fitness author.\n\nI specialise in supporting beginners, with a focus on rewiring your psychology to make fitness easier and more enjoyable!',
+                    style: AppTextTheme.titleSmallRegular.copyWith(
+                      color: AppColors.lightTextSecondaryColor,
                     ),
                   ),
+                  // RichText(
+                  //   text: TextSpan(
+                  //     children: [
+                  //       TextSpan(
+                  //         text:
+                  //             'I am a certified fitness trainer with years of experience helping people transform their health and lifestyle. My approach combines personalized workout plans, balanced ',
+                  //         style: AppTextTheme.titleSmallRegular.copyWith(
+                  //           color: AppColors.lightTextSecondaryColor,
+                  //         ),
+                  //       ),
+                  //       TextSpan(
+                  //         text: 'Read more...',
+                  //         style: AppTextTheme.titleSmallSemiBold.copyWith(
+                  //           color: AppColors.black,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   8.height,
                   Row(
                     children: [
@@ -179,29 +185,10 @@ class IconProfileView extends BaseView<IconProfileController> {
                       ),
                     ],
                   ),
+                  // 16.height,
+                  // _badges(),
                   16.height,
-                  Text(
-                    'Badges',
-                    style: AppTextTheme.headlineMediumSemiBold.copyWith(
-                      color: AppColors.black,
-                    ),
-                  ),
-                  8.height,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      4,
-                      (index) => Container(
-                        height: 85,
-                        width: 85,
-                        decoration: BoxDecoration(
-                          color: AppColors.lightAppBarBgColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ),
-                  16.height,
+
                   Text(
                     'Training Specialisms',
                     style: AppTextTheme.headlineMediumSemiBold.copyWith(
@@ -209,12 +196,6 @@ class IconProfileView extends BaseView<IconProfileController> {
                     ),
                   ),
                   8.height,
-                  // Strength
-                  // Bodybuilding
-                  // Scientific
-                  // Holistic
-                  // Fat-loss
-                  // All-rounder
                   Column(
                     children: [
                       Row(
@@ -239,87 +220,125 @@ class IconProfileView extends BaseView<IconProfileController> {
                     ],
                   ),
                   16.height,
-                  Container(
-                    height: 177,
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: AppColors.lightAppBarBgColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                  Image.asset(Assets.iconProfileSecond),
+                  16.height,
+                  _questionAnswers(
+                    title: 'The One this I always include in a program...',
+                    description:
+                        'Structured Progression, No guesswork. You earn every result.',
                   ),
                   16.height,
-                  Text(
-                    '— Alex Johnson',
-                    style: AppTextTheme.headlineMediumSemiBold.copyWith(
-                      color: AppColors.black,
-                    ),
-                  ),
-                  8.height,
-                  Text(
-                    '“Structured progression. no guesswork. you earn every result.”',
-                    style: AppTextTheme.bodyLargeMedium.copyWith(
-                      color: AppColors.lightTextSecondaryColor,
-                    ),
+                  Image.asset(Assets.iconProfileThird),
+                  16.height,
+                  _questionAnswers(
+                    title: 'My proudest fitness moment was when...',
+                    description: 'Joe Wicks complimented my biceps!',
                   ),
                   16.height,
+                  Image.asset(Assets.iconProfileFourth),
+                  16.height,
+                  _questionAnswers(
+                    title: '— Alex Johnson',
+                    description:
+                        '"Structured progression. no guesswork. you earn every result."',
+                  ),
+                  20.height,
                   Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 50,
-                          child: Center(
-                            child: FaIcon(
-                              FontAwesomeIcons.facebook,
-                              color: AppColors.black,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                      8.width,
-                      Expanded(
-                        child: Container(
-                          height: 50,
-                          child: Center(
-                            child: FaIcon(
-                              FontAwesomeIcons.instagram,
-                              color: AppColors.black,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                      8.width,
-                      Expanded(
-                        child: Container(
-                          height: 50,
-                          child: Center(
-                            child: FaIcon(
-                              FontAwesomeIcons.twitter,
-                              color: AppColors.black,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                      8.width,
-                      Expanded(
-                        child: Container(
-                          height: 50,
-                          child: Center(
-                            child: FaIcon(
-                              FontAwesomeIcons.linkedin,
-                              color: AppColors.black,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: _buildSocialMediaIcons(),
                   ),
                 ],
               ),
             ]),
+          ),
+        ),
+      ],
+    );
+  }
+
+  List<Widget> _buildSocialMediaIcons() {
+    final socialIcons = [
+      FontAwesomeIcons.facebook,
+      FontAwesomeIcons.instagram,
+      FontAwesomeIcons.twitter,
+      FontAwesomeIcons.linkedin,
+    ];
+
+    final List<Widget> iconWidgets = [];
+
+    for (int i = 0; i < socialIcons.length; i++) {
+      iconWidgets.add(
+        Center(child: FaIcon(socialIcons[i], color: AppColors.black, size: 36)),
+      );
+
+      if (i < socialIcons.length - 1) {
+        iconWidgets.add(16.width);
+      }
+    }
+
+    return iconWidgets;
+  }
+
+  Container _questionAnswers({
+    required String title,
+    TextStyle? titleStyle,
+    required String description,
+    TextStyle? descriptionStyle,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style:
+                titleStyle ??
+                AppTextTheme.bodyMediumSemiBold.copyWith(
+                  color: AppColors.black,
+                ),
+          ),
+          8.height,
+          Text(
+            description,
+            style:
+                descriptionStyle ??
+                AppTextTheme.headlineMediumSemiBold.copyWith(
+                  color: AppColors.black,
+                  fontStyle: FontStyle.italic,
+                ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Row _badges() {
+    return Row(
+      children: [
+        Text(
+          'Badges',
+          style: AppTextTheme.headlineMediumSemiBold.copyWith(
+            color: AppColors.black,
+          ),
+        ),
+        8.height,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: List.generate(
+            4,
+            (index) => Container(
+              height: 85,
+              width: 85,
+              decoration: BoxDecoration(
+                color: AppColors.lightAppBarBgColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           ),
         ),
       ],

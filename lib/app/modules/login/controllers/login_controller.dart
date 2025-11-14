@@ -8,6 +8,7 @@ import '../../../base/network/exceptions/base_exception.dart';
 import '../../../base/network/exceptions/network_exception.dart';
 import '../../../base/network/exceptions/not_found_exception.dart';
 import '../../../base/widgets/custom_toast.dart';
+import '../../../core/widgets/google_sign_in_api.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
 import '../repository/login_repository.dart';
@@ -182,5 +183,21 @@ class LoginController extends BaseController {
 
   void toForgotPassword() {
     Get.toNamed(Routes.FORGOT_PASSWORD);
+  }
+
+  void onGoogleLogin() async {
+    try {
+      final String? token = await GoogleSignInApi.login();
+
+      if (token != null) {
+        "Google Token: $token".log();
+        CustomToast.showSuccessToast("Google Login Successful");
+        Get.offAndToNamed(Routes.HOME);
+      } else {
+        CustomToast.showErrorToast("Google Login Failed");
+      }
+    } catch (e) {
+      CustomToast.showErrorToast("Google Login Failed");
+    }
   }
 }

@@ -4,7 +4,7 @@ import 'package:logger/logger.dart';
 
 import '../../../../core/values/app_keys.dart';
 import '../../../../modules/login/models/login_response_model.dart';
-import '../preference_service.dart'; 
+import '../preference_service.dart'; // Make sure this path is correct
 
 class UserStore extends GetxService {
   final Logger logger = Logger();
