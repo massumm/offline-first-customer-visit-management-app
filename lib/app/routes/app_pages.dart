@@ -25,6 +25,8 @@ import '../modules/register/views/two_factor_success_page_view.dart';
 import '../modules/register/views/two_factor_verification_page_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/trainee_fitness_report_generation/bindings/trainee_fitness_report_generation_binding.dart';
+import '../modules/trainee_fitness_report_generation/views/trainee_fitness_report_generation_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
 import '../modules/trainer_onboarding/bindings/trainer_onboarding_binding.dart';
