@@ -8,7 +8,6 @@ import 'package:icon/app/modules/fitness_report/models/daily_goal.dart';
 import 'package:icon/app/modules/fitness_report/widgets/fitness_report_appbar_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/frequency_badge.dart';
 import 'package:icon/app/core/widgets/asset_icon_container.dart';
-import 'package:icon/generated/assets.dart';
 
 class DailyGoalsPageView extends BaseView<FitnessReportController> {
   DailyGoalsPageView({super.key});
@@ -21,59 +20,7 @@ class DailyGoalsPageView extends BaseView<FitnessReportController> {
   final assetWidth = 28;
   final assetHeight = 28;
 
-  final List<DailyGoal> dailyGoalsData = [
-    DailyGoal(
-      title: 'Step Goal',
-      frequency: ['Everyday'],
-      subtitle: '7,000 steps',
-      description: 'Stay active throughout the day — light movement adds up.',
-      icon: Assets.dailyGoalsStepGoal,
-    ),
-    DailyGoal(
-      title: 'Workout Duration',
-      frequency: ['Mon', 'Thu', 'Sat'],
-      subtitle: '45-60 mins',
-      description:
-          'Focused sessions designed to balance intensity and recovery.',
-      icon: Assets.dailyGoalsWorkoutDuration,
-    ),
-    DailyGoal(
-      title: 'Repair Goal',
-      frequency: ['Everyday'],
-      subtitle: '10 min mobility',
-      description:
-          'Daily mobility or stretching to improve recovery and posture.',
-      icon: Assets.dailyGoalsRepairGoal,
-    ),
-    DailyGoal(
-      title: 'Calorie Intake',
-      frequency: ['Everyday'],
-      subtitle: '2,200 kcal',
-      description: 'Optimized to support your strength and toning goals.',
-      icon: Assets.dailyGoalsCalorieIntakeGoal,
-    ),
-    DailyGoal(
-      title: 'Water Goal',
-      frequency: ['Everyday'],
-      subtitle: '2.5 L',
-      description: 'Stay hydrated to boost focus and recovery.',
-      icon: Assets.dailyGoalsWaterGoal,
-    ),
-    DailyGoal(
-      title: 'Sleep Goal',
-      frequency: ['Everyday'],
-      subtitle: '7.5 hrs',
-      description: 'Quality sleep is the foundation for progress and energy.',
-      icon: Assets.dailyGoalsSleepGoal,
-    ),
-    DailyGoal(
-      title: 'Mood Reflection',
-      frequency: ['Everyday'],
-      subtitle: 'Daily check-in',
-      description: 'Track your mindset and mood to understand your trends.',
-      icon: Assets.dailyGoalsMoodReflectionGoal,
-    ),
-  ];
+  // Use controller.currentFitnessPlan?.dailyGoals for dynamic data
 
   @override
   Widget body(BuildContext context) {
@@ -103,9 +50,11 @@ class DailyGoalsPageView extends BaseView<FitnessReportController> {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: dailyGoalsData.length,
+                      itemCount:
+                          controller.currentFitnessPlan?.dailyGoals.length ?? 0,
                       itemBuilder: (context, index) {
-                        final goal = dailyGoalsData[index];
+                        final goal =
+                            controller.currentFitnessPlan!.dailyGoals[index];
                         return Container(
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(

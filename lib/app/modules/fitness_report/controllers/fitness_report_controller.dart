@@ -13,8 +13,51 @@ import '../views/activity_strategy_page_view.dart';
 import '../views/daily_goals_page_view.dart';
 import '../views/mindset_motivation_page_view.dart';
 import '../views/congratulations_page_view.dart';
+import '../models/fitness_plan_model.dart';
 
 class FitnessReportController extends BaseController {
+  // --- Computed Getters for Current Page Data ---
+  RecoveryStrategyModel? get currentRecoveryStrategy {
+    if (recoveryStrategies.isNotEmpty && currentPageIndex.value == 2) {
+      return recoveryStrategies.first;
+    }
+    return null;
+  }
+
+  NutritionStrategyModel? get currentNutritionStrategy {
+    if (nutritionStrategies.isNotEmpty && currentPageIndex.value == 3) {
+      return nutritionStrategies.first;
+    }
+    return null;
+  }
+
+  ActivityStrategyModel? get currentActivityStrategy {
+    if (activityStrategies.isNotEmpty && currentPageIndex.value == 4) {
+      return activityStrategies.first;
+    }
+    return null;
+  }
+
+  FitnessPlanModel? get currentFitnessPlan => fitnessPlan.value;
+  // --- Data Models ---
+  Rxn<FitnessPlanModel> fitnessPlan = Rxn<FitnessPlanModel>();
+  RxList<RecoveryStrategyModel> recoveryStrategies =
+      <RecoveryStrategyModel>[].obs;
+  RxList<NutritionStrategyModel> nutritionStrategies =
+      <NutritionStrategyModel>[].obs;
+  RxList<ActivityStrategyModel> activityStrategies =
+      <ActivityStrategyModel>[].obs;
+
+  Future<void> loadFitnessReportData() async {
+    final planData = await _reportService.fetchFitnessPlan();
+    if (planData is List && planData.isNotEmpty) {
+      fitnessPlan.value = FitnessPlanModel.fromJson(planData[0]);
+      recoveryStrategies.value = fitnessPlan.value?.recoveryStrategies ?? [];
+      nutritionStrategies.value = fitnessPlan.value?.nutritionStrategies ?? [];
+      activityStrategies.value = fitnessPlan.value?.activityStrategies ?? [];
+    }
+  }
+
   // -------------------Services ------------------
   final FitnessReportService _reportService = Get.find<FitnessReportService>();
   late PageController pageController;
@@ -23,9 +66,9 @@ class FitnessReportController extends BaseController {
   void onInit() {
     super.onInit();
     pageController = PageController(initialPage: 0);
-
-    // ----------------- init services ----------------
     _reportService.attach(this);
+    // Load backend data on controller init
+    loadFitnessReportData();
   }
 
   @override

@@ -43,9 +43,14 @@ class MindsetMotivationPageView extends BaseView<FitnessReportController> {
             16.height,
             InfoCardWidget(
               icon: Assets.imagesFitnessReportFace,
-              title: 'Progress > Perfection',
+              title:
+                  controller.currentFitnessPlan?.recommendedMindsetPrinciple ??
+                  'No mindset principle available',
               description:
-                  'Your journey isn\'t about being flawless - it\'s about showing up, adjusting, and growing through the process. Every small action counts more than you realize.',
+                  controller
+                      .currentFitnessPlan
+                      ?.recommendedMindsetPrincipleJustification ??
+                  'No justification available',
               isGradient: true,
               iconType: IconType.asset,
             ),

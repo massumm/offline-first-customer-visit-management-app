@@ -10,108 +10,247 @@ class FitnessReportRepositoryImpl extends BaseRemoteSource
   final String token = UserStore.to.token;
 
   @override
-  Future<void> generateReport(Map<String, dynamic> data,  {void Function(int, int)? onSendProgress,}) {
-    final String endpoint = "${DioProvider.baseUrl}/api/fitness_plan/generate/";
-
+  Future<Response> generateReport(
+    Map<String, dynamic> data, {
+    void Function(int, int)? onSendProgress,
+  }) {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/generate/by-trainer/${data['trainer_id']}/";
     final Map<String, String> headers = {'Authorization': "Bearer $token"};
-
     Future<Response<dynamic>> dioCall = dioClient.post(
       endpoint,
       options: Options(headers: headers),
       data: data,
       onSendProgress: onSendProgress,
     );
-
     try {
-      return callApiWithErrorParser(
-        dioCall,
-      ).then((Response response) => Future.value());
+      return callApiWithErrorParser(dioCall);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> fetchActivityFocus() {
-    // TODO: implement fetchActivityFocus
-    throw UnimplementedError();
+  Future<Response> fetchActivityFocus() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/activity-focus-areas/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchActivityGoalsObjective() {
-    // TODO: implement fetchActivityGoalsObjective
-    throw UnimplementedError();
+  Future<Response> fetchActivityGoalsObjective() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/activity-goals/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchActivityObjective() {
-    // TODO: implement fetchActivityObjective
-    throw UnimplementedError();
+  Future<Response> fetchActivityObjective() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/activity-objectives/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchActivityStrategies() {
-    // TODO: implement fetchActivityStrategies
-    throw UnimplementedError();
+  Future<Response> fetchActivityStrategies() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/activity-strategies/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchActivityTask() {
-    // TODO: implement fetchActivityTask
-    throw UnimplementedError();
+  Future<Response> fetchActivityTask() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/activity-tasks/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchFitnessGoals() {
-    // TODO: implement fetchFitnessGoals
-    throw UnimplementedError();
+  Future<Response> fetchFitnessGoals() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/fitnessplan-goal-links/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchFitnessPlan() {
-    // TODO: implement fetchFitnessPlan
-    throw UnimplementedError();
+  Future<Response> fetchFitnessPlan() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/fitness-plans/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchNutritionGoals() {
-    // TODO: implement fetchNutritionGoals
-    throw UnimplementedError();
+  Future<Response> fetchNutritionGoals() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/nutrition-goals/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchNutritionObjectives() {
-    // TODO: implement fetchNutritionObjectives
-    throw UnimplementedError();
+  Future<Response> fetchNutritionObjectives() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/nutrition-objectives/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchNutritionStrategies() {
-    // TODO: implement fetchNutritionStrategies
-    throw UnimplementedError();
+  Future<Response> fetchNutritionStrategies() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/nutrition-strategies/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchRecoveryGoals() {
-    // TODO: implement fetchRecoveryGoals
-    throw UnimplementedError();
+  Future<Response> fetchRecoveryGoals() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/recovery-goals/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchRecoveryObjective() {
-    // TODO: implement fetchRecoveryObjective
-    throw UnimplementedError();
+  Future<Response> fetchRecoveryObjective() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/recovery-objectives/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchRecoveryStrategies() {
-    // TODO: implement fetchRecoveryStrategies
-    throw UnimplementedError();
+  Future<Response> fetchRecoveryStrategies() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/recovery-strategies/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
-  Future<void> fetchSchedulesTasks() {
-    // TODO: implement fetchSchedulesTasks
-    throw UnimplementedError();
+  Future<Response> fetchSchedulesTasks() {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/fitness_plan/task-schedules/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
   }
 }
