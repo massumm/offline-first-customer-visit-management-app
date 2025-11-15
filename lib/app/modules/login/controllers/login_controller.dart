@@ -146,9 +146,10 @@ class LoginController extends BaseController {
                 }
                 isLoading(false);
               },
-              onError: (error) {
+              onError: (error, stackTrace) {
                 isLoading.value = false;
                 CustomToast.showErrorToast('Invalid credentials');
+                error.logToCrashlytics(stackTrace);
               },
             );
       } catch (error) {
