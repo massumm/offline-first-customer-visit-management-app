@@ -67,23 +67,22 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
       fontWeight: FontWeight.w700,
     );
 
-    final supportingCopyFinalStyle = theme.textTheme.bodyMedium!.copyWith(
-      color: Colors.black,
-    );
+    final supportingCopyFinalStyle = theme.textTheme.bodyMedium!;
     final supportingCopyInitialStyle = theme.textTheme.headlineSmall!.copyWith(
-      color: Colors.black,
+      color: supportingCopyFinalStyle.color,
     );
+
 
     return Scaffold(
       body: SafeArea(
-        top: false,
+        top: true,
         bottom: true,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 8, 12, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Back button (fades in with the first text)
+              // Back button
               AnimatedOpacity(
                 opacity: _animationStep >= 1 ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 500),
