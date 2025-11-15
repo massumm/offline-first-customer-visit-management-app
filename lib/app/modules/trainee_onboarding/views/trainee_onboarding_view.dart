@@ -156,14 +156,14 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           actions: <Widget>[
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('Stay'),
+              child: const Text('Stay', style: TextStyle(fontSize: 14)),
             ),
             FilledButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 Get.back();
               },
-              child: const Text('Leave'),
+              child: const Text('Leave', style: TextStyle(fontSize: 14)),
             ),
           ],
         ),
