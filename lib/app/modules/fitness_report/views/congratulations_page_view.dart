@@ -10,7 +10,7 @@ import 'package:icon/app/modules/fitness_report/widgets/info_card_widget.dart';
 import 'package:icon/generated/assets.dart';
 
 class CongratulationsMessagePageView extends BaseView<FitnessReportController> {
-  CongratulationsMessagePageView({super.key});
+  const CongratulationsMessagePageView({super.key});
 
   @override
   Widget body(BuildContext context) {

@@ -7,7 +7,7 @@ import '../controllers/trainee_fitness_report_generation_controller.dart';
 
 class TraineeFitnessReportGenerationView
     extends BaseView<TraineeFitnessReportGenerationController> {
-  TraineeFitnessReportGenerationView({super.key});
+  const TraineeFitnessReportGenerationView({super.key});
 
   @override
   Widget body(BuildContext context) {

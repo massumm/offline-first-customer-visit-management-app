@@ -4,7 +4,7 @@ import 'package:icon/app/base/base_view.dart';
 import '../controllers/fitness_report_controller.dart';
 
 class ReportDisplayView extends BaseView<FitnessReportController> {
-  ReportDisplayView({super.key});
+  const ReportDisplayView({super.key});
 
   @override
   Widget body(BuildContext context) {

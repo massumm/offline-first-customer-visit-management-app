@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
@@ -19,7 +18,7 @@ import '../../../routes/app_pages.dart';
 import '../controllers/register_controller.dart';
 
 class RegisterView extends BaseView<RegisterController> {
-  RegisterView({super.key});
+  const RegisterView({super.key});
 
   @override
   Widget body(BuildContext context) {

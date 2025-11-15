@@ -8,7 +8,7 @@ import '../../../core/values/app_colors.dart';
 import '../controllers/onboarding_controller.dart';
 
 class OnboardingView extends BaseView<OnboardingController> {
-   OnboardingView({super.key});
+   const OnboardingView({super.key});
 
   @override
   Widget body(BuildContext context) {

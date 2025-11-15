@@ -10,7 +10,7 @@ import '../../../core/widgets/input_widgets/otp_digit_field.dart';
 import '../controllers/otp_validation_controller.dart';
 
 class OtpValidationView extends BaseView<OtpValidationController> {
-  OtpValidationView({super.key});
+  const OtpValidationView({super.key});
 
   @override
   Widget body(BuildContext context) {

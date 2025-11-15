@@ -6,7 +6,7 @@ import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/modules/register/controllers/register_controller.dart';
 
 class TwoFactorVerificationPageView extends BaseView<RegisterController> {
-  TwoFactorVerificationPageView({super.key});
+  const TwoFactorVerificationPageView({super.key});
 
   @override
   Widget body(BuildContext context) {

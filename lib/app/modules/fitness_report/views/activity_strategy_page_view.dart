@@ -18,7 +18,7 @@ import 'package:icon/app/modules/fitness_report/widgets/strategy_section_widget.
 import 'package:icon/generated/assets.dart';
 
 class ActivityStrategyPageView extends BaseView<FitnessReportController> {
-  ActivityStrategyPageView({super.key});
+  const ActivityStrategyPageView({super.key});
 
   // Common values
   static const String _yourActivityObjectives = "Your Activity Objectives";

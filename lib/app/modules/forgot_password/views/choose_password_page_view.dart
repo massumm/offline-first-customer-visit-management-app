@@ -6,7 +6,7 @@ import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/modules/forgot_password/controllers/forgot_password_controller.dart';
 
 class ChoosePasswordPageView extends BaseView<ForgotPasswordController> {
-  ChoosePasswordPageView({super.key});
+  const ChoosePasswordPageView({super.key});
 
   @override
   Widget body(BuildContext context) {

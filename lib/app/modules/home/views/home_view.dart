@@ -18,7 +18,7 @@ import '../widgets/progress_ring.dart';
 import '../widgets/trainer_info_card.dart';
 
 class HomeView extends BaseView<HomeController> {
-  HomeView({super.key});
+  const HomeView({super.key});
 
   @override
   Widget body(BuildContext context) {

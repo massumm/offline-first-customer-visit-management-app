@@ -14,7 +14,7 @@ import 'package:icon/app/modules/full_body_tracker/controllers/full_body_tracker
 import 'package:icon/generated/assets.dart';
 
 class FullBodyTrackerView extends BaseView<FullBodyTrackerController> {
-  FullBodyTrackerView({super.key});
+  const FullBodyTrackerView({super.key});
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {

@@ -9,7 +9,7 @@ import 'package:icon/app/modules/fitness_report/widgets/info_card_widget.dart';
 import 'package:icon/generated/assets.dart';
 
 class MindsetMotivationPageView extends BaseView<FitnessReportController> {
-  MindsetMotivationPageView({super.key});
+  const MindsetMotivationPageView({super.key});
 
   @override
   Widget body(BuildContext context) {

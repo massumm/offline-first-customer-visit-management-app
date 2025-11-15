@@ -10,7 +10,7 @@ import 'package:icon/app/modules/fitness_report/widgets/frequency_badge.dart';
 import 'package:icon/app/core/widgets/asset_icon_container.dart';
 
 class DailyGoalsPageView extends BaseView<FitnessReportController> {
-  DailyGoalsPageView({super.key});
+  const DailyGoalsPageView({super.key});
 
   final freqFontSize = 12;
   final mainTitleFontSize = 18;

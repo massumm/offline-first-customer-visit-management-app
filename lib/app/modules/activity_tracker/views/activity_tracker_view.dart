@@ -14,7 +14,7 @@ import 'widgets/routines_card.dart';
 import 'widgets/workout_recomendation_card.dart';
 
 class ActivityTrackerView extends BaseView<ActivityTrackerController> {
-  ActivityTrackerView({super.key});
+  const ActivityTrackerView({super.key});
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {

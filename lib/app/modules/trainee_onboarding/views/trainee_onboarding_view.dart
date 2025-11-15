@@ -15,7 +15,7 @@ import 'widgets/status_message_bubble.dart';
 import 'widgets/type_bubble.dart';
 
 class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
-  TraineeOnboardingView({super.key});
+  const TraineeOnboardingView({super.key});
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {

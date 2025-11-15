@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:icon/app/modules/fitness_report/models/daily_goal.dart';
 
 class FitnessPlanModel {

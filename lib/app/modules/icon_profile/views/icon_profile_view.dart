@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
@@ -13,7 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../controllers/icon_profile_controller.dart';
 
 class IconProfileView extends BaseView<IconProfileController> {
-  IconProfileView({super.key});
+  const IconProfileView({super.key});
 
   @override
   Widget body(BuildContext context) {

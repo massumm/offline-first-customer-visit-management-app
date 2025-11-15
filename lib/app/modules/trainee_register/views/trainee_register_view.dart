@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 
 import '../controllers/trainee_register_controller.dart';

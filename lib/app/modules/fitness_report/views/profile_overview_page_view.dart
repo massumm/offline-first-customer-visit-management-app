@@ -8,7 +8,7 @@ import 'package:icon/app/modules/fitness_report/widgets/fitness_report_appbar_wi
 import 'package:icon/app/modules/fitness_report/widgets/profile_stats_widget.dart';
 
 class ProfileOverviewPageView extends BaseView<FitnessReportController> {
-  ProfileOverviewPageView({super.key});
+  const ProfileOverviewPageView({super.key});
 
   @override
   Widget body(BuildContext context) {

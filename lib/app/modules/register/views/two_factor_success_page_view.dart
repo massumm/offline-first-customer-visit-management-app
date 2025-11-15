@@ -6,7 +6,7 @@ import 'package:icon/app/modules/register/controllers/register_controller.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
 class TwoFactorSuccessPageView extends BaseView<RegisterController> {
-  TwoFactorSuccessPageView({super.key});
+  const TwoFactorSuccessPageView({super.key});
 
   @override
   Widget body(BuildContext context) {

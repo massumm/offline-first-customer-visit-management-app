@@ -14,7 +14,7 @@ import 'package:icon/app/modules/fitness_report/widgets/info_card_widget.dart';
 import 'package:icon/generated/assets.dart';
 
 class NutritionStrategyPageView extends BaseView<FitnessReportController> {
-  NutritionStrategyPageView({super.key});
+  const NutritionStrategyPageView({super.key});
 
   // Common values
   static const String _title = 'Your Nutrition Strategy';

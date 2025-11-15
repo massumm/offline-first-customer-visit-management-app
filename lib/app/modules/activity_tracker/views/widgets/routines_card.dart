@@ -170,7 +170,7 @@ class _RoutineSectionCardState extends State<RoutineSectionCard> {
                     padding: const EdgeInsets.only(bottom: 12),
                     child: WorkoutItemCard(data: w),
                   ))
-                      .toList(),
+                      ,
                 ],
               ),
               crossFadeState: _expanded
@@ -211,7 +211,7 @@ class WorkoutItemCard extends StatelessWidget {
                       ?.copyWith(fontWeight: FontWeight.w700)),
               const SizedBox(height: 6),
               Text(
-                '${data.items.join(' • ')}',
+                data.items.join(' • '),
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium

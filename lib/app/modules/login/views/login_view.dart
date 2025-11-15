@@ -17,7 +17,7 @@ import '../../../core/widgets/action_pill.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends BaseView<LoginController> {
-  LoginView({super.key});
+  const LoginView({super.key});
 
   @override
   Widget body(BuildContext context) {

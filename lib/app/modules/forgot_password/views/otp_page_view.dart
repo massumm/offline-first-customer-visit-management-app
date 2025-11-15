@@ -7,7 +7,7 @@ import 'package:icon/app/core/widgets/input_widgets/otp_digit_field.dart';
 import 'package:icon/app/modules/forgot_password/controllers/forgot_password_controller.dart';
 
 class OtpPageView extends BaseView<ForgotPasswordController> {
-  OtpPageView({super.key});
+  const OtpPageView({super.key});
 
   @override
   Widget body(BuildContext context) {

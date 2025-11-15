@@ -7,7 +7,7 @@ import 'package:icon/app/core/widgets/input_widgets/otp_digit_field.dart';
 import 'package:icon/app/modules/register/controllers/register_controller.dart';
 
 class EmailVerificationOtpPageView extends BaseView<RegisterController> {
-  EmailVerificationOtpPageView({super.key});
+  const EmailVerificationOtpPageView({super.key});
 
   @override
   Widget body(BuildContext context) {

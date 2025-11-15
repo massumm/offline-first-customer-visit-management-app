@@ -5,7 +5,6 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/loading_button.dart';
 import 'package:icon/app/modules/fitness_report/controllers/fitness_report_controller.dart';
-import 'package:icon/app/modules/fitness_report/models/activity_strategy_models.dart';
 import 'package:icon/app/modules/fitness_report/models/info_card_model.dart';
 import 'package:icon/app/modules/fitness_report/widgets/intro_widget.dart';
 import 'package:icon/app/modules/fitness_report/widgets/fitness_report_appbar_widget.dart';
@@ -15,7 +14,7 @@ import 'package:icon/app/modules/fitness_report/widgets/info_card_widget.dart';
 import 'package:icon/generated/assets.dart';
 
 class RecoveryStrategyPageView extends BaseView<FitnessReportController> {
-  RecoveryStrategyPageView({super.key});
+  const RecoveryStrategyPageView({super.key});
 
   // Common values
   static const String _title = 'Your Recovery Strategy';
