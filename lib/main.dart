@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +19,17 @@ import 'app/flavors/build_config.dart';
 import 'app/flavors/env_config.dart';
 import 'app/flavors/environment.dart';
 import 'app/routes/app_pages.dart';
+import 'firebase_options.dart';
 
 // final String token = UserStore.to.token;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase
+  await _setupFirebase();
+
+  await _initCrashlytics();
 
   await Get.putAsync<StorageService>(() => StorageService().init());
   await Get.putAsync<ThemeService>(() => ThemeService().init());
@@ -94,6 +102,26 @@ void main() async {
             },
           ),
   );
+}
+
+Future<void> _setupFirebase() async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
+
+Future<void> _initCrashlytics() async {
+  if (kReleaseMode) {
+    // init firebase crashlytics
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
+    };
+
+    PlatformDispatcher.instance.onError = (error, stack) {
+      if (kReleaseMode) {
+        FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      }
+      return true;
+    };
+  }
 }
 
 Future<void> _setupEnvironment() {
