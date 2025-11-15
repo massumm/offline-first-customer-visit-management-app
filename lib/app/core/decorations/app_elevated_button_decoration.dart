@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../values/app_colors.dart';
 
-Size get buttonFixedSize => const Size(double.maxFinite, 42);
+Size get buttonFixedSize => const Size(double.maxFinite, 44);
 final BorderRadius borderRadius = BorderRadius.circular(12);
 
 TextStyle get btnTextStyle {
@@ -14,7 +14,23 @@ TextStyle get btnTextStyle {
   );
 }
 
-ElevatedButtonThemeData get appElevatedButtonTheme {
+ElevatedButtonThemeData get appElevatedButtonThemeLight {
+  return ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: AppColors.colorPrimary,
+      foregroundColor: Colors.white,
+      fixedSize: buttonFixedSize,
+      textStyle: btnTextStyle,
+      shape: RoundedRectangleBorder(
+        borderRadius: borderRadius,
+        side: BorderSide(color: Colors.grey.shade300, width: 1),
+      ),
+      elevation: 0,
+    ),
+  );
+}
+
+ElevatedButtonThemeData get appElevatedButtonThemeDark {
   return ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       backgroundColor: AppColors.colorPrimary,
