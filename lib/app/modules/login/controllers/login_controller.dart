@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/extensions/firebase_crashlytics.dart';
 import 'package:icon/app/core/theme/services/theme_service.dart';
 import '../../../base/network/exceptions/api_exception.dart';
 import '../../../base/network/exceptions/base_exception.dart';
@@ -146,9 +147,10 @@ class LoginController extends BaseController {
                 }
                 isLoading(false);
               },
-              onError: (error) {
+              onError: (error, stackTrace) {
                 isLoading.value = false;
                 CustomToast.showErrorToast('Invalid credentials');
+                error.logToCrashlytics(stackTrace);
               },
             );
       } catch (error) {
