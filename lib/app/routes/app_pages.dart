@@ -29,6 +29,8 @@ import '../modules/trainee_fitness_report_generation/bindings/trainee_fitness_re
 import '../modules/trainee_fitness_report_generation/views/trainee_fitness_report_generation_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
+import '../modules/trainee_register/bindings/trainee_register_binding.dart';
+import '../modules/trainee_register/views/trainee_register_view.dart';
 import '../modules/trainer_onboarding/bindings/trainer_onboarding_binding.dart';
 import '../modules/trainer_onboarding/views/trainer_onboarding_view.dart';
 
@@ -126,6 +128,11 @@ class AppPages {
       name: _Paths.ICON_PROFILE,
       page: () => IconProfileView(),
       binding: IconProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.TRAINEE_REGISTER,
+      page: () => const TraineeRegisterView(),
+      binding: TraineeRegisterBinding(),
     ),
   ];
 }

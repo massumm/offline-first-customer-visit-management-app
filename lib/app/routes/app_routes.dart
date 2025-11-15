@@ -24,6 +24,7 @@ abstract class Routes {
   static const OTP_VALIDATION = _Paths.OTP_VALIDATION;
   static const ICON_PROFILE = _Paths.ICON_PROFILE;
   static const FULL_BODY_TRACKER = _Paths.FULL_BODY_TRACKER;
+  static const TRAINEE_REGISTER = _Paths.TRAINEE_REGISTER;
 }
 
 abstract class _Paths {
@@ -49,4 +50,5 @@ abstract class _Paths {
   static const OTP_VALIDATION = '/otp-validation';
   static const ICON_PROFILE = '/icon-profile';
   static const FULL_BODY_TRACKER = '/full-body-tracker';
+  static const TRAINEE_REGISTER = '/trainee-register';
 }
