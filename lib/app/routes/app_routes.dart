@@ -25,6 +25,9 @@ abstract class Routes {
   static const ICON_PROFILE = _Paths.ICON_PROFILE;
   static const FULL_BODY_TRACKER = _Paths.FULL_BODY_TRACKER;
   static const TRAINEE_REGISTER = _Paths.TRAINEE_REGISTER;
+  static const WEEKLY_ROUTINE = _Paths.WEEKLY_ROUTINE;
+  static const ADD_EXERCISE_TO_ROUTINE = _Paths.ADD_EXERCISE_TO_ROUTINE;
+  static const EXPLORE = _Paths.EXPLORE;
 }
 
 abstract class _Paths {
@@ -51,4 +54,7 @@ abstract class _Paths {
   static const ICON_PROFILE = '/icon-profile';
   static const FULL_BODY_TRACKER = '/full-body-tracker';
   static const TRAINEE_REGISTER = '/trainee-register';
+  static const WEEKLY_ROUTINE = '/weekly-routine';
+  static const ADD_EXERCISE_TO_ROUTINE = '/add-exercise-to-routine';
+  static const EXPLORE = '/explore';
 }

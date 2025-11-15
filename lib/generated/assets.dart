@@ -30,12 +30,15 @@ class Assets {
   static const String fullBodyTrackerBarbellSquatDark = 'assets/images/full_body_tracker/barbell_squat_dark.png';
   static const String fullBodyTrackerDeadlift = 'assets/images/full_body_tracker/deadlift.png';
   static const String fullBodyTrackerDeadliftDark = 'assets/images/full_body_tracker/deadlift_dark.png';
+  static const String fullBodyTrackerDeleteIcon = 'assets/svg/full_body_tracker/delete_icon.svg';
   static const String fullBodyTrackerDumbbellSquat = 'assets/images/full_body_tracker/dumbbell_squat.png';
   static const String fullBodyTrackerDumbbellSquatDark = 'assets/images/full_body_tracker/dumbbell_squat_dark.png';
+  static const String fullBodyTrackerEditIcon = 'assets/svg/full_body_tracker/edit_icon.svg';
   static const String fullBodyTrackerGainMuscle = 'assets/svg/full_body_tracker/gain_muscle.svg';
   static const String fullBodyTrackerGym = 'assets/svg/full_body_tracker/gym.svg';
   static const String fullBodyTrackerResistanceBand = 'assets/images/full_body_tracker/resistance_band.png';
   static const String fullBodyTrackerResistanceBandDark = 'assets/images/full_body_tracker/resistance_band_dark.png';
+  static const String fullBodyTrackerRestRecovery = 'assets/svg/full_body_tracker/rest_recovery.svg';
   static const String fullBodyTrackerRoutines = 'assets/svg/full_body_tracker/routines.svg';
   static const String fullBodyTrackerWalkingLunges = 'assets/images/full_body_tracker/walking_lunges.png';
   static const String fullBodyTrackerWalkingLungesDark = 'assets/images/full_body_tracker/walking_lunges_dark.png';

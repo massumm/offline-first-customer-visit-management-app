@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/models/exercise_model.dart';
+import 'package:icon/app/modules/full_body_tracker/models/workout_model.dart';
 import 'package:icon/generated/assets.dart';
 
 class FullBodyTrackerController extends BaseController {
@@ -12,53 +14,47 @@ class FullBodyTrackerController extends BaseController {
       description:
           'The first workout of the week focuses on the push muscles of the upper body: the chest, shoulders, and triceps.',
       exercises: [
-        Exercise(
+        ExerciseModel(
           name: 'Barbell Squat',
           sets: 1,
           reps: '5-8',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerBarbellSquatDark
-              : Assets.fullBodyTrackerBarbellSquat,
+          lightAsset: Assets.fullBodyTrackerBarbellSquat,
+          darkAsset: Assets.fullBodyTrackerBarbellSquatDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Resistance Band',
           sets: 6,
           reps: '5-15',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerResistanceBandDark
-              : Assets.fullBodyTrackerResistanceBand,
+          lightAsset: Assets.fullBodyTrackerResistanceBand,
+          darkAsset: Assets.fullBodyTrackerResistanceBandDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Walking Lunges',
           sets: 4,
           reps: '10-12',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerWalkingLungesDark
-              : Assets.fullBodyTrackerWalkingLunges,
+          lightAsset: Assets.fullBodyTrackerWalkingLunges,
+          darkAsset: Assets.fullBodyTrackerWalkingLungesDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Dumbbell Squat',
           sets: 4,
           reps: '10-12',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerDumbbellSquatDark
-              : Assets.fullBodyTrackerDumbbellSquat,
+          lightAsset: Assets.fullBodyTrackerDumbbellSquat,
+          darkAsset: Assets.fullBodyTrackerDumbbellSquatDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Deadlift',
           sets: 4,
           reps: '12-15',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerDeadliftDark
-              : Assets.fullBodyTrackerDeadlift,
+          lightAsset: Assets.fullBodyTrackerDeadlift,
+          darkAsset: Assets.fullBodyTrackerDeadliftDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Barbell Squat',
           sets: 3,
           reps: '12-15',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerBarbellSquatDark
-              : Assets.fullBodyTrackerBarbellSquat,
+          lightAsset: Assets.fullBodyTrackerBarbellSquat,
+          darkAsset: Assets.fullBodyTrackerBarbellSquatDark,
         ),
       ],
       expanded: true.obs,
@@ -69,53 +65,47 @@ class FullBodyTrackerController extends BaseController {
       description:
           'This workout focuses on the upper body muscles involved in pulling motions—the entire back (traps, rhomboids, lats), biceps, and rear shoulders.',
       exercises: [
-        Exercise(
+        ExerciseModel(
           name: 'Barbell Squat',
           sets: 1,
           reps: '5-8',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerBarbellSquatDark
-              : Assets.fullBodyTrackerBarbellSquat,
+          lightAsset: Assets.fullBodyTrackerBarbellSquat,
+          darkAsset: Assets.fullBodyTrackerBarbellSquatDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Resistance Band',
           sets: 6,
           reps: '5-15',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerResistanceBandDark
-              : Assets.fullBodyTrackerResistanceBand,
+          lightAsset: Assets.fullBodyTrackerResistanceBand,
+          darkAsset: Assets.fullBodyTrackerResistanceBandDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Walking Lunges',
           sets: 4,
           reps: '10-12',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerWalkingLungesDark
-              : Assets.fullBodyTrackerWalkingLunges,
+          lightAsset: Assets.fullBodyTrackerWalkingLunges,
+          darkAsset: Assets.fullBodyTrackerWalkingLungesDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Dumbbell Squat',
           sets: 4,
           reps: '10-12',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerDumbbellSquatDark
-              : Assets.fullBodyTrackerDumbbellSquat,
+          lightAsset: Assets.fullBodyTrackerDumbbellSquat,
+          darkAsset: Assets.fullBodyTrackerDumbbellSquatDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Deadlift',
           sets: 4,
           reps: '12-15',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerDeadliftDark
-              : Assets.fullBodyTrackerDeadlift,
+          lightAsset: Assets.fullBodyTrackerDeadlift,
+          darkAsset: Assets.fullBodyTrackerDeadliftDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Barbell Squat',
           sets: 3,
           reps: '12-15',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerBarbellSquatDark
-              : Assets.fullBodyTrackerBarbellSquat,
+          lightAsset: Assets.fullBodyTrackerBarbellSquat,
+          darkAsset: Assets.fullBodyTrackerBarbellSquatDark,
         ),
       ],
       expanded: false.obs,
@@ -126,92 +116,50 @@ class FullBodyTrackerController extends BaseController {
       description:
           'The final workout of the week focuses on the lower body musculature: the glutes, hamstrings, quadriceps, and calves.',
       exercises: [
-        Exercise(
+        ExerciseModel(
           name: 'Barbell Squat',
           sets: 1,
           reps: '5-8',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerBarbellSquatDark
-              : Assets.fullBodyTrackerBarbellSquat,
+          lightAsset: Assets.fullBodyTrackerBarbellSquat,
+          darkAsset: Assets.fullBodyTrackerBarbellSquatDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Resistance Band',
           sets: 6,
           reps: '5-15',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerResistanceBandDark
-              : Assets.fullBodyTrackerResistanceBand,
+          lightAsset: Assets.fullBodyTrackerResistanceBand,
+          darkAsset: Assets.fullBodyTrackerResistanceBandDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Walking Lunges',
           sets: 4,
           reps: '10-12',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerWalkingLungesDark
-              : Assets.fullBodyTrackerWalkingLunges,
+          lightAsset: Assets.fullBodyTrackerWalkingLunges,
+          darkAsset: Assets.fullBodyTrackerWalkingLungesDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Dumbbell Squat',
           sets: 4,
           reps: '10-12',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerDumbbellSquatDark
-              : Assets.fullBodyTrackerDumbbellSquat,
+          lightAsset: Assets.fullBodyTrackerDumbbellSquat,
+          darkAsset: Assets.fullBodyTrackerDumbbellSquatDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Deadlift',
           sets: 4,
           reps: '12-15',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerDeadliftDark
-              : Assets.fullBodyTrackerDeadlift,
+          lightAsset: Assets.fullBodyTrackerDeadlift,
+          darkAsset: Assets.fullBodyTrackerDeadliftDark,
         ),
-        Exercise(
+        ExerciseModel(
           name: 'Barbell Squat',
           sets: 3,
           reps: '12-15',
-          iconPath: Get.isDarkMode
-              ? Assets.fullBodyTrackerBarbellSquatDark
-              : Assets.fullBodyTrackerBarbellSquat,
+          lightAsset: Assets.fullBodyTrackerBarbellSquat,
+          darkAsset: Assets.fullBodyTrackerBarbellSquatDark,
         ),
       ],
       expanded: false.obs,
     ),
   ];
-
-  final count = 0.obs;
-
-
-
-  void increment() => count.value++;
-}
-
-class Workout {
-  final String name;
-  final String day;
-  final String description;
-  final List<Exercise> exercises;
-  final RxBool expanded;
-
-  Workout({
-    required this.name,
-    required this.day,
-    required this.description,
-    required this.exercises,
-    required this.expanded,
-  });
-}
-
-class Exercise {
-  final String name;
-  final int sets;
-  final String? reps; // Can be a range like "5-15" or "10-12"
-  final String iconPath; // Optional path to exercise icon/illustration
-
-  Exercise({
-    required this.name,
-    required this.sets,
-    this.reps,
-    required this.iconPath,
-  });
 }

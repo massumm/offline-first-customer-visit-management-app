@@ -18,6 +18,7 @@ abstract class AppColors {
   static const Color buttonColorRedPink = Color(0xFFE11D48);
   static const Color colorSecondary = Color(0xFFFFE2E2);
 
+static const Color bgColorRed = Color(0xFFC31212);
   static const Color subTextColor = Color(0xFFB7B7B7);
   static const Color greenColor = Color(0xFF0ECA36);
   static const Color informationColor = Color(0xFFFFAB00);

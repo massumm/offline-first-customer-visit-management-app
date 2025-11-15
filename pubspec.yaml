@@ -93,6 +93,7 @@ flutter:
     - assets/svg/fitness_report/integration_summary/
     - assets/svg/fitness_report/mindset_and_motivation/
     - assets/svg/fitness_report/nutrition_objectives/
+    - assets/svg/full_body_tracker/
 
 
   # fonts:

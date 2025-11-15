@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:icon/app/modules/weekly_routine/views/add_exercise_to_routine_view.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
@@ -33,6 +34,9 @@ import '../modules/trainee_register/bindings/trainee_register_binding.dart';
 import '../modules/trainee_register/views/trainee_register_view.dart';
 import '../modules/trainer_onboarding/bindings/trainer_onboarding_binding.dart';
 import '../modules/trainer_onboarding/views/trainer_onboarding_view.dart';
+import '../modules/weekly_routine/bindings/weekly_routine_binding.dart';
+import '../modules/weekly_routine/views/explore_view.dart';
+import '../modules/weekly_routine/views/weekly_routine_view.dart';
 
 part 'app_routes.dart';
 
@@ -133,6 +137,21 @@ class AppPages {
       name: _Paths.TRAINEE_REGISTER,
       page: () => const TraineeRegisterView(),
       binding: TraineeRegisterBinding(),
+    ),
+    GetPage(
+      name: _Paths.WEEKLY_ROUTINE,
+      page: () => const WeeklyRoutineView(),
+      binding: WeeklyRoutineBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_EXERCISE_TO_ROUTINE,
+      page: () => const AddExerciseToRoutineView(),
+      binding: WeeklyRoutineBinding(),
+    ),
+    GetPage(
+      name: _Paths.EXPLORE,
+      page: () => const ExploreView(),
+      binding: WeeklyRoutineBinding(),
     ),
   ];
 }
