@@ -61,7 +61,7 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
 
     final headlineFinalStyle = theme.textTheme.bodyLarge!.copyWith(
       fontWeight: FontWeight.w700,
-      fontSize: (theme.textTheme.bodyLarge!.fontSize ?? 16) + 8,
+      fontSize: (theme.textTheme.bodyLarge!.fontSize ?? 16) + 12,
     );
     final headlineInitialStyle = theme.textTheme.headlineMedium!.copyWith(
       fontWeight: FontWeight.w700,
