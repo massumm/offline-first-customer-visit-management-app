@@ -50,6 +50,11 @@ dependencies:
   google_sign_in: ^7.2.0
   sign_in_with_apple: ^7.0.1
 
+  # Firebase
+  firebase_core: ^4.2.1
+  firebase_crashlytics: ^5.0.4
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
