@@ -24,7 +24,7 @@ class GoalsCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.lightCardBgColor,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.ligthBorderGrayColor, width: 1),
+            border: Border.all(color: AppColors.lightBorderGrayColor, width: 1),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(

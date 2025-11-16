@@ -154,7 +154,7 @@ class _UserHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.ligthBorderGrayColor, width: 2),
+        border: Border.all(color: AppColors.lightBorderGrayColor, width: 2),
       ),
       child: Row(
         children: [
@@ -231,7 +231,7 @@ class DayCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: isToday
             ? Border.all(color: const Color(0xFFE35D5D), width: 2)
-            : Border.all(color: AppColors.ligthBorderGrayColor, width: 2),
+            : Border.all(color: AppColors.lightBorderGrayColor, width: 2),
       ),
       child: FittedBox(
         fit: BoxFit.scaleDown,
@@ -244,7 +244,7 @@ class DayCard extends StatelessWidget {
               child: ProgressRing(
                 value: item.progress,
                 thickness: 4,
-                trackColor: AppColors.ligthBorderGrayColor,
+                trackColor: AppColors.lightBorderGrayColor,
                 valueColor: AppColors.redProgressColor,
                 valueGradient: AppColors.redGradient,
               ),

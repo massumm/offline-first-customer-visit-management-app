@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
@@ -12,6 +13,7 @@ import 'package:icon/generated/assets.dart';
 
 import '../controllers/weekly_routine_controller.dart';
 import '../models/workout_model.dart';
+import '../widgets/week_card.dart';
 import 'package:icon/app/models/exercise_model.dart';
 
 class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
@@ -39,19 +41,60 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              'Tap a day to add or edit your workout plan.',
-              style: AppTextTheme.titleSmallSemiBold.copyWith(
-                color: AppColors.black,
+            Obx(() => SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  InkWell(
+                    onTap: () {
+                      CustomToast.showWarningToast('Add week functionality coming soon!');
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: AppColors.lightBorderGrayColor),
+                      ),
+                      child: Column(
+                        children: [
+                          Icon(Icons.add, color: AppColors.colorPrimary),
+                          Text('Add', style: AppTextTheme.bodyMediumSemiBold.copyWith(color: AppColors.colorPrimary)),
+                        ],
+                      ),
+                    ),
+                  ),
+                  8.width,
+                  ...controller.weeks.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final week = entry.value;
+                    return Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      child: WeekCard(
+                        weekName: week.weekName,
+                        isSelected: controller.selectedWeek.value == index,
+                        onTap: () => controller.selectedWeek.value = index,
+                      ),
+                    );
+                  }),
+                  16.width, // Add trailing padding
+                ],
               ),
-            ),
+            )),
+            // Text(
+            //   'Tap a day to add or edit your workout plan.',
+            //   style: AppTextTheme.titleSmallSemiBold.copyWith(
+            //     color: AppColors.black,
+            //   ),
+            // ),
             16.height,
             Obx(() {
-              if (controller.routines.isEmpty) {
+              if (controller.currentWeekRoutines.isEmpty) {
                 return _buildEmptyState();
               }
               return Column(
-                children: controller.routines
+                children: controller.currentWeekRoutines
                     .map((routine) => _buildRoutineCard(routine))
                     .toList(),
               );

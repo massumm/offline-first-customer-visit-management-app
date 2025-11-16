@@ -20,7 +20,7 @@ class ProgressRing extends StatelessWidget {
     required this.value,
     this.size = 72,
     this.thickness = 4,
-    this.trackColor = AppColors.ligthBorderGrayColor,
+    this.trackColor = AppColors.lightBorderGrayColor,
     this.valueColor = AppColors.gradientRedStart,
     this.valueGradient,
     this.title,

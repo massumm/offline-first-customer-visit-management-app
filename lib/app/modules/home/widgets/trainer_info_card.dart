@@ -19,7 +19,7 @@ class TrainerInfoCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.ligthBorderGrayColor, width: 2),
+        border: Border.all(color: AppColors.lightBorderGrayColor, width: 2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,4 +1,5 @@
 import 'package:icon/app/core/enums/body_areas.dart';
+import 'package:icon/app/modules/weekly_routine/utils/enums/equipment_type_enum.dart';
 
 class ExerciseModel {
   final String name;
@@ -12,7 +13,7 @@ class ExerciseModel {
   // Planning fields
   final List<BodyAreas>? bodyAreaList;
   final int? routinesCount;
-  final bool? isGymEquipmentNeeded;
+  final EquipmentTypeEnum? equipmentType;
 
   ExerciseModel({
     required this.name,
@@ -22,7 +23,7 @@ class ExerciseModel {
     this.reps,
     this.bodyAreaList,
     this.routinesCount,
-    this.isGymEquipmentNeeded,
+    this.equipmentType,
   });
 
   ExerciseModel copyWith({
@@ -33,7 +34,7 @@ class ExerciseModel {
     String? reps,
     List<BodyAreas>? bodyArea,
     int? routinesCount,
-    bool? isGymEquipmentNeeded,
+    EquipmentTypeEnum? equipmentType,
   }) {
     return ExerciseModel(
       name: name ?? this.name,
@@ -43,7 +44,7 @@ class ExerciseModel {
       reps: reps ?? this.reps,
       bodyAreaList: bodyArea ?? this.bodyAreaList,
       routinesCount: routinesCount ?? this.routinesCount,
-      isGymEquipmentNeeded: isGymEquipmentNeeded ?? this.isGymEquipmentNeeded,
+      equipmentType: equipmentType ?? this.equipmentType,
     );
   }
 }

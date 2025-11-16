@@ -21,7 +21,7 @@ class Header extends StatelessWidget {
               shape: BoxShape.circle,
               color: Colors.white,
               border: Border.all(
-                color: AppColors.ligthBorderGrayColor,
+                color: AppColors.lightBorderGrayColor,
                 width: 2,
               ),
             ),
