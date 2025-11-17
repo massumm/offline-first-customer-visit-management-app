@@ -539,17 +539,14 @@ class TraineeOnboardingController extends BaseController {
         "trainee_profile": traineeId.value,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
-        // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
       };
 
       await _onboardingQARepository.sendAnswers(answerData, 1);
 
-      userMessage.updateStatus(
-        MessageStatus.delivered,
-      ); // Mark as delivered on success
+      userMessage.updateStatus(MessageStatus.delivered);
       return true;
     } catch (e) {
-      userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
+      userMessage.updateStatus(MessageStatus.failed);
       if (e is ApiException) {
         CustomToast.showErrorToast(e.description);
       } else {
