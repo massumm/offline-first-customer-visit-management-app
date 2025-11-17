@@ -206,7 +206,7 @@ class IconDarkTheme {
       ),
 
     ),
-    elevatedButtonTheme: appElevatedButtonTheme,
+    elevatedButtonTheme: appElevatedButtonThemeDark,
     // textButtonTheme: TextButtonThemeData(
     //   style: TextButton.styleFrom(
     //     backgroundColor: Colors.grey[800],

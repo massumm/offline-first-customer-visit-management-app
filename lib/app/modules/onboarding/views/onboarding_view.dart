@@ -123,7 +123,7 @@ class OnboardingView extends BaseView<OnboardingController> {
                     padding: EdgeInsets.only(bottom: 1),
                     decoration: BoxDecoration(
                       border: Border(
-                        bottom: BorderSide(color: Colors.black, width: 1.5),
+                        bottom: BorderSide(color: AppColors.colorPrimary, width: 1.5),
                       ),
                     ),
                     child: Text(

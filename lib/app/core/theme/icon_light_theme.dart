@@ -199,7 +199,7 @@ class IconLightTheme {
         fontSize: 14,
       ),
     ),
-    elevatedButtonTheme: appElevatedButtonTheme,
+    elevatedButtonTheme: appElevatedButtonThemeLight,
     // textButtonTheme: TextButtonThemeData(
     //   style: TextButton.styleFrom(
     //     backgroundColor: Colors.transparent,
