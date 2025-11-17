@@ -12,7 +12,7 @@ class IconChatRepositoryImpl extends BaseRemoteSource
     required String token,
   }) async {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/ai_chat/rooms/by-trainer/$trainerProfileId/";
+        "${DioProvider.baseUrl}/api/icon_chat/rooms/by-trainer/$trainerProfileId/";
     Future<Response<dynamic>> dioCall = dioClient.post(
       endpoint,
       data: {
@@ -35,26 +35,40 @@ class IconChatRepositoryImpl extends BaseRemoteSource
     String token,
   ) async {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/ai_chat/rooms/$roomId/messages/";
+        "${DioProvider.baseUrl}/api/icon_chat/rooms/$roomId/messages/";
     Future<Response<dynamic>> dioCall = dioClient.get(
       endpoint,
       options: Options(headers: {'Authorization': 'Bearer $token'}),
     );
     try {
       final response = await callApiWithErrorParser(dioCall);
-      return List<Map<String, dynamic>>.from(response.data);
+      // Ensure sender_type is present for each message
+      return List<Map<String, dynamic>>.from(
+        response.data.map((msg) {
+          return {
+            'content': msg['content'],
+            'sender_type': msg['sender_type'] ?? 'trainee',
+            'timestamp': msg['timestamp'] ?? '',
+          };
+        }),
+      );
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> sendMessage(int roomId, String token, String message) async {
+  Future<void> sendMessage(
+    int roomId,
+    String token,
+    String message, {
+    String senderType = 'trainee',
+  }) async {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/ai_chat/rooms/$roomId/messages/";
+        "${DioProvider.baseUrl}/api/icon_chat/rooms/$roomId/messages/";
     Future<Response<dynamic>> dioCall = dioClient.post(
       endpoint,
-      data: {'content': message},
+      data: {'content': message, 'sender_type': senderType},
       options: Options(headers: {'Authorization': 'Bearer $token'}),
     );
     try {
