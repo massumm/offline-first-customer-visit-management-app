@@ -5,6 +5,7 @@ import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/utils/app_validators.dart';
 import 'package:icon/app/routes/app_pages.dart';
+import 'package:icon/app/data/local/preference/store/user_store.dart';
 
 import '../../fitness_report/repository/fitness_report_repository.dart';
 
@@ -54,7 +55,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
       progress.value = 0.0;
 
       await _reportRepository.generateReport(
-        {"trainee_id": traineeId, 'trainer_id': 1, "force": true},
+        {"trainee_id": traineeId, 'trainer_id': UserStore.to.trainerId ?? 1, "force": true},
         onSendProgress: (sent, total) {
           if (total != -1) {
             progress.value = sent / total;

@@ -6,6 +6,7 @@ import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/routes/app_pages.dart';
+import 'package:icon/app/data/local/preference/store/user_store.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
@@ -35,11 +36,11 @@ class HomeView extends BaseView<HomeController> {
               16.height,
               _UserHeader(),
               16.height,
-              DailyProcressIndicators(),
+              DailyProgressIndicators(),
               16.height,
               TrainerInfoCard(onPressed: () {}),
               16.height,
-              HealthProgreesIndicator(),
+              healthProgressIndicator(),
               16.height,
               GoalsCard(onPressed: () {}),
               16.height,
@@ -56,7 +57,8 @@ class HomeView extends BaseView<HomeController> {
           onDestinationSelected: (index) {
             controller.selectedNavIndex.value = index;
             if (index == 2) {
-              Get.toNamed(Routes.ICON_CHAT, arguments: {'trainerId': 1});
+              final trainerId = UserStore.to.trainerId ?? 1;
+              Get.toNamed(Routes.ICON_CHAT, arguments: {'trainerId': trainerId});
             }
           },
           destinations: const [
@@ -86,7 +88,7 @@ class HomeView extends BaseView<HomeController> {
     );
   }
 
-  SingleChildScrollView HealthProgreesIndicator() {
+  SingleChildScrollView healthProgressIndicator() {
     final controller = Get.find<HomeController>();
 
     return SingleChildScrollView(
@@ -122,8 +124,8 @@ class HomeView extends BaseView<HomeController> {
   PreferredSizeWidget? appBar(BuildContext context) => null;
 }
 
-class DailyProcressIndicators extends StatelessWidget {
-  const DailyProcressIndicators({super.key});
+class DailyProgressIndicators extends StatelessWidget {
+  const DailyProgressIndicators({super.key});
 
   @override
   Widget build(BuildContext context) {

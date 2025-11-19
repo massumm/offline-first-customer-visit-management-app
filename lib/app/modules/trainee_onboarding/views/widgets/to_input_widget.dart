@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
+import 'package:icon/app/modules/trainee_onboarding/models/trainee_onboarding_questions_model.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 
@@ -753,7 +754,7 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
         if (q == null) {
           return "Just a moment...";
         }
-        if (q.type.name == "select_multiple") {
+        if (q.type.typeEnum == QuestionTypeEnum.selectMultiple) {
           return "Choose an option above";
         }
         return q.hint ?? "Type your answer";
