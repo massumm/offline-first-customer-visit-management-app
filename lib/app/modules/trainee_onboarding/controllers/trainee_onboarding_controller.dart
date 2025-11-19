@@ -136,7 +136,10 @@ class TraineeOnboardingController extends BaseController {
 
     // scroll to the bottom whenever typing
     ever(inputText, (value) {
-      if (value.isNotEmpty) {
+      // Scroll to the bottom if the user is typing and the view is not already there.
+      if (value.isNotEmpty &&
+          pageController.hasClients &&
+          pageController.position.extentAfter > 0) {
         _scrollToBottom();
       }
     });
