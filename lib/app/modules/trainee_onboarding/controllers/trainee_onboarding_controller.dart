@@ -129,11 +129,27 @@ class TraineeOnboardingController extends BaseController {
   @override
   void onReady() {
     super.onReady();
-    // // listener that scrolls to the bottom whenever a new message is added.
-    // messages.listen((_) {
-    //   _scrollToBottom();
-    // });
+    // listener that scrolls to the bottom whenever a new message is added.
+    messages.listen((_) {
+      _scrollToBottom();
+    });
+
+    // scroll to the bottom whenever typing
+    ever(inputText, (value) {
+      if (value.isNotEmpty) {
+        _scrollToBottom();
+      }
+    });
+
     start();
+  }
+
+  @override
+  void onClose() {
+    textController.removeListener(_scrollToBottom);
+    textController.dispose();
+    pageController.dispose();
+    super.onClose();
   }
 
   /// Fetches data, builds question groups, and starts the conversation.
@@ -728,7 +744,7 @@ class TraineeOnboardingController extends BaseController {
     };
   }
 
-void selectDate(String date)  async {
+  void selectDate(String date) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     // final formattedDate =
@@ -839,7 +855,9 @@ void selectDate(String date)  async {
   bool get isCurrentLocation => currentQuestion?.type.name == "location";
 
   bool get isCurrentPhoneNumber => currentQuestion?.type.name == "phone_number";
+
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
+
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
 
   // -------------- Stepper bindings --------------
