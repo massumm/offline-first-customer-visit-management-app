@@ -849,7 +849,9 @@ class TraineeOnboardingController extends BaseController {
 
   bool get isCurrentTime => currentQuestion?.type.name == "time";
 
-  bool get isCurrentHeight => currentQuestion?.type.name == "height";
+  bool get isCurrentHeight =>
+      currentQuestion?.type.name == "number"
+          && currentQuestion?.questionFieldName == "height";
 
   bool get isCurrentWeight => currentQuestion?.type.name == "weight";
 
