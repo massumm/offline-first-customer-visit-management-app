@@ -58,6 +58,7 @@ class TraineeProfile {
   final DateTime updatedAt;
   final List<dynamic> goals;        // change to List<YourType> if you know it
   final List<dynamic> inspirations; // change to List<YourType> if you know it
+  final int? trainerId;
   
   // Paywall/Subscription fields
   final bool? isPremium;
@@ -80,6 +81,7 @@ class TraineeProfile {
     required this.updatedAt,
     this.goals = const [],
     this.inspirations = const [],
+    this.trainerId,
     this.isPremium,
     this.remainingFreeMessages,
     this.subscriptionExpiryDate,
@@ -109,6 +111,7 @@ class TraineeProfile {
       updatedAt: DateTime.parse(json['updated_at'] as String),
       goals: list(json['goals']),
       inspirations: list(json['inspirations']),
+      trainerId: json['trainer_id'] as int?,
       isPremium: json['is_premium'] as bool?,
       remainingFreeMessages: json['remaining_free_messages'] as int?,
       subscriptionExpiryDate: parseNullableDate(json['subscription_expiry_date'] as String?),
@@ -132,6 +135,7 @@ class TraineeProfile {
     'updated_at': updatedAt.toIso8601String(),
     'goals': goals,
     'inspirations': inspirations,
+    'trainer_id': trainerId,
     'is_premium': isPremium,
     'remaining_free_messages': remainingFreeMessages,
     'subscription_expiry_date': subscriptionExpiryDate?.toIso8601String(),
@@ -153,6 +157,7 @@ class TraineeProfile {
     DateTime? updatedAt,
     List<dynamic>? goals,
     List<dynamic>? inspirations,
+    int? trainerId,
     bool? isPremium,
     int? remainingFreeMessages,
     DateTime? subscriptionExpiryDate,
@@ -173,6 +178,7 @@ class TraineeProfile {
       updatedAt: updatedAt ?? this.updatedAt,
       goals: goals ?? this.goals,
       inspirations: inspirations ?? this.inspirations,
+      trainerId: trainerId ?? this.trainerId,
       isPremium: isPremium ?? this.isPremium,
       remainingFreeMessages: remainingFreeMessages ?? this.remainingFreeMessages,
       subscriptionExpiryDate: subscriptionExpiryDate ?? this.subscriptionExpiryDate,

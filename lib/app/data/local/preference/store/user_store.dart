@@ -28,6 +28,9 @@ class UserStore extends GetxService {
   
   final RxInt _remainingFreeMessages = 3.obs; // Default 3 free messages
   int get remainingFreeMessages => _remainingFreeMessages.value;
+  
+  // Trainer ID getter
+  int? get trainerId => _profile.value?.traineeProfile?.trainerId;
 
   // final RxString authToken = ''.obs; // If this is different from _token
   // final RxString userEmail = ''.obs;

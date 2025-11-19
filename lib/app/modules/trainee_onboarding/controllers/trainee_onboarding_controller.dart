@@ -143,7 +143,7 @@ class TraineeOnboardingController extends BaseController {
     try {
       // Fetch the flat list of questions from the repository
       final questionResponse = await _onboardingQARepository.fetchQuestionsData(
-        1,
+        UserStore.to.trainerId ?? 1,
       );
       questionData.assignAll(questionResponse.questionsData);
 
@@ -539,17 +539,14 @@ class TraineeOnboardingController extends BaseController {
         "trainee_profile": traineeId.value,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
-        // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
       };
 
       await _onboardingQARepository.sendAnswers(answerData, 1);
 
-      userMessage.updateStatus(
-        MessageStatus.delivered,
-      ); // Mark as delivered on success
+      userMessage.updateStatus(MessageStatus.delivered);
       return true;
     } catch (e) {
-      userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
+      userMessage.updateStatus(MessageStatus.failed);
       if (e is ApiException) {
         CustomToast.showErrorToast(e.description);
       } else {
@@ -605,7 +602,7 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    if (q.type.name == "number" && int.tryParse(value) == null) {
+    if (q.type.typeEnum == QuestionTypeEnum.number && int.tryParse(value) == null) {
       await _botSay("Please enter a valid number 🔢");
       return;
     }
@@ -824,13 +821,15 @@ void selectDate(String date)  async {
     return null;
   }
 
-  bool get isCurrentChoice => currentQuestion?.type.name == "select_multiple";
+  // Active API types using enum-based checks
+  bool get isCurrentChoice => currentQuestion?.type.typeEnum == QuestionTypeEnum.selectMultiple;
 
-  bool get isCurrentDate => currentQuestion?.type.name == "date";
+  bool get isCurrentDate => currentQuestion?.type.typeEnum == QuestionTypeEnum.date;
 
+  // Legacy types - not in current API, kept for backward compatibility
   bool get isCurrentTime => currentQuestion?.type.name == "time";
 
-  bool get isCurrentHeight => currentQuestion?.type.name == "height";
+  bool get isCurrentHeight => currentQuestion?.type.name == "height" || currentQuestion?.questionFieldName == "height";
 
   bool get isCurrentWeight => currentQuestion?.type.name == "weight";
 
