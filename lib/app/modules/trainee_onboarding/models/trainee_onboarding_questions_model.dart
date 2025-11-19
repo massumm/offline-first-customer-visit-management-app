@@ -123,9 +123,70 @@ class TraineeQuestionData {
   }
 }
 
+enum QuestionTypeEnum {
+  text,
+  number,
+  date,
+  selectMultiple,
+  textarea,
+  address,
+  numericRange,
+  selectMultiplePlusOther,
+  dateWithDescription,
+  bodyMeasurementsInput,
+  selectMultiplePlusOtherWithAdd,
+  unknown;
+
+  static QuestionTypeEnum fromString(String? name) {
+    switch (name) {
+      case 'text':
+        return text;
+      case 'number':
+        return number;
+      case 'date':
+        return date;
+      case 'select_multiple':
+        return selectMultiple;
+      case 'textarea':
+        return textarea;
+      case 'address':
+        return address;
+      case 'numeric_range':
+        return numericRange;
+      case 'select_multiple_plus_other':
+        return selectMultiplePlusOther;
+      case 'date_with_description':
+        return dateWithDescription;
+      case 'body_measurements_input':
+        return bodyMeasurementsInput;
+      case 'select_multiple_plus_other_with_add':
+        return selectMultiplePlusOtherWithAdd;
+      default:
+        return unknown;
+    }
+  }
+}
+
+extension QuestionTypeEnumExtension on QuestionTypeEnum {
+  bool get supportsOptions {
+    return [
+      QuestionTypeEnum.selectMultiple,
+      QuestionTypeEnum.selectMultiplePlusOther,
+      QuestionTypeEnum.selectMultiplePlusOtherWithAdd,
+    ].contains(this);
+  }
+
+  bool get supportsUnitOptions {
+    return [
+      QuestionTypeEnum.number,
+      QuestionTypeEnum.numericRange,
+    ].contains(this);
+  }
+}
+
 class QuestionType {
   final int id;
-  final String name;
+  final QuestionTypeEnum type;
   final String description;
   final Map<String, dynamic> metadataFields;
   final Map<String, dynamic> responseFields;
@@ -135,7 +196,7 @@ class QuestionType {
 
   QuestionType({
     required this.id,
-    required this.name,
+    required this.type,
     required this.description,
     required this.metadataFields,
     required this.responseFields,
@@ -147,7 +208,7 @@ class QuestionType {
   factory QuestionType.fromJson(Map<String, dynamic> json) {
     return QuestionType(
       id: json['id'] ?? 0,
-      name: json['name'] ?? '',
+      type: QuestionTypeEnum.fromString(json['name']),
       description: json['description'] ?? '',
       metadataFields: json['metadata_fields'] ?? {},
       responseFields: json['response_fields'] ?? {},
@@ -167,17 +228,145 @@ class QuestionType {
     'created_at': createdAt?.toIso8601String(),
     'updated_at': updatedAt?.toIso8601String(),
   };
+
+  String get name {
+    switch (type) {
+      case QuestionTypeEnum.text:
+        return 'text';
+      case QuestionTypeEnum.number:
+        return 'number';
+      case QuestionTypeEnum.date:
+        return 'date';
+      case QuestionTypeEnum.selectMultiple:
+        return 'select_multiple';
+      case QuestionTypeEnum.textarea:
+        return 'textarea';
+      case QuestionTypeEnum.address:
+        return 'address';
+      case QuestionTypeEnum.numericRange:
+        return 'numeric_range';
+      case QuestionTypeEnum.selectMultiplePlusOther:
+        return 'select_multiple_plus_other';
+      case QuestionTypeEnum.dateWithDescription:
+        return 'date_with_description';
+      case QuestionTypeEnum.bodyMeasurementsInput:
+        return 'body_measurements_input';
+      case QuestionTypeEnum.selectMultiplePlusOtherWithAdd:
+        return 'select_multiple_plus_other_with_add';
+      case QuestionTypeEnum.unknown:
+        return 'unknown';
+    }
+  }
+
+  bool get supportsOptions => type.supportsOptions;
+  bool get supportsUnitOptions => type.supportsUnitOptions;
+  QuestionTypeEnum get typeEnum => type;
+}
+
+enum MetadataDatatype {
+  text,
+  number;
+
+  static MetadataDatatype fromString(String? value) {
+    switch (value) {
+      case 'text':
+        return text;
+      case 'number':
+        return number;
+      default:
+        return text; // default fallback
+    }
+  }
+}
+
+enum UnitOptions {
+  cm,
+  inch;
+
+  static UnitOptions? fromString(String? value) {
+    switch (value) {
+      case 'cm':
+        return cm;
+      case 'in':
+        return inch;
+      default:
+        return null;
+    }
+  }
+
+  String toJsonString() {
+    switch (this) {
+      case UnitOptions.cm:
+        return 'cm';
+      case UnitOptions.inch:
+        return 'in';
+    }
+  }
 }
 
 class QuestionMetadata {
-  QuestionMetadata({required this.json});
+  final List<String>? options;
+  final List<UnitOptions>? unitOptions;
+  final List<String>? predefinedOptions;
+  final MetadataDatatype? datatype;
+  final bool? other;
+  final num? minValue;
+  final num? maxValue;
+  final String? labelMin;
+  final String? labelMax;
+  final String? unit;
 
-  final Map<String, dynamic> json;
+  QuestionMetadata({
+    this.options,
+    this.unitOptions,
+    this.predefinedOptions,
+    this.datatype,
+    this.other,
+    this.minValue,
+    this.maxValue,
+    this.labelMin,
+    this.labelMax,
+    this.unit,
+  });
 
   factory QuestionMetadata.fromJson(Map<String, dynamic> json) {
-    return QuestionMetadata(json: json);
+    List<UnitOptions>? unitOptions;
+    if (json['unit_options'] != null) {
+      if (json['unit_options'] is List) {
+        unitOptions = (json['unit_options'] as List)
+            .map((e) => UnitOptions.fromString(e.toString()) ?? UnitOptions.cm)
+            .cast<UnitOptions>()
+            .toList();
+      }
+    }
+    
+    return QuestionMetadata(
+      options: (json['options'] as List?)?.map((e) => e.toString()).toList(),
+      unitOptions: unitOptions,
+      predefinedOptions: (json['predefined_options'] as List?)?.map((e) => e.toString()).toList(),
+      datatype: json['datatype'] != null ? MetadataDatatype.fromString(json['datatype']) : null,
+      other: json['other'] as bool?,
+      minValue: json['min_value'] as num?,
+      maxValue: json['max_value'] as num?,
+      labelMin: json['label_min'] as String?,
+      labelMax: json['label_max'] as String?,
+      unit: json['unit'] as String?,
+    );
   }
 
+  Map<String, dynamic> toJson() => {
+    if (options != null) 'options': options,
+    if (unitOptions != null) 'unit_options': unitOptions?.map((unit) => unit.toJsonString()).toList(),
+    if (predefinedOptions != null) 'predefined_options': predefinedOptions,
+    if (datatype != null) 'datatype': datatype?.name,
+    if (other != null) 'other': other,
+    if (minValue != null) 'min_value': minValue,
+    if (maxValue != null) 'max_value': maxValue,
+    if (labelMin != null) 'label_min': labelMin,
+    if (labelMax != null) 'label_max': labelMax,
+    if (unit != null) 'unit': unit,
+  };
+
   @override
-  String toString() => json.toString();
+  String toString() => toJson().toString();
 }

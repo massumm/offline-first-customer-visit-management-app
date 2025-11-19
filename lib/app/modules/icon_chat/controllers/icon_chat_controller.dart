@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,12 @@ class IconChatController extends GetxController {
   String? token;
   int? traineeProfileId;
   int? trainerProfileId;
+  String? mySenderType;
+
+  bool _isConnectingToWebSocket = false;
+  bool _isConnectedToWebSocket = false;
+
+  StreamSubscription? _webSocketSubscription;
 
   @override
   void onInit() {
@@ -28,12 +35,9 @@ class IconChatController extends GetxController {
     chatRepository = IconChatRepositoryImpl();
     subscriptionService = Get.find<SubscriptionService>();
     token = UserStore.to.token;
-    // Get IDs from navigation arguments or user context
     final args = Get.arguments ?? {};
-    traineeProfileId =
-        args['traineeProfileId'] ?? 1; // Replace with actual logic
-    trainerProfileId =
-        args['trainerProfileId'] ?? 1; // Replace with actual logic
+    trainerProfileId = args['trainerProfileId'] ?? UserStore.to.trainerId ?? 1;
+    mySenderType = 'trainee';
     _initChat();
   }
 
@@ -62,69 +66,103 @@ class IconChatController extends GetxController {
 
   Future<void> _connectWebSocket() async {
     if (roomName == null || token == null) return;
-    String wsBaseUrl = DioProvider.baseUrl;
-    if (wsBaseUrl.startsWith('https://')) {
-      wsBaseUrl = wsBaseUrl.replaceFirst('https://', 'wss://');
-    } else if (wsBaseUrl.startsWith('http://')) {
-      wsBaseUrl = wsBaseUrl.replaceFirst('http://', 'ws://');
-    }
-    final wsUrl = '$wsBaseUrl/ws/ai_chat/$roomName/';
-    channel = IOWebSocketChannel.connect(
-      wsUrl,
-      headers: {'Authorization': 'Bearer $token'},
-    );
-    await channel?.ready;
-    channel?.stream.listen((data) {
+    if (_isConnectingToWebSocket || _isConnectedToWebSocket) return;
+    _isConnectingToWebSocket = true;
+    _isConnectedToWebSocket = false;
+
+    while (true) {
       try {
-        final decoded = jsonDecode(data);
-        messages.insert(0, {
-          'content': decoded['message'],
-          'user_id': decoded['user_id'],
-          'sender_type': decoded['sender_type'],
-          'timestamp': DateTime.now().toIso8601String(),
-        });
-      } catch (e, s) {
+        String wsBaseUrl = DioProvider.baseUrl;
+        if (wsBaseUrl.startsWith('https://')) {
+          wsBaseUrl = wsBaseUrl.replaceFirst('https://', 'wss://');
+        } else if (wsBaseUrl.startsWith('http://')) {
+          wsBaseUrl = wsBaseUrl.replaceFirst('http://', 'ws://');
+        }
+        final wsUrl = '$wsBaseUrl/ws/icon_chat/';
+        channel = IOWebSocketChannel.connect(
+          wsUrl,
+          headers: {'Authorization': 'Bearer $token'},
+        );
+        await channel?.ready;
+        _webSocketSubscription?.cancel(); // Cancel any previous subscription
+        _webSocketSubscription = channel?.stream.listen(
+          (data) {
+            try {
+              final decoded = jsonDecode(data);
+              messages.insert(0, {
+                'content': decoded['message'],
+                'sender_type': decoded['sender_type'] ?? 'trainer_icon',
+                'timestamp': DateTime.now().toIso8601String(),
+              });
+            } catch (e, s) {
+              log(
+                "Error decoding chats websocket message.",
+                error: e,
+                stackTrace: s,
+                name: 'icon_chat_controller',
+              );
+            }
+          },
+          onDone: () async {
+            log(
+              "WebSocket connection closed. Attempting to reconnect...",
+              name: 'icon_chat_controller',
+            );
+            _isConnectedToWebSocket = false;
+            await _webSocketSubscription?.cancel();
+            await Future.delayed(const Duration(seconds: 2));
+            _connectWebSocket();
+          },
+          onError: (error) async {
+            log("WebSocket error: $error", name: 'icon_chat_controller');
+            _isConnectedToWebSocket = false;
+            await _webSocketSubscription?.cancel();
+            await Future.delayed(const Duration(seconds: 2));
+            _connectWebSocket();
+          },
+          cancelOnError: true,
+        );
+        _isConnectedToWebSocket = true;
+        _isConnectingToWebSocket = false;
+        log("WebSocket connected successfully.", name: 'icon_chat_controller');
+        break;
+      } catch (e) {
         log(
-          "Error decoding chats websocket message.",
-          error: e,
-          stackTrace: s,
+          "WebSocket connection error: $e. Retrying in 5 seconds...",
           name: 'icon_chat_controller',
         );
+        await Future.delayed(const Duration(seconds: 5));
+        continue;
       }
-    });
+    }
   }
 
   void optimisticSendMessage() async {
     final text = textController.text.trim();
     if (text.isEmpty || roomId == null || token == null) return;
-    
-    // Check subscription status before sending message
+
     if (!subscriptionService.canSendMessage()) {
       _showPaywall();
       return;
     }
-    
-    // Optimistically add message to UI
+
     messages.insert(0, {
       'content': text,
-      'user_id': 'me',
+      'sender_type': mySenderType ?? 'trainee',
       'timestamp': DateTime.now().toIso8601String(),
     });
     textController.clear();
-    
-    // Send to WebSocket
     try {
       channel?.sink.add(jsonEncode({'message': text}));
-    } catch (_) {}
-    
-    // Also send to REST API for persistence
-    try {
-      await chatRepository.sendMessage(roomId!, token!, text);
-      // After successful message send, decrement free message count
-      await subscriptionService.onMessageSent();
-    } catch (_) {}
+    } catch (e) {
+      log(
+        "Error sending message via WebSocket.",
+        error: e,
+        name: 'icon_chat_controller',
+      );
+    }
   }
-  
+
   /// Show paywall dialog when user runs out of free messages
   void _showPaywall() {
     Get.dialog(
@@ -135,8 +173,12 @@ class IconChatController extends GetxController {
 
   @override
   void onClose() {
-    print('[icon_chat] IconChatController disposed, closing WebSocket');
+    log(
+      'IconChatController disposed, closing WebSocket',
+      name: 'icon_chat_controller',
+    );
     textController.dispose();
+    _webSocketSubscription?.cancel();
     channel?.sink.close();
     super.onClose();
   }

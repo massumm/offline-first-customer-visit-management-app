@@ -16,6 +16,7 @@ class IconChatView extends GetView<IconChatController> {
 
   @override
   Widget build(BuildContext context) {
+    final IconChatController controller = Get.find<IconChatController>();
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: PreferredSize(
@@ -30,44 +31,30 @@ class IconChatView extends GetView<IconChatController> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage(
-                    'assets/images/icon-logo-pink.png',
-                  ),
+                Image.asset(
+                  'assets/images/icon-logo-pink.png',
+                  width: 80,
+                  height: 80,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 const Text(
-                  'Say Hi, to Icon Mish',
+                  'Welcome to Icon Chat!',
                   style: TextStyle(
-                    fontSize: 26,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: primaryColor,
                     fontFamily: 'Inter',
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 12),
                 const Text(
-                  'Welcome to your chat! Start a conversation or choose a suggestion below.',
+                  'Start a conversation with your AI trainer.',
                   style: TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.normal,
                     color: secondaryHeaderColor,
                     fontFamily: 'Inter',
                   ),
                   textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 24),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  alignment: WrapAlignment.center,
-                  children: [
-                    _SuggestionChip(label: 'I want to build muscle'),
-                    _SuggestionChip(label: 'Meal plan help'),
-                    _SuggestionChip(label: 'Motivation tips'),
-                    _SuggestionChip(label: 'Suggest my first workout'),
-                  ],
                 ),
               ],
             ),
@@ -81,17 +68,12 @@ class IconChatView extends GetView<IconChatController> {
             itemBuilder: (context, index) {
               final message = controller.messages[index];
               final senderType = message['sender_type'];
-              final time = message['timestamp'] ?? '12:00';
+              final time = message['timestamp'] ?? '';
+              final text = message['content'] ?? '';
               if (senderType == 'trainee') {
-                return SenderMessageBubble(
-                  text: message['content'] ?? '',
-                  timestamp: time,
-                );
+                return SenderMessageBubble(text: text, timestamp: time);
               } else {
-                return ReceiverMessageBubble(
-                  text: message['content'] ?? '',
-                  timestamp: time,
-                );
+                return ReceiverMessageBubble(text: text, timestamp: time);
               }
             },
           );
@@ -103,7 +85,7 @@ class IconChatView extends GetView<IconChatController> {
 }
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({super.key});
+  const CustomAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -132,22 +114,18 @@ class CustomAppBar extends StatelessWidget {
           Stack(
             children: [
               CircleAvatar(
-                radius: 20,
                 backgroundImage: AssetImage('assets/images/icon-logo-pink.png'),
               ),
               Positioned(
-                bottom: 2,
-                right: 2,
+                right: 0,
+                bottom: 0,
                 child: Container(
-                  width: 10,
-                  height: 10,
+                  width: 12,
+                  height: 12,
                   decoration: BoxDecoration(
                     color: onlineIndicator,
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: scaffoldBackgroundColor,
-                      width: 2,
-                    ),
+                    border: Border.all(color: Colors.white, width: 2),
                   ),
                 ),
               ),
@@ -195,11 +173,7 @@ class CustomAppBar extends StatelessWidget {
                 child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.star,
-                      size: 12,
-                      color: Color(0xFF00C853),
-                    ),
+                    Icon(Icons.star, size: 12, color: Color(0xFF00C853)),
                     SizedBox(width: 4),
                     Text(
                       'Premium',
@@ -220,9 +194,7 @@ class CustomAppBar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: senderBubbleColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: senderBubbleColor.withOpacity(0.3),
-                  ),
+                  border: Border.all(color: senderBubbleColor.withOpacity(0.3)),
                 ),
                 child: Text(
                   '$remainingMessages left',
@@ -272,16 +244,17 @@ class _ChatInputBarState extends State<ChatInputBar> {
   Widget build(BuildContext context) {
     final controller = Get.find<IconChatController>();
     final userStore = Get.find<UserStore>();
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: scaffoldBackgroundColor,
       child: Obx(() {
-        final bool canSendMessage = userStore.isPremium || userStore.remainingFreeMessages > 0;
-        final String hintText = canSendMessage 
-            ? 'Type Here...' 
+        final bool canSendMessage =
+            userStore.isPremium || userStore.remainingFreeMessages > 0;
+        final String hintText = canSendMessage
+            ? 'Type Here...'
             : 'Subscribe to continue...';
-        
+
         return Row(
           children: [
             Expanded(
@@ -290,13 +263,13 @@ class _ChatInputBarState extends State<ChatInputBar> {
                 enabled: canSendMessage,
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: canSendMessage 
-                      ? componentBackgroundColor 
+                  fillColor: canSendMessage
+                      ? componentBackgroundColor
                       : componentBackgroundColor.withOpacity(0.5),
                   hintText: hintText,
                   hintStyle: TextStyle(
-                    color: canSendMessage 
-                        ? secondaryHeaderColor 
+                    color: canSendMessage
+                        ? secondaryHeaderColor
                         : secondaryHeaderColor.withOpacity(0.5),
                   ),
                   border: OutlineInputBorder(
@@ -304,35 +277,41 @@ class _ChatInputBarState extends State<ChatInputBar> {
                     borderSide: BorderSide.none,
                   ),
                   prefixIcon: Icon(
-                    canSendMessage ? Icons.graphic_eq_rounded : Icons.lock_outlined,
-                    color: canSendMessage 
-                        ? secondaryHeaderColor 
+                    canSendMessage
+                        ? Icons.graphic_eq_rounded
+                        : Icons.lock_outlined,
+                    color: canSendMessage
+                        ? secondaryHeaderColor
                         : secondaryHeaderColor.withOpacity(0.5),
                   ),
                 ),
                 style: TextStyle(
-                  color: canSendMessage 
-                      ? primaryColor 
+                  color: canSendMessage
+                      ? primaryColor
                       : primaryColor.withOpacity(0.5),
                   fontSize: 16,
                   fontFamily: 'Inter',
                 ),
-                onSubmitted: canSendMessage ? (_) {
-                  controller.optimisticSendMessage();
-                } : null,
+                onSubmitted: canSendMessage
+                    ? (_) {
+                        controller.optimisticSendMessage();
+                      }
+                    : null,
               ),
             ),
             const SizedBox(width: 8),
             Material(
-              color: canSendMessage 
-                  ? senderBubbleColor 
+              color: canSendMessage
+                  ? senderBubbleColor
                   : senderBubbleColor.withOpacity(0.5),
               shape: const CircleBorder(),
               child: IconButton(
                 icon: const Icon(Icons.send, color: Colors.white),
-                onPressed: canSendMessage ? () {
-                  controller.optimisticSendMessage();
-                } : null,
+                onPressed: canSendMessage
+                    ? () {
+                        controller.optimisticSendMessage();
+                      }
+                    : null,
               ),
             ),
           ],
@@ -341,7 +320,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
     );
   }
 }
-
+/*
 class _SuggestionChip extends StatelessWidget {
   final String label;
   const _SuggestionChip({required this.label});
@@ -363,12 +342,16 @@ class _SuggestionChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
     );
   }
-}
+}*/
 
 class SenderMessageBubble extends StatelessWidget {
   final String text;
   final String timestamp;
-  const SenderMessageBubble({super.key, required this.text, required this.timestamp});
+  const SenderMessageBubble({
+    super.key,
+    required this.text,
+    required this.timestamp,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -417,7 +400,11 @@ class SenderMessageBubble extends StatelessWidget {
 class ReceiverMessageBubble extends StatelessWidget {
   final String text;
   final String timestamp;
-  const ReceiverMessageBubble({super.key, required this.text, required this.timestamp});
+  const ReceiverMessageBubble({
+    super.key,
+    required this.text,
+    required this.timestamp,
+  });
 
   @override
   Widget build(BuildContext context) {
