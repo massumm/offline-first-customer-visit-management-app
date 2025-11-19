@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/input_widgets/date_input_field.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_form_field/phone_form_field.dart';
@@ -498,21 +499,10 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
   Widget _buildDatePickerButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: ElevatedButton(
-        onPressed: () async {
-          final DateTime? pickedDate = await showDatePicker(
-            context: context,
-            initialDate: DateTime.now().subtract(
-              const Duration(days: 365 * 20),
-            ),
-            firstDate: DateTime(1920),
-            lastDate: DateTime.now(),
-          );
-          if (pickedDate != null) {
-            controller.selectDate(pickedDate);
-          }
-        },
-        child: Text(controller.currentQuestion?.hint ?? "Select Date"),
+      child: DatePickerInputField(
+        firstDate: DateTime(1920),
+        lastDate: DateTime.now(),
+         onSelectDate: controller.selectDate
       ),
     );
   }

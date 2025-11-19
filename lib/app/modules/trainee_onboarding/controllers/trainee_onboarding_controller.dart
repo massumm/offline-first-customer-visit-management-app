@@ -725,12 +725,12 @@ class TraineeOnboardingController extends BaseController {
     };
   }
 
-  Future<void> selectDate(DateTime date) async {
+void selectDate(String date)  async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-    final formattedDate =
-        "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
-    await _saveUserAnswer(q, formattedDate);
+    // final formattedDate =
+    //     "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+    await _saveUserAnswer(q, date);
   }
 
   Future<void> selectTime(TimeOfDay time, BuildContext context) async {
