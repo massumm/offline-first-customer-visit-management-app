@@ -36,8 +36,7 @@ class IconChatController extends GetxController {
     subscriptionService = Get.find<SubscriptionService>();
     token = UserStore.to.token;
     final args = Get.arguments ?? {};
-    traineeProfileId = args['traineeProfileId'] ?? 1;
-    trainerProfileId = args['trainerProfileId'] ?? 1;
+    trainerProfileId = args['trainerProfileId'] ?? UserStore.to.trainerId ?? 1;
     mySenderType = 'trainee';
     _initChat();
   }

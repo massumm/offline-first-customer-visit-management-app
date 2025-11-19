@@ -129,11 +129,30 @@ class TraineeOnboardingController extends BaseController {
   @override
   void onReady() {
     super.onReady();
-    // // listener that scrolls to the bottom whenever a new message is added.
-    // messages.listen((_) {
-    //   _scrollToBottom();
-    // });
+    // listener that scrolls to the bottom whenever a new message is added.
+    messages.listen((_) {
+      _scrollToBottom();
+    });
+
+    // scroll to the bottom whenever typing
+    ever(inputText, (value) {
+      // Scroll to the bottom if the user is typing and the view is not already there.
+      if (value.isNotEmpty &&
+          pageController.hasClients &&
+          pageController.position.extentAfter > 0) {
+        _scrollToBottom();
+      }
+    });
+
     start();
+  }
+
+  @override
+  void onClose() {
+    textController.removeListener(_scrollToBottom);
+    textController.dispose();
+    pageController.dispose();
+    super.onClose();
   }
 
   /// Fetches data, builds question groups, and starts the conversation.
@@ -539,14 +558,17 @@ class TraineeOnboardingController extends BaseController {
         "trainee_profile": traineeId.value,
         "trainee_onboarding_question": q.id,
         "answer_text": answers[q.id],
+        // "answer_metadata": q.possibleAnswersMetadata?.toJson(),
       };
 
       await _onboardingQARepository.sendAnswers(answerData, 1);
 
-      userMessage.updateStatus(MessageStatus.delivered);
+      userMessage.updateStatus(
+        MessageStatus.delivered,
+      ); // Mark as delivered on success
       return true;
     } catch (e) {
-      userMessage.updateStatus(MessageStatus.failed);
+      userMessage.updateStatus(MessageStatus.failed); // Mark as failed on error
       if (e is ApiException) {
         CustomToast.showErrorToast(e.description);
       } else {
@@ -725,7 +747,7 @@ class TraineeOnboardingController extends BaseController {
     };
   }
 
-void selectDate(String date)  async {
+  void selectDate(String date) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     // final formattedDate =
@@ -827,7 +849,9 @@ void selectDate(String date)  async {
 
   bool get isCurrentTime => currentQuestion?.type.name == "time";
 
-  bool get isCurrentHeight => currentQuestion?.type.name == "height";
+  bool get isCurrentHeight =>
+      currentQuestion?.type.name == "number"
+          && currentQuestion?.questionFieldName == "height";
 
   bool get isCurrentWeight => currentQuestion?.type.name == "weight";
 
@@ -836,7 +860,9 @@ void selectDate(String date)  async {
   bool get isCurrentLocation => currentQuestion?.type.name == "location";
 
   bool get isCurrentPhoneNumber => currentQuestion?.type.name == "phone_number";
+
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
+
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
 
   // -------------- Stepper bindings --------------

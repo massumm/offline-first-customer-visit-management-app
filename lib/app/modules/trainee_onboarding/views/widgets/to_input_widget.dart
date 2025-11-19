@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/input_widgets/date_input_field.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
+import 'package:icon/app/modules/trainee_onboarding/views/widgets/unit_ruler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_form_field/phone_form_field.dart';
 
@@ -109,7 +110,16 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return _buildTimePickerButton(context);
                 }
                 if (controller.isCurrentHeight) {
-                  return _HeightPicker(controller: controller);
+                  return  UnitRuler(
+                    minHeightCm: 120,
+                    maxHeightCm: 250,
+                    initialHeightCm: 170,
+                    onChanged: (double value) {
+                      'Unit value: $value'.log();
+                      controller.send(value.toString());
+                    },
+                  );
+
                 }
                 if (controller.isCurrentWeight) {
                   return _WeightPicker(controller: controller);
@@ -502,7 +512,7 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
       child: DatePickerInputField(
         firstDate: DateTime(1920),
         lastDate: DateTime.now(),
-         onSelectDate: controller.selectDate
+        onSelectDate: controller.selectDate,
       ),
     );
   }
