@@ -8,16 +8,14 @@ import '../../../../core/widgets/input_widgets/adaptive_text_field.dart';
 class BodyFatInputWidget extends StatefulWidget {
   const BodyFatInputWidget({super.key, required this.onNext});
 
-  final void Function(BodyFatOption selectedOption, String customValue)? onNext;
+  final void Function(BodyFatOption selectedOption, String customValue) onNext;
 
   @override
   State<BodyFatInputWidget> createState() => _BodyFatInputWidgetState();
 }
 
 class _BodyFatInputWidgetState extends State<BodyFatInputWidget> {
-  final TextEditingController _customValueController = TextEditingController(
-    text: '7',
-  );
+  final TextEditingController _customValueController = TextEditingController();
 
   final List<BodyFatOption> options = const [
     BodyFatOption(
@@ -179,7 +177,7 @@ class _BodyFatInputWidgetState extends State<BodyFatInputWidget> {
               ),
               onPressed: () {
                 final selected = options[_selectedIndex];
-                debugPrint('Selected: ${selected.title}');
+                widget.onNext(selected, _customValueController.text);
               },
               child: const Text(
                 'Next',

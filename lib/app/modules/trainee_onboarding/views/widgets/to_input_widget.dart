@@ -138,6 +138,7 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 if (controller.isCurrentBodyFat) {
                   return BodyFatInputWidget(
                     onNext: (BodyFatOption selectedOption, String customValue) {
+                      "Calling the method".log();
                       controller.selectBodyFat(selectedOption, customValue);
                     },
                   );

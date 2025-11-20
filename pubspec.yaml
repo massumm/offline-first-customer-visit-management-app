@@ -70,6 +70,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/body_fat/
     - assets/images/full_body_tracker/
     - assets/images/home/
     - assets/images/icon_profile/
@@ -78,7 +79,6 @@ flutter:
     - assets/jsons/
 
     - assets/svg/
-    - assets/svg/body_fat/
     - assets/svg/home/
     - assets/svg/splash_screen_light/
     - assets/svg/splash_screen_light/page_1/

@@ -787,15 +787,15 @@ class TraineeOnboardingController extends BaseController {
     }
   }
 
-  void selectBodyFat(BodyFatOption selectedOption, String customValue) {
+  void selectBodyFat(BodyFatOption selectedOption, String customValue) async  {
     if (!_canAnswer) return;
     final q = currentQuestion!;
 
     if (customValue.isNotEmpty) {
-      _saveUserAnswer(q, customValue);
+     await _saveUserAnswer(q, customValue);
     }
 
-    _saveUserAnswer(q, selectedOption.subtitle);
+   await _saveUserAnswer(q, selectedOption.subtitle);
   }
 
   Future<void> selectWeight({double? weight, String? unit}) async {

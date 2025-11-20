@@ -16,10 +16,10 @@ class Assets {
   static const String activityObjectivesTriangleDark = 'assets/svg/fitness_report/activity_objectives/triangle_dark.svg';
   static const String activityObjectivesWorkoutDurationCircular = 'assets/svg/fitness_report/activity_objectives/workout_duration_circular.svg';
   static const String activityObjectivesYogaCircular = 'assets/svg/fitness_report/activity_objectives/yoga_circular.svg';
-  static const String bodyFatBodyFatHigh = 'assets/svg/body_fat/body-fat-high.svg';
-  static const String bodyFatBodyFatLow = 'assets/svg/body_fat/body-fat-low.svg';
-  static const String bodyFatBodyFatModerate = 'assets/svg/body_fat/body-fat-moderate.svg';
-  static const String bodyFatBodyFatVeryLow = 'assets/svg/body_fat/body-fat-very-low.svg';
+  static const String bodyFatBodyFatHigh = 'assets/images/body_fat/body-fat-high.png';
+  static const String bodyFatBodyFatLow = 'assets/images/body_fat/body-fat-low.png';
+  static const String bodyFatBodyFatModerate = 'assets/images/body_fat/body-fat-moderate.png';
+  static const String bodyFatBodyFatVeryLow = 'assets/images/body_fat/body-fat-very-low.png';
   static const String commonEnergyCircular = 'assets/svg/common/energy_circular.svg';
   static const String congratulationsCongo = 'assets/svg/fitness_report/congratulations/congo.svg';
   static const String congratulationsCongoDark = 'assets/svg/fitness_report/congratulations/congo_dark.svg';
