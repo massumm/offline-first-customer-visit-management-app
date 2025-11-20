@@ -16,6 +16,10 @@ class Assets {
   static const String activityObjectivesTriangleDark = 'assets/svg/fitness_report/activity_objectives/triangle_dark.svg';
   static const String activityObjectivesWorkoutDurationCircular = 'assets/svg/fitness_report/activity_objectives/workout_duration_circular.svg';
   static const String activityObjectivesYogaCircular = 'assets/svg/fitness_report/activity_objectives/yoga_circular.svg';
+  static const String bodyFatBodyFatHigh = 'assets/svg/body_fat/body-fat-high.svg';
+  static const String bodyFatBodyFatLow = 'assets/svg/body_fat/body-fat-low.svg';
+  static const String bodyFatBodyFatModerate = 'assets/svg/body_fat/body-fat-moderate.svg';
+  static const String bodyFatBodyFatVeryLow = 'assets/svg/body_fat/body-fat-very-low.svg';
   static const String commonEnergyCircular = 'assets/svg/common/energy_circular.svg';
   static const String congratulationsCongo = 'assets/svg/fitness_report/congratulations/congo.svg';
   static const String congratulationsCongoDark = 'assets/svg/fitness_report/congratulations/congo_dark.svg';
@@ -50,7 +54,6 @@ class Assets {
   static const String iconProfileSecond = 'assets/images/icon_profile/second.png';
   static const String iconProfileThird = 'assets/images/icon_profile/third.png';
   static const String imagesApple = 'assets/images/apple.png';
-  static const String imagesBgGradiemt = 'assets/images/bg-gradiemt.png.png';
   static const String imagesBgGradientCrop = 'assets/images/bg-gradient-crop.png';
   static const String imagesBodyScanner = 'assets/images/body_scanner.png';
   static const String imagesFace = 'assets/images/face.png';

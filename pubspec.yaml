@@ -78,6 +78,7 @@ flutter:
     - assets/jsons/
 
     - assets/svg/
+    - assets/svg/body_fat/
     - assets/svg/home/
     - assets/svg/splash_screen_light/
     - assets/svg/splash_screen_light/page_1/

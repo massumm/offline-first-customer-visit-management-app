@@ -18,6 +18,7 @@ import '../../../../core/values/app_colors.dart';
 import '../../../../core/widgets/input_widgets/custom_phone_field.dart';
 import '../../../../core/widgets/search_location_dropdown.dart';
 import 'agent_loading_indicator.dart';
+import 'body_fat_input_widget.dart';
 
 class ToInputWidget extends GetView<TraineeOnboardingController> {
   const ToInputWidget({super.key});
@@ -93,6 +94,8 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 return const SizedBox.shrink();
 
               case OnboardingPhase.askingQuestions:
+                return BodyFatInputWidget();
+
                 if (controller.showGroupContinuationButtons) {
                   return _buildContinuationButtons();
                 }
@@ -132,6 +135,10 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
 
                 if (controller.isCurrentReminder) {
                   return _buildReminder(context);
+                }
+
+                if (controller.isCurrentBodyFat) {
+                  return BodyFatInputWidget();
                 }
 
                 if (controller.isCurrentBodyPart) {

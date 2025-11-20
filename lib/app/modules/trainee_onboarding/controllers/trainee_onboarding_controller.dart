@@ -872,6 +872,8 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
+  bool get isCurrentBodyFat => currentQuestion?.type.name == "select_multiple_plus_other"
+      && currentQuestion?.questionFieldName == "body_fat_percentage";
 
   // -------------- Stepper bindings --------------
   /// Recalculates and updates the progress for all groups.
