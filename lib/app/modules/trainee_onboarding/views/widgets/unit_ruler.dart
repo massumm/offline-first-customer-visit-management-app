@@ -3,19 +3,23 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 
 enum HeightUnit { cm, inch }
 
+typedef OnUnitChanged = void Function(double heightCm, HeightUnit unit);
+
 class UnitRuler extends StatelessWidget {
   const UnitRuler({
     super.key,
     this.minHeightCm = 120,
     this.maxHeightCm = 250,
     this.initialHeightCm = 170,
-    this.onChanged,
+    required this.onChanged,
+    required this.onSubmit,
   });
 
   final double minHeightCm;
   final double maxHeightCm;
   final double initialHeightCm;
-  final ValueChanged<double>? onChanged;
+  final OnUnitChanged onChanged;
+  final VoidCallback onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +35,7 @@ class UnitRuler extends StatelessWidget {
             onChanged: onChanged,
           ),
           12.height,
-          ElevatedButton(onPressed: () {}, child: Text('Continue')),
+          ElevatedButton(onPressed: onSubmit, child: const Text('Continue')),
         ],
       ),
     );
@@ -42,7 +46,7 @@ class UnitPicker extends StatefulWidget {
   final double minHeightCm;
   final double maxHeightCm;
   final double initialHeightCm;
-  final ValueChanged<double>? onChanged; // returns value
+  final OnUnitChanged? onChanged;
 
   const UnitPicker({
     super.key,
@@ -92,7 +96,7 @@ class _UnitPickerState extends State<UnitPicker> {
     setState(() {
       _heightCm = clamped;
     });
-    widget.onChanged?.call(_heightCm);
+    widget.onChanged?.call(_heightCm, _unit);
   }
 
   String get _formattedValue {
@@ -112,6 +116,8 @@ class _UnitPickerState extends State<UnitPicker> {
     setState(() {
       _unit = unit;
     });
+    // 3. Also notify the parent when the unit changes.
+    widget.onChanged?.call(_heightCm, _unit);
   }
 
   // --- UI -------------------------------------------------------------------
@@ -188,12 +194,11 @@ class _UnitPickerState extends State<UnitPicker> {
                           padding: padding,
                           isCm: _unit == HeightUnit.cm,
                           majorTickColor: colorScheme.onSurface,
-                          minorTickColor: colorScheme.onSurface.withValues(
-                            alpha: 0.5,
+                          // Note: Replaced non-standard `withValues` with `withOpacity`.
+                          minorTickColor: colorScheme.onSurface.withValues(alpha:
+                            0.5,
                           ),
-                          labelColor: colorScheme.onSurface.withValues(
-                            alpha: 0.7,
-                          ),
+                          labelColor: colorScheme.onSurface.withValues(alpha: 0.7),
                         ),
                       ),
                     ),

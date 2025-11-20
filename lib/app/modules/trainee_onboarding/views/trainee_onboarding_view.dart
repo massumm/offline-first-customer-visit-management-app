@@ -3,12 +3,9 @@ import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/modules/trainee_onboarding/views/widgets/to_input_widget.dart';
-import 'package:tape_slider/tape_slider.dart';
 
 import '../../../../generated/assets.dart';
-import '../../../core/values/app_colors.dart';
 import '../../../core/widgets/action_pill.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';

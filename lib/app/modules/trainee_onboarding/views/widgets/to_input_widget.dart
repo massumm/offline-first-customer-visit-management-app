@@ -110,16 +110,18 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return _buildTimePickerButton(context);
                 }
                 if (controller.isCurrentHeight) {
-                  return  UnitRuler(
+                  // store the unit value
+                  String unitQuantity = '170 cm';
+
+                  return UnitRuler(
                     minHeightCm: 120,
                     maxHeightCm: 250,
                     initialHeightCm: 170,
-                    onChanged: (double value) {
-                      'Unit value: $value'.log();
-                      controller.send(value.toString());
+                    onChanged: (double value, HeightUnit unit) {
+                      unitQuantity = '$value ${unit.name}';
                     },
+                    onSubmit: () => controller.selectHeight(unitQuantity),
                   );
-
                 }
                 if (controller.isCurrentWeight) {
                   return _WeightPicker(controller: controller);
@@ -763,138 +765,138 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
   }
 }
 
-class _HeightPicker extends StatefulWidget {
-  const _HeightPicker({required this.controller});
+// class _HeightPicker extends StatefulWidget {
+//   const _HeightPicker({required this.controller});
+//
+//   final TraineeOnboardingController controller;
+//
+//   @override
+//   State<_HeightPicker> createState() => _HeightPickerState();
+// }
 
-  final TraineeOnboardingController controller;
-
-  @override
-  State<_HeightPicker> createState() => _HeightPickerState();
-}
-
-class _HeightPickerState extends State<_HeightPicker> {
-  // 0 for cm, 1 for ft/in
-  int _selectedUnit = 0;
-
-  // State for pickers
-  int _selectedCm = 170;
-  int _selectedFeet = 5;
-  int _selectedInches = 7;
-
-  // Data for pickers
-  final List<int> _cmValues = List.generate(
-    101,
-    (index) => 120 + index,
-  ); // 120-220 cm
-  final List<int> _feetValues = List.generate(
-    4,
-    (index) => 4 + index,
-  ); // 4-7 ft
-  final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
-
-  @override
-  Widget build(BuildContext context) {
-    final canSkip = widget.controller.currentQuestion?.canSkip ?? false;
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(
-          context,
-        ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      child: Column(
-        children: [
-          CupertinoSlidingSegmentedControl<int>(
-            groupValue: _selectedUnit,
-            children: const {0: Text('cm'), 1: Text('ft / in')},
-            onValueChanged: (value) =>
-                setState(() => _selectedUnit = value ?? 0),
-          ),
-          const SizedBox(height: 8),
-          SizedBox(
-            height: 150,
-            child: _selectedUnit == 0 ? _buildCmPicker() : _buildFtInPicker(),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              if (canSkip) ...[
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => widget.controller.selectHeight(),
-                    child: const Text('Skip'),
-                  ),
-                ),
-                const SizedBox(width: 16),
-              ],
-              Expanded(
-                child: FilledButton(
-                  onPressed: () {
-                    if (_selectedUnit == 0) {
-                      widget.controller.selectHeight(cm: _selectedCm);
-                    } else {
-                      widget.controller.selectHeight(
-                        feet: _selectedFeet,
-                        inches: _selectedInches,
-                      );
-                    }
-                  },
-                  child: const Text('Confirm'),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCmPicker() {
-    return CupertinoPicker(
-      itemExtent: 32,
-      scrollController: FixedExtentScrollController(
-        initialItem: _cmValues.indexOf(_selectedCm),
-      ),
-      onSelectedItemChanged: (index) =>
-          setState(() => _selectedCm = _cmValues[index]),
-      children: _cmValues.map((cm) => Center(child: Text('$cm cm'))).toList(),
-    );
-  }
-
-  Widget _buildFtInPicker() {
-    return Row(
-      children: [
-        Expanded(
-          child: CupertinoPicker(
-            itemExtent: 32,
-            scrollController: FixedExtentScrollController(
-              initialItem: _feetValues.indexOf(_selectedFeet),
-            ),
-            onSelectedItemChanged: (index) =>
-                setState(() => _selectedFeet = _feetValues[index]),
-            children: _feetValues
-                .map((ft) => Center(child: Text("$ft'")))
-                .toList(),
-          ),
-        ),
-        Expanded(
-          child: CupertinoPicker(
-            itemExtent: 32,
-            scrollController: FixedExtentScrollController(
-              initialItem: _inchValues.indexOf(_selectedInches),
-            ),
-            onSelectedItemChanged: (index) =>
-                setState(() => _selectedInches = _inchValues[index]),
-            children: _inchValues
-                .map((inch) => Center(child: Text('$inch"')))
-                .toList(),
-          ),
-        ),
-      ],
-    );
-  }
-}
+// class _HeightPickerState extends State<_HeightPicker> {
+//   // 0 for cm, 1 for ft/in
+//   int _selectedUnit = 0;
+//
+//   // State for pickers
+//   int _selectedCm = 170;
+//   int _selectedFeet = 5;
+//   int _selectedInches = 7;
+//
+//   // Data for pickers
+//   final List<int> _cmValues = List.generate(
+//     101,
+//     (index) => 120 + index,
+//   ); // 120-220 cm
+//   final List<int> _feetValues = List.generate(
+//     4,
+//     (index) => 4 + index,
+//   ); // 4-7 ft
+//   final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final canSkip = widget.controller.currentQuestion?.canSkip ?? false;
+//     return Container(
+//       padding: const EdgeInsets.all(16),
+//       decoration: BoxDecoration(
+//         color: Theme.of(
+//           context,
+//         ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+//         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+//       ),
+//       child: Column(
+//         children: [
+//           CupertinoSlidingSegmentedControl<int>(
+//             groupValue: _selectedUnit,
+//             children: const {0: Text('cm'), 1: Text('ft / in')},
+//             onValueChanged: (value) =>
+//                 setState(() => _selectedUnit = value ?? 0),
+//           ),
+//           const SizedBox(height: 8),
+//           SizedBox(
+//             height: 150,
+//             child: _selectedUnit == 0 ? _buildCmPicker() : _buildFtInPicker(),
+//           ),
+//           const SizedBox(height: 8),
+//           Row(
+//             children: [
+//               if (canSkip) ...[
+//                 Expanded(
+//                   child: OutlinedButton(
+//                     onPressed: () => widget.controller.selectHeight(),
+//                     child: const Text('Skip'),
+//                   ),
+//                 ),
+//                 const SizedBox(width: 16),
+//               ],
+//               Expanded(
+//                 child: FilledButton(
+//                   onPressed: () {
+//                     if (_selectedUnit == 0) {
+//                       widget.controller.selectHeight(cm: _selectedCm);
+//                     } else {
+//                       widget.controller.selectHeight(
+//                         feet: _selectedFeet,
+//                         inches: _selectedInches,
+//                       );
+//                     }
+//                   },
+//                   child: const Text('Confirm'),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   Widget _buildCmPicker() {
+//     return CupertinoPicker(
+//       itemExtent: 32,
+//       scrollController: FixedExtentScrollController(
+//         initialItem: _cmValues.indexOf(_selectedCm),
+//       ),
+//       onSelectedItemChanged: (index) =>
+//           setState(() => _selectedCm = _cmValues[index]),
+//       children: _cmValues.map((cm) => Center(child: Text('$cm cm'))).toList(),
+//     );
+//   }
+//
+//   Widget _buildFtInPicker() {
+//     return Row(
+//       children: [
+//         Expanded(
+//           child: CupertinoPicker(
+//             itemExtent: 32,
+//             scrollController: FixedExtentScrollController(
+//               initialItem: _feetValues.indexOf(_selectedFeet),
+//             ),
+//             onSelectedItemChanged: (index) =>
+//                 setState(() => _selectedFeet = _feetValues[index]),
+//             children: _feetValues
+//                 .map((ft) => Center(child: Text("$ft'")))
+//                 .toList(),
+//           ),
+//         ),
+//         Expanded(
+//           child: CupertinoPicker(
+//             itemExtent: 32,
+//             scrollController: FixedExtentScrollController(
+//               initialItem: _inchValues.indexOf(_selectedInches),
+//             ),
+//             onSelectedItemChanged: (index) =>
+//                 setState(() => _selectedInches = _inchValues[index]),
+//             children: _inchValues
+//                 .map((inch) => Center(child: Text('$inch"')))
+//                 .toList(),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class _WeightPicker extends StatefulWidget {
   const _WeightPicker({required this.controller});

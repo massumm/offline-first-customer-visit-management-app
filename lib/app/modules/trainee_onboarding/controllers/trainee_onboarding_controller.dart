@@ -762,21 +762,16 @@ class TraineeOnboardingController extends BaseController {
     await _saveUserAnswer(q, formattedTime);
   }
 
-  Future<void> selectHeight({int? cm, int? feet, int? inches}) async {
+  Future<void> selectHeight(String? height) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-    String formattedHeight;
 
-    if (cm != null) {
-      formattedHeight = "$cm cm";
-    } else if (feet != null && inches != null) {
-      formattedHeight = "$feet' $inches\"";
-    } else {
+    if (height == null || height.isEmpty) {
       await _saveUserAnswer(q, "Skipped");
       return;
     }
 
-    await _saveUserAnswer(q, formattedHeight);
+    await _saveUserAnswer(q, height);
   }
 
   Future<void> selectWeight({double? weight, String? unit}) async {
@@ -850,8 +845,8 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentTime => currentQuestion?.type.name == "time";
 
   bool get isCurrentHeight =>
-      currentQuestion?.type.name == "number"
-          && currentQuestion?.questionFieldName == "height";
+      currentQuestion?.type.name == "number" &&
+      currentQuestion?.questionFieldName == "height";
 
   bool get isCurrentWeight => currentQuestion?.type.name == "weight";
 
