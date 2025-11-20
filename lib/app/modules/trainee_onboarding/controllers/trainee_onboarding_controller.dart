@@ -380,6 +380,23 @@ class TraineeOnboardingController extends BaseController {
   }
 
   bool _shouldSkipQuestion(QAItem q) {
+    if (q.questionFieldName == 'body_measurements') {
+      final controllingQuestionData = questionData.firstWhereOrNull(
+        (data) => data.fieldName == q.questionFieldName && data.id != q.id,
+      );
+
+      // If the controlling (Yes/No) question is found...
+      if (controllingQuestionData != null) {
+        final answer = answers[controllingQuestionData.id];
+
+        if (answer?.toLowerCase() == 'no') {
+          return true; // Return true to skip.
+        }
+      }
+    }
+
+    //thii sdin dsi idioa
+    // By default, do not skip any question.
     return false;
   }
 
@@ -787,15 +804,15 @@ class TraineeOnboardingController extends BaseController {
     }
   }
 
-  void selectBodyFat(BodyFatOption selectedOption, String customValue) async  {
+  void selectBodyFat(BodyFatOption selectedOption, String customValue) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
 
     if (customValue.isNotEmpty) {
-     await _saveUserAnswer(q, customValue);
+      await _saveUserAnswer(q, customValue);
     }
 
-   await _saveUserAnswer(q, selectedOption.subtitle);
+    await _saveUserAnswer(q, selectedOption.subtitle);
   }
 
   Future<void> selectWeight({double? weight, String? unit}) async {

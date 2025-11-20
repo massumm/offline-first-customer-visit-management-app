@@ -12,6 +12,7 @@ import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboardi
 import 'package:icon/app/modules/trainee_onboarding/views/widgets/unit_ruler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_form_field/phone_form_field.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../base/widgets/custom_toast.dart';
 import '../../../../core/values/app_colors.dart';
@@ -460,10 +461,15 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                             ).colorScheme.primary,
                           ),
                           recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              CustomToast.showToast(
-                                message: 'Terms and Conditions',
+                            ..onTap = () async {
+                              // Launch the Terms and Conditions URL.
+                              Uri uri = Uri.parse(
+                                'https://github.com/IconFitness-App/IconTraining-Terms-Conditions/blob/main/Termify-Terms-and-Conditions.pdf',
                               );
+
+                              if (!await launchUrl(uri)) {
+                                throw Exception('Could not launch $uri');
+                              }
                             },
                         ),
                       ],
