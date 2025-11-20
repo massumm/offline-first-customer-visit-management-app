@@ -63,6 +63,7 @@ class TraineeOnboardingController extends BaseController {
   final currentQuestionIndexInGroup = (-1).obs;
   final isAwaitingGroupConfirmation = false.obs;
   final pageController = ScrollController();
+  final RxBool isProcessingAnswer = false.obs;
 
   // --------------- Answers ---------------
   final Map<int, String> answers = {};
@@ -639,9 +640,11 @@ class TraineeOnboardingController extends BaseController {
 
   bool get _canAnswer =>
       onboardingPhase.value == OnboardingPhase.askingQuestions &&
-      !isFinished &&
-      !isTyping.value &&
-      currentQuestionIndexInGroup.value != -1;
+          !isFinished &&
+          !isTyping.value &&
+          !isProcessingAnswer.value &&
+          currentQuestionIndexInGroup.value != -1;
+
 
   Future<void> _saveUserAnswer(QAItem q, String value) async {
     final userMessage = ChatMessage(
@@ -663,32 +666,37 @@ class TraineeOnboardingController extends BaseController {
   }
 
   Future<void> _processAnswer(
-    QAItem q,
-    String answerValue,
-    ChatMessage userMessage,
-  ) async {
-    messages.add(userMessage);
+      QAItem q,
+      String answerValue,
+      ChatMessage userMessage,
+      ) async {
+    try {
+      isProcessingAnswer.value = true;
+      messages.add(userMessage);
 
-    answers[q.id] = answerValue;
-    _scrollToBottom();
-    _updateProgresses();
+      answers[q.id] = answerValue;
+      _scrollToBottom();
+      _updateProgresses();
 
-    // Handle Other option selection
-    if (answerValue.contains('Other')) {
-      isOtherOptionSelected.value = true;
-      return;
-    } else {
-      isOtherOptionSelected.value = false;
-    }
+      // Handle Other option selection
+      if (answerValue.contains('Other')) {
+        isOtherOptionSelected.value = true;
+        return;
+      } else {
+        isOtherOptionSelected.value = false;
+      }
 
-    bool success = false;
-    success = await _sendMessage(userMessage);
+      bool success = false;
+      success = await _sendMessage(userMessage);
 
-    // If either the update or the fallback send was successful, move to the next question.
-    // Otherwise, stay on the current question; the message status will show 'failed'.
-    if (success) {
-      currentQuestionIndexInGroup.value++;
-      await _askNext();
+      // If either the update or the fallback send was successful, move to the next question.
+      // Otherwise, stay on the current question; the message status will show 'failed'.
+      if (success) {
+        currentQuestionIndexInGroup.value++;
+        await _askNext();
+      }
+    } finally {
+      isProcessingAnswer.value = false;
     }
   }
 
@@ -771,7 +779,12 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    await _saveUserAnswer(q, height);
+    final heightValue = double.tryParse(height);
+    if (heightValue != null) {
+      await _saveUserAnswer(q, heightValue.toStringAsFixed(2));
+    } else {
+      await _saveUserAnswer(q, height);
+    }
   }
 
   Future<void> selectWeight({double? weight, String? unit}) async {
