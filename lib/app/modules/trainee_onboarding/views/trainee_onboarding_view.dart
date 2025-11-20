@@ -3,11 +3,9 @@ import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/modules/trainee_onboarding/views/widgets/to_input_widget.dart';
 
 import '../../../../generated/assets.dart';
-import '../../../core/values/app_colors.dart';
 import '../../../core/widgets/action_pill.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
@@ -226,8 +224,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         Obx(() {
           final q = controller.currentQuestion;
           final hasOptions = (q?.metadata?.options?.isNotEmpty ?? false);
-          final hasUnitOptions = (q?.metadata?.unitOptions?.isNotEmpty ?? false);
-          
+          final hasUnitOptions =
+              (q?.metadata?.unitOptions?.isNotEmpty ?? false);
+
           if (controller.onboardingPhase.value !=
                   OnboardingPhase.askingQuestions ||
               controller.isFinished ||
@@ -254,52 +253,17 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     spacing: 8,
                     runSpacing: 8,
                     alignment: WrapAlignment.center,
-                    children:
-                        (q.metadata?.options ?? [])
-                            .map(
-                              (o) => ActionChip(
-                                label: Text(o.toString()),
-                                onPressed: () => controller.choose(o.toString()),
-                              ),
-                            )
-                            .toList(),
+                    children: (q.metadata?.options ?? [])
+                        .map(
+                          (o) => ActionChip(
+                            label: Text(o.toString()),
+                            onPressed: () => controller.choose(o.toString()),
+                          ),
+                        )
+                        .toList(),
                   ),
                 ),
-              
-              // Unit options
-              // if ((q.metadata?.unitOptions?.isNotEmpty ?? false))
-              //   ...[Container(
-              //     // height: 400,
-              //     width: double.infinity,
-              //     padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
-              //     child: Wrap(
-              //       spacing: 8,
-              //       runSpacing: 8,
-              //       alignment: WrapAlignment.center,
-              //       children:
-              //           (q.metadata?.unitOptions ?? [])
-              //               .map(
-              //                 (o) => ActionChip(
-              //                   label: Text(o.toJsonString()),
-              //                   onPressed: () => controller.choose(o.toJsonString()),
-              //                 ),
-              //               )
-              //               .toList(),
-              //     ),
-              //   ),
-              //     Text('170 cm', style: AppTextTheme.headlineLargeSemiBold,),
-              //     8.height,
-              //     TapeSlider(
-              //       initialValue: 170.0,
-              //       minValue: 120.0,
-              //       maxValue: 250.0,
-              //       onValueChanged: (value) {
-              //         print('Selected value: $value');
-              //       },
-              //       majorTickLabelStyle: AppTextTheme.labelSmallSemiBold.copyWith(color: AppColors.colorPrimary),
-              //     )
-              //   ],
-              
+
               if ((q.metadata?.options?.isNotEmpty ?? false) ||
                   (q.metadata?.unitOptions?.isNotEmpty ?? false))
                 8.height,

@@ -26,6 +26,8 @@ dependencies:
   web_socket_channel: ^3.0.3
   lottie: ^3.3.2
   shimmer: ^3.0.0
+
+  url_launcher: ^6.3.2
   
   # In-App Purchases
   in_app_purchase: ^3.2.3
@@ -70,6 +72,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/body_fat/
     - assets/images/full_body_tracker/
     - assets/images/home/
     - assets/images/icon_profile/

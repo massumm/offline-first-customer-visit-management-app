@@ -8,6 +8,7 @@ import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/repository/traineer_onboarding_qa_repository.dart';
 import 'package:icon/app/modules/trainee_onboarding/services/location_service.dart';
+import 'package:icon/app/modules/trainee_onboarding/views/widgets/body_fat_input_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
@@ -63,6 +64,7 @@ class TraineeOnboardingController extends BaseController {
   final currentQuestionIndexInGroup = (-1).obs;
   final isAwaitingGroupConfirmation = false.obs;
   final pageController = ScrollController();
+  final RxBool isProcessingAnswer = false.obs;
 
   // --------------- Answers ---------------
   final Map<int, String> answers = {};
@@ -378,6 +380,23 @@ class TraineeOnboardingController extends BaseController {
   }
 
   bool _shouldSkipQuestion(QAItem q) {
+    if (q.questionFieldName == 'body_measurements') {
+      final controllingQuestionData = questionData.firstWhereOrNull(
+        (data) => data.fieldName == q.questionFieldName && data.id != q.id,
+      );
+
+      // If the controlling (Yes/No) question is found...
+      if (controllingQuestionData != null) {
+        final answer = answers[controllingQuestionData.id];
+
+        if (answer?.toLowerCase() == 'no') {
+          return true; // Return true to skip.
+        }
+      }
+    }
+
+    //thii sdin dsi idioa
+    // By default, do not skip any question.
     return false;
   }
 
@@ -641,6 +660,7 @@ class TraineeOnboardingController extends BaseController {
       onboardingPhase.value == OnboardingPhase.askingQuestions &&
       !isFinished &&
       !isTyping.value &&
+      !isProcessingAnswer.value &&
       currentQuestionIndexInGroup.value != -1;
 
   Future<void> _saveUserAnswer(QAItem q, String value) async {
@@ -667,28 +687,33 @@ class TraineeOnboardingController extends BaseController {
     String answerValue,
     ChatMessage userMessage,
   ) async {
-    messages.add(userMessage);
+    try {
+      isProcessingAnswer.value = true;
+      messages.add(userMessage);
 
-    answers[q.id] = answerValue;
-    _scrollToBottom();
-    _updateProgresses();
+      answers[q.id] = answerValue;
+      _scrollToBottom();
+      _updateProgresses();
 
-    // Handle Other option selection
-    if (answerValue.contains('Other')) {
-      isOtherOptionSelected.value = true;
-      return;
-    } else {
-      isOtherOptionSelected.value = false;
-    }
+      // Handle Other option selection
+      if (answerValue.contains('Other')) {
+        isOtherOptionSelected.value = true;
+        return;
+      } else {
+        isOtherOptionSelected.value = false;
+      }
 
-    bool success = false;
-    success = await _sendMessage(userMessage);
+      bool success = false;
+      success = await _sendMessage(userMessage);
 
-    // If either the update or the fallback send was successful, move to the next question.
-    // Otherwise, stay on the current question; the message status will show 'failed'.
-    if (success) {
-      currentQuestionIndexInGroup.value++;
-      await _askNext();
+      // If either the update or the fallback send was successful, move to the next question.
+      // Otherwise, stay on the current question; the message status will show 'failed'.
+      if (success) {
+        currentQuestionIndexInGroup.value++;
+        await _askNext();
+      }
+    } finally {
+      isProcessingAnswer.value = false;
     }
   }
 
@@ -762,21 +787,32 @@ class TraineeOnboardingController extends BaseController {
     await _saveUserAnswer(q, formattedTime);
   }
 
-  Future<void> selectHeight({int? cm, int? feet, int? inches}) async {
+  Future<void> selectHeight(String? height) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
-    String formattedHeight;
 
-    if (cm != null) {
-      formattedHeight = "$cm cm";
-    } else if (feet != null && inches != null) {
-      formattedHeight = "$feet' $inches\"";
-    } else {
+    if (height == null || height.isEmpty) {
       await _saveUserAnswer(q, "Skipped");
       return;
     }
 
-    await _saveUserAnswer(q, formattedHeight);
+    final heightValue = double.tryParse(height);
+    if (heightValue != null) {
+      await _saveUserAnswer(q, heightValue.toStringAsFixed(2));
+    } else {
+      await _saveUserAnswer(q, height);
+    }
+  }
+
+  void selectBodyFat(BodyFatOption selectedOption, String customValue) async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+
+    if (customValue.isNotEmpty) {
+      await _saveUserAnswer(q, customValue);
+    }
+
+    await _saveUserAnswer(q, selectedOption.subtitle);
   }
 
   Future<void> selectWeight({double? weight, String? unit}) async {
@@ -850,8 +886,8 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentTime => currentQuestion?.type.name == "time";
 
   bool get isCurrentHeight =>
-      currentQuestion?.type.name == "number"
-          && currentQuestion?.questionFieldName == "height";
+      currentQuestion?.type.name == "number" &&
+      currentQuestion?.questionFieldName == "height";
 
   bool get isCurrentWeight => currentQuestion?.type.name == "weight";
 
@@ -864,6 +900,10 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
+
+  bool get isCurrentBodyFat =>
+      currentQuestion?.type.name == "select_multiple_plus_other" &&
+      currentQuestion?.questionFieldName == "body_fat_percentage";
 
   // -------------- Stepper bindings --------------
   /// Recalculates and updates the progress for all groups.
