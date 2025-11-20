@@ -94,8 +94,6 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 return const SizedBox.shrink();
 
               case OnboardingPhase.askingQuestions:
-                return BodyFatInputWidget();
-
                 if (controller.showGroupContinuationButtons) {
                   return _buildContinuationButtons();
                 }
@@ -138,7 +136,11 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 }
 
                 if (controller.isCurrentBodyFat) {
-                  return BodyFatInputWidget();
+                  return BodyFatInputWidget(
+                    onNext: (BodyFatOption selectedOption, String customValue) {
+                      controller.selectBodyFat(selectedOption, customValue);
+                    },
+                  );
                 }
 
                 if (controller.isCurrentBodyPart) {

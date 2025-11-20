@@ -5,7 +5,9 @@ import 'package:icon/generated/assets.dart';
 import '../../../../core/widgets/input_widgets/adaptive_text_field.dart';
 
 class BodyFatInputWidget extends StatefulWidget {
-  const BodyFatInputWidget({super.key});
+  const BodyFatInputWidget({super.key, required  this.onNext});
+
+  final void Function(BodyFatOption selectedOption, String customValue)? onNext;
 
   @override
   State<BodyFatInputWidget> createState() => _BodyFatInputWidgetState();
@@ -16,23 +18,23 @@ class _BodyFatInputWidgetState extends State<BodyFatInputWidget> {
     text: '7%',
   );
 
-  final List<_BodyFatOption> options = const [
-    _BodyFatOption(
+  final List<BodyFatOption> options = const [
+    BodyFatOption(
       title: 'High',
       subtitle: '25%+',
       image: Assets.bodyFatBodyFatHigh,
     ),
-    _BodyFatOption(
+    BodyFatOption(
       title: 'Moderate',
       subtitle: '15–25%',
       image: Assets.bodyFatBodyFatModerate,
     ),
-    _BodyFatOption(
+    BodyFatOption(
       title: 'Low',
       subtitle: '10–15%',
       image: Assets.bodyFatBodyFatLow,
     ),
-    _BodyFatOption(
+    BodyFatOption(
       title: 'Very Low',
       subtitle: '5–10%',
       image: Assets.bodyFatBodyFatVeryLow,
@@ -193,7 +195,7 @@ class _BodyFatInputWidgetState extends State<BodyFatInputWidget> {
 }
 
 class _BodyFatCard extends StatelessWidget {
-  final _BodyFatOption option;
+  final BodyFatOption option;
   final bool isSelected;
   final Color cardColor;
   final Color textColor;
@@ -272,12 +274,12 @@ class _BodyFatCard extends StatelessWidget {
   }
 }
 
-class _BodyFatOption {
+class BodyFatOption {
   final String title;
   final String subtitle;
   final String image;
 
-  const _BodyFatOption({
+  const BodyFatOption({
     required this.title,
     required this.subtitle,
     required this.image,

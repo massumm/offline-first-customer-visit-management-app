@@ -8,6 +8,7 @@ import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/repository/traineer_onboarding_qa_repository.dart';
 import 'package:icon/app/modules/trainee_onboarding/services/location_service.dart';
+import 'package:icon/app/modules/trainee_onboarding/views/widgets/body_fat_input_widget.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
@@ -640,11 +641,10 @@ class TraineeOnboardingController extends BaseController {
 
   bool get _canAnswer =>
       onboardingPhase.value == OnboardingPhase.askingQuestions &&
-          !isFinished &&
-          !isTyping.value &&
-          !isProcessingAnswer.value &&
-          currentQuestionIndexInGroup.value != -1;
-
+      !isFinished &&
+      !isTyping.value &&
+      !isProcessingAnswer.value &&
+      currentQuestionIndexInGroup.value != -1;
 
   Future<void> _saveUserAnswer(QAItem q, String value) async {
     final userMessage = ChatMessage(
@@ -666,10 +666,10 @@ class TraineeOnboardingController extends BaseController {
   }
 
   Future<void> _processAnswer(
-      QAItem q,
-      String answerValue,
-      ChatMessage userMessage,
-      ) async {
+    QAItem q,
+    String answerValue,
+    ChatMessage userMessage,
+  ) async {
     try {
       isProcessingAnswer.value = true;
       messages.add(userMessage);
@@ -787,6 +787,17 @@ class TraineeOnboardingController extends BaseController {
     }
   }
 
+  void selectBodyFat(BodyFatOption selectedOption, String customValue) {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+
+    if (customValue.isNotEmpty) {
+      _saveUserAnswer(q, customValue);
+    }
+
+    _saveUserAnswer(q, selectedOption.subtitle);
+  }
+
   Future<void> selectWeight({double? weight, String? unit}) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
@@ -872,8 +883,10 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
-  bool get isCurrentBodyFat => currentQuestion?.type.name == "select_multiple_plus_other"
-      && currentQuestion?.questionFieldName == "body_fat_percentage";
+
+  bool get isCurrentBodyFat =>
+      currentQuestion?.type.name == "select_multiple_plus_other" &&
+      currentQuestion?.questionFieldName == "body_fat_percentage";
 
   // -------------- Stepper bindings --------------
   /// Recalculates and updates the progress for all groups.
