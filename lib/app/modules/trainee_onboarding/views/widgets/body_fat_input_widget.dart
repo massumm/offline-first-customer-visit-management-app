@@ -73,39 +73,41 @@ class _BodyFatInputWidgetState extends State<BodyFatInputWidget> {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: SizedBox(
                 height: 320,
-                child: ListWheelScrollView.useDelegate(
-                  controller: _wheelController,
-                  itemExtent: 76,
-                  // card height
-                  perspective: 0.004,
-                  diameterRatio: 1.6,
-                  physics: const FixedExtentScrollPhysics(),
-                  onSelectedItemChanged: (index) {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                  childDelegate: ListWheelChildBuilderDelegate(
-                    childCount: options.length,
-                    builder: (context, index) {
-                      final option = options[index];
-                      final isSelected = _selectedIndex == index;
-
-                      return AnimatedScale(
-                        duration: const Duration(milliseconds: 180),
-                        scale: isSelected ? 1.02 : 0.96,
-                        child: _BodyFatCard(
-                          option: option,
-                          isSelected: isSelected,
-                          cardColor: cardColor,
-                          textColor: textColor,
-                          subtitleColor: subtitleColor,
-                          iconColor: iconColor,
-                          selectedBorderColor: red,
-                          unselectedBorderColor: unselectedBorderColor,
-                        ),
-                      );
+                child: ClipRect(
+                  clipBehavior: Clip.none,
+                  child: ListWheelScrollView.useDelegate(
+                    controller: _wheelController,
+                    itemExtent: 66,
+                    perspective: 0.004,
+                    diameterRatio: 1.6,
+                    physics: const FixedExtentScrollPhysics(),
+                    onSelectedItemChanged: (index) {
+                      setState(() {
+                        _selectedIndex = index;
+                      });
                     },
+                    childDelegate: ListWheelChildBuilderDelegate(
+                      childCount: options.length,
+                      builder: (context, index) {
+                        final option = options[index];
+                        final isSelected = _selectedIndex == index;
+
+                        return AnimatedScale(
+                          duration: const Duration(milliseconds: 180),
+                          scale: isSelected ? 1 : 0.95,
+                          child: _BodyFatCard(
+                            option: option,
+                            isSelected: isSelected,
+                            cardColor: cardColor,
+                            textColor: textColor,
+                            subtitleColor: subtitleColor,
+                            iconColor: iconColor,
+                            selectedBorderColor: red,
+                            unselectedBorderColor: unselectedBorderColor,
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
