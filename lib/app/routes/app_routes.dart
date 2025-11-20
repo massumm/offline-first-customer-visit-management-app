@@ -28,6 +28,7 @@ abstract class Routes {
   static const WEEKLY_ROUTINE = _Paths.WEEKLY_ROUTINE;
   static const ADD_EXERCISE_TO_ROUTINE = _Paths.ADD_EXERCISE_TO_ROUTINE;
   static const EXPLORE = _Paths.EXPLORE;
+  static const WORKOUT_HISTORY = _Paths.WORKOUT_HISTORY;
 }
 
 abstract class _Paths {
@@ -57,4 +58,5 @@ abstract class _Paths {
   static const WEEKLY_ROUTINE = '/weekly-routine';
   static const ADD_EXERCISE_TO_ROUTINE = '/add-exercise-to-routine';
   static const EXPLORE = '/explore';
+  static const WORKOUT_HISTORY = '/workout-history';
 }
