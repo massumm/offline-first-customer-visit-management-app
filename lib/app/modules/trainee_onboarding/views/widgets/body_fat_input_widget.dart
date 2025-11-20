@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 import 'package:icon/generated/assets.dart';
 
 import '../../../../core/widgets/input_widgets/adaptive_text_field.dart';
 
 class BodyFatInputWidget extends StatefulWidget {
-  const BodyFatInputWidget({super.key, required  this.onNext});
+  const BodyFatInputWidget({super.key, required this.onNext});
 
   final void Function(BodyFatOption selectedOption, String customValue)? onNext;
 
@@ -15,7 +16,7 @@ class BodyFatInputWidget extends StatefulWidget {
 
 class _BodyFatInputWidgetState extends State<BodyFatInputWidget> {
   final TextEditingController _customValueController = TextEditingController(
-    text: '7%',
+    text: '7',
   );
 
   final List<BodyFatOption> options = const [
@@ -45,7 +46,6 @@ class _BodyFatInputWidgetState extends State<BodyFatInputWidget> {
       FixedExtentScrollController(initialItem: 0);
 
   int _selectedIndex = 0;
-
 
   @override
   Widget build(BuildContext context) {
@@ -125,8 +125,11 @@ class _BodyFatInputWidgetState extends State<BodyFatInputWidget> {
                     controller: _customValueController,
                     hintText: "7%",
                     labelText: 'Add Custom Value',
-                    keyboardType: TextInputType.emailAddress,
+                    keyboardType: TextInputType.number,
                     textInputAction: TextInputAction.next,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(RegExp(r'[0-9%]')),
+                    ],
                     errorText: null,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     onChanged: (value) {},
@@ -251,7 +254,9 @@ class _BodyFatCard extends StatelessWidget {
                     fontSize: 17,
                     fontWeight: FontWeight.w600,
                     // Corrected: use withOpacity
-                    color: isSelected ? textColor : textColor.withValues(alpha: 0.7),
+                    color: isSelected
+                        ? textColor
+                        : textColor.withValues(alpha: 0.7),
                   ),
                 ),
                 Text(
