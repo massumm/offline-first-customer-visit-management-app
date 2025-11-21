@@ -8,7 +8,7 @@ class WheelListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = List.generate(7, (index) => index + 1);
+    final items = List.generate(range, (index) => index + 1);
 
     return SizedBox(
       height: 260,
@@ -24,10 +24,10 @@ class WheelListWidget extends StatelessWidget {
                 physics: const FixedExtentScrollPhysics(),
                 overAndUnderCenterOpacity: 0.4,
                 onSelectedItemChanged: (index) {
-                  // handle selection here if you want
                   debugPrint('Selected: ${items[index]}');
                 },
                 childDelegate: ListWheelChildBuilderDelegate(
+                  childCount: items.length,
                   builder: (context, index) {
                     if (index < 0 || index >= items.length) return null;
                     return _WheelItem(number: items[index]);
@@ -66,13 +66,11 @@ class _WheelItem extends StatelessWidget {
           children: [
             Text(
               number.toString(),
-
               style: theme.textTheme.titleMedium?.copyWith(
                 color: colorScheme.onSurface,
               ),
             ),
             const Spacer(),
-
             Icon(
               Icons.chevron_right,
               color: colorScheme.onSurface.withValues(alpha: 0.7),
