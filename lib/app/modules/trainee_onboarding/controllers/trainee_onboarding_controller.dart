@@ -792,13 +792,13 @@ class TraineeOnboardingController extends BaseController {
     final q = currentQuestion!;
 
     if (height == null || height.isEmpty) {
-      await _saveUserAnswer(q, "Skipped");
+      await _saveUserAnswer(q, "Skip");
       return;
     }
 
     final heightValue = double.tryParse(height);
     if (heightValue != null) {
-      await _saveUserAnswer(q, heightValue.toStringAsFixed(2));
+      await _saveUserAnswer(q, heightValue.round().toString());
     } else {
       await _saveUserAnswer(q, height);
     }
