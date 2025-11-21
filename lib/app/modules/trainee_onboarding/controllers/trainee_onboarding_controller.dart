@@ -32,6 +32,7 @@ enum OnboardingPhase {
 class TraineeOnboardingController extends BaseController {
   /// Flag to skip the immediate next question after 'progress_photo_upload' if answered 'No'.
   bool _skipNextQuestion = false;
+
   // --------------- Repository ---------------
   final TraineeOnboardingQARepository _onboardingQARepository = Get.find(
     tag: (TraineeOnboardingQARepository).toString(),
@@ -84,14 +85,12 @@ class TraineeOnboardingController extends BaseController {
   /// Holds the progress (0.0 to 1.0) for each question group.
   final RxList<double> groupProgresses = <double>[].obs;
 
-
   // This is the default id don't change this
   RxInt traineeId = 1.obs;
 
   final selectedOption = Rx<String?>(null);
 
   final RxDouble numericRangeValue = 6.0.obs;
-
 
   final Map<String, Map<String, String>> groupMetadataMap = {
     'personal': {
@@ -389,7 +388,6 @@ class TraineeOnboardingController extends BaseController {
     isTyping.value = false;
     _scrollToBottom();
   }
-
 
   /* BUG: this sheet not working */
   bool _shouldSkipQuestion(QAItem q) {
@@ -898,6 +896,7 @@ class TraineeOnboardingController extends BaseController {
     selectedOption.value = 'Other';
     isOtherOptionSelected.value = true;
   }
+
   int get stepperTotalSteps => generatedQuestionGroups.length;
 
   int get stepperCurrentStep {
@@ -966,13 +965,15 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
+
   bool get isCurrentMultiplePlusOther =>
       currentQuestion?.type.type == QuestionTypeEnum.selectMultiplePlusOther;
 
   bool get isCurrentNumericRange =>
       currentQuestion?.type.type == QuestionTypeEnum.numericRange;
 
-
+  bool get isCurrentDateWithDescription =>
+      currentQuestion?.type.type == QuestionTypeEnum.dateWithDescription;
 
   bool get isCurrentBodyMeasurements =>
       currentQuestion?.type.name == "body_measurements_input";

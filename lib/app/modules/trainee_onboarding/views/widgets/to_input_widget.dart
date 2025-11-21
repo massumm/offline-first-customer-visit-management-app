@@ -21,6 +21,7 @@ import '../../../../core/widgets/search_location_dropdown.dart';
 import 'agent_loading_indicator.dart';
 import 'body_fat_input_widget.dart';
 import 'body_measurements_input_widget.dart';
+import 'event_input_widget.dart';
 import 'range_slider_input_widget.dart';
 
 class ToInputWidget extends GetView<TraineeOnboardingController> {
@@ -153,6 +154,12 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
 
                 if (controller.isCurrentBodyPart) {
                   return BodyPartInputWidget(controller: controller);
+                }
+
+                if(controller.isCurrentDateWithDescription){
+                    return EventInputWidget(
+                      controller: controller,
+                    );
                 }
 
                 if (controller.isCurrentNumericRange) {
