@@ -30,6 +30,8 @@ enum OnboardingPhase {
 }
 
 class TraineeOnboardingController extends BaseController {
+  /// Flag to skip the immediate next question after 'progress_photo_upload' if answered 'No'.
+  bool _skipNextQuestion = false;
   // --------------- Repository ---------------
   final TraineeOnboardingQARepository _onboardingQARepository = Get.find(
     tag: (TraineeOnboardingQARepository).toString(),
@@ -382,22 +384,26 @@ class TraineeOnboardingController extends BaseController {
   }
 
   bool _shouldSkipQuestion(QAItem q) {
+    // If the skip-next flag is set, skip this question and reset the flag.
+    if (_skipNextQuestion) {
+      _skipNextQuestion = false;
+      return true;
+    }
+
+    // Existing logic for skipping body_measurements.
     if (q.questionFieldName == 'body_measurements') {
       final controllingQuestionData = questionData.firstWhereOrNull(
         (data) => data.fieldName == q.questionFieldName && data.id != q.id,
       );
 
-      // If the controlling (Yes/No) question is found...
       if (controllingQuestionData != null) {
         final answer = answers[controllingQuestionData.id];
-
         if (answer?.toLowerCase() == 'no') {
           return true; // Return true to skip.
         }
       }
     }
 
-    //thii sdin dsi idioa
     // By default, do not skip any question.
     return false;
   }
@@ -435,7 +441,7 @@ class TraineeOnboardingController extends BaseController {
       currentQuestionIndexInGroup.value = 0;
     }
 
-    // If we've finished all questions in the current group, move to next group
+    // If we've finished all questions in the current group, move to the next group
     if (currentQuestionIndexInGroup.value >=
         generatedQuestionGroups[currentGroupIndex.value].questions.length) {
       final finishedGroup = generatedQuestionGroups[currentGroupIndex.value];
@@ -464,23 +470,14 @@ class TraineeOnboardingController extends BaseController {
     final currentQuestion = generatedQuestionGroups[currentGroupIndex.value]
         .questions[currentQuestionIndexInGroup.value];
 
-    // If last question in group, show personalized comment
-    if (currentQuestion.isLastInGroup) {
-      final currentQuestionGroup =
-          generatedQuestionGroups[currentGroupIndex.value];
-      String personalizedComment = await _onboardingQARepository
-          .getPersonalizedOnboardingGroupComment(
-            1,
-            groupMetadataMap.entries
-                .firstWhere(
-                  (e) => e.value["displayName"] == currentQuestionGroup.name,
-                )
-                .key,
-          );
-      await _botSay(personalizedComment);
+    // Check if the current question should be skipped. If so, advance and re-run.
+    if (_shouldSkipQuestion(currentQuestion)) {
+      currentQuestionIndexInGroup.value++;
+      await _askNext(); // Recursively call to find the next non-skippable question
+      return;
     }
 
-    // If new group, show introduction
+    // If it's a new group, show the introduction.
     final bool isNewGroup = currentQuestionIndexInGroup.value == 0;
     if (isNewGroup) {
       await _botSay(
@@ -488,6 +485,7 @@ class TraineeOnboardingController extends BaseController {
       );
     }
 
+    // Ask the actual question
     await _botSay(currentQuestion.question);
     _updateProgresses();
   }
@@ -692,6 +690,12 @@ class TraineeOnboardingController extends BaseController {
     try {
       isProcessingAnswer.value = true;
       messages.add(userMessage);
+
+      // If this is the 'progress_photo_upload' question and answered 'No', set skip-next flag
+      if (q.questionFieldName == 'progress_photo_upload' &&
+          answerValue.toLowerCase() == 'no') {
+        _skipNextQuestion = true;
+      }
 
       answers[q.id] = answerValue;
       _scrollToBottom();
