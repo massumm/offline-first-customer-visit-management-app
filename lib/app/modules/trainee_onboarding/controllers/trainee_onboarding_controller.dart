@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -832,6 +834,17 @@ class TraineeOnboardingController extends BaseController {
     await _saveImageAnswer(q, imageFile); // Use the new method
   }
 
+  Future<void> saveBodyMeasurements(Map<String, String> measurements) async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+
+    // Convert the map to a JSON string to store as a single answer.
+    final jsonString = jsonEncode(measurements);
+
+    // Use the existing answer processing logic
+    await _saveUserAnswer(q, jsonString);
+  }
+
   int get stepperTotalSteps => generatedQuestionGroups.length;
 
   int get stepperCurrentStep {
@@ -900,6 +913,7 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
+  bool get isCurrentBodyMeasurements => currentQuestion?.type.name == "body_measurements_input";
 
   bool get isCurrentBodyFat =>
       currentQuestion?.type.name == "select_multiple_plus_other" &&
