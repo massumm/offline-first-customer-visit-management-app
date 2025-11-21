@@ -257,8 +257,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             return const SizedBox.shrink();
           }
 
-          // If 'Other' is selected, the input field will appear, but the chips remain.
-          // Tapping another chip will hide the input field again via the controller logic.
           return Container(
             width: double.infinity,
             padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
@@ -271,8 +269,19 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 final isOtherChip =
                     isMultiplePlusOther && optionText == 'Other';
 
+                // Check if the current option is the selected one.
+                final isSelected = controller.selectedOption.value == optionText;
+
                 return ActionChip(
                   label: Text(optionText),
+                  shape: isSelected
+                      ? StadiumBorder(
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 1.5,
+                    ),
+                  )
+                      : null,
                   onPressed: () {
                     if (isOtherChip) {
                       // Method in the controller to show the input field.

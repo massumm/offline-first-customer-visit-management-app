@@ -84,7 +84,12 @@ class TraineeOnboardingController extends BaseController {
   /// Holds the progress (0.0 to 1.0) for each question group.
   final RxList<double> groupProgresses = <double>[].obs;
 
+
+  // This is the default id don't change this
   RxInt traineeId = 1.obs;
+
+  final selectedOption = Rx<String?>(null);
+
 
   final Map<String, Map<String, String>> groupMetadataMap = {
     'personal': {
@@ -383,6 +388,8 @@ class TraineeOnboardingController extends BaseController {
     _scrollToBottom();
   }
 
+
+  /* BUG: this sheet not working */
   bool _shouldSkipQuestion(QAItem q) {
     // If the skip-next flag is set, skip this question and reset the flag.
     if (_skipNextQuestion) {
@@ -485,6 +492,10 @@ class TraineeOnboardingController extends BaseController {
       );
     }
 
+    // Reset selection state for the new question being asked.
+    selectedOption.value = null;
+    isOtherOptionSelected.value = false;
+
     // Ask the actual question
     await _botSay(currentQuestion.question);
     _updateProgresses();
@@ -523,6 +534,7 @@ class TraineeOnboardingController extends BaseController {
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
     isOtherOptionSelected.value = false;
+    selectedOption.value = option;
     final q = currentQuestion!;
     await _saveUserAnswer(q, option);
   }
@@ -875,6 +887,7 @@ class TraineeOnboardingController extends BaseController {
   }
 
   void selectOtherOption() {
+    selectedOption.value = 'Other';
     isOtherOptionSelected.value = true;
   }
   int get stepperTotalSteps => generatedQuestionGroups.length;
