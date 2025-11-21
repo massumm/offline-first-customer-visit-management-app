@@ -966,6 +966,9 @@ class TraineeOnboardingController extends BaseController {
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
 
+  bool get isCurrentNumber =>
+      currentQuestion?.type.type == QuestionTypeEnum.number;
+
   bool get isCurrentMultiplePlusOther =>
       currentQuestion?.type.type == QuestionTypeEnum.selectMultiplePlusOther;
 

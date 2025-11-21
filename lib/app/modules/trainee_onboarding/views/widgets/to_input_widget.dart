@@ -23,6 +23,7 @@ import 'body_fat_input_widget.dart';
 import 'body_measurements_input_widget.dart';
 import 'event_input_widget.dart';
 import 'range_slider_input_widget.dart';
+import 'wheel_list.dart';
 
 class ToInputWidget extends GetView<TraineeOnboardingController> {
   const ToInputWidget({super.key});
@@ -143,6 +144,15 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return const BodyMeasurementsInputWidget();
                 }
 
+                if (controller.isCurrentNumber) {
+                  return WheelListWidget(
+                    range:
+                        controller.currentQuestion?.metadata?.maxValue
+                            ?.toInt() ??
+                        0,
+                  );
+                }
+
                 if (controller.isCurrentBodyFat) {
                   return BodyFatInputWidget(
                     onNext: (BodyFatOption selectedOption, String customValue) {
@@ -156,10 +166,8 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return BodyPartInputWidget(controller: controller);
                 }
 
-                if(controller.isCurrentDateWithDescription){
-                    return EventInputWidget(
-                      controller: controller,
-                    );
+                if (controller.isCurrentDateWithDescription) {
+                  return EventInputWidget(controller: controller);
                 }
 
                 if (controller.isCurrentNumericRange) {
