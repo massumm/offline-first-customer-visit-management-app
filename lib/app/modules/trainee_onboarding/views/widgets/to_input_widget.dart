@@ -151,85 +151,12 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 }
 
                 if (controller.isCurrentBodyPart) {
-                  return Column(
-                    children: [
-                      6.height,
-                      BodyChart(
-                        selectedParts: controller.selectedBodyParts,
-                        selectedColor: AppColors.colorPrimary,
-                        unselectedColor: Colors.grey.shade300,
-                        viewType: BodyViewType.both,
-                        width: 250,
-                      ),
-                      6.height,
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        alignment: WrapAlignment.center,
-                        children: [
-                          ActionChip(
-                            label: Text('Full Body'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('full body'),
-                          ),
-                          ActionChip(
-                            label: Text('Chest'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('chest'),
-                          ),
-                          ActionChip(
-                            label: Text('Arm'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('arm'),
-                          ),
-                          ActionChip(
-                            label: Text('Abs'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('abs'),
-                          ),
-                          ActionChip(
-                            label: Text('Neck'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('neck'),
-                          ),
-                          ActionChip(
-                            label: Text('Shoulder'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('shoulder'),
-                          ),
-                          ActionChip(
-                            label: Text('Back'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('back'),
-                          ),
-                          ActionChip(
-                            label: Text('Glutes'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('glutes'),
-                          ),
-                          ActionChip(
-                            label: Text('Calves'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('calves'),
-                          ),
-                          ActionChip(
-                            label: Text('Quads'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('quads'),
-                          ),
-                          ActionChip(
-                            label: Text('Other'),
-                            onPressed:
-                                () => //TODO: HANDLE THIS.
-                                    controller.selectedBodyParts.add('other'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  );
+                  return BodyPartInputWidget(controller: controller);
                 }
 
-                if (controller.isCurrentChoice) {
+                // Handle for choice options selection
+                if (controller.isCurrentChoice
+                    || controller.isCurrentMultiplePlusOther) {
                   // Handle for other options selection
                   if (controller.isOtherOptionSelected.isTrue) {
                     return _buildTextInput(context);
@@ -237,7 +164,6 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return const SizedBox.shrink();
                 }
 
-                // TODO: DEMO CHECK
                 if (controller.isCurrentLocation ||
                     controller.currentQuestion?.id == 4) {
                   return InkWell(
@@ -783,6 +709,95 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
       default:
         return "";
     }
+  }
+}
+
+class BodyPartInputWidget extends StatelessWidget {
+  const BodyPartInputWidget({
+    super.key,
+    required this.controller,
+  });
+
+  final TraineeOnboardingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        6.height,
+        BodyChart(
+          selectedParts: controller.selectedBodyParts,
+          selectedColor: AppColors.colorPrimary,
+          unselectedColor: Colors.grey.shade300,
+          viewType: BodyViewType.both,
+          width: 250,
+        ),
+        6.height,
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          alignment: WrapAlignment.center,
+          children: [
+            ActionChip(
+              label: Text('Full Body'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('full body'),
+            ),
+            ActionChip(
+              label: Text('Chest'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('chest'),
+            ),
+            ActionChip(
+              label: Text('Arm'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('arm'),
+            ),
+            ActionChip(
+              label: Text('Abs'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('abs'),
+            ),
+            ActionChip(
+              label: Text('Neck'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('neck'),
+            ),
+            ActionChip(
+              label: Text('Shoulder'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('shoulder'),
+            ),
+            ActionChip(
+              label: Text('Back'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('back'),
+            ),
+            ActionChip(
+              label: Text('Glutes'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('glutes'),
+            ),
+            ActionChip(
+              label: Text('Calves'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('calves'),
+            ),
+            ActionChip(
+              label: Text('Quads'),
+              onPressed: () =>
+                  controller.selectedBodyParts.add('quads'),
+            ),
+            ActionChip(
+              label: Text('Other'),
+              onPressed:
+                  () => //TODO: HANDLE THIS.
+                      controller.selectedBodyParts.add('other'),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 }
 

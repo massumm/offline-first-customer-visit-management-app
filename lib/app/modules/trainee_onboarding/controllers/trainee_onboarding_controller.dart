@@ -522,6 +522,7 @@ class TraineeOnboardingController extends BaseController {
 
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
+    isOtherOptionSelected.value = false;
     final q = currentQuestion!;
     await _saveUserAnswer(q, option);
   }
@@ -873,6 +874,9 @@ class TraineeOnboardingController extends BaseController {
     await _processAnswer(q, jsonString, userMessage);
   }
 
+  void selectOtherOption() {
+    isOtherOptionSelected.value = true;
+  }
   int get stepperTotalSteps => generatedQuestionGroups.length;
 
   int get stepperCurrentStep {
@@ -941,6 +945,8 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
+  bool get isCurrentMultiplePlusOther =>
+      currentQuestion?.type.type == QuestionTypeEnum.selectMultiplePlusOther;
 
   bool get isCurrentBodyMeasurements =>
       currentQuestion?.type.name == "body_measurements_input";
