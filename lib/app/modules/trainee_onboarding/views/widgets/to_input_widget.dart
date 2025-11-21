@@ -20,6 +20,9 @@ import '../../../../core/widgets/input_widgets/custom_phone_field.dart';
 import '../../../../core/widgets/search_location_dropdown.dart';
 import 'agent_loading_indicator.dart';
 import 'body_fat_input_widget.dart';
+import 'body_measurements_input_widget.dart';
+import 'event_input_widget.dart';
+import 'range_slider_input_widget.dart';
 
 class ToInputWidget extends GetView<TraineeOnboardingController> {
   const ToInputWidget({super.key});
@@ -136,6 +139,10 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return _buildReminder(context);
                 }
 
+                if (controller.isCurrentBodyMeasurements) {
+                  return const BodyMeasurementsInputWidget();
+                }
+
                 if (controller.isCurrentBodyFat) {
                   return BodyFatInputWidget(
                     onNext: (BodyFatOption selectedOption, String customValue) {
@@ -146,85 +153,34 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 }
 
                 if (controller.isCurrentBodyPart) {
-                  return Column(
-                    children: [
-                      6.height,
-                      BodyChart(
-                        selectedParts: controller.selectedBodyParts,
-                        selectedColor: AppColors.colorPrimary,
-                        unselectedColor: Colors.grey.shade300,
-                        viewType: BodyViewType.both,
-                        width: 250,
-                      ),
-                      6.height,
-                      Wrap(
-                        spacing: 8,
-                        runSpacing: 8,
-                        alignment: WrapAlignment.center,
-                        children: [
-                          ActionChip(
-                            label: Text('Full Body'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('full body'),
-                          ),
-                          ActionChip(
-                            label: Text('Chest'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('chest'),
-                          ),
-                          ActionChip(
-                            label: Text('Arm'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('arm'),
-                          ),
-                          ActionChip(
-                            label: Text('Abs'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('abs'),
-                          ),
-                          ActionChip(
-                            label: Text('Neck'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('neck'),
-                          ),
-                          ActionChip(
-                            label: Text('Shoulder'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('shoulder'),
-                          ),
-                          ActionChip(
-                            label: Text('Back'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('back'),
-                          ),
-                          ActionChip(
-                            label: Text('Glutes'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('glutes'),
-                          ),
-                          ActionChip(
-                            label: Text('Calves'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('calves'),
-                          ),
-                          ActionChip(
-                            label: Text('Quads'),
-                            onPressed: () =>
-                                controller.selectedBodyParts.add('quads'),
-                          ),
-                          ActionChip(
-                            label: Text('Other'),
-                            onPressed:
-                                () => //TODO: HANDLE THIS.
-                                    controller.selectedBodyParts.add('other'),
-                          ),
-                        ],
-                      ),
-                    ],
+                  return BodyPartInputWidget(controller: controller);
+                }
+
+                if(controller.isCurrentDateWithDescription){
+                    return EventInputWidget(
+                      controller: controller,
+                    );
+                }
+
+                if (controller.isCurrentNumericRange) {
+                  return NumericRangeInputWidget(
+                    value: controller.numericRangeValue.value,
+                    maxTitle: "Fast",
+                    minTitle: 'Gradual',
+                    max: 10,
+                    min: 1,
+                    onChanged: (double value) {
+                      controller.numericRangeValue.value = value;
+                    },
+                    onNext: () {
+                      controller.selectNumericRange();
+                    },
                   );
                 }
 
-                if (controller.isCurrentChoice) {
+                // Handle for choice options selection
+                if (controller.isCurrentChoice ||
+                    controller.isCurrentMultiplePlusOther) {
                   // Handle for other options selection
                   if (controller.isOtherOptionSelected.isTrue) {
                     return _buildTextInput(context);
@@ -232,7 +188,6 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return const SizedBox.shrink();
                 }
 
-                // TODO: DEMO CHECK
                 if (controller.isCurrentLocation ||
                     controller.currentQuestion?.id == 4) {
                   return InkWell(
@@ -781,138 +736,81 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
   }
 }
 
-// class _HeightPicker extends StatefulWidget {
-//   const _HeightPicker({required this.controller});
-//
-//   final TraineeOnboardingController controller;
-//
-//   @override
-//   State<_HeightPicker> createState() => _HeightPickerState();
-// }
+class BodyPartInputWidget extends StatelessWidget {
+  const BodyPartInputWidget({super.key, required this.controller});
 
-// class _HeightPickerState extends State<_HeightPicker> {
-//   // 0 for cm, 1 for ft/in
-//   int _selectedUnit = 0;
-//
-//   // State for pickers
-//   int _selectedCm = 170;
-//   int _selectedFeet = 5;
-//   int _selectedInches = 7;
-//
-//   // Data for pickers
-//   final List<int> _cmValues = List.generate(
-//     101,
-//     (index) => 120 + index,
-//   ); // 120-220 cm
-//   final List<int> _feetValues = List.generate(
-//     4,
-//     (index) => 4 + index,
-//   ); // 4-7 ft
-//   final List<int> _inchValues = List.generate(12, (index) => index); // 0-11 in
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final canSkip = widget.controller.currentQuestion?.canSkip ?? false;
-//     return Container(
-//       padding: const EdgeInsets.all(16),
-//       decoration: BoxDecoration(
-//         color: Theme.of(
-//           context,
-//         ).colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
-//         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-//       ),
-//       child: Column(
-//         children: [
-//           CupertinoSlidingSegmentedControl<int>(
-//             groupValue: _selectedUnit,
-//             children: const {0: Text('cm'), 1: Text('ft / in')},
-//             onValueChanged: (value) =>
-//                 setState(() => _selectedUnit = value ?? 0),
-//           ),
-//           const SizedBox(height: 8),
-//           SizedBox(
-//             height: 150,
-//             child: _selectedUnit == 0 ? _buildCmPicker() : _buildFtInPicker(),
-//           ),
-//           const SizedBox(height: 8),
-//           Row(
-//             children: [
-//               if (canSkip) ...[
-//                 Expanded(
-//                   child: OutlinedButton(
-//                     onPressed: () => widget.controller.selectHeight(),
-//                     child: const Text('Skip'),
-//                   ),
-//                 ),
-//                 const SizedBox(width: 16),
-//               ],
-//               Expanded(
-//                 child: FilledButton(
-//                   onPressed: () {
-//                     if (_selectedUnit == 0) {
-//                       widget.controller.selectHeight(cm: _selectedCm);
-//                     } else {
-//                       widget.controller.selectHeight(
-//                         feet: _selectedFeet,
-//                         inches: _selectedInches,
-//                       );
-//                     }
-//                   },
-//                   child: const Text('Confirm'),
-//                 ),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-//
-//   Widget _buildCmPicker() {
-//     return CupertinoPicker(
-//       itemExtent: 32,
-//       scrollController: FixedExtentScrollController(
-//         initialItem: _cmValues.indexOf(_selectedCm),
-//       ),
-//       onSelectedItemChanged: (index) =>
-//           setState(() => _selectedCm = _cmValues[index]),
-//       children: _cmValues.map((cm) => Center(child: Text('$cm cm'))).toList(),
-//     );
-//   }
-//
-//   Widget _buildFtInPicker() {
-//     return Row(
-//       children: [
-//         Expanded(
-//           child: CupertinoPicker(
-//             itemExtent: 32,
-//             scrollController: FixedExtentScrollController(
-//               initialItem: _feetValues.indexOf(_selectedFeet),
-//             ),
-//             onSelectedItemChanged: (index) =>
-//                 setState(() => _selectedFeet = _feetValues[index]),
-//             children: _feetValues
-//                 .map((ft) => Center(child: Text("$ft'")))
-//                 .toList(),
-//           ),
-//         ),
-//         Expanded(
-//           child: CupertinoPicker(
-//             itemExtent: 32,
-//             scrollController: FixedExtentScrollController(
-//               initialItem: _inchValues.indexOf(_selectedInches),
-//             ),
-//             onSelectedItemChanged: (index) =>
-//                 setState(() => _selectedInches = _inchValues[index]),
-//             children: _inchValues
-//                 .map((inch) => Center(child: Text('$inch"')))
-//                 .toList(),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }
+  final TraineeOnboardingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        6.height,
+        BodyChart(
+          selectedParts: controller.selectedBodyParts,
+          selectedColor: AppColors.colorPrimary,
+          unselectedColor: Colors.grey.shade300,
+          viewType: BodyViewType.both,
+          width: 250,
+        ),
+        6.height,
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          alignment: WrapAlignment.center,
+          children: [
+            ActionChip(
+              label: Text('Full Body'),
+              onPressed: () => controller.selectedBodyParts.add('full body'),
+            ),
+            ActionChip(
+              label: Text('Chest'),
+              onPressed: () => controller.selectedBodyParts.add('chest'),
+            ),
+            ActionChip(
+              label: Text('Arm'),
+              onPressed: () => controller.selectedBodyParts.add('arm'),
+            ),
+            ActionChip(
+              label: Text('Abs'),
+              onPressed: () => controller.selectedBodyParts.add('abs'),
+            ),
+            ActionChip(
+              label: Text('Neck'),
+              onPressed: () => controller.selectedBodyParts.add('neck'),
+            ),
+            ActionChip(
+              label: Text('Shoulder'),
+              onPressed: () => controller.selectedBodyParts.add('shoulder'),
+            ),
+            ActionChip(
+              label: Text('Back'),
+              onPressed: () => controller.selectedBodyParts.add('back'),
+            ),
+            ActionChip(
+              label: Text('Glutes'),
+              onPressed: () => controller.selectedBodyParts.add('glutes'),
+            ),
+            ActionChip(
+              label: Text('Calves'),
+              onPressed: () => controller.selectedBodyParts.add('calves'),
+            ),
+            ActionChip(
+              label: Text('Quads'),
+              onPressed: () => controller.selectedBodyParts.add('quads'),
+            ),
+            ActionChip(
+              label: Text('Other'),
+              onPressed:
+                  () => //TODO: HANDLE THIS.
+                      controller.selectedBodyParts.add('other'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
 
 class _WeightPicker extends StatefulWidget {
   const _WeightPicker({required this.controller});

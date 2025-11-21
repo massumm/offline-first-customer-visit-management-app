@@ -223,51 +223,77 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         /// Quick replies (only for choice-type question)
         Obx(() {
           final q = controller.currentQuestion;
-          final hasOptions = (q?.metadata?.options?.isNotEmpty ?? false);
-          final hasUnitOptions =
-              (q?.metadata?.unitOptions?.isNotEmpty ?? false);
 
           if (controller.onboardingPhase.value !=
                   OnboardingPhase.askingQuestions ||
               controller.isFinished ||
               controller.showGroupContinuationButtons ||
-              q == null ||
-              (!hasOptions && !hasUnitOptions)) {
+              q == null) {
             return const SizedBox.shrink();
           }
 
-          // Only show regular options for select_multiple questions
-          if (hasOptions && !q.type.supportsOptions) {
+          // Determine which options to display, checking in order: options, predefinedOptions, then unitOptions.
+          final List<dynamic>? optionsToShow =
+              (q.metadata?.options?.isNotEmpty ?? false)
+              ? q.metadata!.options
+              : (q.metadata?.predefinedOptions?.isNotEmpty ?? false)
+              ? q.metadata!.predefinedOptions
+              : (q.metadata?.unitOptions?.isNotEmpty ?? false)
+              ? q.metadata!.unitOptions
+              : null;
+
+          // Create a mutable list to potentially add the 'Other' option.
+          final List<dynamic> displayOptions = List.from(optionsToShow ?? []);
+
+          // Assumes 'isCurrentMultiplePlusOther' is a boolean property on your question model.
+          final bool isMultiplePlusOther =
+              controller.isCurrentMultiplePlusOther;
+
+          if (isMultiplePlusOther) {
+            displayOptions.add('Other');
+          }
+
+          if (displayOptions.isEmpty) {
             return const SizedBox.shrink();
           }
 
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Regular options
-              if ((q.metadata?.options?.isNotEmpty ?? false))
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    alignment: WrapAlignment.center,
-                    children: (q.metadata?.options ?? [])
-                        .map(
-                          (o) => ActionChip(
-                            label: Text(o.toString()),
-                            onPressed: () => controller.choose(o.toString()),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                ),
+          return Container(
+            width: double.infinity,
+            padding: const EdgeInsets.fromLTRB(12, 6, 12, 8),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.center,
+              children: displayOptions.map((o) {
+                final optionText = o.toString();
+                final isOtherChip =
+                    isMultiplePlusOther && optionText == 'Other';
 
-              if ((q.metadata?.options?.isNotEmpty ?? false) ||
-                  (q.metadata?.unitOptions?.isNotEmpty ?? false))
-                8.height,
-            ],
+                // Check if the current option is the selected one.
+                final isSelected = controller.selectedOption.value == optionText;
+
+                return ActionChip(
+                  label: Text(optionText),
+                  shape: isSelected
+                      ? StadiumBorder(
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 1.5,
+                    ),
+                  )
+                      : null,
+                  onPressed: () {
+                    if (isOtherChip) {
+                      // Method in the controller to show the input field.
+                      controller.selectOtherOption();
+                    } else {
+                      // This method handles the choice and hides the 'Other' input.
+                      controller.choose(optionText);
+                    }
+                  },
+                );
+              }).toList(),
+            ),
           );
         }),
 

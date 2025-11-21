@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,6 +30,8 @@ enum OnboardingPhase {
 }
 
 class TraineeOnboardingController extends BaseController {
+  /// Flag to skip the immediate next question after 'progress_photo_upload' if answered 'No'.
+  bool _skipNextQuestion = false;
   // --------------- Repository ---------------
   final TraineeOnboardingQARepository _onboardingQARepository = Get.find(
     tag: (TraineeOnboardingQARepository).toString(),
@@ -80,7 +84,14 @@ class TraineeOnboardingController extends BaseController {
   /// Holds the progress (0.0 to 1.0) for each question group.
   final RxList<double> groupProgresses = <double>[].obs;
 
+
+  // This is the default id don't change this
   RxInt traineeId = 1.obs;
+
+  final selectedOption = Rx<String?>(null);
+
+  final RxDouble numericRangeValue = 6.0.obs;
+
 
   final Map<String, Map<String, String>> groupMetadataMap = {
     'personal': {
@@ -379,23 +390,29 @@ class TraineeOnboardingController extends BaseController {
     _scrollToBottom();
   }
 
+
+  /* BUG: this sheet not working */
   bool _shouldSkipQuestion(QAItem q) {
+    // If the skip-next flag is set, skip this question and reset the flag.
+    if (_skipNextQuestion) {
+      _skipNextQuestion = false;
+      return true;
+    }
+
+    // Existing logic for skipping body_measurements.
     if (q.questionFieldName == 'body_measurements') {
       final controllingQuestionData = questionData.firstWhereOrNull(
         (data) => data.fieldName == q.questionFieldName && data.id != q.id,
       );
 
-      // If the controlling (Yes/No) question is found...
       if (controllingQuestionData != null) {
         final answer = answers[controllingQuestionData.id];
-
         if (answer?.toLowerCase() == 'no') {
           return true; // Return true to skip.
         }
       }
     }
 
-    //thii sdin dsi idioa
     // By default, do not skip any question.
     return false;
   }
@@ -433,7 +450,7 @@ class TraineeOnboardingController extends BaseController {
       currentQuestionIndexInGroup.value = 0;
     }
 
-    // If we've finished all questions in the current group, move to next group
+    // If we've finished all questions in the current group, move to the next group
     if (currentQuestionIndexInGroup.value >=
         generatedQuestionGroups[currentGroupIndex.value].questions.length) {
       final finishedGroup = generatedQuestionGroups[currentGroupIndex.value];
@@ -462,23 +479,14 @@ class TraineeOnboardingController extends BaseController {
     final currentQuestion = generatedQuestionGroups[currentGroupIndex.value]
         .questions[currentQuestionIndexInGroup.value];
 
-    // If last question in group, show personalized comment
-    if (currentQuestion.isLastInGroup) {
-      final currentQuestionGroup =
-          generatedQuestionGroups[currentGroupIndex.value];
-      String personalizedComment = await _onboardingQARepository
-          .getPersonalizedOnboardingGroupComment(
-            1,
-            groupMetadataMap.entries
-                .firstWhere(
-                  (e) => e.value["displayName"] == currentQuestionGroup.name,
-                )
-                .key,
-          );
-      await _botSay(personalizedComment);
+    // Check if the current question should be skipped. If so, advance and re-run.
+    if (_shouldSkipQuestion(currentQuestion)) {
+      currentQuestionIndexInGroup.value++;
+      await _askNext(); // Recursively call to find the next non-skippable question
+      return;
     }
 
-    // If new group, show introduction
+    // If it's a new group, show the introduction.
     final bool isNewGroup = currentQuestionIndexInGroup.value == 0;
     if (isNewGroup) {
       await _botSay(
@@ -486,6 +494,11 @@ class TraineeOnboardingController extends BaseController {
       );
     }
 
+    // Reset selection state for the new question being asked.
+    selectedOption.value = null;
+    isOtherOptionSelected.value = false;
+
+    // Ask the actual question
     await _botSay(currentQuestion.question);
     _updateProgresses();
   }
@@ -522,6 +535,8 @@ class TraineeOnboardingController extends BaseController {
 
   Future<void> choose(String option) async {
     if (!_canAnswer) return;
+    isOtherOptionSelected.value = false;
+    selectedOption.value = option;
     final q = currentQuestion!;
     await _saveUserAnswer(q, option);
   }
@@ -691,6 +706,12 @@ class TraineeOnboardingController extends BaseController {
       isProcessingAnswer.value = true;
       messages.add(userMessage);
 
+      // If this is the 'progress_photo_upload' question and answered 'No', set skip-next flag
+      if (q.questionFieldName == 'progress_photo_upload' &&
+          answerValue.toLowerCase() == 'no') {
+        _skipNextQuestion = true;
+      }
+
       answers[q.id] = answerValue;
       _scrollToBottom();
       _updateProgresses();
@@ -792,13 +813,13 @@ class TraineeOnboardingController extends BaseController {
     final q = currentQuestion!;
 
     if (height == null || height.isEmpty) {
-      await _saveUserAnswer(q, "Skipped");
+      await _saveUserAnswer(q, "Skip");
       return;
     }
 
     final heightValue = double.tryParse(height);
     if (heightValue != null) {
-      await _saveUserAnswer(q, heightValue.toStringAsFixed(2));
+      await _saveUserAnswer(q, heightValue.round().toString());
     } else {
       await _saveUserAnswer(q, height);
     }
@@ -832,6 +853,51 @@ class TraineeOnboardingController extends BaseController {
     await _saveImageAnswer(q, imageFile); // Use the new method
   }
 
+  Future<void> saveBodyMeasurements(Map<String, String> measurements) async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+
+    final unit = measurements['unit'] ?? 'cm';
+
+    final bodyEntries = measurements.entries.where(
+      (entry) => entry.key != 'unit',
+    );
+
+    // Create a user-friendly string like "Chest: 98 cm" for the UI.
+    final userFriendlyString = bodyEntries
+        .where((entry) => entry.value.isNotEmpty)
+        .map((entry) => '${entry.key.capitalizeFirst}: ${entry.value} $unit')
+        .join('\n');
+
+    //  skip.
+    if (userFriendlyString.isEmpty) {
+      await _saveUserAnswer(q, "Skip");
+      return;
+    }
+
+    // Convert the original map (including the unit) to a JSON string for storage.
+    final jsonString = jsonEncode(measurements);
+
+    // Create a ChatMessage with the user-friendly string for the UI.
+    final userMessage = ChatMessage(
+      from: Sender.user,
+      text: userFriendlyString,
+      status: MessageStatus.pending,
+    );
+
+    await _processAnswer(q, jsonString, userMessage);
+  }
+
+  void selectNumericRange() async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+    await _saveUserAnswer(q, numericRangeValue.value.toString());
+  }
+
+  void selectOtherOption() {
+    selectedOption.value = 'Other';
+    isOtherOptionSelected.value = true;
+  }
   int get stepperTotalSteps => generatedQuestionGroups.length;
 
   int get stepperCurrentStep {
@@ -900,6 +966,19 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
+  bool get isCurrentMultiplePlusOther =>
+      currentQuestion?.type.type == QuestionTypeEnum.selectMultiplePlusOther;
+
+  bool get isCurrentNumericRange =>
+      currentQuestion?.type.type == QuestionTypeEnum.numericRange;
+
+  bool get isCurrentDateWithDescription => true;
+      // currentQuestion?.type.type == QuestionTypeEnum.dateWithDescription;
+
+
+
+  bool get isCurrentBodyMeasurements =>
+      currentQuestion?.type.name == "body_measurements_input";
 
   bool get isCurrentBodyFat =>
       currentQuestion?.type.name == "select_multiple_plus_other" &&
