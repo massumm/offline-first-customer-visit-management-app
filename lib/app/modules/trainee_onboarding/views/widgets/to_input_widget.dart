@@ -21,6 +21,7 @@ import '../../../../core/widgets/search_location_dropdown.dart';
 import 'agent_loading_indicator.dart';
 import 'body_fat_input_widget.dart';
 import 'body_measurements_input_widget.dart';
+import 'range_slider_input_widget.dart';
 
 class ToInputWidget extends GetView<TraineeOnboardingController> {
   const ToInputWidget({super.key});
@@ -137,7 +138,7 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return _buildReminder(context);
                 }
 
-                if(controller.isCurrentBodyMeasurements){
+                if (controller.isCurrentBodyMeasurements) {
                   return const BodyMeasurementsInputWidget();
                 }
 
@@ -154,9 +155,25 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return BodyPartInputWidget(controller: controller);
                 }
 
+                if (controller.isCurrentNumericRange) {
+                  return NumericRangeInputWidget(
+                    value: controller.numericRangeValue.value,
+                    maxTitle: "Fast",
+                    minTitle: 'Gradual',
+                    max: 10,
+                    min: 1,
+                    onChanged: (double value) {
+                      controller.numericRangeValue.value = value;
+                    },
+                    onNext: () {
+                      controller.selectNumericRange();
+                    },
+                  );
+                }
+
                 // Handle for choice options selection
-                if (controller.isCurrentChoice
-                    || controller.isCurrentMultiplePlusOther) {
+                if (controller.isCurrentChoice ||
+                    controller.isCurrentMultiplePlusOther) {
                   // Handle for other options selection
                   if (controller.isOtherOptionSelected.isTrue) {
                     return _buildTextInput(context);
@@ -713,10 +730,7 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
 }
 
 class BodyPartInputWidget extends StatelessWidget {
-  const BodyPartInputWidget({
-    super.key,
-    required this.controller,
-  });
+  const BodyPartInputWidget({super.key, required this.controller});
 
   final TraineeOnboardingController controller;
 
@@ -740,53 +754,43 @@ class BodyPartInputWidget extends StatelessWidget {
           children: [
             ActionChip(
               label: Text('Full Body'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('full body'),
+              onPressed: () => controller.selectedBodyParts.add('full body'),
             ),
             ActionChip(
               label: Text('Chest'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('chest'),
+              onPressed: () => controller.selectedBodyParts.add('chest'),
             ),
             ActionChip(
               label: Text('Arm'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('arm'),
+              onPressed: () => controller.selectedBodyParts.add('arm'),
             ),
             ActionChip(
               label: Text('Abs'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('abs'),
+              onPressed: () => controller.selectedBodyParts.add('abs'),
             ),
             ActionChip(
               label: Text('Neck'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('neck'),
+              onPressed: () => controller.selectedBodyParts.add('neck'),
             ),
             ActionChip(
               label: Text('Shoulder'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('shoulder'),
+              onPressed: () => controller.selectedBodyParts.add('shoulder'),
             ),
             ActionChip(
               label: Text('Back'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('back'),
+              onPressed: () => controller.selectedBodyParts.add('back'),
             ),
             ActionChip(
               label: Text('Glutes'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('glutes'),
+              onPressed: () => controller.selectedBodyParts.add('glutes'),
             ),
             ActionChip(
               label: Text('Calves'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('calves'),
+              onPressed: () => controller.selectedBodyParts.add('calves'),
             ),
             ActionChip(
               label: Text('Quads'),
-              onPressed: () =>
-                  controller.selectedBodyParts.add('quads'),
+              onPressed: () => controller.selectedBodyParts.add('quads'),
             ),
             ActionChip(
               label: Text('Other'),

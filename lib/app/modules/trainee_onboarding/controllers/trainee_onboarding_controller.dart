@@ -90,6 +90,8 @@ class TraineeOnboardingController extends BaseController {
 
   final selectedOption = Rx<String?>(null);
 
+  final RxDouble numericRangeValue = 6.0.obs;
+
 
   final Map<String, Map<String, String>> groupMetadataMap = {
     'personal': {
@@ -886,6 +888,12 @@ class TraineeOnboardingController extends BaseController {
     await _processAnswer(q, jsonString, userMessage);
   }
 
+  void selectNumericRange() async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+    await _saveUserAnswer(q, numericRangeValue.value.toString());
+  }
+
   void selectOtherOption() {
     selectedOption.value = 'Other';
     isOtherOptionSelected.value = true;
@@ -960,6 +968,11 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
   bool get isCurrentMultiplePlusOther =>
       currentQuestion?.type.type == QuestionTypeEnum.selectMultiplePlusOther;
+
+  bool get isCurrentNumericRange =>
+      currentQuestion?.type.type == QuestionTypeEnum.numericRange;
+
+
 
   bool get isCurrentBodyMeasurements =>
       currentQuestion?.type.name == "body_measurements_input";
