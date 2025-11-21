@@ -150,6 +150,9 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                         controller.currentQuestion?.metadata?.maxValue
                             ?.toInt() ??
                         0,
+                    onNext: (int range){
+                      controller.selectNumber(range);
+                    },
                   );
                 }
 

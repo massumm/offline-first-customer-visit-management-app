@@ -886,6 +886,12 @@ class TraineeOnboardingController extends BaseController {
     await _processAnswer(q, jsonString, userMessage);
   }
 
+  void selectNumber(int range) async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+    await _saveUserAnswer(q, range.toString());
+  }
+
   void selectNumericRange() async {
     if (!_canAnswer) return;
     final q = currentQuestion!;

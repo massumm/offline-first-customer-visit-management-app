@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 
 class WheelListWidget extends StatelessWidget {
-  const WheelListWidget({super.key, required this.range});
+  const WheelListWidget({super.key, required this.range, required this.onNext });
 
   final int range;
 
+  final ValueChanged<int> onNext;
   @override
   Widget build(BuildContext context) {
     final items = List.generate(range, (index) => index + 1);
@@ -36,7 +37,9 @@ class WheelListWidget extends StatelessWidget {
               ),
             ),
             12.height,
-            ElevatedButton(onPressed: () {}, child: const Text('Next')),
+            ElevatedButton(onPressed: (){
+              onNext(range);
+            }, child: const Text('Next')),
           ],
         ),
       ),
