@@ -972,6 +972,9 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentNumericRange =>
       currentQuestion?.type.type == QuestionTypeEnum.numericRange;
 
+  bool get isCurrentDateWithDescription => true;
+      // currentQuestion?.type.type == QuestionTypeEnum.dateWithDescription;
+
 
 
   bool get isCurrentBodyMeasurements =>
