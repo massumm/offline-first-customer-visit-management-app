@@ -169,6 +169,12 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return BodyPartInputWidget(controller: controller);
                 }
 
+                if(controller.isCurrentDateWithDescription){
+                    return EventInputWidget(
+                      controller: controller,
+                    );
+                }
+
                 if (controller.isCurrentDateWithDescription) {
                   return EventInputWidget(controller: controller);
                 }

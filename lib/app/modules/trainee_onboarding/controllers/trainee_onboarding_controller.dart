@@ -85,12 +85,14 @@ class TraineeOnboardingController extends BaseController {
   /// Holds the progress (0.0 to 1.0) for each question group.
   final RxList<double> groupProgresses = <double>[].obs;
 
+
   // This is the default id don't change this
   RxInt traineeId = 1.obs;
 
   final selectedOption = Rx<String?>(null);
 
   final RxDouble numericRangeValue = 6.0.obs;
+
 
   final Map<String, Map<String, String>> groupMetadataMap = {
     'personal': {
@@ -388,6 +390,7 @@ class TraineeOnboardingController extends BaseController {
     isTyping.value = false;
     _scrollToBottom();
   }
+
 
   /* BUG: this sheet not working */
   bool _shouldSkipQuestion(QAItem q) {
@@ -981,8 +984,9 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentNumericRange =>
       currentQuestion?.type.type == QuestionTypeEnum.numericRange;
 
-  bool get isCurrentDateWithDescription =>
-      currentQuestion?.type.type == QuestionTypeEnum.dateWithDescription;
+  bool get isCurrentDateWithDescription => true;
+      // currentQuestion?.type.type == QuestionTypeEnum.dateWithDescription;
+
 
   bool get isCurrentBodyMeasurements =>
       currentQuestion?.type.name == "body_measurements_input";
