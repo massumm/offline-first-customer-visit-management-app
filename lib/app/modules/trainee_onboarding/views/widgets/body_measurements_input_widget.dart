@@ -1,13 +1,8 @@
-// /Users/smh/Development/apps/Icon/lib/app/modules/trainee_onboarding/views/widgets/body_measurements_input_widget.dart
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
 import 'package:icon/app/modules/trainee_onboarding/models/onboarding_qa_model.dart';
-
-import 'unit_ruler.dart' show HeightUnit;
-
 class BodyMeasurementsInputWidget extends StatefulWidget {
   const BodyMeasurementsInputWidget({super.key});
 
@@ -121,7 +116,7 @@ class _BodyMeasurementsInputWidgetState
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final activeColor = colorScheme.primary;
-    final inactiveColor = colorScheme.onSurface.withOpacity(0.6);
+    final inactiveColor = colorScheme.onSurface.withValues(alpha: 0.6);
 
     Widget tab(String label, String unit) {
       final isActive = _selectedUnit == unit;
@@ -185,10 +180,10 @@ class _BodyMeasurementsInputWidgetState
             contentPadding:
             const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             filled: true,
-            fillColor: colorScheme.surfaceContainerHighest.withOpacity(0.3),
+            fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
-              borderSide: BorderSide(color: colorScheme.outline.withOpacity(0.5)),
+              borderSide: BorderSide(color: colorScheme.outline.withValues(alpha: 0.5)),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12.0),
