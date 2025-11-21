@@ -56,6 +56,9 @@ dependencies:
   firebase_core: ^4.2.1
   firebase_crashlytics: ^5.0.4
 
+  flutter_slidable: ^4.0.3
+  fl_chart: ^1.1.1
+
 
 dev_dependencies:
   flutter_test:
@@ -96,7 +99,7 @@ flutter:
     - assets/svg/fitness_report/integration_summary/
     - assets/svg/fitness_report/mindset_and_motivation/
     - assets/svg/fitness_report/nutrition_objectives/
-    - assets/svg/full_body_tracker/
+    - assets/svg/activity_tracker/
 
 
   # fonts:

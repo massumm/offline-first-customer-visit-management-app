@@ -67,7 +67,7 @@ class ProgramSuggestionCard extends StatelessWidget {
             Expanded(
               child: _programTagWidget(
                 title: ProgramData.intermediateProgram.tags[0],
-                asset: Assets.fullBodyTrackerGym,
+                asset: Assets.activityTrackerGym,
               ),
             ),
           ],
@@ -78,14 +78,14 @@ class ProgramSuggestionCard extends StatelessWidget {
             Expanded(
               child: _programTagWidget(
                 title: ProgramData.intermediateProgram.tags[1],
-                asset: Assets.fullBodyTrackerGym,
+                asset: Assets.activityTrackerGym,
               ),
             ),
             8.width,
             Expanded(
               child: _programTagWidget(
                 title: ProgramData.intermediateProgram.tags[2],
-                asset: Assets.fullBodyTrackerGym,
+                asset: Assets.activityTrackerGym,
               ),
             ),
           ],

@@ -89,11 +89,11 @@ class AddedExerciseCard extends StatelessWidget {
           if(showEditAndDeleteIcons)...[const Spacer(),
           Row(
             children: [
-              InkWell(onTap: () => _editExercise(exercise), child: SvgPicture.asset(Assets.fullBodyTrackerEditIcon)),
+              InkWell(onTap: () => _editExercise(exercise), child: SvgPicture.asset(Assets.activityTrackerEditIcon)),
               16.width,
               InkWell(
                   onTap: () => _deleteExercise(exercise),
-                  child: SvgPicture.asset(Assets.fullBodyTrackerDeleteIcon)),
+                  child: SvgPicture.asset(Assets.activityTrackerDeleteIcon)),
             ],
           )]
         ],

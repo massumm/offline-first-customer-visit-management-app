@@ -21,6 +21,8 @@ class ThemeHelpers {
   static Color get tagBackgroundColor =>
       Get.isDarkMode ? AppColors.darkBgColor : AppColors.colorSecondary;
       
+  static Color get bgColorRed => AppColors.bgColorRed;
+      
   static String getExerciseIconPath(String lightAsset, String darkAsset) {
     return Get.isDarkMode ? darkAsset : lightAsset;
   }

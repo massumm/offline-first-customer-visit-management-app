@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
@@ -179,39 +180,36 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
   }
 
   Widget _buildWorkoutItem(ExerciseModel workout) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: Row(
-        children: [
-          Container(
-            width: 16,
-            height: 16,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.bgColorRed, width: 3),
-            ),
+    return Row(
+      children: [
+        Container(
+          width: 16,
+          height: 16,
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            shape: BoxShape.circle,
+            border: Border.all(color: AppColors.bgColorRed, width: 3),
           ),
-          16.width,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  workout.name,
-                  style: AppTextTheme.bodyLargeSemiBold.copyWith(
-                    color: AppColors.black,
-                  ),
+        ),
+        16.width,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                workout.name,
+                style: AppTextTheme.bodyLargeSemiBold.copyWith(
+                  color: AppColors.black,
                 ),
-                Text(
-                  workout.bodyAreaList?.map((e) => e.displayName).join(', ') ?? 'No body areas specified',
-                  style: AppTextTheme.bodyLargeRegular,
-                ),
-              ],
-            ),
+              ),
+              Text(
+                workout.bodyAreaList?.map((e) => e.displayName).join(', ') ?? 'No body areas specified',
+                style: AppTextTheme.bodyLargeRegular,
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -246,7 +244,7 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
   Widget _buildRestDayItem() {
     return Column(
       children: [
-        AssetIconContainer(iconPath: Assets.fullBodyTrackerRestRecovery),
+        AssetIconContainer(iconPath: Assets.activityTrackerRestRecovery),
         8.height,
         SizedBox(
           width: 250,
