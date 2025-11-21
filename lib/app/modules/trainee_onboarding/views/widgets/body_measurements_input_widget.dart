@@ -63,7 +63,7 @@ class _BodyMeasurementsInputWidgetState
     });
 
     // Call the controller's submission method
-    controller.saveBodyMeasurements(measurements);
+    controller.saveBodyMeasurements(measurements, );
   }
 
   @override

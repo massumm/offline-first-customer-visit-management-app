@@ -838,11 +838,35 @@ class TraineeOnboardingController extends BaseController {
     if (!_canAnswer) return;
     final q = currentQuestion!;
 
-    // Convert the map to a JSON string to store as a single answer.
+    final unit = measurements['unit'] ?? 'cm';
+
+    final bodyEntries = measurements.entries.where(
+      (entry) => entry.key != 'unit',
+    );
+
+    // Create a user-friendly string like "Chest: 98 cm" for the UI.
+    final userFriendlyString = bodyEntries
+        .where((entry) => entry.value.isNotEmpty)
+        .map((entry) => '${entry.key.capitalizeFirst}: ${entry.value} $unit')
+        .join('\n');
+
+    //  skip.
+    if (userFriendlyString.isEmpty) {
+      await _saveUserAnswer(q, "Skip");
+      return;
+    }
+
+    // Convert the original map (including the unit) to a JSON string for storage.
     final jsonString = jsonEncode(measurements);
 
-    // Use the existing answer processing logic
-    await _saveUserAnswer(q, jsonString);
+    // Create a ChatMessage with the user-friendly string for the UI.
+    final userMessage = ChatMessage(
+      from: Sender.user,
+      text: userFriendlyString,
+      status: MessageStatus.pending,
+    );
+
+    await _processAnswer(q, jsonString, userMessage);
   }
 
   int get stepperTotalSteps => generatedQuestionGroups.length;
@@ -913,7 +937,9 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
-  bool get isCurrentBodyMeasurements => currentQuestion?.type.name == "body_measurements_input";
+
+  bool get isCurrentBodyMeasurements =>
+      currentQuestion?.type.name == "body_measurements_input";
 
   bool get isCurrentBodyFat =>
       currentQuestion?.type.name == "select_multiple_plus_other" &&
