@@ -238,8 +238,8 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               ? q.metadata!.options
               : (q.metadata?.predefinedOptions?.isNotEmpty ?? false)
               ? q.metadata!.predefinedOptions
-              : (q.metadata?.unitOptions?.isNotEmpty ?? false)
-              ? q.metadata!.unitOptions
+              // : (q.metadata?.unitOptions?.isNotEmpty ?? false)
+              // ? q.metadata!.unitOptions
               : null;
 
           // Create a mutable list to potentially add the 'Other' option.
