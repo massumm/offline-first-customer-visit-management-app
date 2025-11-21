@@ -15,9 +15,7 @@ class WheelListWidget extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Column(
-          // mainAxisSize is no longer needed, as Expanded will fill the space.
           children: [
-            // Wrap the ListWheelScrollView with an Expanded widget.
             Expanded(
               child: ListWheelScrollView.useDelegate(
                 itemExtent: 60,
@@ -38,7 +36,7 @@ class WheelListWidget extends StatelessWidget {
               ),
             ),
             12.height,
-            ElevatedButton(onPressed: () {}, child: const Text('Next'))
+            ElevatedButton(onPressed: () {}, child: const Text('Next')),
           ],
         ),
       ),
@@ -53,11 +51,14 @@ class _WheelItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFF1E1E1E),
+          color: colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -65,10 +66,18 @@ class _WheelItem extends StatelessWidget {
           children: [
             Text(
               number.toString(),
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: colorScheme.onSurface,
+              ),
             ),
             const Spacer(),
-            const Icon(Icons.chevron_right, color: Colors.white70, size: 18),
+
+            Icon(
+              Icons.chevron_right,
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
+              size: 18,
+            ),
           ],
         ),
       ),
