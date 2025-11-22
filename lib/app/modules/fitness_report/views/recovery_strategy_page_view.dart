@@ -68,7 +68,7 @@ class RecoveryStrategyPageView extends BaseView<FitnessReportController> {
                     16.height,
                     recoveryStrategiesWidget(),
                     16.height,
-                    recoveryObjectivesWidget(),
+                     recoveryObjectivesWidget(),
                     16.height,
                     ...infoCardsWidgets(),
                     8.height,
