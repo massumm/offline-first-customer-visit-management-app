@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../core/values/app_colors.dart';
 import '../../core/values/app_values.dart';
 import 'elevated_container.dart';
 
@@ -9,11 +8,11 @@ class Loading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    return Center(
       child: ElevatedContainer(
-        padding: EdgeInsets.all(AppValues.margin),
+        padding: const EdgeInsets.all(AppValues.margin),
         child: CircularProgressIndicator(
-          color: AppColors.colorPrimary,
+          color: Theme.of(context).colorScheme.primary,
         ),
       ),
     );

@@ -45,31 +45,32 @@ class FitnessPlanModel {
       closingRemarks: json['closing_remarks'] ?? '',
       recommendedMindsetPrinciple: json['recommended_mindset_principle'] ?? '',
       recommendedMindsetPrincipleJustification:
-          json['recommended_mindset_principle_justification'] ?? '',
+      json['recommended_mindset_principle_justification'] ?? '',
       createdAt: json['created_at'] ?? '',
       updatedAt: json['updated_at'] ?? '',
       recoveryStrategies: (json['recovery_strategies'] as List<dynamic>? ?? [])
           .map((e) => RecoveryStrategyModel.fromJson(e))
           .toList(),
       nutritionStrategies:
-          (json['nutrition_strategies'] as List<dynamic>? ?? [])
-              .map((e) => NutritionStrategyModel.fromJson(e))
-              .toList(),
+      (json['nutrition_strategies'] as List<dynamic>? ?? [])
+          .map((e) => NutritionStrategyModel.fromJson(e))
+          .toList(),
       activityStrategies: (json['activity_strategies'] as List<dynamic>? ?? [])
           .map((e) => ActivityStrategyModel.fromJson(e))
           .toList(),
-      dailyGoals: (json['daily_goals'] as List<dynamic>? ?? [])
+      // --- FIX: Changed 'daily_goals' to 'all_goals' to match the JSON key.
+      dailyGoals: (json['all_goals'] as List<dynamic>? ?? [])
           .map(
             (e) => DailyGoal(
-              title: e['title'] ?? '',
-              frequency: (e['frequency'] as List<dynamic>? ?? [])
-                  .map((f) => f.toString())
-                  .toList(),
-              subtitle: e['subtitle'] ?? '',
-              description: e['description'] ?? '',
-              icon: e['icon'] ?? '',
-            ),
-          )
+          title: e['title'] ?? '',
+          frequency: (e['frequency'] as List<dynamic>? ?? [])
+              .map((f) => f.toString())
+              .toList(),
+          subtitle: e['subtitle'] ?? '',
+          description: e['description'] ?? '',
+          icon: e['icon'] ?? '',
+        ),
+      )
           .toList(),
     );
   }
@@ -93,10 +94,11 @@ class RecoveryStrategyModel {
   factory RecoveryStrategyModel.fromJson(Map<String, dynamic> json) {
     return RecoveryStrategyModel(
       id: json['id'],
-      fitnessPlan: json['fitness_plan'],
+      // --- FIX: Parsed the 'id' from the nested 'fitness_plan' object.
+      fitnessPlan: json['fitness_plan']?['id'] ?? 0,
       generalInsights: json['general_insights'] ?? '',
       generalLifestyleRecommendations:
-          json['general_lifestyle_recommendations'] ?? '',
+      json['general_lifestyle_recommendations'] ?? '',
       objectives: (json['objectives'] as List<dynamic>? ?? [])
           .map((e) => RecoveryObjectiveModel.fromJson(e))
           .toList(),
@@ -142,10 +144,11 @@ class NutritionStrategyModel {
   factory NutritionStrategyModel.fromJson(Map<String, dynamic> json) {
     return NutritionStrategyModel(
       id: json['id'],
-      fitnessPlan: json['fitness_plan'],
+      // --- FIX: Parsed the 'id' from the nested 'fitness_plan' object.
+      fitnessPlan: json['fitness_plan']?['id'] ?? 0,
       generalInsights: json['general_insights'] ?? '',
       generalDietaryRecommendations:
-          json['general_dietary_recommendations'] ?? '',
+      json['general_dietary_recommendations'] ?? '',
       objectives: (json['objectives'] as List<dynamic>? ?? [])
           .map((e) => NutritionObjectiveModel.fromJson(e))
           .toList(),
@@ -199,10 +202,11 @@ class ActivityStrategyModel {
   factory ActivityStrategyModel.fromJson(Map<String, dynamic> json) {
     return ActivityStrategyModel(
       id: json['id'],
-      fitnessPlan: json['fitness_plan'],
+      // --- FIX: Parsed the 'id' from the nested 'fitness_plan' object.
+      fitnessPlan: json['fitness_plan']?['id'] ?? 0,
       generalInsights: json['general_insights'] ?? '',
       generalDietaryRecommendations:
-          json['general_dietary_recommendations'] ?? '',
+      json['general_dietary_recommendations'] ?? '',
       aerobicFocusPercentage: (json['aerobic_focus_percentage'] ?? 0)
           .toDouble(),
       glycolyticFocusPercentage: (json['glycolytic_focus_percentage'] ?? 0)

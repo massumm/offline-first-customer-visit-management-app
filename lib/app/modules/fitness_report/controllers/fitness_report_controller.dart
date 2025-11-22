@@ -63,13 +63,15 @@ class FitnessReportController extends BaseController {
   }
 
   Future<void> loadFitnessReportData() async {
+    showLoading();
     final planData = await _reportService.fetchFitnessPlan();
-    if (planData is List && planData.isNotEmpty) {
-      fitnessPlan.value = FitnessPlanModel.fromJson(planData[0]);
+    if (planData.isNotEmpty) {
+      fitnessPlan.value = FitnessPlanModel.fromJson(planData);
       recoveryStrategies.value = fitnessPlan.value?.recoveryStrategies ?? [];
       nutritionStrategies.value = fitnessPlan.value?.nutritionStrategies ?? [];
       activityStrategies.value = fitnessPlan.value?.activityStrategies ?? [];
     }
+    resetPageState();
   }
 
   @override
