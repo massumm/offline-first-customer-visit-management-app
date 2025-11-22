@@ -20,7 +20,7 @@ class _EventInputWidgetState extends State<EventInputWidget> {
     super.initState();
     // Pre-select today's date and a default event name for better UX.
     selectedDate = DateTime.now();
-    _eventNameController.text = "Wedding";
+    // _eventNameController.text = "Wedding";
   }
 
   @override
