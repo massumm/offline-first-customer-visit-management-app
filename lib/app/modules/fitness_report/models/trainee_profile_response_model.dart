@@ -1,6 +1,7 @@
 class TraineeProfileModel {
   final int id;
   final String? bio;
+  final String? name;
   final DateTime? dateOfBirth;
   final String? avatar;
   final String? phoneNumber;
@@ -19,6 +20,7 @@ class TraineeProfileModel {
   TraineeProfileModel({
     required this.id,
     this.bio,
+    this.name,
     this.dateOfBirth,
     this.avatar,
     this.phoneNumber,
@@ -39,6 +41,7 @@ class TraineeProfileModel {
     return TraineeProfileModel(
       id: json['id'],
       bio: json['bio'],
+      name: json['name'],
       dateOfBirth: json['date_of_birth'] != null
           ? DateTime.parse(json['date_of_birth'])
           : null,
