@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/input_widgets/date_input_field.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
+import 'package:icon/app/modules/trainee_onboarding/views/widgets/minutes_wheel_list.dart';
 import 'package:icon/app/modules/trainee_onboarding/views/widgets/unit_ruler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_form_field/phone_form_field.dart';
@@ -145,12 +146,22 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 }
 
                 if (controller.isCurrentNumber) {
+                  // Handle Minutes
+                  if (controller.currentQuestion?.questionFieldName ==
+                      'session_duration') {
+                    return MinutesWheelList(
+
+                      onNext: (int range) {
+                        controller.selectNumber(range);
+                      },
+                    );
+                  }
                   return WheelListWidget(
                     range:
                         controller.currentQuestion?.metadata?.maxValue
                             ?.toInt() ??
                         0,
-                    onNext: (int range){
+                    onNext: (int range) {
                       controller.selectNumber(range);
                     },
                   );
@@ -169,10 +180,8 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return BodyPartInputWidget(controller: controller);
                 }
 
-                if(controller.isCurrentDateWithDescription){
-                    return EventInputWidget(
-                      controller: controller,
-                    );
+                if (controller.isCurrentDateWithDescription) {
+                  return EventInputWidget(controller: controller);
                 }
 
                 if (controller.isCurrentDateWithDescription) {
