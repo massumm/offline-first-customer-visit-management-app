@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:icon/app/base/base_view.dart';
-import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/modules/workout_history/views/workout_view.dart';
 import 'package:icon/app/modules/workout_history/views/charts_view.dart';
 import 'package:icon/app/modules/workout_history/views/records_view.dart';
-import 'package:icon/generated/assets.dart';
 
 import '../controllers/workout_history_controller.dart';
 
 class WorkoutHistoryView extends BaseView<WorkoutHistoryController> {
-  WorkoutHistoryView({super.key});
+  const WorkoutHistoryView({super.key});
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {

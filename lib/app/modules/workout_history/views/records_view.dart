@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
@@ -13,7 +12,7 @@ class RecordsView extends StatelessWidget {
 
   String _formatValue(double value) {
     if (value >= 1000) {
-      return (value / 1000).toString()+ 'k';
+      return '${value / 1000}k';
     }
     return value.toStringAsPrecision(2);
   }
