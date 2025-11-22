@@ -87,9 +87,15 @@ class IconChatView extends GetView<IconChatController> {
               }
               final text = message['content'] ?? '';
               if (senderType == 'trainee') {
-                return SenderMessageBubble(text: text, timestamp: formattedTime);
+                return SenderMessageBubble(
+                  text: text,
+                  timestamp: formattedTime,
+                );
               } else {
-                return ReceiverMessageBubble(text: text, timestamp: formattedTime);
+                return ReceiverMessageBubble(
+                  text: text,
+                  timestamp: formattedTime,
+                );
               }
             },
           );
@@ -208,9 +214,11 @@ class CustomAppBar extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: senderBubbleColor.withOpacity(0.2),
+                  color: senderBubbleColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: senderBubbleColor.withOpacity(0.3)),
+                  border: Border.all(
+                    color: senderBubbleColor.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Text(
                   '$remainingMessages left',
@@ -271,6 +279,14 @@ class _ChatInputBarState extends State<ChatInputBar> {
             ? 'Type Here...'
             : 'Subscribe to continue...';
 
+        if (!canSendMessage) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!(Get.isDialogOpen ?? false)) {
+              controller.showPaywall();
+            }
+          });
+        }
+
         return Row(
           children: [
             Expanded(
@@ -281,12 +297,12 @@ class _ChatInputBarState extends State<ChatInputBar> {
                   filled: true,
                   fillColor: canSendMessage
                       ? componentBackgroundColor
-                      : componentBackgroundColor.withOpacity(0.5),
+                      : componentBackgroundColor.withValues(alpha: 0.5),
                   hintText: hintText,
                   hintStyle: TextStyle(
                     color: canSendMessage
                         ? secondaryHeaderColor
-                        : secondaryHeaderColor.withOpacity(0.5),
+                        : secondaryHeaderColor.withValues(alpha: 0.5),
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -298,13 +314,13 @@ class _ChatInputBarState extends State<ChatInputBar> {
                         : Icons.lock_outlined,
                     color: canSendMessage
                         ? secondaryHeaderColor
-                        : secondaryHeaderColor.withOpacity(0.5),
+                        : secondaryHeaderColor.withValues(alpha: 0.5),
                   ),
                 ),
                 style: TextStyle(
                   color: canSendMessage
                       ? primaryColor
-                      : primaryColor.withOpacity(0.5),
+                      : primaryColor.withValues(alpha: 0.5),
                   fontSize: 16,
                   fontFamily: 'Inter',
                 ),
@@ -319,7 +335,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
             Material(
               color: canSendMessage
                   ? senderBubbleColor
-                  : senderBubbleColor.withOpacity(0.5),
+                  : senderBubbleColor.withValues(alpha: 0.5),
               shape: const CircleBorder(),
               child: IconButton(
                 icon: const Icon(Icons.send, color: Colors.white),
@@ -364,6 +380,7 @@ class _SuggestionChip extends StatelessWidget {
 class SenderMessageBubble extends StatelessWidget {
   final String text;
   final String timestamp;
+
   const SenderMessageBubble({
     super.key,
     required this.text,
@@ -417,6 +434,7 @@ class SenderMessageBubble extends StatelessWidget {
 class ReceiverMessageBubble extends StatelessWidget {
   final String text;
   final String timestamp;
+
   const ReceiverMessageBubble({
     super.key,
     required this.text,

@@ -46,8 +46,8 @@ class DioProvider {
 
   static final BaseOptions _options = BaseOptions(
     baseUrl: baseUrl,
-    connectTimeout: const Duration(seconds: 60),
-    receiveTimeout: const Duration(seconds: 60),
+    connectTimeout: const Duration(seconds: 240),
+    receiveTimeout: const Duration(seconds: 240),
   );
 
   static final PrettyDioLogger _prettyDioLogger = PrettyDioLogger(

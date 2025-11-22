@@ -39,7 +39,7 @@ class IconChatController extends GetxController {
     token = UserStore.to.token;
     final args = Get.arguments ?? {};
     traineeProfileId = UserStore.to.profile?.traineeProfile?.id ?? 0;
-    trainerProfileId = args['trainerProfileId'] ?? UserStore.to.trainerId ?? 1;
+    trainerProfileId = args['trainerProfileId'] ?? UserStore.to.trainerId ?? 1; // Default to 1 if not provided
     mySenderType = 'trainee';
     _initChat();
   }
@@ -145,7 +145,7 @@ class IconChatController extends GetxController {
     if (text.isEmpty || roomId == null || token == null) return;
 
     if (!subscriptionService.canSendMessage()) {
-      _showPaywall();
+      showPaywall();
       return;
     }
 
@@ -157,6 +157,8 @@ class IconChatController extends GetxController {
     textController.clear();
     try {
       channel?.sink.add(jsonEncode({'message': text}));
+      // Decrease the remaining message
+      await subscriptionService.onMessageSent();
     } catch (e) {
       log(
         "Error sending message via WebSocket.",
@@ -167,7 +169,7 @@ class IconChatController extends GetxController {
   }
 
   /// Show paywall dialog when user runs out of free messages
-  void _showPaywall() {
+  void showPaywall() {
     Get.dialog(
       const PaywallDialog(),
       barrierDismissible: false, // Prevent dismissing by tapping outside

@@ -6,6 +6,7 @@ import 'package:icon/app/base/network/network_error/api_error_handler.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/data/local/preference/store/user_store.dart';
 import 'package:icon/app/modules/fitness_report/widgets/report_menu_item_widget.dart';
 import 'package:icon/app/routes/app_pages.dart';
 import '../services/fitness_report_service.dart';
@@ -84,6 +85,11 @@ class FitnessReportController extends BaseController {
     }
     resetPageState();
   }
+
+  // store the remaining free message
+  // _storeTraineeData(){
+  //   UserStore().to.saveProfileAndToken(fitnessPlan.value!.trainee);
+  // }
 
   @override
   void onClose() {
