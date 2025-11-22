@@ -40,7 +40,7 @@ class ProfileStatsWidget extends StatelessWidget {
             (index) => Column(
               children: [
                 12.height,
-                Column(
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -52,7 +52,7 @@ class ProfileStatsWidget extends StatelessWidget {
                       ),
                     ),
                     6.height,
-                    // const Spacer(),
+                     const Spacer(),
                     Text(
                       stats[index].value,
                       style: Get.textTheme.bodySmall?.copyWith(
