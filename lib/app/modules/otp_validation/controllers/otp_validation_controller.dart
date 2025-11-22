@@ -99,7 +99,7 @@ class OtpValidationController extends BaseController {
         .then(
           (response) {
             CustomToast.showSuccessToast('Email verified successfully!');
-            Get.offAllNamed(Routes.ICON_CHAT);
+            Get.offAllNamed(Routes.HOME);
           },
           onError: (e) {
             if (e is ApiException) {
