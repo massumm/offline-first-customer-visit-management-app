@@ -355,10 +355,11 @@ class TraineeOnboardingController extends BaseController {
     // Since terms are agreed to at the start, we can proceed directly.
     try {
       final onboardingJson = toJson();
-      Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
+      // Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
       CustomToast.showSuccessToast('Profile data saved successfully.');
       Future.delayed(
-        Duration(seconds: 1),
+        Duration(seconds: 3
+        ),
         () => Get.toNamed(
           Routes.TRAINEE_FITNESS_REPORT_GENERATION,
           arguments: traineeId.value,
