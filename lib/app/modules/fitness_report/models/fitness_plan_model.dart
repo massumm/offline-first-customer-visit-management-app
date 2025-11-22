@@ -1,9 +1,11 @@
 import 'package:icon/app/modules/fitness_report/models/daily_goal.dart';
+import 'package:icon/app/modules/fitness_report/models/trainee_profile_response_model.dart';
+import 'package:icon/app/modules/fitness_report/models/trainer_profile_response_model.dart';
 
 class FitnessPlanModel {
   final int id;
-  final int trainer;
-  final int trainee;
+  final TrainerProfileModel trainer;
+  final TraineeProfileModel trainee;
   final String currentFitnessStateAnalysis;
   final String introductorySummary;
   final String closingRemarks;
@@ -36,8 +38,8 @@ class FitnessPlanModel {
   factory FitnessPlanModel.fromJson(Map<String, dynamic> json) {
     return FitnessPlanModel(
       id: json['id'],
-      trainer: json['trainer'],
-      trainee: json['trainee'],
+      trainer: TrainerProfileModel.fromJson(json['trainer']),
+      trainee: TraineeProfileModel.fromJson(json['trainee']),
       currentFitnessStateAnalysis: json['current_fitness_state_analysis'] ?? '',
       introductorySummary: json['introductory_summary'] ?? '',
       closingRemarks: json['closing_remarks'] ?? '',
