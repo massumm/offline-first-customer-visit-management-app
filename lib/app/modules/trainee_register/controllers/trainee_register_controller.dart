@@ -147,10 +147,7 @@ class TraineeRegisterController extends BaseController {
             (response) {
               isLoading.value = false;
               // Navigate to the home page on successful registration
-              Get.offAllNamed(
-                Routes.OTP_VALIDATION,
-                arguments: {'email': emailCtr.text},
-              );
+              Get.toNamed(Routes.LOGIN);
               CustomToast.showSuccessToast(
                 response.message ?? "Account created successfully",
               );
