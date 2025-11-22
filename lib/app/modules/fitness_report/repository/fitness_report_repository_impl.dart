@@ -12,16 +12,20 @@ class FitnessReportRepositoryImpl extends BaseRemoteSource
   @override
   Future<Response> generateReport(
     Map<String, dynamic> data, {
-    void Function(int, int)? onSendProgress,
+    void Function(int, int)? onReceiveProgress,
   }) {
     final String endpoint =
         "${DioProvider.baseUrl}/api/fitness_plan/generate/by-trainer/${data['trainer_id']}/";
     final Map<String, String> headers = {'Authorization': "Bearer $token"};
     Future<Response<dynamic>> dioCall = dioClient.post(
       endpoint,
-      options: Options(headers: headers),
+      options: Options(
+        headers: headers,
+        receiveTimeout: const Duration(minutes: 5),
+        sendTimeout: const Duration(minutes: 5),
+      ),
       data: data,
-      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
     );
     try {
       return callApiWithErrorParser(dioCall);

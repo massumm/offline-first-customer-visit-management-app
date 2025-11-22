@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
@@ -26,11 +28,10 @@ class TraineeFitnessReportGenerationController extends BaseController {
   final RxBool isValidEmail = true.obs;
 
   // ---------------Progress Loading Effect State ---------------
-  // --- UI State for the Saving/Progress View ---
   final progress = 0.0.obs;
-  var enableApiProgressState = true.obs; // Triggers navigation to SavingView
+  Timer? _progressTimer;
+  var enableApiProgressState = true.obs;
 
-  // --- New properties for error handling in SavingView ---
   final hasError = false.obs;
 
   final RxString errorMessage =
@@ -45,6 +46,7 @@ class TraineeFitnessReportGenerationController extends BaseController {
   @override
   void onClose() {
     emailCtr.dispose();
+    _progressTimer?.cancel(); // Ensure timer is cancelled
     super.onClose();
   }
 
@@ -52,34 +54,67 @@ class TraineeFitnessReportGenerationController extends BaseController {
     try {
       if (hasError.value) hasError(false);
 
-      progress.value = 0.0;
+      _startProgressSimulation();
 
       await _reportRepository.generateReport(
-        {"trainee_id": traineeId, 'trainer_id': UserStore.to.trainerId ?? 1, "force": true},
-        onSendProgress: (sent, total) {
+        {
+          "trainee_id": traineeId,
+          'trainer_id': UserStore.to.trainerId ?? 1,
+          "force": true,
+        },
+        onReceiveProgress: (sent, total) {
           if (total != -1) {
+            _progressTimer?.cancel(); // Stop simulation
             progress.value = sent / total;
+            "Progress: $progress".log();
           }
         },
       );
 
-      progress.value = 1.0;
+      _completeProgress();
 
-      Future.delayed(Duration(seconds: 1),
-              () async => await Get.offAllNamed(Routes.FITNESS_REPORT));
-
-
+      // A short delay to allow the user to see the "completed" state.
+      Future.delayed(
+        const Duration(seconds: 1),
+        () => Get.offAllNamed(Routes.FITNESS_REPORT),
+      );
     } on ApiException catch (e) {
+      _stopProgressOnError();
       errorMessage(e.message);
       hasError(true);
       "API Error during report generation: ${e.description}".log();
     } catch (e) {
+      _stopProgressOnError();
       errorMessage(
         'A network error occurred. Please check your connection and try again.',
       );
       hasError(true);
       "Unexpected error during report generation: ${e.toString()}".log();
     }
+  }
+
+  void _startProgressSimulation() {
+    progress.value = 0.0;
+    _progressTimer?.cancel();
+
+    _progressTimer = Timer.periodic(const Duration(milliseconds: 80), (timer) {
+      if (progress.value < 0.9) {
+        progress.value += 0.02;
+      } else {
+        timer.cancel(); // Stop at 90% and wait for completion
+      }
+    });
+  }
+
+  /// Completes the progress, setting it to 100%.
+  void _completeProgress() {
+    _progressTimer?.cancel();
+    progress.value = 1.0;
+  }
+
+  /// Stops the progress simulation in case of an error.
+  void _stopProgressOnError() {
+    _progressTimer?.cancel();
   }
 
   void onEmailChanged(String value) {
