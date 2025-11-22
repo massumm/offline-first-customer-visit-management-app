@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 abstract class FitnessReportRepository {
   Future<Response> generateReport(
     Map<String, dynamic> data, {
-    void Function(int, int)? onSendProgress,
+    void Function(int, int)? onReceiveProgress,
   });
 
   Future<Response> fetchRecoveryGoals();
