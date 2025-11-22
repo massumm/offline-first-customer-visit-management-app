@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
+import 'package:icon/app/base/network/network_error/api_error_handler.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/modules/fitness_report/widgets/report_menu_item_widget.dart';
@@ -65,12 +68,19 @@ class FitnessReportController extends BaseController {
 
   Future<void> loadFitnessReportData() async {
     showLoading();
-    final planData = await _reportService.fetchFitnessPlan();
-    if (planData.isNotEmpty) {
-      fitnessPlan.value = FitnessPlanModel.fromJson(planData);
-      recoveryStrategies.value = fitnessPlan.value?.recoveryStrategies ?? [];
-      nutritionStrategies.value = fitnessPlan.value?.nutritionStrategies ?? [];
-      activityStrategies.value = fitnessPlan.value?.activityStrategies ?? [];
+    try {
+      final planData = await _reportService.fetchFitnessPlan();
+      if (planData.isNotEmpty) {
+        fitnessPlan.value = FitnessPlanModel.fromJson(planData);
+        recoveryStrategies.value = fitnessPlan.value?.recoveryStrategies ?? [];
+        nutritionStrategies.value =
+            fitnessPlan.value?.nutritionStrategies ?? [];
+        activityStrategies.value = fitnessPlan.value?.activityStrategies ?? [];
+      }
+    } on ApiException catch (e) {
+      apiErrorHandler(fallbackMessage: e.description);
+    } catch (e) {
+      CustomToast.showErrorToast('Something went wrong');
     }
     resetPageState();
   }

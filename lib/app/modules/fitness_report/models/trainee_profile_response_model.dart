@@ -16,7 +16,7 @@ class TraineeProfileModel {
   final String subscriptionStatus;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final int userId;
+  // final int userId;
 
   TraineeProfileModel({
     required this.id,
@@ -36,7 +36,7 @@ class TraineeProfileModel {
     required this.subscriptionStatus,
     required this.createdAt,
     required this.updatedAt,
-    required this.userId,
+    // required this.userId,
   });
 
   factory TraineeProfileModel.fromJson(Map<String, dynamic> json) {
@@ -62,7 +62,7 @@ class TraineeProfileModel {
       subscriptionStatus: json['subscription_status'] ?? 'inactive',
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
-      userId: json['user'],
+      // userId: json['user'],
     );
   }
 }
