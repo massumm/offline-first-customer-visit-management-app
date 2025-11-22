@@ -6,16 +6,13 @@ class WheelListWidget extends StatefulWidget {
     super.key,
     required this.items,
     required this.onNext,
-    this.showCustomNumberField = false, // New parameter to control text field visibility
+    this.showCustomNumberField = false,
   });
 
-  // The list of strings to display in the wheel.
   final List<String> items;
 
-  // Callback that returns the selected value, converted to minutes.
-  final ValueChanged<int> onNext;
+  final ValueChanged<String> onNext;
 
-  // If true, shows a text field for custom input.
   final bool showCustomNumberField;
 
   @override
@@ -25,6 +22,7 @@ class WheelListWidget extends StatefulWidget {
 class _WheelListWidgetState extends State<WheelListWidget> {
   // Holds the index of the currently selected item.
   int _selectedIndex = 0;
+
   // Controller for the custom number input field.
   late final TextEditingController _customNumberController;
 
@@ -38,20 +36,6 @@ class _WheelListWidgetState extends State<WheelListWidget> {
   void dispose() {
     _customNumberController.dispose();
     super.dispose();
-  }
-
-  /// Converts a time string (e.g., "30 min", "1 hour") into an integer of minutes.
-  int _getMinutesFromString(String value) {
-    if (value.contains('hour+')) {
-      return 75; // Default value for '1 hour+'
-    }
-    if (value.contains('hour')) {
-      final parts = value.split(' ');
-      final hours = int.tryParse(parts[0]) ?? 1;
-      return hours * 60;
-    }
-    final parts = value.split(' ');
-    return int.tryParse(parts[0]) ?? 0;
   }
 
   @override
@@ -103,21 +87,19 @@ class _WheelListWidgetState extends State<WheelListWidget> {
               ),
             12.height,
             ElevatedButton(
-                onPressed: () {
-                  // Prioritize the custom number field if it's shown and has a value.
-                  if (widget.showCustomNumberField &&
-                      _customNumberController.text.isNotEmpty) {
-                    final customValue =
-                        int.tryParse(_customNumberController.text) ?? 0;
-                    widget.onNext(customValue);
-                  } else {
-                    // Fallback to the wheel selection.
-                    final selectedValue = widget.items[_selectedIndex];
-                    final minutes = _getMinutesFromString(selectedValue);
-                    widget.onNext(minutes);
-                  }
-                },
-                child: const Text('Next')),
+              onPressed: () {
+                // Prioritize the custom number field if it's shown and has a value.
+                if (widget.showCustomNumberField &&
+                    _customNumberController.text.isNotEmpty) {
+                  widget.onNext(_customNumberController.text);
+                } else {
+                  // Fallback to the wheel selection.
+                  final selectedValue = widget.items[_selectedIndex];
+                  widget.onNext(selectedValue);
+                }
+              },
+              child: const Text('Next'),
+            ),
           ],
         ),
       ),
@@ -126,7 +108,6 @@ class _WheelListWidgetState extends State<WheelListWidget> {
 }
 
 class _WheelItem extends StatelessWidget {
-  // The string to display in the list item.
   final String item;
 
   const _WheelItem({required this.item});
@@ -147,7 +128,7 @@ class _WheelItem extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              item, // Display the string item.
+              item,
               style: theme.textTheme.titleMedium?.copyWith(
                 color: colorScheme.onSurface,
               ),
@@ -155,7 +136,7 @@ class _WheelItem extends StatelessWidget {
             const Spacer(),
             Icon(
               Icons.chevron_right,
-              color: colorScheme.onSurface.withOpacity(0.7),
+              color: colorScheme.onSurface.withValues(alpha: 0.7),
               size: 18,
             ),
           ],

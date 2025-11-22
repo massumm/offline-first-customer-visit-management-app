@@ -151,7 +151,7 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                       'session_duration') {
                     return MinutesWheelList(
                       onNext: (int range) {
-                        controller.selectNumber(range);
+                        controller.selectNumber(range.toString());
                       },
                     );
                   }
@@ -171,7 +171,7 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return WheelListWidget(
                     items: items,
                     showCustomNumberField: showCustomNumberField,
-                    onNext: (int range) {
+                    onNext: (String range) {
                       controller.selectNumber(range);
                     },
                   );
@@ -226,6 +226,16 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   // Handle for other options selection
                   if (controller.isOtherOptionSelected.isTrue) {
                     return _buildTextInput(context);
+                  }
+
+                  // Enable wheel for this one current_sleep_hours
+                  if(controller.currentQuestion?.questionFieldName == 'current_sleep_hours') {
+                    return WheelListWidget(
+                      items: controller.currentQuestion?.metadata?.options ?? [],
+                      onNext: (String range) {
+                        controller.send(range);
+                      },
+                    );
                   }
                   return const SizedBox.shrink();
                 }

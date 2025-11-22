@@ -232,6 +232,12 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             return const SizedBox.shrink();
           }
 
+          // Disable option for  'current_sleep_hours'
+          if (controller.currentQuestion?.questionFieldName ==
+              'current_sleep_hours') {
+            return SizedBox.shrink();
+          }
+
           // Determine which options to display, checking in order: options, predefinedOptions, then unitOptions.
           final List<dynamic>? optionsToShow =
               (q.metadata?.options?.isNotEmpty ?? false)
@@ -313,7 +319,9 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
           final flexValue = controller.isCurrentBodyMeasurements ? 6 : 2;
 
-          return enableFlexible ? Flexible(flex: flexValue, child: input) : input;
+          return enableFlexible
+              ? Flexible(flex: flexValue, child: input)
+              : input;
         }),
         const SizedBox(height: 8),
       ],
