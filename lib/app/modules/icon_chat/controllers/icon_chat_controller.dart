@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 import '../repository/icon_chat_repository_impl.dart';
 import '../../../base/network/dio_provider.dart';
 import '../../../data/local/preference/store/user_store.dart';
@@ -32,10 +33,12 @@ class IconChatController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    'Controller is calling'.log();
     chatRepository = IconChatRepositoryImpl();
     subscriptionService = Get.find<SubscriptionService>();
     token = UserStore.to.token;
     final args = Get.arguments ?? {};
+    traineeProfileId = UserStore.to.profile?.traineeProfile?.id ?? 0;
     trainerProfileId = args['trainerProfileId'] ?? UserStore.to.trainerId ?? 1;
     mySenderType = 'trainee';
     _initChat();

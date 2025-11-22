@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:intl/intl.dart';
 import '../controllers/icon_chat_controller.dart';
 import '../../../data/local/preference/store/user_store.dart';
 
@@ -16,7 +18,7 @@ class IconChatView extends GetView<IconChatController> {
 
   @override
   Widget build(BuildContext context) {
-    final IconChatController controller = Get.find<IconChatController>();
+    // final IconChatController controller = Get.find<IconChatController>();
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: PreferredSize(
@@ -68,12 +70,26 @@ class IconChatView extends GetView<IconChatController> {
             itemBuilder: (context, index) {
               final message = controller.messages[index];
               final senderType = message['sender_type'];
-              final time = message['timestamp'] ?? '';
+              String formattedTime;
+              try {
+                final rawTimestamp = message['timestamp'];
+                if (rawTimestamp != null && rawTimestamp.isNotEmpty) {
+                  // Assuming the timestamp is an ISO 8601 string.
+                  final dateTime = DateTime.parse(rawTimestamp);
+                  // Formats the time to a pattern like "5:30 PM".
+                  formattedTime = DateFormat('h:mm a').format(dateTime);
+                } else {
+                  formattedTime = '';
+                }
+              } catch (e) {
+                // Fallback to an empty string if parsing fails.
+                formattedTime = '';
+              }
               final text = message['content'] ?? '';
               if (senderType == 'trainee') {
-                return SenderMessageBubble(text: text, timestamp: time);
+                return SenderMessageBubble(text: text, timestamp: formattedTime);
               } else {
-                return ReceiverMessageBubble(text: text, timestamp: time);
+                return ReceiverMessageBubble(text: text, timestamp: formattedTime);
               }
             },
           );
@@ -310,6 +326,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                 onPressed: canSendMessage
                     ? () {
                         controller.optimisticSendMessage();
+                        "Calling method".log();
                       }
                     : null,
               ),

@@ -57,7 +57,7 @@ class HomeView extends BaseView<HomeController> {
           ),
           bottomNavigationBar: Obx(() {
             return NavigationBar(
-              backgroundColor: const Color(0xFF141518),
+              backgroundColor: cs.surface,
               selectedIndex: controller.selectedNavIndex.value,
               onDestinationSelected: (index) {
                 controller.selectedNavIndex.value = index;
