@@ -32,6 +32,7 @@ enum OnboardingPhase {
 class TraineeOnboardingController extends BaseController {
   /// Flag to skip the immediate next question after 'progress_photo_upload' if answered 'No'.
   bool _skipNextQuestion = false;
+
   // --------------- Repository ---------------
   final TraineeOnboardingQARepository _onboardingQARepository = Get.find(
     tag: (TraineeOnboardingQARepository).toString(),
@@ -888,6 +889,12 @@ class TraineeOnboardingController extends BaseController {
     await _processAnswer(q, jsonString, userMessage);
   }
 
+  void selectNumber(int range) async {
+    if (!_canAnswer) return;
+    final q = currentQuestion!;
+    await _saveUserAnswer(q, range.toString());
+  }
+
   void selectNumericRange() async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
@@ -898,6 +905,7 @@ class TraineeOnboardingController extends BaseController {
     selectedOption.value = 'Other';
     isOtherOptionSelected.value = true;
   }
+
   int get stepperTotalSteps => generatedQuestionGroups.length;
 
   int get stepperCurrentStep {
@@ -966,6 +974,10 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentReminder => currentQuestion?.type.name == "reminder";
 
   bool get isCurrentBodyPart => currentQuestion?.type.name == "body_parts";
+
+  bool get isCurrentNumber =>
+      currentQuestion?.type.type == QuestionTypeEnum.number;
+
   bool get isCurrentMultiplePlusOther =>
       currentQuestion?.type.type == QuestionTypeEnum.selectMultiplePlusOther;
 
@@ -974,7 +986,6 @@ class TraineeOnboardingController extends BaseController {
 
   bool get isCurrentDateWithDescription => true;
       // currentQuestion?.type.type == QuestionTypeEnum.dateWithDescription;
-
 
 
   bool get isCurrentBodyMeasurements =>
