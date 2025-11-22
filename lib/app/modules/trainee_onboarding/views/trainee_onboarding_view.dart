@@ -243,7 +243,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               : null;
 
           // Handle with Question Type
-          if(controller.isCurrentBodyFat){
+          if (controller.isCurrentBodyFat) {
             return const SizedBox.shrink();
           }
 
@@ -275,17 +275,18 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     isMultiplePlusOther && optionText == 'Other';
 
                 // Check if the current option is the selected one.
-                final isSelected = controller.selectedOption.value == optionText;
+                final isSelected =
+                    controller.selectedOption.value == optionText;
 
                 return ActionChip(
                   label: Text(optionText),
                   shape: isSelected
                       ? StadiumBorder(
-                    side: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 1.5,
-                    ),
-                  )
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 1.5,
+                          ),
+                        )
                       : null,
                   onPressed: () {
                     if (isOtherChip) {
@@ -303,7 +304,17 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         }),
 
         // ----------------- Input Sections ----------
-        ToInputWidget(),
+        Obx(() {
+          final input = const ToInputWidget();
+
+          final enableFlexible =
+              controller.isCurrentBodyMeasurements ||
+              controller.isCurrentBodyFat;
+
+          final flexValue = controller.isCurrentBodyMeasurements ? 6 : 2;
+
+          return enableFlexible ? Flexible(flex: flexValue, child: input) : input;
+        }),
         const SizedBox(height: 8),
       ],
     );
