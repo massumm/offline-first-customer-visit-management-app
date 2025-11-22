@@ -40,6 +40,7 @@ class FitnessReportController extends BaseController {
   }
 
   FitnessPlanModel? get currentFitnessPlan => fitnessPlan.value;
+
   // --- Data Models ---
   Rxn<FitnessPlanModel> fitnessPlan = Rxn<FitnessPlanModel>();
   RxList<RecoveryStrategyModel> recoveryStrategies =
@@ -48,7 +49,6 @@ class FitnessReportController extends BaseController {
       <NutritionStrategyModel>[].obs;
   RxList<ActivityStrategyModel> activityStrategies =
       <ActivityStrategyModel>[].obs;
-
 
   // -------------------Services ------------------
   final FitnessReportService _reportService = Get.find<FitnessReportService>();
@@ -294,6 +294,9 @@ class FitnessReportController extends BaseController {
   }
 
   void onRegister() {
-    Get.toNamed(Routes.TRAINEE_REGISTER);
+    Get.toNamed(
+      Routes.TRAINEE_REGISTER,
+      arguments: currentFitnessPlan?.trainee.user?.email ?? '',
+    );
   }
 }

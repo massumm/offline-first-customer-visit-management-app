@@ -1,5 +1,6 @@
 class TraineeProfileModel {
   final int id;
+  final TraineeUser? user;
   final String? bio;
   final String? name;
   final DateTime? dateOfBirth;
@@ -20,6 +21,7 @@ class TraineeProfileModel {
   TraineeProfileModel({
     required this.id,
     this.bio,
+    this.user,
     this.name,
     this.dateOfBirth,
     this.avatar,
@@ -41,6 +43,7 @@ class TraineeProfileModel {
     return TraineeProfileModel(
       id: json['id'],
       bio: json['bio'],
+      user: json['user'] != null ? TraineeUser.fromJson(json['user']) : null,
       name: json['name'],
       dateOfBirth: json['date_of_birth'] != null
           ? DateTime.parse(json['date_of_birth'])
@@ -60,6 +63,37 @@ class TraineeProfileModel {
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
       userId: json['user'],
+    );
+  }
+}
+
+// "user": {
+//             "id": 19,
+//             "username": "Syed Hasan",
+//             "email": "syedhasan.cse@gmail.com",
+//             "first_name": "syed",
+//             "last_name": "vvgg, Date: 22 Nov, 2025"
+//         },
+class TraineeUser {
+  final int id;
+  final String userName, email, firstName, lastName;
+
+  TraineeUser({
+    required this.id,
+    required this.userName,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+  });
+
+  factory TraineeUser.fromJson(Map<String, dynamic> json) {
+    return TraineeUser(
+
+      id: json['id'] ?? 0,
+      userName: json['username'] ?? '',
+      email: json['email'] ?? '',
+      firstName: json['first_name'] ?? '',
+      lastName: json['last_name'] ?? '',
     );
   }
 }
