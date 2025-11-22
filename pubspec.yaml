@@ -19,7 +19,7 @@ dependencies:
   pretty_dio_logger: ^1.4.0
   fluttertoast: ^9.0.0
   dio: ^5.9.0
-  flutter_svg: ^2.2.2
+  flutter_svg: ^2.2.3
   cached_network_image: ^3.4.1
   font_awesome_flutter: ^10.12.0
   intl: ^0.20.2
@@ -42,7 +42,7 @@ dependencies:
   geolocator: ^14.0.2
   geocoding: ^4.0.0
 
-  phone_form_field: ^10.0.13
+  phone_form_field: ^10.0.14
   bodychart_heatmap: ^1.1.0
 
   dashed_progress_bar: ^0.0.1
@@ -54,7 +54,7 @@ dependencies:
 
   # Firebase
   firebase_core: ^4.2.1
-  firebase_crashlytics: ^5.0.4
+  firebase_crashlytics: ^5.0.5
   flutter_slidable: ^4.0.3
   fl_chart: ^1.1.1
 
