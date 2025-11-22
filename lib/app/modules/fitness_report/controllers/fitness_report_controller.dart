@@ -48,15 +48,6 @@ class FitnessReportController extends BaseController {
   RxList<ActivityStrategyModel> activityStrategies =
       <ActivityStrategyModel>[].obs;
 
-  Future<void> loadFitnessReportData() async {
-    final planData = await _reportService.fetchFitnessPlan();
-    if (planData is List && planData.isNotEmpty) {
-      fitnessPlan.value = FitnessPlanModel.fromJson(planData[0]);
-      recoveryStrategies.value = fitnessPlan.value?.recoveryStrategies ?? [];
-      nutritionStrategies.value = fitnessPlan.value?.nutritionStrategies ?? [];
-      activityStrategies.value = fitnessPlan.value?.activityStrategies ?? [];
-    }
-  }
 
   // -------------------Services ------------------
   final FitnessReportService _reportService = Get.find<FitnessReportService>();
@@ -69,6 +60,16 @@ class FitnessReportController extends BaseController {
     _reportService.attach(this);
     // Load backend data on controller init
     loadFitnessReportData();
+  }
+
+  Future<void> loadFitnessReportData() async {
+    final planData = await _reportService.fetchFitnessPlan();
+    if (planData is List && planData.isNotEmpty) {
+      fitnessPlan.value = FitnessPlanModel.fromJson(planData[0]);
+      recoveryStrategies.value = fitnessPlan.value?.recoveryStrategies ?? [];
+      nutritionStrategies.value = fitnessPlan.value?.nutritionStrategies ?? [];
+      activityStrategies.value = fitnessPlan.value?.activityStrategies ?? [];
+    }
   }
 
   @override
