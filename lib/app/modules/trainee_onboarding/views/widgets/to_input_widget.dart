@@ -155,11 +155,22 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                       },
                     );
                   }
+                  List<String> items = List.generate(
+                    10,
+                    (index) => (index + 1).toString(),
+                  );
+
+                  bool showCustomNumberField = false;
+
+                  if (controller.currentQuestion?.questionFieldName ==
+                      'daily_step_goal') {
+                    items = ['2,500', '5,000', '7,500', '10,000', '12,500'];
+                    showCustomNumberField = true;
+
+                  }
                   return WheelListWidget(
-                    range:
-                        controller.currentQuestion?.metadata?.maxValue
-                            ?.toInt() ??
-                        0,
+                    items: items,
+                    showCustomNumberField: showCustomNumberField,
                     onNext: (int range) {
                       controller.selectNumber(range);
                     },
@@ -177,10 +188,6 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
 
                 if (controller.isCurrentBodyPart) {
                   return BodyPartInputWidget(controller: controller);
-                }
-
-                if (controller.isCurrentDateWithDescription) {
-                  return EventInputWidget(controller: controller);
                 }
 
                 if (controller.isCurrentDateWithDescription) {
