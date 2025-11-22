@@ -45,7 +45,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const String INITIAL = Routes.FITNESS_REPORT;
+  static const String INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
