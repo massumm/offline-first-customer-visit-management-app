@@ -134,7 +134,7 @@ class FitnessReportRepositoryImpl extends BaseRemoteSource
   @override
   Future<Response> fetchFitnessPlan() {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/fitness_plan/fitness-plans/";
+        "${DioProvider.baseUrl}/api/fitness_plan/get/by-trainer/1/"; // Default trainer id: 1
     final Map<String, String> headers = {'Authorization': "Bearer $token"};
     Future<Response<dynamic>> dioCall = dioClient.get(
       endpoint,
@@ -262,7 +262,7 @@ class FitnessReportRepositoryImpl extends BaseRemoteSource
   @override
   Future<ServerTaskLagResponseModel> checkServerBackgroundTask(
     String celeryTaskId,
-      void Function(int, int)? onReceiveProgress,
+    void Function(int, int)? onReceiveProgress,
   ) {
     final String endpoint =
         "${DioProvider.baseUrl}/api/background_tasks/check-run-log/$celeryTaskId/";
