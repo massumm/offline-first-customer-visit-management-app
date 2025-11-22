@@ -992,6 +992,10 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentMultiplePlusOther =>
       currentQuestion?.type.type == QuestionTypeEnum.selectMultiplePlusOther;
 
+  bool get isCurrentMultiplePlusOtherWithAdd =>
+      currentQuestion?.type.type ==
+      QuestionTypeEnum.selectMultiplePlusOtherWithAdd;
+
   bool get isCurrentNumericRange =>
       currentQuestion?.type.type == QuestionTypeEnum.numericRange;
 

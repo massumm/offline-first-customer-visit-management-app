@@ -166,7 +166,6 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                       'daily_step_goal') {
                     items = ['2,500', '5,000', '7,500', '10,000', '12,500'];
                     showCustomNumberField = true;
-
                   }
                   return WheelListWidget(
                     items: items,
@@ -222,18 +221,40 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
 
                 // Handle for choice options selection
                 if (controller.isCurrentChoice ||
-                    controller.isCurrentMultiplePlusOther) {
+                    controller.isCurrentMultiplePlusOther ||
+                    controller.isCurrentMultiplePlusOtherWithAdd) {
                   // Handle for other options selection
                   if (controller.isOtherOptionSelected.isTrue) {
                     return _buildTextInput(context);
                   }
 
-                  // Enable wheel for this one current_sleep_hours
-                  if(controller.currentQuestion?.questionFieldName == 'current_sleep_hours') {
+                  // Enable wheel for these keys
+                  final List<String> wheelListQuestionFields = [
+                    'desired_sleep_hours',
+                    'current_sleep_hours',
+                    'sources_of_stress',
+                  ];
+                  final currentFieldName =
+                      controller.currentQuestion?.questionFieldName;
+
+                  // Handle for extra input field
+                  bool enableTextField = false;
+                  if (controller.isCurrentMultiplePlusOtherWithAdd) {
+                    enableTextField = true;
+                  }
+                  if (currentFieldName != null &&
+                      wheelListQuestionFields.contains(currentFieldName)) {
                     return WheelListWidget(
-                      items: controller.currentQuestion?.metadata?.options ?? [],
-                      onNext: (String range) {
-                        controller.send(range);
+                      items:
+                          controller.currentQuestion?.metadata?.options ??
+                          controller
+                              .currentQuestion
+                              ?.metadata
+                              ?.predefinedOptions ??
+                          [],
+                      showCustomTextField: enableTextField,
+                      onNext: (String value) {
+                        controller.send(value);
                       },
                     );
                   }

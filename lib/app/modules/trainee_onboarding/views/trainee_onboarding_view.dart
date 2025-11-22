@@ -232,10 +232,17 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             return const SizedBox.shrink();
           }
 
-          // Disable option for  'current_sleep_hours'
-          if (controller.currentQuestion?.questionFieldName ==
-              'current_sleep_hours') {
-            return SizedBox.shrink();
+          // Disable option for theme keys
+          final List<String> disableQuestionFields = [
+            'desired_sleep_hours',
+            'current_sleep_hours',
+            'sources_of_stress',
+          ];
+
+          if (disableQuestionFields.contains(
+            controller.currentQuestion?.questionFieldName,
+          )) {
+            return const SizedBox.shrink();
           }
 
           // Determine which options to display, checking in order: options, predefinedOptions, then unitOptions.
