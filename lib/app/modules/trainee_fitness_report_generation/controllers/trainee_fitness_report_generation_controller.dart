@@ -93,6 +93,11 @@ class TraineeFitnessReportGenerationController extends BaseController {
     }
   }
 
+  // Check If the server report creation is done.
+  void checkServerBackgroundTask(String celeryTaskId) async {
+    _reportRepository.checkServerBackgroundTask(celeryTaskId);
+  }
+
   void _startProgressSimulation() {
     progress.value = 0.0;
     _progressTimer?.cancel();

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:icon/app/base/base_remote_source.dart';
 import 'package:icon/app/data/local/preference/store/user_store.dart';
+import 'package:icon/app/modules/fitness_report/models/server_task_log_response_model.dart';
 
 import '../../../base/network/dio_provider.dart';
 import 'fitness_report_repository.dart';
@@ -253,6 +254,27 @@ class FitnessReportRepositoryImpl extends BaseRemoteSource
     );
     try {
       return callApiWithErrorParser(dioCall);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<ServerTaskLagResponseModel> checkServerBackgroundTask(
+    String celeryTaskId,
+  ) {
+    final String endpoint =
+        "${DioProvider.baseUrl}/api/background_tasks/check-run-log/$celeryTaskId/";
+    final Map<String, String> headers = {'Authorization': "Bearer $token"};
+    Future<Response<dynamic>> dioCall = dioClient.get(
+      endpoint,
+      options: Options(headers: headers),
+    );
+    try {
+      return callApiWithErrorParser(dioCall).then(
+        (Response response) =>
+            ServerTaskLagResponseModel.fromJson(response.data),
+      );
     } catch (e) {
       rethrow;
     }

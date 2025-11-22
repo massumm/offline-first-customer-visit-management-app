@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:icon/app/modules/fitness_report/models/server_task_log_response_model.dart';
 
 abstract class FitnessReportRepository {
   Future<Response> generateReport(
@@ -20,4 +21,6 @@ abstract class FitnessReportRepository {
   Future<Response> fetchActivityObjective();
   Future<Response> fetchActivityGoalsObjective();
   Future<Response> fetchActivityFocus();
+
+  Future<ServerTaskLagResponseModel> checkServerBackgroundTask(String celeryTaskId);
 }
