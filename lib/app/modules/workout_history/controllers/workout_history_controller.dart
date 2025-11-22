@@ -150,6 +150,30 @@ class WorkoutHistoryController extends BaseController {
     ),
   ];
 
+  final List<RecordData> personalRecords = [
+    RecordData(title: 'Max Weight', value: 80, date: DateTime.now(), unit: UnitsEnum.kg),
+    RecordData(title: 'Estimated 1RM', value: 96, date: DateTime.now(), unit: UnitsEnum.kg),
+    RecordData(title: 'Max Volume (Single Workout)', value: 2880, date: DateTime.now(), unit: UnitsEnum.kg),
+    RecordData(title: 'Max Reps at 70kg', value: 12, date: DateTime.now(), unit: UnitsEnum.reps),
+
+  ];
+
+  final currentMaxWeight = 80.obs;
+
+  final weightDataList = <WeightData>[
+    WeightData(weight: 100, percentage: 80),
+    WeightData(weight: 120, percentage: 66),
+    WeightData(weight: 120, percentage: 53),
+  ].obs;
+
+  final statisticsDataList = <StatisticsData>[
+    StatisticsData(title: 'Total Sets', value: 6, duration: StatisticsDurationEnum.allTime),
+    StatisticsData(title: 'Total Reps', value: 6, duration: StatisticsDurationEnum.allTime),
+    StatisticsData(title: 'Total Volume', value: 14900, duration: StatisticsDurationEnum.kgLifted),
+    StatisticsData(title: 'Consistency', value: 2.5, duration: StatisticsDurationEnum.perWeek),
+  ].obs;
+
+
   @override
   void onInit() {
     super.onInit();
@@ -213,5 +237,56 @@ class ChartData {
   double get maxValue {
     final highestValue = data.fold<double>(0, (max, item) => max > item.value ? max : item.value);
     return (highestValue / interval).ceil() * interval;
+  }
+}
+
+class RecordData {
+  final String title;
+  final double value;
+  final DateTime date;
+  final UnitsEnum unit;
+
+  RecordData({required this.title, required this.value, required this.date, required this.unit});
+}
+
+enum UnitsEnum {
+  kg,
+  reps;
+
+  String get unit {
+    return switch (this) {
+      UnitsEnum.kg => 'kg',
+      UnitsEnum.reps => 'reps',
+    };
+  }
+}
+
+class WeightData {
+  final double weight;
+  final double percentage;
+
+  WeightData({required this.weight, required this.percentage});
+}
+
+class StatisticsData {
+  final String title;
+  final double value;
+  final StatisticsDurationEnum duration;
+
+  StatisticsData({required this.title, required this.value, required this.duration});
+
+}
+
+enum StatisticsDurationEnum {
+  allTime,
+  kgLifted,
+  perWeek;
+
+  String get duration {
+    return switch (this) {
+      StatisticsDurationEnum.allTime => 'All Time',
+      StatisticsDurationEnum.kgLifted => 'kg Lifted',
+      StatisticsDurationEnum.perWeek => 'Per Week',
+    };
   }
 }

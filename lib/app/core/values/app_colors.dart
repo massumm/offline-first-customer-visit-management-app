@@ -28,6 +28,7 @@ static const Color bgColorRed = Color(0xFFC31212);
   static const Color disableBgColor = Color(0xFFE5E5E5);
   static const Color cardBgColor = Color(0xFFFFEBE5);
   static const Color pageBackground = Color(0xFFF2F2F2);
+  static const Color textColorRed = chartGradientEnd;
 
   // ------------- Light Theme Colors ---------------------
   static const Color lightTextPrimaryColor = Color(0xFF241814);
@@ -125,5 +126,24 @@ static const Color bgColorRed = Color(0xFFC31212);
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
     stops: [0.0, 0.5, 1.0],
+  );
+
+  static const Color chartGradientStart = Color(0xFF241814);
+
+  static const Color chartGradientEnd = Color(0xFFC31212);
+
+  static const LinearGradient chartGradient = LinearGradient(
+    colors: [chartGradientStart, chartGradientEnd],
+    begin: Alignment.bottomCenter,
+    end: Alignment.topCenter,
+    stops: [0.0, 1.0],
+  );
+
+
+  static const LinearGradient lineChartGradient = LinearGradient(
+    colors: [chartGradientStart, chartGradientEnd],
+    begin: Alignment.centerLeft,
+    end: Alignment.centerRight,
+    stops: [0.0, 1.0],
   );
 }

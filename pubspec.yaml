@@ -55,7 +55,6 @@ dependencies:
   # Firebase
   firebase_core: ^4.2.1
   firebase_crashlytics: ^5.0.4
-
   flutter_slidable: ^4.0.3
   fl_chart: ^1.1.1
 

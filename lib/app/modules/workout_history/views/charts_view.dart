@@ -218,11 +218,11 @@ BarChartGroupData makeGroupData(int x, double darkValue, double lightValue) {
       BarChartRodData(
         toY: darkValue + lightValue,
         rodStackItems: [
-          BarChartRodStackItem(0, darkValue, Color(0xFF8B1538), borderSide: BorderSide(
+          BarChartRodStackItem(0, darkValue, null, gradient: AppColors.chartGradient, borderSide: BorderSide(
     color: Colors.white,
     width: 2,
           ),), // Dark red
-          BarChartRodStackItem(darkValue, darkValue + lightValue, Color(0xFFFFB3C1)), // Light pink
+          BarChartRodStackItem(darkValue, darkValue + lightValue, AppColors.colorSecondary), // Light pink
         ],
         width: 16,
         borderRadius: BorderRadius.circular(8),
