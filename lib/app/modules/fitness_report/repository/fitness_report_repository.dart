@@ -22,5 +22,5 @@ abstract class FitnessReportRepository {
   Future<Response> fetchActivityGoalsObjective();
   Future<Response> fetchActivityFocus();
 
-  Future<ServerTaskLagResponseModel> checkServerBackgroundTask(String celeryTaskId);
+  Future<ServerTaskLagResponseModel> checkServerBackgroundTask(String celeryTaskId, void Function(int, int)? onReceiveProgress,);
 }

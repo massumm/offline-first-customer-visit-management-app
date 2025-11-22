@@ -262,6 +262,7 @@ class FitnessReportRepositoryImpl extends BaseRemoteSource
   @override
   Future<ServerTaskLagResponseModel> checkServerBackgroundTask(
     String celeryTaskId,
+      void Function(int, int)? onReceiveProgress,
   ) {
     final String endpoint =
         "${DioProvider.baseUrl}/api/background_tasks/check-run-log/$celeryTaskId/";
@@ -269,6 +270,7 @@ class FitnessReportRepositoryImpl extends BaseRemoteSource
     Future<Response<dynamic>> dioCall = dioClient.get(
       endpoint,
       options: Options(headers: headers),
+      onReceiveProgress: onReceiveProgress,
     );
     try {
       return callApiWithErrorParser(dioCall).then(
