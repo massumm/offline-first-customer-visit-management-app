@@ -815,9 +815,23 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    final heightValue = double.tryParse(height);
-    if (heightValue != null) {
-      await _saveUserAnswer(q, heightValue.round().toString());
+    // Regex to extract the leading number (integer or double) from the string.
+    final numericRegex = RegExp(r'^\d+(\.\d+)?');
+    final match = numericRegex.firstMatch(height);
+
+    if (match != null) {
+      final numericString = match.group(0)!;
+      final unitString = height.substring(numericString.length).trim();
+      final heightValue = double.tryParse(numericString);
+
+      if (heightValue != null) {
+        // Round the value to two decimal places and reconstruct the string with its unit.
+        final roundedValue = heightValue.toStringAsFixed(2);
+        final finalAnswer = '$roundedValue $unitString'.trim();
+        await _saveUserAnswer(q, finalAnswer);
+      } else {
+        await _saveUserAnswer(q, height);
+      }
     } else {
       await _saveUserAnswer(q, height);
     }
