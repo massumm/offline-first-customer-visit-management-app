@@ -14,7 +14,7 @@ class ProfileOverviewPageView extends BaseView<FitnessReportController> {
   Widget body(BuildContext context) {
     final plan = controller.currentFitnessPlan;
     final trainee = controller.currentFitnessPlan?.trainee;
-    return  Padding(
+    return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
@@ -30,7 +30,7 @@ class ProfileOverviewPageView extends BaseView<FitnessReportController> {
                 children: [
                   IntroWidget(
                     body:
-                    plan?.introductorySummary ??
+                        plan?.introductorySummary ??
                         'Based on everything you\'ve shared, here\'s your current fitness snapshot. This will be the foundation for how your Icon builds your training,  nutrition, and recovery plan.',
                   ),
                   16.height,
@@ -39,52 +39,25 @@ class ProfileOverviewPageView extends BaseView<FitnessReportController> {
                     stats: [
                       StatItem(
                         label: 'Name',
-                        value: (plan?.introductorySummary ?? '').split(' ').firstOrNull ?? '-',
+                        value: (plan?.trainee.user?.firstName ?? '-'),
                         // trainee?.name ?? '-',
                       ),
                       StatItem(
                         label: 'Trainer',
                         value: plan?.trainer.personaName ?? '-',
                       ),
-                      StatItem(
-                        label: 'Gender',
-                        value: trainee?.gender ?? '-',
-                      ),
-                      StatItem(
-                        label: 'Current Weight',
-                        value: '-',
-                      ),
-                      StatItem(
-                        label: 'Body Fat %',
-                        value: '-',
-                      ),
-                      StatItem(
-                        label: 'Training Schedule',
-                        value: '-',
-                      ),
-                      StatItem(
-                        label: 'Age',
-                        value: '-',
-                      ),
-                      StatItem(
-                        label: 'Height',
-                        value:  '-',
-                      ),
-                      StatItem(
-                        label: 'Target Weight',
-                        value: '-',
-                      ),
-                      StatItem(
-                        label: 'Activity Level',
-                        value: '-',
-                      ),
-                      StatItem(
-                        label: 'Experience Level',
-                        value: '-',
-                      ),
+                      StatItem(label: 'Gender', value: trainee?.gender ?? '-'),
+                      StatItem(label: 'Current Weight', value: '-'),
+                      StatItem(label: 'Body Fat %', value: '-'),
+                      StatItem(label: 'Training Schedule', value: '-'),
+                      StatItem(label: 'Age', value: '-'),
+                      StatItem(label: 'Height', value: '-'),
+                      StatItem(label: 'Target Weight', value: '-'),
+                      StatItem(label: 'Activity Level', value: '-'),
+                      StatItem(label: 'Experience Level', value: '-'),
                       StatItem(
                         label: 'Subscription Status',
-                        value: trainee?.subscriptionStatus ??  '-',
+                        value: trainee?.subscriptionStatus ?? '-',
                       ),
                     ],
                   ),
