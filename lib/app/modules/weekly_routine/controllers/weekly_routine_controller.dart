@@ -1,14 +1,11 @@
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
-import 'package:icon/app/core/enums/body_areas.dart';
 import 'package:icon/app/core/enums/week_days.dart';
 import 'package:icon/app/models/exercise_model.dart';
 import 'package:icon/app/modules/weekly_routine/data/exercise_data.dart';
 import 'package:icon/app/modules/weekly_routine/models/week_model.dart';
 import 'package:icon/app/modules/weekly_routine/models/workout_model.dart';
-import 'package:icon/app/modules/weekly_routine/utils/enums/equipment_type_enum.dart';
-import 'package:icon/generated/assets.dart';
 
 class WeeklyRoutineController extends BaseController {
   //TODO: Implement WeeklyRoutineController

@@ -14,7 +14,6 @@ import 'package:icon/app/modules/trainee_onboarding/views/widgets/body_fat_input
 import 'package:image_picker/image_picker.dart';
 
 import '../../../base/repository/trainee_onboarding_auth_repo/trainee_onboarding_auth_repository.dart';
-import '../../../data/local/preference/store/trainee_data_store.dart';
 import '../../../data/local/preference/store/user_store.dart';
 import '../../../routes/app_pages.dart';
 import '../../login/models/login_response_model.dart';

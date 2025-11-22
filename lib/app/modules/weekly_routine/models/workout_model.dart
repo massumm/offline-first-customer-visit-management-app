@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:icon/app/core/enums/body_areas.dart';
 import 'package:icon/app/core/enums/week_days.dart';
 import 'package:icon/app/models/exercise_model.dart';
 

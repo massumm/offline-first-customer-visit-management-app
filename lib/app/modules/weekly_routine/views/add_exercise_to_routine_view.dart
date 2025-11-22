@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
@@ -7,13 +6,9 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
-import 'package:icon/app/models/exercise_model.dart';
-import 'package:icon/app/modules/full_body_tracker/utils/theme_helpers.dart';
-import 'package:icon/app/modules/full_body_tracker/widgets/exercise_card.dart';
 import 'package:icon/app/modules/weekly_routine/controllers/weekly_routine_controller.dart';
 import 'package:icon/app/modules/weekly_routine/widgets/added_exercise_card.dart';
 import 'package:icon/app/routes/app_pages.dart';
-import 'package:icon/generated/assets.dart';
 
 class AddExerciseToRoutineView extends BaseView<WeeklyRoutineController> {
   const AddExerciseToRoutineView({super.key});

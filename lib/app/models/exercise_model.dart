@@ -42,7 +42,7 @@ class ExerciseModel {
       darkAsset: darkAsset ?? this.darkAsset,
       sets: sets ?? this.sets,
       reps: reps ?? this.reps,
-      bodyAreaList: bodyArea ?? this.bodyAreaList,
+      bodyAreaList: bodyArea ?? bodyAreaList,
       routinesCount: routinesCount ?? this.routinesCount,
       equipmentType: equipmentType ?? this.equipmentType,
     );
