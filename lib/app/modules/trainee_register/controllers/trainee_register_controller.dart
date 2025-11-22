@@ -158,7 +158,7 @@ class TraineeRegisterController extends BaseController {
             onError: (e) {
               isLoading.value = false;
               if (e is ApiException) {
-                CustomToast.showErrorToast(e.description);
+                CustomToast.showErrorToast(e.message);
                 return;
               }
               CustomToast.showErrorToast('An unexpected error occurred');
