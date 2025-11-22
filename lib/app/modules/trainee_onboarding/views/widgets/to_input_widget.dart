@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/input_widgets/date_input_field.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
+import 'package:icon/app/modules/trainee_onboarding/views/widgets/minutes_wheel_list.dart';
 import 'package:icon/app/modules/trainee_onboarding/views/widgets/unit_ruler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:phone_form_field/phone_form_field.dart';
@@ -145,12 +146,31 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 }
 
                 if (controller.isCurrentNumber) {
+                  // Handle Minutes
+                  if (controller.currentQuestion?.questionFieldName ==
+                      'session_duration') {
+                    return MinutesWheelList(
+                      onNext: (int range) {
+                        controller.selectNumber(range.toString());
+                      },
+                    );
+                  }
+                  List<String> items = List.generate(
+                    10,
+                    (index) => (index + 1).toString(),
+                  );
+
+                  bool showCustomNumberField = false;
+
+                  if (controller.currentQuestion?.questionFieldName ==
+                      'daily_step_goal') {
+                    items = ['2,500', '5,000', '7,500', '10,000', '12,500'];
+                    showCustomNumberField = true;
+                  }
                   return WheelListWidget(
-                    range:
-                        controller.currentQuestion?.metadata?.maxValue
-                            ?.toInt() ??
-                        0,
-                    onNext: (int range){
+                    items: items,
+                    showCustomNumberField: showCustomNumberField,
+                    onNext: (String range) {
                       controller.selectNumber(range);
                     },
                   );
@@ -169,12 +189,6 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   return BodyPartInputWidget(controller: controller);
                 }
 
-                if(controller.isCurrentDateWithDescription){
-                    return EventInputWidget(
-                      controller: controller,
-                    );
-                }
-
                 if (controller.isCurrentDateWithDescription) {
                   return EventInputWidget(controller: controller);
                 }
@@ -182,10 +196,20 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 if (controller.isCurrentNumericRange) {
                   return NumericRangeInputWidget(
                     value: controller.numericRangeValue.value,
-                    maxTitle: "Fast",
-                    minTitle: 'Gradual',
-                    max: 10,
-                    min: 1,
+                    maxTitle:
+                        controller.currentQuestion?.metadata?.labelMax ??
+                        'Fast',
+                    minTitle:
+                        controller.currentQuestion?.metadata?.labelMin ??
+                        'Gradual',
+                    max:
+                        controller.currentQuestion?.metadata?.maxValue
+                            ?.toDouble() ??
+                        10.0,
+                    min:
+                        controller.currentQuestion?.metadata?.minValue
+                            ?.toDouble() ??
+                        1,
                     onChanged: (double value) {
                       controller.numericRangeValue.value = value;
                     },
@@ -197,10 +221,42 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
 
                 // Handle for choice options selection
                 if (controller.isCurrentChoice ||
-                    controller.isCurrentMultiplePlusOther) {
+                    controller.isCurrentMultiplePlusOther ||
+                    controller.isCurrentMultiplePlusOtherWithAdd) {
                   // Handle for other options selection
                   if (controller.isOtherOptionSelected.isTrue) {
                     return _buildTextInput(context);
+                  }
+
+                  // Enable wheel for these keys
+                  final List<String> wheelListQuestionFields = [
+                    'desired_sleep_hours',
+                    'current_sleep_hours',
+                    'sources_of_stress',
+                  ];
+                  final currentFieldName =
+                      controller.currentQuestion?.questionFieldName;
+
+                  // Handle for extra input field
+                  bool enableTextField = false;
+                  if (controller.isCurrentMultiplePlusOtherWithAdd) {
+                    enableTextField = true;
+                  }
+                  if (currentFieldName != null &&
+                      wheelListQuestionFields.contains(currentFieldName)) {
+                    return WheelListWidget(
+                      items:
+                          controller.currentQuestion?.metadata?.options ??
+                          controller
+                              .currentQuestion
+                              ?.metadata
+                              ?.predefinedOptions ??
+                          [],
+                      showCustomTextField: enableTextField,
+                      onNext: (String value) {
+                        controller.send(value);
+                      },
+                    );
                   }
                   return const SizedBox.shrink();
                 }

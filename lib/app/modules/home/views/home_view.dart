@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
+import 'package:icon/app/core/theme/icon_light_theme.dart';
 import 'package:icon/app/routes/app_pages.dart';
 import 'package:icon/app/data/local/preference/store/user_store.dart';
 
@@ -23,68 +24,74 @@ class HomeView extends BaseView<HomeController> {
 
   @override
   Widget body(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
 
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Header(),
-              16.height,
-              _UserHeader(),
-              16.height,
-              DailyProgressIndicators(),
-              16.height,
-              TrainerInfoCard(onPressed: () {}),
-              16.height,
-              healthProgressIndicator(),
-              16.height,
-              GoalsCard(onPressed: () {}),
-              16.height,
-              CommunityCard(color: cs.secondary),
-              58.height,
-            ],
+
+    return Theme(
+      data: IconLightTheme.androidLightTheme,
+      child: Builder(builder: (context) {
+        final cs = Theme.of(context).colorScheme;
+       return Scaffold(
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Header(),
+                  16.height,
+                  _UserHeader(),
+                  16.height,
+                  DailyProgressIndicators(),
+                  16.height,
+                  TrainerInfoCard(onPressed: () {}),
+                  16.height,
+                  healthProgressIndicator(),
+                  16.height,
+                  GoalsCard(onPressed: () {}),
+                  16.height,
+                  CommunityCard(color: cs.secondary),
+                  58.height,
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-      bottomNavigationBar: Obx(() {
-        return NavigationBar(
-          backgroundColor: const Color(0xFF141518),
-          selectedIndex: controller.selectedNavIndex.value,
-          onDestinationSelected: (index) {
-            controller.selectedNavIndex.value = index;
-            if (index == 2) {
-              final trainerId = UserStore.to.trainerId ?? 1;
-              Get.toNamed(Routes.ICON_CHAT, arguments: {'trainerId': trainerId});
-            }
-          },
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.dashboard_outlined),
-              selectedIcon: Icon(Icons.dashboard),
-              label: 'Home',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.analytics_outlined),
-              selectedIcon: Icon(Icons.analytics),
-              label: 'Analysis',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.chat_outlined),
-              selectedIcon: Icon(Icons.chat),
-              label: 'Chat',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
+          bottomNavigationBar: Obx(() {
+            return NavigationBar(
+              backgroundColor: cs.surface,
+              selectedIndex: controller.selectedNavIndex.value,
+              onDestinationSelected: (index) {
+                controller.selectedNavIndex.value = index;
+                if (index == 2) {
+                  final trainerId = UserStore.to.trainerId ?? 1;
+                  Get.toNamed(Routes.ICON_CHAT, arguments: {'trainerId': trainerId});
+                }
+              },
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(Icons.dashboard_outlined),
+                  selectedIcon: Icon(Icons.dashboard),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.analytics_outlined),
+                  selectedIcon: Icon(Icons.analytics),
+                  label: 'Analysis',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.chat_outlined),
+                  selectedIcon: Icon(Icons.chat),
+                  label: 'Chat',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.person_outline),
+                  selectedIcon: Icon(Icons.person),
+                  label: 'Profile',
+                ),
+              ],
+            );
+          }),
         );
-      }),
+      })
     );
   }
 

@@ -13,55 +13,54 @@ class MindsetMotivationPageView extends BaseView<FitnessReportController> {
 
   @override
   Widget body(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            FitnessReportAppbarWidget(
-              controller: controller,
-              title: 'Mindset and Motivation',
-            ),
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          FitnessReportAppbarWidget(
+            controller: controller,
+            title: 'Mindset and Motivation',
+          ),
 
-            // Add mindset and motivation content here
-            const Spacer(),
-            InfoCardWidget(
-              icon: Assets.mindsetAndMotivationMindsetFocus,
-              title: 'Your Mindset Focus',
-              description:
-                  'You mentioned finding consistency tough, especially when motivation drops. So we\'ll focus on building identity- based habits-simple actions that reinforce who you want to become, not just what you want to achieve.',
-              iconType: IconType.svg,
+          // Add mindset and motivation content here
+          const Spacer(),
+          InfoCardWidget(
+            icon: Assets.mindsetAndMotivationMindsetFocus,
+            title: 'Your Mindset Focus',
+            description:
+                controller.currentFitnessPlan?.recommendedMindsetPrinciple ??
+                'You mentioned finding consistency tough, especially when motivation drops. So we\'ll focus on building identity- based habits-simple actions that reinforce who you want to become, not just what you want to achieve.',
+            iconType: IconType.svg,
+          ),
+          16.height,
+          Text(
+            'Recommended Mindset Principle',
+            style: Get.textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.bold,
             ),
-            16.height,
-            Text(
-              'Recommended Mindset Principle',
-              style: Get.textTheme.bodyLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            16.height,
-            InfoCardWidget(
-              icon: Assets.imagesFitnessReportFace,
-              title:
-                  controller.currentFitnessPlan?.recommendedMindsetPrinciple ??
-                  'No mindset principle available',
-              description:
-                  controller
-                      .currentFitnessPlan
-                      ?.recommendedMindsetPrincipleJustification ??
-                  'No justification available',
-              isGradient: true,
-              iconType: IconType.asset,
-            ),
-            16.height,
+          ),
+          16.height,
+          InfoCardWidget(
+            icon: Assets.imagesFitnessReportFace,
+            title: 'Progress > Perfection',
+            // controller.currentFitnessPlan?.recommendedMindsetPrinciple ??
+            // 'No mindset principle available',
+            description:
+                controller
+                    .currentFitnessPlan
+                    ?.recommendedMindsetPrincipleJustification ??
+                'No justification available',
+            isGradient: true,
+            iconType: IconType.asset,
+          ),
+          16.height,
 
-            LoadingButton(
-              onPressed: controller.goToCongratulationsPage,
-              label: 'Register',
-            ),
-          ],
-        ),
+          LoadingButton(
+            onPressed: controller.goToCongratulationsPage,
+            label: 'Register',
+          ),
+        ],
       ),
     );
   }

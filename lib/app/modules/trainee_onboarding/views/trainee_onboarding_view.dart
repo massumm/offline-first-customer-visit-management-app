@@ -232,6 +232,19 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             return const SizedBox.shrink();
           }
 
+          // Disable option for theme keys
+          final List<String> disableQuestionFields = [
+            'desired_sleep_hours',
+            'current_sleep_hours',
+            'sources_of_stress',
+          ];
+
+          if (disableQuestionFields.contains(
+            controller.currentQuestion?.questionFieldName,
+          )) {
+            return const SizedBox.shrink();
+          }
+
           // Determine which options to display, checking in order: options, predefinedOptions, then unitOptions.
           final List<dynamic>? optionsToShow =
               (q.metadata?.options?.isNotEmpty ?? false)
@@ -243,7 +256,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               : null;
 
           // Handle with Question Type
-          if(controller.isCurrentBodyFat){
+          if (controller.isCurrentBodyFat) {
             return const SizedBox.shrink();
           }
 
@@ -275,17 +288,18 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     isMultiplePlusOther && optionText == 'Other';
 
                 // Check if the current option is the selected one.
-                final isSelected = controller.selectedOption.value == optionText;
+                final isSelected =
+                    controller.selectedOption.value == optionText;
 
                 return ActionChip(
                   label: Text(optionText),
                   shape: isSelected
                       ? StadiumBorder(
-                    side: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 1.5,
-                    ),
-                  )
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 1.5,
+                          ),
+                        )
                       : null,
                   onPressed: () {
                     if (isOtherChip) {
@@ -303,7 +317,19 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         }),
 
         // ----------------- Input Sections ----------
-        ToInputWidget(),
+        Obx(() {
+          final input = const ToInputWidget();
+
+          final enableFlexible =
+              controller.isCurrentBodyMeasurements ||
+              controller.isCurrentBodyFat;
+
+          final flexValue = controller.isCurrentBodyMeasurements ? 6 : 2;
+
+          return enableFlexible
+              ? Flexible(flex: flexValue, child: input)
+              : input;
+        }),
         const SizedBox(height: 8),
       ],
     );

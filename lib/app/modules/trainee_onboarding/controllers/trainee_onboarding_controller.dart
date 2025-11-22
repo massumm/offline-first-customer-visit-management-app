@@ -85,14 +85,12 @@ class TraineeOnboardingController extends BaseController {
   /// Holds the progress (0.0 to 1.0) for each question group.
   final RxList<double> groupProgresses = <double>[].obs;
 
-
   // This is the default id don't change this
   RxInt traineeId = 1.obs;
 
   final selectedOption = Rx<String?>(null);
 
   final RxDouble numericRangeValue = 6.0.obs;
-
 
   final Map<String, Map<String, String>> groupMetadataMap = {
     'personal': {
@@ -357,10 +355,11 @@ class TraineeOnboardingController extends BaseController {
     // Since terms are agreed to at the start, we can proceed directly.
     try {
       final onboardingJson = toJson();
-      Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
+      // Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
       CustomToast.showSuccessToast('Profile data saved successfully.');
       Future.delayed(
-        Duration(seconds: 1),
+        Duration(seconds: 3
+        ),
         () => Get.toNamed(
           Routes.TRAINEE_FITNESS_REPORT_GENERATION,
           arguments: traineeId.value,
@@ -390,7 +389,6 @@ class TraineeOnboardingController extends BaseController {
     isTyping.value = false;
     _scrollToBottom();
   }
-
 
   /* BUG: this sheet not working */
   bool _shouldSkipQuestion(QAItem q) {
@@ -818,9 +816,23 @@ class TraineeOnboardingController extends BaseController {
       return;
     }
 
-    final heightValue = double.tryParse(height);
-    if (heightValue != null) {
-      await _saveUserAnswer(q, heightValue.round().toString());
+    // Regex to extract the leading number (integer or double) from the string.
+    final numericRegex = RegExp(r'^\d+(\.\d+)?');
+    final match = numericRegex.firstMatch(height);
+
+    if (match != null) {
+      final numericString = match.group(0)!;
+      final unitString = height.substring(numericString.length).trim();
+      final heightValue = double.tryParse(numericString);
+
+      if (heightValue != null) {
+        // Round the value to two decimal places and reconstruct the string with its unit.
+        final roundedValue = heightValue.toStringAsFixed(2);
+        final finalAnswer = '$roundedValue $unitString'.trim();
+        await _saveUserAnswer(q, finalAnswer);
+      } else {
+        await _saveUserAnswer(q, height);
+      }
     } else {
       await _saveUserAnswer(q, height);
     }
@@ -889,7 +901,7 @@ class TraineeOnboardingController extends BaseController {
     await _processAnswer(q, jsonString, userMessage);
   }
 
-  void selectNumber(int range) async {
+  void selectNumber(String range) async {
     if (!_canAnswer) return;
     final q = currentQuestion!;
     await _saveUserAnswer(q, range.toString());
@@ -981,12 +993,15 @@ class TraineeOnboardingController extends BaseController {
   bool get isCurrentMultiplePlusOther =>
       currentQuestion?.type.type == QuestionTypeEnum.selectMultiplePlusOther;
 
+  bool get isCurrentMultiplePlusOtherWithAdd =>
+      currentQuestion?.type.type ==
+      QuestionTypeEnum.selectMultiplePlusOtherWithAdd;
+
   bool get isCurrentNumericRange =>
       currentQuestion?.type.type == QuestionTypeEnum.numericRange;
 
-  bool get isCurrentDateWithDescription => true;
-      // currentQuestion?.type.type == QuestionTypeEnum.dateWithDescription;
-
+  bool get isCurrentDateWithDescription =>
+      currentQuestion?.type.type == QuestionTypeEnum.dateWithDescription;
 
   bool get isCurrentBodyMeasurements =>
       currentQuestion?.type.name == "body_measurements_input";

@@ -24,6 +24,9 @@ class DailyGoalsPageView extends BaseView<FitnessReportController> {
 
   @override
   Widget body(BuildContext context) {
+    // Get the list of daily goals to simplify the logic below.
+    final dailyGoals = controller.currentFitnessPlan?.dailyGoals;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -47,76 +50,87 @@ class DailyGoalsPageView extends BaseView<FitnessReportController> {
                       ),
                     ),
                     16.height,
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount:
-                          controller.currentFitnessPlan?.dailyGoals.length ?? 0,
-                      itemBuilder: (context, index) {
-                        final goal =
-                            controller.currentFitnessPlan!.dailyGoals[index];
-                        return Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Get.theme.colorScheme.onPrimaryContainer,
-                            borderRadius: BorderRadius.circular(8),
+                    // Conditionally display a message or the list of goals.
+                    if (dailyGoals == null || dailyGoals.isEmpty)
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 32.0),
+                          child: Text(
+                            'No daily goals have been set yet.',
+                            textAlign: TextAlign.center,
+                            style: Get.textTheme.bodyLarge,
                           ),
-                          margin: const EdgeInsets.only(bottom: 16),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AssetIconContainer(
-                                iconPath: goal.icon,
-                                width: assetWidth.toDouble(),
-                                height: assetHeight.toDouble(),
-                              ),
-                              16.width,
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        GoalTitle(
-                                          goal: goal,
-                                          cardWidgetTitleFontSize:
-                                              cardWidgetTitleFontSize,
-                                        ),
-                                        const Spacer(),
-                                        FrequencyWrap(
-                                          goal: goal,
-                                          freqFontSize: freqFontSize,
-                                        ),
-                                      ],
-                                    ),
-                                    4.height,
-                                    GoalSubtitle(
-                                      goal: goal,
-                                      cardWidgetSubtitleFontSize:
-                                          cardWidgetSubtitleFontSize,
-                                    ),
-                                    8.height,
-                                    GoalDescription(
-                                      goal: goal,
-                                      cardWidgetDescriptionFontSize:
-                                          cardWidgetDescriptionFontSize,
-                                    ),
-                                  ],
+                        ),
+                      )
+                    else
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: dailyGoals.length,
+                        itemBuilder: (context, index) {
+                          final goal = dailyGoals[index];
+                          return Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: Get.theme.colorScheme.onPrimaryContainer,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            margin: const EdgeInsets.only(bottom: 16),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AssetIconContainer(
+                                  iconPath: goal.icon,
+                                  width: assetWidth.toDouble(),
+                                  height: assetHeight.toDouble(),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
+                                16.width,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          GoalTitle(
+                                            goal: goal,
+                                            cardWidgetTitleFontSize:
+                                            cardWidgetTitleFontSize,
+                                          ),
+                                          const Spacer(),
+                                          FrequencyWrap(
+                                            goal: goal,
+                                            freqFontSize: freqFontSize,
+                                          ),
+                                        ],
+                                      ),
+                                      4.height,
+                                      GoalSubtitle(
+                                        goal: goal,
+                                        cardWidgetSubtitleFontSize:
+                                        cardWidgetSubtitleFontSize,
+                                      ),
+                                      8.height,
+                                      GoalDescription(
+                                        goal: goal,
+                                        cardWidgetDescriptionFontSize:
+                                        cardWidgetDescriptionFontSize,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                   ],
                 ),
               ),
             ),
             16.height,
-
             LoadingButton(
               onPressed: controller.goToCongratulationsPage,
               label: 'Register',

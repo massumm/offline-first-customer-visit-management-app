@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:intl/intl.dart';
 import '../controllers/icon_chat_controller.dart';
 import '../../../data/local/preference/store/user_store.dart';
 
@@ -16,7 +18,7 @@ class IconChatView extends GetView<IconChatController> {
 
   @override
   Widget build(BuildContext context) {
-    final IconChatController controller = Get.find<IconChatController>();
+    // final IconChatController controller = Get.find<IconChatController>();
     return Scaffold(
       backgroundColor: scaffoldBackgroundColor,
       appBar: PreferredSize(
@@ -68,12 +70,32 @@ class IconChatView extends GetView<IconChatController> {
             itemBuilder: (context, index) {
               final message = controller.messages[index];
               final senderType = message['sender_type'];
-              final time = message['timestamp'] ?? '';
+              String formattedTime;
+              try {
+                final rawTimestamp = message['timestamp'];
+                if (rawTimestamp != null && rawTimestamp.isNotEmpty) {
+                  // Assuming the timestamp is an ISO 8601 string.
+                  final dateTime = DateTime.parse(rawTimestamp);
+                  // Formats the time to a pattern like "5:30 PM".
+                  formattedTime = DateFormat('h:mm a').format(dateTime);
+                } else {
+                  formattedTime = '';
+                }
+              } catch (e) {
+                // Fallback to an empty string if parsing fails.
+                formattedTime = '';
+              }
               final text = message['content'] ?? '';
               if (senderType == 'trainee') {
-                return SenderMessageBubble(text: text, timestamp: time);
+                return SenderMessageBubble(
+                  text: text,
+                  timestamp: formattedTime,
+                );
               } else {
-                return ReceiverMessageBubble(text: text, timestamp: time);
+                return ReceiverMessageBubble(
+                  text: text,
+                  timestamp: formattedTime,
+                );
               }
             },
           );
@@ -192,9 +214,11 @@ class CustomAppBar extends StatelessWidget {
               return Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: senderBubbleColor.withOpacity(0.2),
+                  color: senderBubbleColor.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: senderBubbleColor.withOpacity(0.3)),
+                  border: Border.all(
+                    color: senderBubbleColor.withValues(alpha: 0.3),
+                  ),
                 ),
                 child: Text(
                   '$remainingMessages left',
@@ -255,6 +279,14 @@ class _ChatInputBarState extends State<ChatInputBar> {
             ? 'Type Here...'
             : 'Subscribe to continue...';
 
+        if (!canSendMessage) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!(Get.isDialogOpen ?? false)) {
+              controller.showPaywall();
+            }
+          });
+        }
+
         return Row(
           children: [
             Expanded(
@@ -265,12 +297,12 @@ class _ChatInputBarState extends State<ChatInputBar> {
                   filled: true,
                   fillColor: canSendMessage
                       ? componentBackgroundColor
-                      : componentBackgroundColor.withOpacity(0.5),
+                      : componentBackgroundColor.withValues(alpha: 0.5),
                   hintText: hintText,
                   hintStyle: TextStyle(
                     color: canSendMessage
                         ? secondaryHeaderColor
-                        : secondaryHeaderColor.withOpacity(0.5),
+                        : secondaryHeaderColor.withValues(alpha: 0.5),
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -282,13 +314,13 @@ class _ChatInputBarState extends State<ChatInputBar> {
                         : Icons.lock_outlined,
                     color: canSendMessage
                         ? secondaryHeaderColor
-                        : secondaryHeaderColor.withOpacity(0.5),
+                        : secondaryHeaderColor.withValues(alpha: 0.5),
                   ),
                 ),
                 style: TextStyle(
                   color: canSendMessage
                       ? primaryColor
-                      : primaryColor.withOpacity(0.5),
+                      : primaryColor.withValues(alpha: 0.5),
                   fontSize: 16,
                   fontFamily: 'Inter',
                 ),
@@ -303,13 +335,14 @@ class _ChatInputBarState extends State<ChatInputBar> {
             Material(
               color: canSendMessage
                   ? senderBubbleColor
-                  : senderBubbleColor.withOpacity(0.5),
+                  : senderBubbleColor.withValues(alpha: 0.5),
               shape: const CircleBorder(),
               child: IconButton(
                 icon: const Icon(Icons.send, color: Colors.white),
                 onPressed: canSendMessage
                     ? () {
                         controller.optimisticSendMessage();
+                        "Calling method".log();
                       }
                     : null,
               ),
@@ -347,6 +380,7 @@ class _SuggestionChip extends StatelessWidget {
 class SenderMessageBubble extends StatelessWidget {
   final String text;
   final String timestamp;
+
   const SenderMessageBubble({
     super.key,
     required this.text,
@@ -400,6 +434,7 @@ class SenderMessageBubble extends StatelessWidget {
 class ReceiverMessageBubble extends StatelessWidget {
   final String text;
   final String timestamp;
+
   const ReceiverMessageBubble({
     super.key,
     required this.text,

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
+import 'package:icon/app/base/network/network_error/api_error_handler.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/data/local/preference/store/user_store.dart';
 import 'package:icon/app/modules/fitness_report/widgets/report_menu_item_widget.dart';
+import 'package:icon/app/routes/app_pages.dart';
 import '../services/fitness_report_service.dart';
 import '../views/introduction_page_view.dart';
 import '../views/profile_overview_page_view.dart';
@@ -39,6 +44,7 @@ class FitnessReportController extends BaseController {
   }
 
   FitnessPlanModel? get currentFitnessPlan => fitnessPlan.value;
+
   // --- Data Models ---
   Rxn<FitnessPlanModel> fitnessPlan = Rxn<FitnessPlanModel>();
   RxList<RecoveryStrategyModel> recoveryStrategies =
@@ -47,16 +53,6 @@ class FitnessReportController extends BaseController {
       <NutritionStrategyModel>[].obs;
   RxList<ActivityStrategyModel> activityStrategies =
       <ActivityStrategyModel>[].obs;
-
-  Future<void> loadFitnessReportData() async {
-    final planData = await _reportService.fetchFitnessPlan();
-    if (planData is List && planData.isNotEmpty) {
-      fitnessPlan.value = FitnessPlanModel.fromJson(planData[0]);
-      recoveryStrategies.value = fitnessPlan.value?.recoveryStrategies ?? [];
-      nutritionStrategies.value = fitnessPlan.value?.nutritionStrategies ?? [];
-      activityStrategies.value = fitnessPlan.value?.activityStrategies ?? [];
-    }
-  }
 
   // -------------------Services ------------------
   final FitnessReportService _reportService = Get.find<FitnessReportService>();
@@ -70,6 +66,30 @@ class FitnessReportController extends BaseController {
     // Load backend data on controller init
     loadFitnessReportData();
   }
+
+  Future<void> loadFitnessReportData() async {
+    showLoading();
+    try {
+      final planData = await _reportService.fetchFitnessPlan();
+      if (planData.isNotEmpty) {
+        fitnessPlan.value = FitnessPlanModel.fromJson(planData);
+        recoveryStrategies.value = fitnessPlan.value?.recoveryStrategies ?? [];
+        nutritionStrategies.value =
+            fitnessPlan.value?.nutritionStrategies ?? [];
+        activityStrategies.value = fitnessPlan.value?.activityStrategies ?? [];
+      }
+    } on ApiException catch (e) {
+      apiErrorHandler(fallbackMessage: e.description);
+    } catch (e) {
+      CustomToast.showErrorToast('Something went wrong');
+    }
+    resetPageState();
+  }
+
+  // store the remaining free message
+  // _storeTraineeData(){
+  //   UserStore().to.saveProfileAndToken(fitnessPlan.value!.trainee);
+  // }
 
   @override
   void onClose() {
@@ -286,6 +306,13 @@ class FitnessReportController extends BaseController {
           style: Get.textTheme.bodyMedium?.copyWith(fontSize: 14),
         ),
       ],
+    );
+  }
+
+  void onRegister() {
+    Get.toNamed(
+      Routes.TRAINEE_REGISTER,
+      arguments: currentFitnessPlan?.trainee.user?.email ?? '',
     );
   }
 }

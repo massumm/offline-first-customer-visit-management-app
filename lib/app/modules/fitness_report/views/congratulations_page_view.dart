@@ -62,7 +62,7 @@ class CongratulationsMessagePageView extends BaseView<FitnessReportController> {
             8.height,
             GradientTextButton(
               text: 'Register',
-              onPressed: controller.gotToNextPage,
+              onPressed: controller.onRegister,
             ),
           ],
         ),

@@ -67,39 +67,27 @@ class TraineeRegisterView extends BaseView<TraineeRegisterController> {
                       style: TextStyle(color: Colors.grey, fontSize: 14),
                     ),
                     const SizedBox(height: 30),
-
-                    // Email
-                    // Obx(() {
-                    //   return AdaptiveSuperTextField(
-                    //     controller: controller.nameCtr,
-                    //     hintText: "Name",
-                    //     labelText: 'Full Name',
-                    //     keyboardType: TextInputType.text,
-                    //     textInputAction: TextInputAction.next,
-                    //     errorText: controller.nameError.value,
-                    //     onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    //     onChanged: (value) {},
-                    //   );
-                    // }),
-                    // const SizedBox(height: 15),
                     Obx(() {
-                      return AdaptiveSuperTextField(
-                        controller: controller.emailCtr,
-                        hintText: "abc@example.com",
-                        labelText: 'Email',
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        errorText: controller.emailError.value,
-                        enabled: false,
-                        onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                        onChanged: (value) {
-                          if (controller.emailError.value != null) {
-                            controller.emailError.value = null;
-                          }
-                        },
+                      return IgnorePointer(
+                        ignoring: true,
+                        child: AdaptiveSuperTextField(
+                          controller: controller.emailCtr,
+                          hintText: "abc@example.com",
+                          labelText: 'Email',
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          errorText: controller.emailError.value,
+                          enabled: false,
+                          onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                          onChanged: (value) {
+                            if (controller.emailError.value != null) {
+                              controller.emailError.value = null;
+                            }
+                          },
+                        ),
                       );
                     }),
-                    const SizedBox(height: 15),
+                    const SizedBox(height: 16),
 
                     // Password
                     Obx(() {
@@ -125,12 +113,12 @@ class TraineeRegisterView extends BaseView<TraineeRegisterController> {
                         },
                       );
                     }),
-
+                    const SizedBox(height: 16),
                     Obx(() {
                       return AdaptiveSuperTextField(
                         controller: controller.confirmPasswordCtr,
                         hintText: "********",
-                        labelText: 'Password',
+                        labelText: 'Confirm Password',
                         isPassword: true,
                         // Control the visibility from your controller
                         obscureText: controller.obscurePassword.value,

@@ -41,6 +41,7 @@ class ProfileStatsWidget extends StatelessWidget {
               children: [
                 12.height,
                 Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
@@ -50,17 +51,16 @@ class ProfileStatsWidget extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Spacer(),
-                    Expanded(
-                      child: Text(
-                        stats[index].value,
-                        style: Get.textTheme.bodySmall?.copyWith(
-                          fontSize: itemFontSize,
-                          fontWeight: FontWeight.bold,
-                          color: Get.theme.primaryColor,
-                        ),
-                        textAlign: TextAlign.right,
+                    6.height,
+                     const Spacer(),
+                    Text(
+                      stats[index].value,
+                      style: Get.textTheme.bodySmall?.copyWith(
+                        fontSize: itemFontSize,
+                        fontWeight: FontWeight.bold,
+                        color: Get.theme.primaryColor,
                       ),
+                      textAlign: TextAlign.left,
                     ),
                   ],
                 ),

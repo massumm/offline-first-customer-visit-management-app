@@ -13,82 +13,65 @@ class ProfileOverviewPageView extends BaseView<FitnessReportController> {
   @override
   Widget body(BuildContext context) {
     final plan = controller.currentFitnessPlan;
-    return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            FitnessReportAppbarWidget(
-              controller: controller,
-              title: 'Your Profile Overview',
-            ),
-            16.height,
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    IntroWidget(
-                      body:
-                          plan?.introductorySummary ??
-                          'Based on everything you\'ve shared, here\'s your current fitness snapshot. This will be the foundation for how your Icon builds your training,  nutrition, and recovery plan.',
-                    ),
-                    16.height,
-                    ProfileStatsWidget(
-                      title: 'Your Current Stats',
-                      stats: [
-                        StatItem(
-                          label: 'Name',
-                          value: plan?.trainee.toString() ?? '-',
-                        ),
-                        StatItem(
-                          label: 'Trainer',
-                          value: plan?.trainer.toString() ?? '-',
-                        ),
-                        StatItem(
-                          label: 'Current Fitness State',
-                          value: plan?.currentFitnessStateAnalysis ?? '-',
-                        ),
-                        StatItem(
-                          label: 'Introductory Summary',
-                          value: plan?.introductorySummary ?? '-',
-                        ),
-                        StatItem(
-                          label: 'Closing Remarks',
-                          value: plan?.closingRemarks ?? '-',
-                        ),
-                        StatItem(
-                          label: 'Recommended Mindset Principle',
-                          value: plan?.recommendedMindsetPrinciple ?? '-',
-                        ),
-                        StatItem(
-                          label: 'Mindset Principle Justification',
-                          value:
-                              plan?.recommendedMindsetPrincipleJustification ??
-                              '-',
-                        ),
-                        StatItem(
-                          label: 'Created At',
-                          value: plan?.createdAt ?? '-',
-                        ),
-                        StatItem(
-                          label: 'Updated At',
-                          value: plan?.updatedAt ?? '-',
-                        ),
-                      ],
-                    ),
-                    8.height,
-                  ],
-                ),
+    final trainee = controller.currentFitnessPlan?.trainee;
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          FitnessReportAppbarWidget(
+            controller: controller,
+            title: 'Your Profile Overview',
+          ),
+          16.height,
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  IntroWidget(
+                    body:
+                        plan?.introductorySummary ??
+                        'Based on everything you\'ve shared, here\'s your current fitness snapshot. This will be the foundation for how your Icon builds your training,  nutrition, and recovery plan.',
+                  ),
+                  16.height,
+                  ProfileStatsWidget(
+                    title: 'Your Current Stats',
+                    stats: [
+                      StatItem(
+                        label: 'Name',
+                        value: (plan?.trainee.user?.firstName ?? '-'),
+                        // trainee?.name ?? '-',
+                      ),
+                      StatItem(
+                        label: 'Trainer',
+                        value: plan?.trainer.personaName ?? '-',
+                      ),
+                      StatItem(label: 'Gender', value: trainee?.gender ?? '-'),
+                      StatItem(label: 'Current Weight', value: '-'),
+                      StatItem(label: 'Body Fat %', value: '-'),
+                      StatItem(label: 'Training Schedule', value: '-'),
+                      StatItem(label: 'Age', value: '-'),
+                      StatItem(label: 'Height', value: '-'),
+                      StatItem(label: 'Target Weight', value: '-'),
+                      StatItem(label: 'Activity Level', value: '-'),
+                      StatItem(label: 'Experience Level', value: '-'),
+                      StatItem(
+                        label: 'Subscription Status',
+                        value: trainee?.subscriptionStatus ?? '-',
+                      ),
+                    ],
+                  ),
+                  8.height,
+                ],
               ),
             ),
-            8.height,
-            LoadingButton(
-              onPressed: controller.goToCongratulationsPage,
-              label: 'Register',
-            ),
-          ],
-        ),
+          ),
+          8.height,
+          LoadingButton(
+            onPressed: controller.goToCongratulationsPage,
+            label: 'Register',
+          ),
+        ],
       ),
     );
   }

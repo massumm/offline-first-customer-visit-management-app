@@ -1,18 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 
-class WheelListWidget extends StatelessWidget {
-  const WheelListWidget({super.key, required this.range, required this.onNext });
+class WheelListWidget extends StatefulWidget {
+  const WheelListWidget({
+    super.key,
+    required this.items,
+    required this.onNext,
+    this.showCustomNumberField = false,
+    this.showCustomTextField = false, // New parameter
+  });
 
-  final int range;
+  final List<String> items;
+  final ValueChanged<String> onNext;
+  final bool showCustomNumberField;
+  final bool showCustomTextField; // New parameter
 
-  final ValueChanged<int> onNext;
+  @override
+  State<WheelListWidget> createState() => _WheelListWidgetState();
+}
+
+class _WheelListWidgetState extends State<WheelListWidget> {
+  // Holds the index of the currently selected item.
+  int _selectedIndex = 0;
+
+  // Controllers for the custom input fields.
+  late final TextEditingController _customNumberController;
+  late final TextEditingController _customTextController;
+
+  @override
+  void initState() {
+    super.initState();
+    _customNumberController = TextEditingController();
+    _customTextController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _customNumberController.dispose();
+    _customTextController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final items = List.generate(range, (index) => index + 1);
+    // Dynamically calculate height based on which fields are visible.
+    double height = 260;
+    if (widget.showCustomNumberField) height += 80;
+    if (widget.showCustomTextField) height += 80;
 
     return SizedBox(
-      height: 260,
+      height: height,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
         child: Column(
@@ -25,21 +62,68 @@ class WheelListWidget extends StatelessWidget {
                 physics: const FixedExtentScrollPhysics(),
                 overAndUnderCenterOpacity: 0.4,
                 onSelectedItemChanged: (index) {
-                  debugPrint('Selected: ${items[index]}');
+                  // Update the state when the user scrolls to a new item.
+                  setState(() {
+                    _selectedIndex = index;
+                  });
+                  debugPrint('Selected: ${widget.items[index]}');
                 },
                 childDelegate: ListWheelChildBuilderDelegate(
-                  childCount: items.length,
+                  childCount: widget.items.length,
                   builder: (context, index) {
-                    if (index < 0 || index >= items.length) return null;
-                    return _WheelItem(number: items[index]);
+                    if (index < 0 || index >= widget.items.length) return null;
+                    // Pass the string item from the widget's list.
+                    return _WheelItem(item: widget.items[index]);
                   },
                 ),
               ),
             ),
+            // Conditionally display the custom number input field.
+            if (widget.showCustomNumberField)
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                child: TextField(
+                  controller: _customNumberController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter custom number',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+            // Conditionally display the custom text input field.
+            if (widget.showCustomTextField)
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
+                child: TextField(
+                  controller: _customTextController,
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    hintText: 'Enter custom value',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
             12.height,
-            ElevatedButton(onPressed: (){
-              onNext(range);
-            }, child: const Text('Next')),
+            ElevatedButton(
+              onPressed: () {
+                // Prioritize the custom text field if it's shown and has a value.
+                if (widget.showCustomTextField &&
+                    _customTextController.text.isNotEmpty) {
+                  widget.onNext(_customTextController.text);
+                }
+                // Then, prioritize the custom number field if it's shown and has a value.
+                else if (widget.showCustomNumberField &&
+                    _customNumberController.text.isNotEmpty) {
+                  widget.onNext(_customNumberController.text);
+                } else {
+                  // Fallback to the wheel selection.
+                  final selectedValue = widget.items[_selectedIndex];
+                  widget.onNext(selectedValue);
+                }
+              },
+              child: const Text('Next'),
+            ),
           ],
         ),
       ),
@@ -48,9 +132,9 @@ class WheelListWidget extends StatelessWidget {
 }
 
 class _WheelItem extends StatelessWidget {
-  final int number;
+  final String item;
 
-  const _WheelItem({required this.number});
+  const _WheelItem({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +152,7 @@ class _WheelItem extends StatelessWidget {
         child: Row(
           children: [
             Text(
-              number.toString(),
+              item,
               style: theme.textTheme.titleMedium?.copyWith(
                 color: colorScheme.onSurface,
               ),

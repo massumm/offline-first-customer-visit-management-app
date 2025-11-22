@@ -9,7 +9,8 @@ class TraineeRegisterBinding extends Bindings {
   void dependencies() {
     // ----------- Repository -------------------
     Get.lazyPut<RegistrationRepository>(
-      () => RegistrationRepositoryImpl()
+      () => RegistrationRepositoryImpl(),
+      tag: (RegistrationRepository).toString()
     );
     // ----------- Controller -------------------
     Get.lazyPut<TraineeRegisterController>(

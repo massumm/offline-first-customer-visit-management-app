@@ -29,9 +29,6 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
       "Your Icon has analysed your training style, goals, and availability to design a plan that fits seamlessly into your week. The goal isn't just to move more — it's to move with purpose.";
   static const String _primaryFocusArea = 'Primary Focus Area';
   static const String _preferredActivities = 'Preferred Activities';
-  static const String _energySystemFocus = 'Energy System Focus';
-  static const String _energySystemFocusDesc =
-      "Your plan targets multiple energy systems for optimal performance.";
   static const String _iconInsightTitle = 'Icon Insight';
   static const String _iconInsightDesc =
       "You want to tone your body and build strength  let's start with a 6-week foundational strength phase. After that, we'll transition to a hypertrophy approach to maximize definition and energy output.";
@@ -50,11 +47,6 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
     'Saturday',
   ];
 
-  static final List<String> _primaryFocusAreaList = [
-    "Upper Body Strength",
-    "Core Stability",
-    "Cardiovascular Health",
-  ];
 
   // Activity Objectives Data
   static final List<ActivityObjective> _activityObjectivesData = [
@@ -129,44 +121,42 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
 
   @override
   Widget body(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            appbarWidget(),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    16.height,
-                    introWidget(),
-                    16.height,
-                    activityObjectivesWidget1(),
-                    16.height,
-                    activityObjectivesWidget2(),
-                    16.height,
-                    recommendedTrainingPlanWidget(),
-                    16.height,
-                    primaryFocusAreaWidget(),
-                    16.height,
-                    preferredActivitiesWidget(),
-                    16.height,
-                    energySystemFocusWidget(),
-                    16.height,
-                    iconInsightWidget(),
-                    16.height,
-                  ],
-                ),
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          appbarWidget(),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  16.height,
+                  introWidget(),
+                  16.height,
+                  activityObjectivesWidget1(),
+                  16.height,
+                  activityObjectivesWidget2(),
+                  16.height,
+                  recommendedTrainingPlanWidget(),
+                  16.height,
+                  primaryFocusAreaWidget(),
+                  16.height,
+                  preferredActivitiesWidget(),
+                  16.height,
+                  energySystemFocusWidget(),
+                  16.height,
+                  iconInsightWidget(),
+                  16.height,
+                ],
               ),
             ),
-            LoadingButton(
-              onPressed: controller.goToCongratulationsPage,
-              label: 'Register',
-            ),
-          ],
-        ),
+          ),
+          LoadingButton(
+            onPressed: controller.goToCongratulationsPage,
+            label: 'Register',
+          ),
+        ],
       ),
     );
   }
@@ -202,6 +192,7 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
   }
 
   Container activityObjectivesWidget1() {
+    final activityObjective = controller.activityStrategies.first.objectives;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -231,9 +222,9 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ..._activityObjectiveStrategies.asMap().entries.expand(
+                ...activityObjective.asMap().entries.expand(
                   (entry) => [
-                    ObjectivesItemWidget(title: entry.value),
+                    ObjectivesItemWidget(title: entry.value.objective),
                     if (entry.key < _activityObjectiveStrategies.length - 1)
                       16.height,
                   ],
@@ -247,7 +238,7 @@ class ActivityStrategyPageView extends BaseView<FitnessReportController> {
   }
 
   IntroWidget introWidget() {
-    return IntroWidget(body: _introBody);
+    return IntroWidget(body: controller.activityStrategies.first.generalInsights);
   }
 
   FitnessReportAppbarWidget appbarWidget() {

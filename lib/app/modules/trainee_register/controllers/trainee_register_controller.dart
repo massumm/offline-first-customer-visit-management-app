@@ -42,6 +42,13 @@ class TraineeRegisterController extends BaseController {
     tag: (RegistrationRepository).toString(),
   );
 
+  @override
+  onInit() {
+    super.onInit();
+
+    emailCtr.text = Get.arguments ?? 'abc@domain.com';
+  }
+
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) {
       return "Email is required";
@@ -120,18 +127,16 @@ class TraineeRegisterController extends BaseController {
     // Trigger validation for both email and password
     emailError.value = validateEmail(emailCtr.text);
     passwordError.value = validatePassword(passwordCtr.text);
-    nameError.value = validateName(nameCtr.text);
     onConfirmPasswordChanged(confirmPasswordCtr.text);
 
     // Only proceed with registration if there are no errors
     if (emailError.value == null &&
         passwordError.value == null &&
-        nameError.value == null &&
         confirmPasswordError.value == null) {
       isLoading(true);
 
       final requestBody = {
-        "username": nameCtr.text,
+        "username": emailCtr.text,
         "email": emailCtr.text,
         "password": passwordCtr.text,
       };
@@ -142,7 +147,7 @@ class TraineeRegisterController extends BaseController {
             (response) {
               isLoading.value = false;
               // Navigate to the home page on successful registration
-              Get.offAllNamed(Routes.HOME);
+              Get.toNamed(Routes.LOGIN);
               CustomToast.showSuccessToast(
                 response.message ?? "Account created successfully",
               );
@@ -150,7 +155,7 @@ class TraineeRegisterController extends BaseController {
             onError: (e) {
               isLoading.value = false;
               if (e is ApiException) {
-                CustomToast.showErrorToast(e.description);
+                CustomToast.showErrorToast(e.message);
                 return;
               }
               CustomToast.showErrorToast('An unexpected error occurred');

@@ -36,37 +36,37 @@ class ObjectiveCardWidget extends StatelessWidget {
         color: bgColor ?? Get.theme.cardTheme.color,
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        crossAxisAlignment: isCentered
-            ? CrossAxisAlignment.center
-            : CrossAxisAlignment.start,
-        mainAxisAlignment: isCentered
-            ? MainAxisAlignment.center
-            : MainAxisAlignment.start,
-        children: [
-          if (assetPath != null) AssetIconContainer(iconPath: assetPath!),
-          if (assetPath != null) 8.height,
-          Text(
-            title,
-            maxLines: null,
-            overflow: TextOverflow.visible,
-            style: Get.textTheme.bodySmall?.copyWith(
-              color: titleColor,
-              fontSize: titleFontSize ?? 12.0,
-            ),
-          ),
-          if (description.isNotEmpty) 8.height,
-          if (description.isNotEmpty)
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: isCentered
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.start,
+          mainAxisAlignment: isCentered
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.start,
+          children: [
+            if (assetPath != null) AssetIconContainer(iconPath: assetPath!),
+            if (assetPath != null) 8.height,
             Text(
-              description,
-              maxLines: null,
-              overflow: TextOverflow.visible,
-              style: Get.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: descriptionFontSize ?? 18.0,
+              title,
+              style: Get.textTheme.bodySmall?.copyWith(
+                color: titleColor,
+                fontSize: titleFontSize ?? 12.0,
               ),
             ),
-        ],
+            if (description.isNotEmpty) 8.height,
+            if (description.isNotEmpty)
+              Text(
+                description,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: Get.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: descriptionFontSize ?? 18.0,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
