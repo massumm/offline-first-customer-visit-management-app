@@ -4,6 +4,7 @@ import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/app/modules/fitness_report/widgets/report_menu_item_widget.dart';
+import 'package:icon/app/routes/app_pages.dart';
 import '../services/fitness_report_service.dart';
 import '../views/introduction_page_view.dart';
 import '../views/profile_overview_page_view.dart';
@@ -290,5 +291,9 @@ class FitnessReportController extends BaseController {
         ),
       ],
     );
+  }
+
+  void onRegister() {
+    Get.toNamed(Routes.TRAINEE_REGISTER);
   }
 }
