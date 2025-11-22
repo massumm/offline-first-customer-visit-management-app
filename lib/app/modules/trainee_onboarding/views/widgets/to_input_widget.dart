@@ -150,7 +150,6 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                   if (controller.currentQuestion?.questionFieldName ==
                       'session_duration') {
                     return MinutesWheelList(
-
                       onNext: (int range) {
                         controller.selectNumber(range);
                       },
@@ -191,10 +190,20 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
                 if (controller.isCurrentNumericRange) {
                   return NumericRangeInputWidget(
                     value: controller.numericRangeValue.value,
-                    maxTitle: "Fast",
-                    minTitle: 'Gradual',
-                    max: 10,
-                    min: 1,
+                    maxTitle:
+                        controller.currentQuestion?.metadata?.labelMax ??
+                        'Fast',
+                    minTitle:
+                        controller.currentQuestion?.metadata?.labelMin ??
+                        'Gradual',
+                    max:
+                        controller.currentQuestion?.metadata?.maxValue
+                            ?.toDouble() ??
+                        10.0,
+                    min:
+                        controller.currentQuestion?.metadata?.minValue
+                            ?.toDouble() ??
+                        1,
                     onChanged: (double value) {
                       controller.numericRangeValue.value = value;
                     },
