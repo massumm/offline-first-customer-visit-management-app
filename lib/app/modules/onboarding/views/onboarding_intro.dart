@@ -15,21 +15,17 @@ class OnboardingIntro extends StatefulWidget {
 }
 
 class _OnboardingIntroState extends State<OnboardingIntro> {
-  // A state variable to control the sequence of animations.
   int _animationStep = 0;
 
   @override
   void initState() {
     super.initState();
-    // Start the animation sequence after the first frame is rendered.
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) => _startAnimationSequence(),
+          (_) => _startAnimationSequence(),
     );
   }
 
   void _startAnimationSequence() {
-    // A series of delayed futures to update the animation step.
-    // Each setState call will trigger the next stage of the animation.
     const animationGap = Duration(milliseconds: 1200);
     const initialDelay = Duration(milliseconds: 400);
 
@@ -51,26 +47,17 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    // Define initial (large) and final (small) text styles for animation.
-    final kickerFinalStyle = theme.textTheme.titleMedium!.copyWith(
-      color: Get.isDarkMode ? Colors.white : AppColors.colorPrimary,
-    );
-    final kickerInitialStyle = theme.textTheme.headlineMedium!.copyWith(
+
+    final kickerStyle = theme.textTheme.titleMedium!.copyWith(
       color: Get.isDarkMode ? Colors.white : AppColors.colorPrimary,
     );
 
-    final headlineFinalStyle = theme.textTheme.bodyLarge!.copyWith(
+    final headlineStyle = theme.textTheme.bodyLarge!.copyWith(
       fontWeight: FontWeight.w700,
       fontSize: (theme.textTheme.bodyLarge!.fontSize ?? 16) + 12,
     );
-    final headlineInitialStyle = theme.textTheme.headlineMedium!.copyWith(
-      fontWeight: FontWeight.w700,
-    );
 
-    final supportingCopyFinalStyle = theme.textTheme.bodyMedium!;
-    final supportingCopyInitialStyle = theme.textTheme.headlineSmall!.copyWith(
-      color: supportingCopyFinalStyle.color,
-    );
+    final supportingCopyStyle = theme.textTheme.bodyMedium!;
 
 
     return Scaffold(
@@ -93,8 +80,7 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
               // Animated tiny orange kicker
               _AnimatedText(
                 text: "Let's build a plan for you, together",
-                initialStyle: kickerInitialStyle,
-                finalStyle: kickerFinalStyle,
+                style: kickerStyle,
                 animationStep: _animationStep,
                 visibleAtStep: 1,
               ),
@@ -103,8 +89,7 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
               // Animated headline with accent highlights
               _AnimatedText(
                 isRichText: true,
-                initialStyle: headlineInitialStyle,
-                finalStyle: headlineFinalStyle,
+                style: headlineStyle,
                 animationStep: _animationStep,
                 visibleAtStep: 2,
                 richTextChildren: [
@@ -115,7 +100,7 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
                   ),
                   const TextSpan(
                     text:
-                        ' - but first, it needs to know you - the more detail you share now, the smarter and more ',
+                    ' - but first, it needs to know you - the more detail you share now, the smarter and more ',
                   ),
                   TextSpan(
                     text: 'personalised your plan',
@@ -130,10 +115,9 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
               // Animated supporting copy
               _AnimatedText(
                 text:
-                    "This won’t take long. Each question is just one or two taps,"
+                "This won’t take long. Each question is just one or two taps,"
                     " and you’ll see your progress as you go",
-                initialStyle: supportingCopyInitialStyle,
-                finalStyle: supportingCopyFinalStyle,
+                style: supportingCopyStyle,
                 animationStep: _animationStep,
                 visibleAtStep: 3,
               ),
@@ -176,50 +160,32 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
 
 class _AnimatedText extends StatelessWidget {
   const _AnimatedText({
-    required this.initialStyle,
-    required this.finalStyle,
     required this.animationStep,
     required this.visibleAtStep,
     this.text,
+    this.style,
     this.isRichText = false,
     this.richTextChildren,
   });
 
-  final TextStyle initialStyle;
-  final TextStyle finalStyle;
   final int animationStep;
   final int visibleAtStep;
   final String? text;
+  final TextStyle? style;
   final bool isRichText;
   final List<TextSpan>? richTextChildren;
 
   @override
   Widget build(BuildContext context) {
-    final bool isAnimated = animationStep >= visibleAtStep;
-    const animationDuration = Duration(milliseconds: 800);
-    const fadeInDuration = Duration(milliseconds: 400);
+    final bool isVisible = animationStep >= visibleAtStep;
+    const fadeInDuration = Duration(milliseconds: 500);
 
     return AnimatedOpacity(
-      opacity: isAnimated ? 1.0 : 0.0,
+      opacity: isVisible ? 1.0 : 0.0,
       duration: fadeInDuration,
-      child: AnimatedContainer(
-        duration: animationDuration,
-        curve: Curves.easeInOutCubic,
-        // Animate the alignment from center to left.
-        alignment: isAnimated ? Alignment.centerLeft : Alignment.center,
-        // Use a width of double.infinity to allow alignment to work.
-        width: double.infinity,
-        child: AnimatedDefaultTextStyle(
-          duration: animationDuration,
-          curve: Curves.easeInOutCubic,
-          // Animate the style from initial (large) to final (small).
-          style: isAnimated ? finalStyle : initialStyle,
-          textAlign: isAnimated ? TextAlign.start : TextAlign.center,
-          child: isRichText
-              ? Text.rich(TextSpan(children: richTextChildren))
-              : Text(text ?? ''),
-        ),
-      ),
+      child: isRichText
+          ? Text.rich(TextSpan(style: style, children: richTextChildren))
+          : Text(text ?? '', style: style),
     );
   }
 }
