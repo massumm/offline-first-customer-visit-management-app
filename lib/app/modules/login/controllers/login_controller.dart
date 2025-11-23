@@ -174,7 +174,7 @@ class LoginController extends BaseController {
         arguments: {'email': emailCtr.text},
       );
     } else {
-      Get.offAndToNamed(Routes.HOME);
+      Get.offAndToNamed(Routes.ICON_CHAT);
     }
   }
 
