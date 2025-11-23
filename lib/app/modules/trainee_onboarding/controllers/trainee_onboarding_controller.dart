@@ -332,8 +332,21 @@ class TraineeOnboardingController extends BaseController {
 
     // Begin the new onboarding flow
     onboardingPhase.value = OnboardingPhase.awaitingEmail;
-    await _botSay("Hello 👋");
-    await _botSay("To get started, please enter your email address.");
+    await _botSay("Hello! 👋🏽");
+    await _botSay("My name is Mish, and I’ll help you through the Icon onboarding process."
+        " We want to give you the most accurate results possible, "
+        "so there will be a few questions to answer - but it won’t take too long.");
+
+    await _botSay("Just to introduce myself, "
+        "I am a qualified personal trainer."
+        " I have been operating in the fitness industry for over a decade,"
+        " and have delivered personal training to thousands of people! "
+        "I am a fitness author, and helping people achieve their fitness goals brings me pride!");
+
+    await _botSay("You can learn more about me by clicking my "
+        "profile picture at the top of your screen 😁");
+
+    await _botSay("How about we get started?");
     isLoading(false); // Ensure loading is false for initial interaction
   }
 
