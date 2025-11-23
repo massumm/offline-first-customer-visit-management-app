@@ -8,18 +8,18 @@ class GoogleSignInApi {
 
   static Future<String?> login() async {
     String clientId =
-        "150486406603-0s45gr0d592iihcqp9h0t4g5bqigrvk8.apps.googleusercontent.com";
+        "1059805585872-pgrk4boajnk45122jim5qvo1qgiol0bg.apps.googleusercontent.com";
 
     // Handle client id with platform
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      clientId = "150486406603-tfj2369fbgbpv2aq1phao15j93089vsf.apps.googleusercontent.com";
+      clientId = "1059805585872-6n7la7rto1tv69ns6nigv6sa2g8jfk6p.apps.googleusercontent.com";
     }
 
     try {
       _googleSignIn.initialize(
         clientId: clientId,
         serverClientId:
-            '150486406603-5jlpj7l09mp8o1v1pfvlko3btkr5j8qq.apps.googleusercontent.com',
+            '1059805585872-pgrk4boajnk45122jim5qvo1qgiol0bg.apps.googleusercontent.com',
       );
 
       final GoogleSignInAccount googleUser = await _googleSignIn.authenticate();
