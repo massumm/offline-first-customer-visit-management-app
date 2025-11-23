@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import '../repository/icon_chat_repository_impl.dart';
 import '../../../base/network/dio_provider.dart';
@@ -12,7 +13,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'dart:convert';
 import 'package:web_socket_channel/io.dart';
 
-class IconChatController extends GetxController {
+class IconChatController extends BaseController {
   final messages = <Map<String, dynamic>>[].obs;
   final textController = TextEditingController();
   late IconChatRepositoryImpl chatRepository;

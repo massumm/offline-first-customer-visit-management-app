@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:intl/intl.dart';
 import '../controllers/icon_chat_controller.dart';
@@ -13,97 +14,102 @@ const componentBackgroundColor = Color(0xFF2C2C2E);
 const senderBubbleColor = Color(0xFFE55C37);
 const onlineIndicator = Color(0xFF00C853);
 
-class IconChatView extends GetView<IconChatController> {
+class IconChatView extends BaseView<IconChatController> {
   const IconChatView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // final IconChatController controller = Get.find<IconChatController>();
-    return Scaffold(
-      backgroundColor: scaffoldBackgroundColor,
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70),
-        child: CustomAppBar(),
-      ),
-      body: Obx(() {
-        if (controller.messages.isEmpty) {
-          // Welcome/Empty State
-          return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset(
-                  'assets/images/icon-logo-pink.png',
-                  width: 80,
-                  height: 80,
+  PreferredSizeWidget? appBar(BuildContext context) => PreferredSize(
+    preferredSize: const Size.fromHeight(70),
+    child: CustomAppBar(),
+  );
+
+  @override
+  Widget body(BuildContext context) {
+    return Column(
+      children: [
+        Expanded(
+          child: Obx(() {
+            if (controller.messages.isEmpty) {
+              // Welcome/Empty State
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/icon-logo-pink.png',
+                      width: 80,
+                      height: 80,
+                    ),
+                    const SizedBox(height: 24),
+                    const Text(
+                      'Welcome to Icon Chat!',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: primaryColor,
+                        fontFamily: 'Inter',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Start a conversation with your AI trainer.',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: secondaryHeaderColor,
+                        fontFamily: 'Inter',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Welcome to Icon Chat!',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: primaryColor,
-                    fontFamily: 'Inter',
-                  ),
-                ),
-                const SizedBox(height: 12),
-                const Text(
-                  'Start a conversation with your AI trainer.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: secondaryHeaderColor,
-                    fontFamily: 'Inter',
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
-          );
-        } else {
-          // Active Chat
-          return ListView.builder(
-            reverse: true,
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-            itemCount: controller.messages.length,
-            itemBuilder: (context, index) {
-              final message = controller.messages[index];
-              final senderType = message['sender_type'];
-              String formattedTime;
-              try {
-                final rawTimestamp = message['timestamp'];
-                if (rawTimestamp != null && rawTimestamp.isNotEmpty) {
-                  // Assuming the timestamp is an ISO 8601 string.
-                  final dateTime = DateTime.parse(rawTimestamp);
-                  // Formats the time to a pattern like "5:30 PM".
-                  formattedTime = DateFormat('h:mm a').format(dateTime);
-                } else {
-                  formattedTime = '';
-                }
-              } catch (e) {
-                // Fallback to an empty string if parsing fails.
-                formattedTime = '';
-              }
-              final text = message['content'] ?? '';
-              if (senderType == 'trainee') {
-                return SenderMessageBubble(
-                  text: text,
-                  timestamp: formattedTime,
-                );
-              } else {
-                return ReceiverMessageBubble(
-                  text: text,
-                  timestamp: formattedTime,
-                );
-              }
-            },
-          );
-        }
-      }),
-      bottomNavigationBar: const ChatInputBar(),
+              );
+            } else {
+              // Active Chat
+              return ListView.builder(
+                reverse: true,
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
+                itemCount: controller.messages.length,
+                itemBuilder: (context, index) {
+                  final message = controller.messages[index];
+                  final senderType = message['sender_type'];
+                  String formattedTime;
+                  try {
+                    final rawTimestamp = message['timestamp'];
+                    if (rawTimestamp != null && rawTimestamp.isNotEmpty) {
+                      // Assuming the timestamp is an ISO 8601 string.
+                      final dateTime = DateTime.parse(rawTimestamp);
+                      // Formats the time to a pattern like "5:30 PM".
+                      formattedTime = DateFormat('h:mm a').format(dateTime);
+                    } else {
+                      formattedTime = '';
+                    }
+                  } catch (e) {
+                    // Fallback to an empty string if parsing fails.
+                    formattedTime = '';
+                  }
+                  final text = message['content'] ?? '';
+                  if (senderType == 'trainee') {
+                    return SenderMessageBubble(
+                      text: text,
+                      timestamp: formattedTime,
+                    );
+                  } else {
+                    return ReceiverMessageBubble(
+                      text: text,
+                      timestamp: formattedTime,
+                    );
+                  }
+                },
+              );
+            }
+          }),
+        ),
+        const ChatInputBar()
+      ],
     );
   }
+
 }
 
 class CustomAppBar extends StatelessWidget {
