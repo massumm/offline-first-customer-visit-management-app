@@ -104,13 +104,13 @@ class __AnimatedSplashBodyState extends State<_AnimatedSplashBody>
         SafeArea(
           child: Column(
             children: [
-              FadeTransition(
-                opacity: _uiElementsAnim,
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: TrainerBadgeWithPopup(),
-                ),
-              ),
+              // FadeTransition(
+              //   opacity: _uiElementsAnim,
+              //   child: Align(
+              //     alignment: Alignment.centerRight,
+              //     child: TrainerBadgeWithPopup(),
+              //   ),
+              // ),
 
               Expanded(
                 child: Center(
