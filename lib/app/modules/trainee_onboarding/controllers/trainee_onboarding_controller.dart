@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -333,18 +334,24 @@ class TraineeOnboardingController extends BaseController {
     // Begin the new onboarding flow
     onboardingPhase.value = OnboardingPhase.awaitingEmail;
     await _botSay("Hello! 👋🏽");
-    await _botSay("My name is Mish, and I’ll help you through the Icon onboarding process."
-        " We want to give you the most accurate results possible, "
-        "so there will be a few questions to answer - but it won’t take too long.");
+    await _botSay(
+      "My name is Mish, and I’ll help you through the Icon onboarding process."
+      " We want to give you the most accurate results possible, "
+      "so there will be a few questions to answer - but it won’t take too long.",
+    );
 
-    await _botSay("Just to introduce myself, "
-        "I am a qualified personal trainer."
-        " I have been operating in the fitness industry for over a decade,"
-        " and have delivered personal training to thousands of people! "
-        "I am a fitness author, and helping people achieve their fitness goals brings me pride!");
+    await _botSay(
+      "Just to introduce myself, "
+      "I am a qualified personal trainer."
+      " I have been operating in the fitness industry for over a decade,"
+      " and have delivered personal training to thousands of people! "
+      "I am a fitness author, and helping people achieve their fitness goals brings me pride!",
+    );
 
-    await _botSay("You can learn more about me by clicking my "
-        "profile picture at the top of your screen 😁");
+    await _botSay(
+      "You can learn more about me by clicking my "
+      "profile picture at the top of your screen 😁",
+    );
 
     await _botSay("How about we get started?");
     isLoading(false); // Ensure loading is false for initial interaction
@@ -370,8 +377,7 @@ class TraineeOnboardingController extends BaseController {
       // Get.find<TraineeDataStore>().saveOnboardingData(onboardingJson);
       CustomToast.showSuccessToast('Profile data saved successfully.');
       Future.delayed(
-        Duration(seconds: 3
-        ),
+        Duration(seconds: 3),
         () => Get.toNamed(
           Routes.TRAINEE_FITNESS_REPORT_GENERATION,
           arguments: traineeId.value,
@@ -387,8 +393,15 @@ class TraineeOnboardingController extends BaseController {
 
   Future<void> _botSay(String text) async {
     isTyping.value = true;
-    _scrollToBottom(); // Scroll down to show the typing indicator
-    final delayMs = (text.length * 25).clamp(400, 1500);
+    _scrollToBottom();
+
+    final double baseDelay = text.length * 50.0;
+    final randomPause = 400 + Random().nextInt(600);
+
+    final totalDelay = baseDelay + randomPause;
+
+    final delayMs = totalDelay.clamp(800, 3000).toInt();
+
     await Future.delayed(Duration(milliseconds: delayMs));
 
     messages.add(
