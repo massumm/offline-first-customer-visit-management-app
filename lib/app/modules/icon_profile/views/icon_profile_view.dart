@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/theme/app_text_theme.dart';
-import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
 import 'package:icon/generated/assets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../controllers/icon_profile_controller.dart';
 
@@ -16,12 +13,15 @@ class IconProfileView extends BaseView<IconProfileController> {
 
   @override
   Widget body(BuildContext context) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
     return CustomScrollView(
       slivers: [
         SliverAppBar(
-          // expandedHeight: 300,
-          // collapsedHeight: 300,
-          // backgroundColor: AppColors.lightAppBarBgColor,
+          backgroundColor: theme.colorScheme.surface,
+          surfaceTintColor: Colors.transparent,
+          // Optional: for a cleaner look
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               bottomLeft: Radius.circular(20),
@@ -29,16 +29,12 @@ class IconProfileView extends BaseView<IconProfileController> {
             ),
           ),
           pinned: true,
-          title: Text(
-            'Icon Details',
-            style: AppTextTheme.titleMediumSemiBold.copyWith(
-              color: AppColors.black,
-            ),
-          ),
+          title: Text('Icon Details', style: textTheme.titleMedium),
           centerTitle: true,
           leading: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            child: ActionPill(onTap: () {}),
+            // Ensure ActionPill is also theme-aware.
+            child: ActionPill(onTap: () => Navigator.of(context).pop()),
           ),
         ),
         SliverPadding(
@@ -48,54 +44,31 @@ class IconProfileView extends BaseView<IconProfileController> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Your content here
+                  // Image assets don't need theme changes.
                   Image.asset(Assets.iconProfileFirst),
                   16.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'Mish Choudhury',
-                        style: AppTextTheme.headlineMediumSemiBold.copyWith(
-                          color: AppColors.black,
-                        ),
-                      ),
+                      Text('Mish Choudhury', style: textTheme.headlineMedium),
                       Row(
                         children: [
                           SvgPicture.asset(Assets.svgStar),
-                          Text('4.9', style: AppTextTheme.bodyMediumRegular),
+                          4.width,
+                          Text('4.9', style: textTheme.bodyMedium),
                         ],
                       ),
                     ],
                   ),
                   8.height,
-                  Text('Mascot Icon', style: AppTextTheme.bodyMediumRegular),
+                  Text('Mascot Icon', style: textTheme.bodyMedium),
                   8.height,
                   Text(
                     'I am a certified trainer with years of experience helping people transform their health and lifestyle. I have helped hundreds of emergency service workers improve their fitness, and am a fitness author.\n\nI specialise in supporting beginners, with a focus on rewiring your psychology to make fitness easier and more enjoyable!',
-                    style: AppTextTheme.titleSmallRegular.copyWith(
-                      color: AppColors.lightTextSecondaryColor,
+                    style: textTheme.titleSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  // RichText(
-                  //   text: TextSpan(
-                  //     children: [
-                  //       TextSpan(
-                  //         text:
-                  //             'I am a certified fitness trainer with years of experience helping people transform their health and lifestyle. My approach combines personalized workout plans, balanced ',
-                  //         style: AppTextTheme.titleSmallRegular.copyWith(
-                  //           color: AppColors.lightTextSecondaryColor,
-                  //         ),
-                  //       ),
-                  //       TextSpan(
-                  //         text: 'Read more...',
-                  //         style: AppTextTheme.titleSmallSemiBold.copyWith(
-                  //           color: AppColors.black,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
                   8.height,
                   Row(
                     children: [
@@ -103,21 +76,17 @@ class IconProfileView extends BaseView<IconProfileController> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            // 5. Use surface colors for containers.
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Column(
                             children: [
-                              Text(
-                                'Clients',
-                                style: AppTextTheme.titleSmallSemiBold.copyWith(
-                                  color: AppColors.black,
-                                ),
-                              ),
+                              Text('Clients', style: textTheme.titleSmall),
                               Text(
                                 '24+',
-                                style: AppTextTheme.titleSmallRegular.copyWith(
-                                  color: AppColors.black,
+                                style: textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.normal,
                                 ),
                               ),
                             ],
@@ -129,22 +98,16 @@ class IconProfileView extends BaseView<IconProfileController> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: theme.colorScheme.surface,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Column(
                             children: [
-                              Text(
-                                'Exp.',
-                                style: AppTextTheme.titleSmallSemiBold.copyWith(
-                                  color: AppColors.black,
-                                ),
-                              ),
-
+                              Text('Exp.', style: textTheme.titleSmall),
                               Text(
                                 '10+',
-                                style: AppTextTheme.titleSmallRegular.copyWith(
-                                  color: AppColors.black,
+                                style: textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.normal,
                                 ),
                               ),
                             ],
@@ -154,66 +117,53 @@ class IconProfileView extends BaseView<IconProfileController> {
                     ],
                   ),
                   16.height,
-                  Text(
-                    'Training Style',
-                    style: AppTextTheme.headlineMediumSemiBold.copyWith(
-                      color: AppColors.black,
-                    ),
-                  ),
+                  Text('Training Style', style: textTheme.headlineMedium),
                   8.height,
                   Column(
                     children: [
                       Row(
                         children: [
-                          _buildTrainingChip('Motivational'),
+                          _buildTrainingChip(context, 'Motivational'),
                           8.width,
-                          _buildTrainingChip('Empathetic'),
+                          _buildTrainingChip(context, 'Empathetic'),
                           8.width,
-                          _buildTrainingChip('Supportive'),
+                          _buildTrainingChip(context, 'Supportive'),
                         ],
                       ),
                       8.height,
                       Row(
                         children: [
-                          _buildTrainingChip('Patient'),
+                          _buildTrainingChip(context, 'Patient'),
                           8.width,
-                          _buildTrainingChip('Tough-Love'),
+                          _buildTrainingChip(context, 'Tough-Love'),
                           8.width,
-                          _buildTrainingChip('Tactical'),
+                          _buildTrainingChip(context, 'Tactical'),
                         ],
                       ),
                     ],
                   ),
-                  // 16.height,
-                  // _badges(),
                   16.height,
-
-                  Text(
-                    'Training Specialisms',
-                    style: AppTextTheme.headlineMediumSemiBold.copyWith(
-                      color: AppColors.black,
-                    ),
-                  ),
+                  Text('Training Specialisms', style: textTheme.headlineMedium),
                   8.height,
                   Column(
                     children: [
                       Row(
                         children: [
-                          _buildTrainingChip('Strength'),
+                          _buildTrainingChip(context, 'Strength'),
                           8.width,
-                          _buildTrainingChip('Bodybuilding'),
+                          _buildTrainingChip(context, 'Bodybuilding'),
                           8.width,
-                          _buildTrainingChip('Scientific'),
+                          _buildTrainingChip(context, 'Scientific'),
                         ],
                       ),
                       8.height,
                       Row(
                         children: [
-                          _buildTrainingChip('Holistic'),
+                          _buildTrainingChip(context, 'Holistic'),
                           8.width,
-                          _buildTrainingChip('Fat-loss'),
+                          _buildTrainingChip(context, 'Fat-loss'),
                           8.width,
-                          _buildTrainingChip('All-rounder'),
+                          _buildTrainingChip(context, 'All-rounder'),
                         ],
                       ),
                     ],
@@ -222,6 +172,7 @@ class IconProfileView extends BaseView<IconProfileController> {
                   Image.asset(Assets.iconProfileSecond),
                   16.height,
                   _questionAnswers(
+                    context: context,
                     title: 'The One this I always include in a program...',
                     description:
                         'Structured Progression, No guesswork. You earn every result.',
@@ -230,6 +181,7 @@ class IconProfileView extends BaseView<IconProfileController> {
                   Image.asset(Assets.iconProfileThird),
                   16.height,
                   _questionAnswers(
+                    context: context,
                     title: 'My proudest fitness moment was when...',
                     description: 'Joe Wicks complimented my biceps!',
                   ),
@@ -237,6 +189,7 @@ class IconProfileView extends BaseView<IconProfileController> {
                   Image.asset(Assets.iconProfileFourth),
                   16.height,
                   _questionAnswers(
+                    context: context,
                     title: '— Alex Johnson',
                     description:
                         '"Structured progression. no guesswork. you earn every result."',
@@ -244,7 +197,7 @@ class IconProfileView extends BaseView<IconProfileController> {
                   20.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildSocialMediaIcons(),
+                    children: _buildSocialMediaIcons(context),
                   ),
                 ],
               ),
@@ -255,7 +208,9 @@ class IconProfileView extends BaseView<IconProfileController> {
     );
   }
 
-  List<Widget> _buildSocialMediaIcons() {
+  // Pass BuildContext to helper methods to access the theme.
+  List<Widget> _buildSocialMediaIcons(BuildContext context) {
+    final theme = Theme.of(context);
     final socialIcons = [
       FontAwesomeIcons.facebook,
       FontAwesomeIcons.instagram,
@@ -267,7 +222,13 @@ class IconProfileView extends BaseView<IconProfileController> {
 
     for (int i = 0; i < socialIcons.length; i++) {
       iconWidgets.add(
-        Center(child: FaIcon(socialIcons[i], color: AppColors.black, size: 36)),
+        Center(
+          child: FaIcon(
+            socialIcons[i],
+            color: theme.colorScheme.onSurface,
+            size: 36,
+          ),
+        ),
       );
 
       if (i < socialIcons.length - 1) {
@@ -279,89 +240,50 @@ class IconProfileView extends BaseView<IconProfileController> {
   }
 
   Container _questionAnswers({
+    required BuildContext context,
     required String title,
     TextStyle? titleStyle,
     required String description,
     TextStyle? descriptionStyle,
   }) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 48),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style:
-                titleStyle ??
-                AppTextTheme.bodyMediumSemiBold.copyWith(
-                  color: AppColors.black,
-                ),
-          ),
+          Text(title, style: titleStyle ?? textTheme.bodyMedium),
           8.height,
           Text(
             description,
             style:
                 descriptionStyle ??
-                AppTextTheme.headlineMediumSemiBold.copyWith(
-                  color: AppColors.black,
-                  fontStyle: FontStyle.italic,
-                ),
+                textTheme.headlineMedium?.copyWith(fontStyle: FontStyle.italic),
           ),
         ],
       ),
     );
   }
 
-  Row _badges() {
-    return Row(
-      children: [
-        Text(
-          'Badges',
-          style: AppTextTheme.headlineMediumSemiBold.copyWith(
-            color: AppColors.black,
-          ),
-        ),
-        8.height,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: List.generate(
-            4,
-            (index) => Container(
-              height: 85,
-              width: 85,
-              decoration: BoxDecoration(
-                color: AppColors.lightAppBarBgColor,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTrainingChip(String text) {
+  Widget _buildTrainingChip(BuildContext context, String text) {
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
     return Expanded(
       child: SizedBox(
         height: 40,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: AppColors.lightAppBarBgColor,
+            // Use a container color that works on both light and dark themes.
+            color: theme.colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Center(
-            child: Text(
-              text,
-              style: AppTextTheme.bodyLargeMedium.copyWith(
-                color: AppColors.black,
-              ),
-            ),
-          ),
+          child: Center(child: Text(text, style: textTheme.bodyLarge)),
         ),
       ),
     );

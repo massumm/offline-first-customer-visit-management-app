@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/modules/trainee_onboarding/views/widgets/to_input_widget.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
@@ -28,53 +29,58 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         // Adjust on Q. previous button
         final double dynamicLeadingWidth = controller.canGoBack ? 78.0 : 48.0;
         return AppBar(
-          title: Row(
-            children: [
-              Stack(
-                children: [
-                  const CircleAvatar(
-                    radius: 20,
-                    backgroundImage: AssetImage(Assets.imagesIconLogoPink),
-                  ),
-                  Positioned(
-                    right: 0,
-                    bottom: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(2.0),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
+          title: GestureDetector(
+            onTap: (){
+              Get.toNamed(Routes.ICON_PROFILE);
+            },
+            child: Row(
+              children: [
+                Stack(
+                  children: [
+                    const CircleAvatar(
+                      radius: 20,
+                      backgroundImage: AssetImage(Assets.imagesMishIcon),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
                       child: Container(
-                        width: 8,
-                        height: 8,
+                        padding: const EdgeInsets.all(2.0),
                         decoration: const BoxDecoration(
-                          color: Color(0xff2FFF3C),
+                          color: Colors.white,
                           shape: BoxShape.circle,
+                        ),
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: Color(0xff2FFF3C),
+                            shape: BoxShape.circle,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              6.width,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    'Mish Icon',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  Text(
-                    'Online',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ],
+                ),
+                6.width,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Mish Icon',
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                  ),
-                ],
-              ),
-            ],
+                    Text(
+                      'Online',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
           leadingWidth: dynamicLeadingWidth,
           leading: Row(
