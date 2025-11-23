@@ -21,7 +21,8 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
     const double bottomWidgetHeight = 80.0;
-    final double totalAppBarHeight = kToolbarHeight + bottomWidgetHeight;
+    final double totalAppBarHeight = kToolbarHeight;
+        // + bottomWidgetHeight;
 
     return PreferredSize(
       preferredSize: Size.fromHeight(totalAppBarHeight),
@@ -118,29 +119,29 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               ),
             ],
           ],
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(bottomWidgetHeight),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  6.height,
-                  Text(
-                    controller.getCurrentGroupName ?? "Getting Started",
-                    style: Theme.of(context).textTheme.headlineMedium,
-                  ),
-                  const SizedBox(height: 8),
-                  AnimatedOnboardingStepper(
-                    totalSteps: controller.stepperTotalSteps,
-                    currentStep: controller.stepperCurrentStep,
-                    stepProgress: controller.stepperStepProgress,
-                  ),
-                ],
-              ),
-            ),
-          ),
+          // bottom: PreferredSize(
+          //   preferredSize: const Size.fromHeight(bottomWidgetHeight),
+          //   child: Padding(
+          //     padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       mainAxisAlignment: MainAxisAlignment.end,
+          //       children: [
+          //         6.height,
+          //         Text(
+          //           controller.getCurrentGroupName ?? "Getting Started",
+          //           style: Theme.of(context).textTheme.headlineMedium,
+          //         ),
+          //         const SizedBox(height: 8),
+          //         AnimatedOnboardingStepper(
+          //           totalSteps: controller.stepperTotalSteps,
+          //           currentStep: controller.stepperCurrentStep,
+          //           stepProgress: controller.stepperStepProgress,
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         );
       }),
     );
