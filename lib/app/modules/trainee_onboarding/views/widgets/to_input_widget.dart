@@ -83,10 +83,11 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
             // ------------------- MESSAGE LOADING STATE --------
             if (controller.onboardingPhase.value ==
                 OnboardingPhase.fetchingData) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [AgentLoadingIndicator(), 8.height],
-              );
+              return SizedBox.shrink();
+              // return Column(
+              //   crossAxisAlignment: CrossAxisAlignment.center,
+              //   children: [AgentLoadingIndicator(), 8.height],
+              // );
             }
 
             switch (controller.onboardingPhase.value) {

@@ -171,6 +171,7 @@ class TraineeOnboardingController extends BaseController {
   Future<void> _fetchAndSetupQuestions() async {
     onboardingPhase.value = OnboardingPhase.fetchingData;
     isLoading(true);
+    isTyping.value = true;
     try {
       // Fetch the flat list of questions from the repository
       final questionResponse = await _onboardingQARepository.fetchQuestionsData(
@@ -197,6 +198,7 @@ class TraineeOnboardingController extends BaseController {
       }
     } finally {
       isLoading(false);
+      isTyping.value = false;
     }
   }
 
@@ -415,7 +417,6 @@ class TraineeOnboardingController extends BaseController {
     _scrollToBottom();
   }
 
-  /* BUG: this sheet not working */
   bool _shouldSkipQuestion(QAItem q) {
     // If the skip-next flag is set, skip this question and reset the flag.
     if (_skipNextQuestion) {
