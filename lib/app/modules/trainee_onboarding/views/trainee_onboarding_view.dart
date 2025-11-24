@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +11,6 @@ import '../../../../generated/assets.dart';
 import '../../../core/widgets/action_pill.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
-import 'widgets/animated_onboarding_stepper.dart';
 import 'widgets/status_image_bubble.dart';
 import 'widgets/status_message_bubble.dart';
 import 'widgets/type_bubble.dart';
@@ -20,9 +20,10 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
+    // Height for bottom progress bar.
     const double bottomWidgetHeight = 80.0;
     final double totalAppBarHeight = kToolbarHeight;
-        // + bottomWidgetHeight;
+    // + bottomWidgetHeight;
 
     return PreferredSize(
       preferredSize: Size.fromHeight(totalAppBarHeight),
@@ -31,7 +32,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
         final double dynamicLeadingWidth = controller.canGoBack ? 78.0 : 48.0;
         return AppBar(
           title: GestureDetector(
-            onTap: (){
+            onTap: () {
               Get.toNamed(Routes.ICON_PROFILE);
             },
             child: Row(
@@ -144,6 +145,120 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
           // ),
         );
       }),
+    );
+  }
+
+  @override
+  ObstructingPreferredSizeWidget? cupertinoNavigationBar(BuildContext context) {
+    final Widget middle = GestureDetector(
+      onTap: () {
+        Get.toNamed(Routes.ICON_PROFILE);
+      },
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Stack(
+            children: [
+              const CircleAvatar(
+                radius: 18,
+                backgroundImage: AssetImage(Assets.imagesMishIcon),
+              ),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(1.5),
+                  decoration: BoxDecoration(
+                    color: CupertinoTheme.of(context).scaffoldBackgroundColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Container(
+                    width: 7,
+                    height: 7,
+                    decoration: const BoxDecoration(
+                      color: Color(0xff2FFF3C),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          6.width,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Mish Icon',
+                style: CupertinoTheme.of(context).textTheme.navTitleTextStyle
+                    .copyWith(fontWeight: FontWeight.w600),
+              ),
+              Text(
+                'Online',
+                style: CupertinoTheme.of(context).textTheme.tabLabelTextStyle
+                    .copyWith(
+                      color: CupertinoColors.secondaryLabel.resolveFrom(
+                        context,
+                      ),
+                    ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    return CupertinoNavigationBar(
+      middle: null,
+      leading: Obx(() {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 32.0,
+              height: 32.0,
+              child: ActionPill(
+                onTap: () => _showExitConfirmationDialog(context),
+              ),
+            ),
+            if (controller.canGoBack)
+              Padding(
+                padding: const EdgeInsets.only(left: 6.0),
+                child: SizedBox(
+                  width: 32.0,
+                  height: 32.0,
+                  child: ActionPill(onTap: controller.goBack, icon: Icons.undo),
+                ),
+              ),
+            12.width,
+            middle,
+          ],
+        );
+      }),
+      trailing: Obx(() {
+        // Obx must return a widget. Use SizedBox.shrink() for the "empty" case.
+        if (controller.currentQuestion?.canSkip ?? false) {
+          return CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              controller.send('');
+            },
+            child: const Text('Skip'),
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      }),
+      automaticallyImplyLeading: false,
+      // Add a standard iOS-style border
+      border: Border(
+        bottom: BorderSide(
+          color: CupertinoColors.separator.resolveFrom(context),
+          width: 0.5, // Standard iOS border width
+        ),
+      ),
     );
   }
 
