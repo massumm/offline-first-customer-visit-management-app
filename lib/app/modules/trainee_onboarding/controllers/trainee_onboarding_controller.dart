@@ -356,6 +356,7 @@ class TraineeOnboardingController extends BaseController {
     );
 
     await _botSay("How about we get started?");
+    await _botSay("To begin, what's your email address?");
     isLoading(false); // Ensure loading is false for initial interaction
   }
 
