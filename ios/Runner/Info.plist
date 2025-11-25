@@ -52,9 +52,9 @@
 
         <!-- Google Sign-in Section -->
         <key>GIDClientID</key>
-        <string>150486406603-tfj2369fbgbpv2aq1phao15j93089vsf.apps.googleusercontent.com</string>
+        <string>1059805585872-6n7la7rto1tv69ns6nigv6sa2g8jfk6p.apps.googleusercontent.com</string>
         <key>GIDServerClientID</key>
-        <string>150486406603-5jlpj7l09mp8o1v1pfvlko3btkr5j8qq.apps.googleusercontent.com</string>
+        <string>1059805585872-pgrk4boajnk45122jim5qvo1qgiol0bg.apps.googleusercontent.com</string>
         <key>CFBundleURLTypes</key>
         <array>
         	<dict>
@@ -62,7 +62,7 @@
         		<string>Editor</string>
         		<key>CFBundleURLSchemes</key>
         		<array>
-        			<string>com.googleusercontent.apps.150486406603-tfj2369fbgbpv2aq1phao15j93089vsf</string>
+        			<string>com.googleusercontent.apps.1059805585872-6n7la7rto1tv69ns6nigv6sa2g8jfk6p</string>
         		</array>
         	</dict>
         </array>
