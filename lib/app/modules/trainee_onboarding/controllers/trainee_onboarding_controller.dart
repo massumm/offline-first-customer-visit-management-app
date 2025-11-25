@@ -586,7 +586,7 @@ class TraineeOnboardingController extends BaseController {
       final response = await _onboardingAuthRepository.registerEmail({
         'email': userEmail.value,
       });
-      await _storeUserToken(response);
+      await _storeUserToken(response); // TODO
       traineeId.value = response.traineeProfile?.id ?? 1; // Store the id
       // Mark as 'delivered' on success
       userMessage.updateStatus(MessageStatus.delivered);
