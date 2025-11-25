@@ -143,9 +143,7 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
                   ...[]
                 else
                   ...routine.workOuts
-                      .map((workout) => _buildWorkoutItem(workout))
-                      .expand((item) => [item, const Divider()])
-                      .take(routine.workOuts.length * 2 - 1),
+                      .map((workout) => _buildWorkoutItem(workout, routine, routine.workOuts.indexOf(workout) < routine.workOuts.length - 1)),
                 if (!routine.isRestDay) ...[
                   8.height,
                   _buildAddWorkoutButton(routine),
@@ -182,94 +180,105 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
     );
   }
 
-  Widget _buildWorkoutItem(ExerciseModel workout) {
+  Widget _buildWorkoutItem(ExerciseModel workout, RoutineModel routine, bool showDivider) {
     return Obx(() {
       final workoutId = identityHashCode(workout).toString();
       final isDeleting = controller.deletingWorkouts.contains(workoutId);
+
+      if(isDeleting){
+        debugPrint('Deleting workout: $workoutId');
+      }
       
       return AnimatedSize(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
         child: isDeleting 
           ? const SizedBox.shrink()
-          : Slidable(
-              key: ValueKey(workoutId),
-              endActionPane: ActionPane(
-                motion: const BehindMotion(),
-                extentRatio: 0.20,
-                children: [
-                  CustomSlidableAction(
-                    onPressed: (context) {
-                      _handleDeleteWorkout(workout);
-                    },
-                    autoClose: true,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.redProgressColor,
-                        borderRadius: const BorderRadius.only(
-                          topRight: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
-                        ),
-                      ),
-                      child: Center(
+          : Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Slidable(
+                  key: ValueKey(workoutId),
+                  endActionPane: ActionPane(
+                    motion: const BehindMotion(),
+                    extentRatio: 0.20,
+                    children: [
+                      CustomSlidableAction(
+                        onPressed: (context) {
+                          controller.selectedDay.value = routine.day;
+                          _handleDeleteWorkout(workout);
+                        },
+                        autoClose: true,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                           decoration: BoxDecoration(
-                            color: AppColors.warningBgColor,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: SvgPicture.asset(
-                              Assets.activityTrackerDeleteIcon,
-                              width: 18,
-                              height: 18,
-                              colorFilter: const ColorFilter.mode(AppColors.redProgressColor, BlendMode.srcIn),
+                            color: AppColors.redProgressColor,
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(12),
+                              bottomRight: Radius.circular(12),
                             ),
+                          ),
+                          child: Center(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                              decoration: BoxDecoration(
+                                color: AppColors.warningBgColor,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: SvgPicture.asset(
+                                  Assets.activityTrackerDeleteIcon,
+                                  width: 18,
+                                  height: 18,
+                                  colorFilter: const ColorFilter.mode(AppColors.redProgressColor, BlendMode.srcIn),
+                                ),
+                            ),
+                          ),
                         ),
                       ),
+                    ],
+                  ),
+                  child: Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 16,
+                          height: 16,
+                          decoration: BoxDecoration(
+                            color: Colors.transparent,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: AppColors.bgColorRed, width: 3),
+                          ),
+                        ),
+                        16.width,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                workout.name,
+                                style: AppTextTheme.bodyLargeSemiBold.copyWith(
+                                  color: AppColors.black,
+                                ),
+                              ),
+                              Text(
+                                workout.bodyAreaList?.map((e) => e.displayName).join(', ') ?? 'No body areas specified',
+                                style: AppTextTheme.bodyLargeRegular,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(14),
                 ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 16,
-                      height: 16,
-                      decoration: BoxDecoration(
-                        color: Colors.transparent,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: AppColors.bgColorRed, width: 3),
-                      ),
-                    ),
-                    16.width,
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            workout.name,
-                            style: AppTextTheme.bodyLargeSemiBold.copyWith(
-                              color: AppColors.black,
-                            ),
-                          ),
-                          Text(
-                            workout.bodyAreaList?.map((e) => e.displayName).join(', ') ?? 'No body areas specified',
-                            style: AppTextTheme.bodyLargeRegular,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+              if (showDivider) const Divider(),
+            ],
+          ),
       );
     });
   }

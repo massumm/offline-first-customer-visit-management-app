@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 
 class WorkoutRecommendationCard extends StatelessWidget {
@@ -57,10 +58,11 @@ class WorkoutRecommendationCard extends StatelessWidget {
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Header: "Recommended by" + avatar + title
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SuperImage(
                   coachAvatarUrl,
@@ -72,20 +74,11 @@ class WorkoutRecommendationCard extends StatelessWidget {
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Recommended by $coachName',
-                        style: text.labelMedium?.copyWith(
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
                         title,
-                        style: text.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 18,
-                        ),
+                        style: AppTextTheme.bodyLargeSemiBold.copyWith(color: Colors.black), // 14px, semi bold, black
                       ),
                     ],
                   ),
@@ -104,112 +97,7 @@ class WorkoutRecommendationCard extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 10),
 
-            // "Why now?" bubble
-            _WhyNowBubble(text: whyNow),
-
-            const SizedBox(height: 12),
-
-            // Estimated time row
-            Row(
-              children: [
-                Icon(Icons.access_time, size: 18, color: Colors.black54),
-                const SizedBox(width: 6),
-                RichText(
-                  text: TextSpan(
-                    style: text.bodyMedium?.copyWith(color: Colors.black87),
-                    children: [
-                      const TextSpan(text: 'Estimated time: '),
-                      TextSpan(
-                        text: '$estimatedMinutes min',
-                        style: TextStyle(
-                          color: _red,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-            const Divider(height: 1),
-
-            const SizedBox(height: 10),
-
-            // Stats grid (2 columns)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _LabeledValue(label: 'Exercise', value: exerciseName),
-                      const SizedBox(height: 10),
-                      _LabeledValue(label: 'Sets', value: '$sets'),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _LabeledValue(
-                        label: 'Total Volume',
-                        value: '$totalVolumeKg kg',
-                      ),
-                      const SizedBox(height: 10),
-                      _LabeledValue(label: 'Reps/Set', value: repsPerSetLabel),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            // Buttons
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: onViewDetails ?? () {},
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      side: BorderSide(color: Colors.grey.shade300),
-                      backgroundColor: const Color(0xFFF3F4F6),
-                      foregroundColor: Colors.black87,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      textStyle: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    child: const Text('View Details'),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: onStartWorkout ?? () {},
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      backgroundColor: _red,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      textStyle: const TextStyle(fontWeight: FontWeight.w700),
-                    ),
-                    child: const Text('Start Workout'),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),
