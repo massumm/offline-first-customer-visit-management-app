@@ -19,7 +19,6 @@ import '../../../../base/widgets/custom_toast.dart';
 import '../../../../core/values/app_colors.dart';
 import '../../../../core/widgets/input_widgets/custom_phone_field.dart';
 import '../../../../core/widgets/search_location_dropdown.dart';
-import 'agent_loading_indicator.dart';
 import 'body_fat_input_widget.dart';
 import 'body_measurements_input_widget.dart';
 import 'event_input_widget.dart';
@@ -264,7 +263,8 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
 
                 if (controller.isCurrentLocation ||
                     controller.currentQuestion?.id == 4) {
-                  return InkWell(
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () async {
                       final PlaceDetails? result =
                           await openLocationBottomSheet(controller, context);

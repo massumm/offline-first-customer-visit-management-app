@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/modules/trainee_onboarding/controllers/trainee_onboarding_controller.dart';
 
 class EventInputWidget extends StatefulWidget {
@@ -12,16 +15,8 @@ class EventInputWidget extends StatefulWidget {
 
 class _EventInputWidgetState extends State<EventInputWidget> {
   bool isYesSelected = true;
-  DateTime? selectedDate;
+  DateTime? selectedDate = DateTime.now();
   final TextEditingController _eventNameController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Pre-select today's date and a default event name for better UX.
-    selectedDate = DateTime.now();
-    // _eventNameController.text = "Wedding";
-  }
 
   @override
   void dispose() {
@@ -30,38 +25,43 @@ class _EventInputWidgetState extends State<EventInputWidget> {
   }
 
   Future<void> _pickDate() async {
-    final now = DateTime.now();
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    // Show Cupertino Date Picker in modal
+    DateTime tempDate = selectedDate ?? DateTime.now();
 
-    final picked = await showDatePicker(
+    await showCupertinoModalPopup(
       context: context,
-      initialDate: selectedDate ?? now,
-      firstDate: DateTime(now.year - 5),
-      lastDate: DateTime(now.year + 10),
-      builder: (context, child) {
-        return Theme(
-          data: theme.copyWith(
-            colorScheme: ColorScheme.dark(
-              primary: colorScheme.primary,
-              surface: colorScheme.surface,
+      builder: (_) => Container(
+        height: 300,
+        color: CupertinoColors.systemBackground.resolveFrom(context),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 200,
+              child: CupertinoDatePicker(
+                mode: CupertinoDatePickerMode.date,
+                initialDateTime: selectedDate ?? DateTime.now(),
+                minimumDate: DateTime(DateTime.now().year - 5),
+                maximumDate: DateTime(DateTime.now().year + 10),
+                onDateTimeChanged: (val) => tempDate = val,
+              ),
             ),
-          ),
-          child: child!,
-        );
-      },
+            CupertinoButton(
+              child: const Text("Done"),
+              onPressed: () {
+                setState(() => selectedDate = tempDate);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        ),
+      ),
     );
-
-    if (picked != null && mounted) {
-      setState(() => selectedDate = picked);
-    }
   }
 
   String get _formattedDate {
     if (selectedDate == null) return "Select date";
     return "${selectedDate!.day.toString().padLeft(2, '0')} "
-        "${_monthName(selectedDate!.month)}, "
-        "${selectedDate!.year}";
+        "${_monthName(selectedDate!.month)}, ${selectedDate!.year}";
   }
 
   String _monthName(int m) {
@@ -82,73 +82,114 @@ class _EventInputWidgetState extends State<EventInputWidget> {
     return months[m - 1];
   }
 
+  void _submit() {
+    String response;
+
+    if (isYesSelected) {
+      if (_eventNameController.text.trim().isEmpty) {
+        final messenger = ScaffoldMessenger.maybeOf(context);
+        messenger?.showSnackBar(
+          const SnackBar(content: Text("Please enter the event name")),
+        );
+        return;
+      }
+
+      response =
+          "Event: ${_eventNameController.text.trim()}, "
+          "Date: $_formattedDate";
+    } else {
+      response = "No upcoming event";
+    }
+
+    widget.controller.send(response);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
+
+    final toggleRow = Row(
+      children: [
+        _buildToggleOption(
+          text: "Yes",
+          isSelected: isYesSelected,
+          onTap: () {
+            setState(() => isYesSelected = true);
+          },
+        ),
+        const SizedBox(width: 12),
+        _buildToggleOption(
+          text: "No",
+          isSelected: !isYesSelected,
+          onTap: () {
+            setState(() => isYesSelected = false);
+          },
+        ),
+      ],
+    );
+
+    final dateField = GestureDetector(
+      onTap: _pickDate,
+      child: AbsorbPointer(
+        child: isIOS
+            ? CupertinoTextField(
+                placeholder: _formattedDate,
+                padding: EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                suffix: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Icon(
+                    CupertinoIcons.calendar,
+                    color: AppColors.colorPrimary,
+                    size: 18,
+                  ),
+                ),
+              )
+            : TextField(
+                decoration: InputDecoration(
+                  hintText: _formattedDate,
+                  suffixIcon: const Icon(Icons.calendar_today_outlined),
+                ),
+              ),
+      ),
+    );
+
+    final nextButton = isIOS
+        ? CupertinoButton.filled(onPressed: _submit, child: const Text("Next"))
+        : ElevatedButton(onPressed: _submit, child: const Text("Next"));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Column(
-        // Use MainAxisSize.min because the parent has unconstrained height.
         mainAxisSize: MainAxisSize.min,
-        // Stretch children to fill the width, fixing the Expanded issue.
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // YES / NO toggle
-          Row(
-            children: [
-              _buildToggleOption(
-                text: "Yes",
-                isSelected: isYesSelected,
-                onTap: () => setState(() => isYesSelected = true),
-              ),
-              const SizedBox(width: 12),
-              _buildToggleOption(
-                text: "No",
-                isSelected: !isYesSelected,
-                onTap: () => setState(() => isYesSelected = false),
-              ),
-            ],
-          ),
+          toggleRow,
           const SizedBox(height: 20),
 
-          // Show these fields ONLY when Yes is selected
           if (isYesSelected) ...[
             Text("Date", style: textTheme.labelLarge),
             const SizedBox(height: 8),
-            GestureDetector(
-              onTap: _pickDate,
-              child: AbsorbPointer(
-                child: TextField(
-                  decoration: InputDecoration(
-                    hintText: _formattedDate,
-                    suffixIcon: const Icon(Icons.calendar_today_outlined),
-                  ),
-                ),
-              ),
-            ),
+            dateField,
             const SizedBox(height: 16),
+
             Text("Event name", style: textTheme.labelLarge),
             const SizedBox(height: 8),
-            TextField(
-              controller: _eventNameController,
-              decoration: const InputDecoration(hintText: "Wedding"),
-            ),
+            isIOS
+                ? CupertinoTextField(
+                    controller: _eventNameController,
+                    placeholder: "Wedding",
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                  )
+                : TextField(
+                    controller: _eventNameController,
+                    decoration: const InputDecoration(hintText: "Wedding"),
+                  ),
           ],
 
-          const SizedBox(height: 16),
-
-          // Next button
-          ElevatedButton(
-            onPressed: () {
-              final String response = isYesSelected
-                  ? 'Event: ${_eventNameController.text}, Date: $_formattedDate'
-                  : 'No upcoming event';
-              widget.controller.send(response);
-            },
-            child: const Text("Next"),
-          ),
+          const SizedBox(height: 20),
+          nextButton,
         ],
       ),
     );

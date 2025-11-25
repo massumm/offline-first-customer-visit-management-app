@@ -8,16 +8,17 @@ import 'traineer_onboarding_qa_repository.dart';
 
 class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     implements TraineeOnboardingQARepository {
-  final String? token = UserStore.to.token;
+
 
   @override
   Future<TraineeOnboardingQuestionDataModel> fetchQuestionsData(int trainerId) {
+    final String token = UserStore.to.profile?.access ?? '';
     final String endpoint =
         "${DioProvider.baseUrl}/api/trainee_onboarding/by_trainer/$trainerId/questions/";
 
     "Token: $token".log();
     final Map<String, String> headers = {
-      'Authorization': "Bearer ${token ?? ''}",
+      'Authorization': "Bearer $token",
     };
 
     Future<Response<dynamic>> dioCall = dioClient.get(
@@ -43,11 +44,12 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
     Map<String, dynamic> answers,
     int trainerId,
   ) {
+    final String token = UserStore.to.profile?.access ?? '';
     final String endpoint =
         "${DioProvider.baseUrl}/api/trainee_onboarding/by_trainer/$trainerId/answers/";
 
     final Map<String, String> headers = {
-      'Authorization': "Bearer ${token ?? ''}",
+      'Authorization': "Bearer $token",
     };
 
     Future<Response<dynamic>> dioCall = dioClient.post(
@@ -72,9 +74,10 @@ class TraineeOnboardingQARepositoryImpl extends BaseRemoteSource
   ) {
     final String endpoint =
         "${DioProvider.baseUrl}/api/trainee_onboarding/by_trainer/$trainerId/generate_personalized_comment_for_question_group/$groupName/";
+    final String token = UserStore.to.profile?.access ?? '';
 
     final Map<String, String> headers = {
-      'Authorization': "Bearer ${token ?? ''}",
+      'Authorization': "Bearer $token",
     };
 
     Future<Response<dynamic>> dioCall = dioClient.get(

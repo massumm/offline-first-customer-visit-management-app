@@ -12,7 +12,7 @@ class InitialBindings implements Bindings {
   @override
   void dependencies() {
     Get.put<StorageService>( StorageService(), permanent: true);
-    Get.lazyPut<UserStore>(() => UserStore(), fenix: true);
+    Get.put<UserStore>( UserStore(), permanent: true);
     Get.lazyPut<TraineeDataStore>(() => TraineeDataStore(), fenix: true);
 
     // ----------- Subscription & IAP Services -------------------

@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../values/app_colors.dart';
 
 class IconCupertinoTheme {
-  static const CupertinoThemeData darkTheme = CupertinoThemeData(
+
+  static CupertinoThemeData darkTheme = CupertinoThemeData(
     brightness: Brightness.dark,
-    primaryColor: CupertinoColors.systemOrange,
-    scaffoldBackgroundColor: CupertinoColors.black,
-    barBackgroundColor: CupertinoColors.darkBackgroundGray,
-    textTheme: CupertinoTextThemeData(
+    primaryColor: AppColors.colorPrimary,
+    scaffoldBackgroundColor: AppColors.darkBgColor,
+    barBackgroundColor: AppColors.darkShapeColor,
+    textTheme: const CupertinoTextThemeData(
       primaryColor: CupertinoColors.white,
       textStyle: TextStyle(
         color: CupertinoColors.white,
@@ -21,12 +23,13 @@ class IconCupertinoTheme {
     ),
   );
 
-  static const CupertinoThemeData lightTheme = CupertinoThemeData(
+
+  static CupertinoThemeData lightTheme = CupertinoThemeData(
     brightness: Brightness.light,
-    primaryColor: CupertinoColors.systemOrange,
-    scaffoldBackgroundColor: CupertinoColors.systemGroupedBackground,
-    barBackgroundColor: CupertinoColors.white,
-    textTheme: CupertinoTextThemeData(
+    primaryColor: AppColors.colorPrimary,
+    scaffoldBackgroundColor: AppColors.lightBgColor,
+    barBackgroundColor: AppColors.lightShapeColor,
+    textTheme: const CupertinoTextThemeData(
       primaryColor: CupertinoColors.black,
       textStyle: TextStyle(
         color: CupertinoColors.black,
@@ -41,33 +44,19 @@ class IconCupertinoTheme {
     applyThemeToAll: true,
   );
 
-  /// ————————————————————————————————————————————————————————————————
-  /// Adaptive + mapping helpers (recommended)
-  /// ————————————————————————————————————————————————————————————————
 
-  /// Build a Cupertino theme that mirrors a Material ColorScheme.
-  static CupertinoThemeData fromColorScheme(
-    ColorScheme scheme, {
-    required Brightness brightness,
-  }) {
-    final isDark = brightness == Brightness.dark;
+  static CupertinoThemeData fromColorScheme(ColorScheme scheme) {
+    final isDark = scheme.brightness == Brightness.dark;
 
     return CupertinoThemeData(
-      brightness: brightness,
-      // Keep your brand color in sync with Material primary
+      brightness: scheme.brightness,
       primaryColor: scheme.primary,
-      // Respect grouped backgrounds commonly used by Cupertino lists
-      scaffoldBackgroundColor: isDark
-          ? CupertinoColors.black
-          : CupertinoColors.systemGroupedBackground,
-      // Make bars match Material surface/primary contrasts
-      barBackgroundColor: isDark
-          ? CupertinoColors.darkBackgroundGray
-          : CupertinoColors.systemBackground,
+      scaffoldBackgroundColor:
+      isDark ? AppColors.darkBgColor : AppColors.lightBgColor,
+      barBackgroundColor:
+      isDark ? AppColors.darkShapeColor : AppColors.lightShapeColor,
       textTheme: CupertinoTextThemeData(
-        // Primary label color (used widely across Cupertino widgets)
         primaryColor: isDark ? CupertinoColors.white : CupertinoColors.black,
-        // Base text style; iOS will pick SF Pro automatically on device
         textStyle: TextStyle(
           color: isDark ? CupertinoColors.white : CupertinoColors.black,
           fontFamily: '.SF Pro Text',
@@ -77,29 +66,25 @@ class IconCupertinoTheme {
           fontWeight: FontWeight.w600,
           fontFamily: '.SF Pro Display',
         ),
-        // Optional: fine-tune other text slots if you wish
-        // actionTextStyle: const TextStyle(fontWeight: FontWeight.w600),
-        // tabLabelTextStyle: const TextStyle(fontSize: 12),
       ),
-      // Ensures even Material-wrapped Cupertino widgets use this theme
       applyThemeToAll: true,
     );
   }
-
-  /// Mirror a full Material ThemeData (color scheme + brightness).
-  // IconCupertinoTheme.dart
 
   static CupertinoThemeData fromMaterial(ThemeData material) {
+    final colorScheme = material.colorScheme;
     final isDark = material.brightness == Brightness.dark;
+
     return CupertinoThemeData(
       brightness: material.brightness,
-      primaryColor: material.colorScheme.primary,
-      barBackgroundColor: isDark
-          ? CupertinoColors.darkBackgroundGray
-          : CupertinoColors.systemBackground,
-      scaffoldBackgroundColor: isDark
-          ? CupertinoColors.black
-          : material.colorScheme.surface,
+      primaryColor: colorScheme.primary,
+
+      // Match Material surfaces
+      scaffoldBackgroundColor:
+      isDark ? AppColors.darkBgColor : AppColors.lightBgColor,
+      barBackgroundColor:
+      isDark ? AppColors.darkShapeColor : AppColors.lightShapeColor,
+
       textTheme: CupertinoTextThemeData(
         primaryColor: isDark ? CupertinoColors.white : CupertinoColors.black,
         textStyle: TextStyle(
@@ -115,9 +100,8 @@ class IconCupertinoTheme {
       applyThemeToAll: true,
     );
   }
-
-  /// Quick adaptive picker: returns light or dark theme above
-  /// if you prefer a fixed palette without mapping.
-  static CupertinoThemeData adaptive(Brightness brightness) =>
-      brightness == Brightness.dark ? darkTheme : lightTheme;
+  
+  static CupertinoThemeData adaptive(Brightness brightness) {
+    return brightness == Brightness.dark ? darkTheme : lightTheme;
+  }
 }

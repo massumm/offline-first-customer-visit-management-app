@@ -30,7 +30,9 @@ abstract class BaseView<Controller extends BaseController>
   PreferredSizeWidget? appBar(BuildContext context) => null;
 
   /// Cupertino navigation bar (iOS).
-  CupertinoNavigationBar? cupertinoNavigationBar(BuildContext context) => null;
+  /// This should return a widget that implements [ObstructingPreferredSizeWidget],
+  /// such as a [CupertinoNavigationBar].
+  ObstructingPreferredSizeWidget? cupertinoNavigationBar(BuildContext context) => null;
 
   /// Material-only floating action button.
   Widget? floatingActionButton() => null;
@@ -159,11 +161,15 @@ class _BaseViewScaffoldState<Controller extends BaseController>
   /// —————————————————————
   /// Cupertino (iOS)
   /// —————————————————————
+  /// —————————————————————
+  /// Cupertino (iOS)
+  /// —————————————————————
   Widget _buildCupertino(BuildContext context) {
     final brightness = CupertinoTheme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
     final overlay =
     isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+    final navigationBar = widget.view.cupertinoNavigationBar(context);
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -171,10 +177,14 @@ class _BaseViewScaffoldState<Controller extends BaseController>
         value: overlay,
         child: CupertinoPageScaffold(
           backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
-          navigationBar: widget.view.cupertinoNavigationBar(context),
+          navigationBar: navigationBar,
           child: Stack(
             children: [
-              SafeArea(bottom: true, child: widget.view.body(context)),
+              SafeArea(
+                top: navigationBar == null,
+                bottom: true,
+                child: widget.view.body(context),
+              ),
               Obx(
                     () => controller.pageState == PageState.LOADING
                     ? widget.view._showCupertinoLoading()
