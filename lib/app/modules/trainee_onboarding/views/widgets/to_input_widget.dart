@@ -263,7 +263,8 @@ class ToInputWidget extends GetView<TraineeOnboardingController> {
 
                 if (controller.isCurrentLocation ||
                     controller.currentQuestion?.id == 4) {
-                  return InkWell(
+                  return GestureDetector(
+                    behavior: HitTestBehavior.opaque,
                     onTap: () async {
                       final PlaceDetails? result =
                           await openLocationBottomSheet(controller, context);
