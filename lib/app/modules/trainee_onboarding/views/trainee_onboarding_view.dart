@@ -406,29 +406,54 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               alignment: WrapAlignment.center,
               children: displayOptions.map((o) {
                 final optionText = o.toString();
-                final isOtherChip =
-                    isMultiplePlusOther && optionText == 'Other';
+                final isOtherChip = isMultiplePlusOther && optionText == 'Other';
 
-                // Check if the current option is the selected one.
-                final isSelected =
-                    controller.selectedOption.value == optionText;
+                final isSelected = controller.selectedOption.value == optionText;
+                final isIOS = GetPlatform.isIOS;
+
+                if (isIOS) {
+                  return CupertinoButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    borderRadius: BorderRadius.circular(20),
+                    color: isSelected
+                        ? CupertinoTheme.of(context).primaryColor.withOpacity(0.15)
+                        : CupertinoColors.systemGrey6,
+                    pressedOpacity: 0.3,
+                    onPressed: () {
+                      if (isOtherChip) {
+                        controller.selectOtherOption();
+                      } else {
+                        controller.choose(optionText);
+                      }
+                    }, minimumSize: Size(32, 32),
+                    child: Text(
+                      optionText,
+                      style: TextStyle(
+                        color: isSelected
+                            ? CupertinoTheme.of(context).primaryColor
+                            : CupertinoTheme.of(context).brightness == Brightness.dark
+                            ? CupertinoColors.white
+                            : CupertinoColors.black,
+                        fontSize: 15,
+                      ),
+                    ),
+                  );
+                }
 
                 return ActionChip(
                   label: Text(optionText),
                   shape: isSelected
                       ? StadiumBorder(
-                          side: BorderSide(
-                            color: Theme.of(context).colorScheme.primary,
-                            width: 1.5,
-                          ),
-                        )
+                    side: BorderSide(
+                      color: Theme.of(context).colorScheme.primary,
+                      width: 1.5,
+                    ),
+                  )
                       : null,
                   onPressed: () {
                     if (isOtherChip) {
-                      // Method in the controller to show the input field.
                       controller.selectOtherOption();
                     } else {
-                      // This method handles the choice and hides the 'Other' input.
                       controller.choose(optionText);
                     }
                   },

@@ -71,11 +71,21 @@ void main() async {
                 initialBinding: InitialBindings(),
                 getPages: AppPages.routes,
                 theme: cupertinoTheme,
-                builder: (context, child) => Theme(
-                  //  material-in-cupertino
-                  data: materialTheme,
-                  child: child ?? const SizedBox.shrink(),
-                ),
+                builder: (context, child) {
+                  return Theme(
+                    data: materialTheme,
+                    child: Localizations(
+                      locale: const Locale('en'),
+                      delegates: const [
+                        DefaultWidgetsLocalizations.delegate,
+                        DefaultMaterialLocalizations.delegate,
+                        DefaultCupertinoLocalizations.delegate,
+                      ],
+                      child: child ?? const SizedBox.shrink(),
+                    ),
+                  );
+                },
+
               );
             },
           )
