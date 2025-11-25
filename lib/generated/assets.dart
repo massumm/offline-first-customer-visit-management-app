@@ -122,6 +122,7 @@ class Assets {
   static const String svgBgGradientColor = 'assets/svg/bg-gradient-color.svg';
   static const String svgBgGradientColorCropped = 'assets/svg/bg-gradient-color-cropped.svg';
   static const String svgCurrentStress = 'assets/svg/current_stress.svg';
+  static const String svgDeleteDialoguleIcon = 'assets/svg/delete_dialogule_icon.svg';
   static const String svgGoogleIcon = 'assets/svg/google-icon.svg';
   static const String svgIconLogoDark = 'assets/svg/icon-logo-dark.svg';
   static const String svgIconLogoPink = 'assets/svg/icon-logo-pink.svg';

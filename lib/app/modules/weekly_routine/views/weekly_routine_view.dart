@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
@@ -75,6 +77,7 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
                         weekName: week.weekName,
                         isSelected: controller.selectedWeek.value == index,
                         onTap: () => controller.selectedWeek.value = index,
+                        weekIndex: index,
                       ),
                     );
                   }),
@@ -90,14 +93,14 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
             // ),
             16.height,
             Obx(() {
-              if (controller.currentWeekRoutines.isEmpty) {
-                return _buildEmptyState();
-              }
-              return Column(
-                children: controller.currentWeekRoutines
-                    .map((routine) => _buildRoutineCard(routine))
-                    .toList(),
-              );
+              return controller.currentWeekRoutines.isEmpty
+                  ? _buildEmptyState()
+                  : Column(
+                      key: ValueKey(controller.selectedWeek.value),
+                      children: controller.currentWeekRoutines
+                          .map((routine) => _buildRoutineCard(routine))
+                          .toList(),
+                    );
             }),
           ],
         ),
@@ -107,6 +110,7 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
 
   Widget _buildEmptyState() {
     return Container(
+      key: ValueKey('empty-${controller.selectedWeek.value}'),
       width: double.infinity,
       padding: const EdgeInsets.all(20.0),
       decoration: BoxDecoration(
@@ -179,37 +183,95 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
   }
 
   Widget _buildWorkoutItem(ExerciseModel workout) {
-    return Row(
-      children: [
-        Container(
-          width: 16,
-          height: 16,
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            shape: BoxShape.circle,
-            border: Border.all(color: AppColors.bgColorRed, width: 3),
-          ),
-        ),
-        16.width,
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                workout.name,
-                style: AppTextTheme.bodyLargeSemiBold.copyWith(
-                  color: AppColors.black,
+    return Obx(() {
+      final workoutId = identityHashCode(workout).toString();
+      final isDeleting = controller.deletingWorkouts.contains(workoutId);
+      
+      return AnimatedSize(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        child: isDeleting 
+          ? const SizedBox.shrink()
+          : Slidable(
+              key: ValueKey(workoutId),
+              endActionPane: ActionPane(
+                motion: const BehindMotion(),
+                extentRatio: 0.20,
+                children: [
+                  CustomSlidableAction(
+                    onPressed: (context) {
+                      _handleDeleteWorkout(workout);
+                    },
+                    autoClose: true,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.redProgressColor,
+                        borderRadius: const BorderRadius.only(
+                          topRight: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
+                        ),
+                      ),
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                          decoration: BoxDecoration(
+                            color: AppColors.warningBgColor,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: SvgPicture.asset(
+                              Assets.activityTrackerDeleteIcon,
+                              width: 18,
+                              height: 18,
+                              colorFilter: const ColorFilter.mode(AppColors.redProgressColor, BlendMode.srcIn),
+                            ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 16,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: Colors.transparent,
+                        shape: BoxShape.circle,
+                        border: Border.all(color: AppColors.bgColorRed, width: 3),
+                      ),
+                    ),
+                    16.width,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            workout.name,
+                            style: AppTextTheme.bodyLargeSemiBold.copyWith(
+                              color: AppColors.black,
+                            ),
+                          ),
+                          Text(
+                            workout.bodyAreaList?.map((e) => e.displayName).join(', ') ?? 'No body areas specified',
+                            style: AppTextTheme.bodyLargeRegular,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Text(
-                workout.bodyAreaList?.map((e) => e.displayName).join(', ') ?? 'No body areas specified',
-                style: AppTextTheme.bodyLargeRegular,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
+            ),
+      );
+    });
   }
 
   Widget _buildAddWorkoutButton(RoutineModel routine) {
@@ -234,6 +296,23 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
         ),
       ],
     );
+  }
+
+  void _handleDeleteWorkout(ExerciseModel workout) {
+    final workoutId = identityHashCode(workout).toString();
+    
+    // Prevent duplicate deletions
+    if (controller.deletingWorkouts.contains(workoutId)) return;
+    
+    // Mark workout as deleting to trigger animation
+    controller.deletingWorkouts.add(workoutId);
+    
+    // Delay actual deletion until animation completes
+    Future.delayed(const Duration(milliseconds: 300), () {
+      controller.deleteWorkout(workout);
+      // Remove from deleting set after controller deletion
+      controller.deletingWorkouts.remove(workoutId);
+    });
   }
 
   void _goToAddExerciseScreen() {

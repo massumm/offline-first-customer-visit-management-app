@@ -29,6 +29,7 @@ static const Color bgColorRed = Color(0xFFC31212);
   static const Color cardBgColor = Color(0xFFFFEBE5);
   static const Color pageBackground = Color(0xFFF2F2F2);
   static const Color textColorRed = chartGradientEnd;
+  static const Color verticalDividerColorRed = Color(0xFFFFD8CC);
 
   // ------------- Light Theme Colors ---------------------
   static const Color lightTextPrimaryColor = Color(0xFF241814);
