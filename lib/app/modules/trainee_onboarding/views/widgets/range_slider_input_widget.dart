@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class NumericRangeInputWidget extends StatelessWidget {
   final double value;
@@ -22,17 +24,19 @@ class NumericRangeInputWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isIOS = GetPlatform.isIOS;
+
     final numbers = List<int>.generate(
       (max - min + 1).toInt(),
-      (i) => i + min.toInt(),
+          (i) => i + min.toInt(),
     );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-
         children: [
+          // Titles
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
@@ -45,11 +49,14 @@ class NumericRangeInputWidget extends StatelessWidget {
           ),
           const SizedBox(height: 8),
 
-          // Slider with gradient track
+          // --------------------------
+          //        SLIDER
+          // --------------------------
+
           Stack(
             alignment: Alignment.center,
             children: [
-              // gradient track background
+              // Gradient track background
               Container(
                 height: 8,
                 margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -57,57 +64,84 @@ class NumericRangeInputWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(999),
                   gradient: const LinearGradient(
                     colors: [
-                      Color(0xFFFFE1DE), // light
-                      Color(0xFFE53935), // hard
+                      Color(0xFFFFE1DE),
+                      Color(0xFFE53935),
                     ],
                   ),
                 ),
               ),
 
-              SliderTheme(
-                data: SliderTheme.of(context).copyWith(
-                  trackHeight: 8,
-                  inactiveTrackColor: Colors.transparent,
-                  activeTrackColor: Colors.transparent,
-                  overlayShape: SliderComponentShape.noOverlay,
-                  thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 14),
-                  thumbColor: Colors.white,
-                ),
-                child: Slider(
+              // ------------ iOS Slider ------------
+              if (isIOS)
+                CupertinoSlider(
                   min: min,
                   max: max,
                   divisions: (max - min).toInt(),
                   value: value.clamp(min, max),
                   onChanged: onChanged,
+                )
+
+              // -------- Android Slider (Same as yours) --------
+              else
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 8,
+                    inactiveTrackColor: Colors.transparent,
+                    activeTrackColor: Colors.transparent,
+                    overlayShape: SliderComponentShape.noOverlay,
+                    thumbShape:
+                    const RoundSliderThumbShape(enabledThumbRadius: 14),
+                    thumbColor: Colors.white,
+                  ),
+                  child: Slider(
+                    min: min,
+                    max: max,
+                    divisions: (max - min).toInt(),
+                    value: value.clamp(min, max),
+                    onChanged: onChanged,
+                  ),
                 ),
-              ),
             ],
           ),
 
           const SizedBox(height: 4),
 
-          // Numbers under the slider
+          // Number markers
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: numbers
                 .map(
                   (n) => Text(
-                    '$n',
-                    style: TextStyle(
-                      color: n.toDouble() == value
-                          ? Colors.white
-                          : Colors.white70,
-                      fontSize: 12,
-                    ),
-                  ),
-                )
+                '$n',
+                style: TextStyle(
+                  color: n.toDouble() == value
+                      ? Colors.white
+                      : Colors.white70,
+                  fontSize: 12,
+                ),
+              ),
+            )
                 .toList(),
           ),
 
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
 
-          // Next button
-          ElevatedButton(
+          // --------------------------
+          //         NEXT BUTTON
+          // --------------------------
+
+          isIOS
+              ? SizedBox(
+            width: double.infinity,
+            child: CupertinoButton.filled(
+              onPressed: onNext,
+              child: const Text(
+                'Next',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          )
+              : ElevatedButton(
             onPressed: onNext,
             child: const Text(
               'Next',
