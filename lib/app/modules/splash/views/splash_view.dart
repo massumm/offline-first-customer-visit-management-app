@@ -141,7 +141,7 @@ class __AnimatedSplashBodyState extends State<_AnimatedSplashBody>
                               child: child,
                             );
                           },
-                          child: SuperImage(Assets.imagesIconLogo),
+                          child: SuperImage(Assets.svgAppIconWhite),
                         ),
                       ),
                     ],
