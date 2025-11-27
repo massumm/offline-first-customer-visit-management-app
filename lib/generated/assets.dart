@@ -124,6 +124,7 @@ class Assets {
   static const String splashScreenLightPage1Duration = 'assets/images/splash_screen_light/page_1_duration.png';
   static const String splashScreenLightPage1XpCompletion = 'assets/images/splash_screen_light/page_1_xp_completion.png';
   static const String splashScreenLightPage3Steps = 'assets/images/splash_screen_light/page_3_steps.png';
+  static const String svgAppIconWhite = 'assets/svg/app_icon_white.svg';
   static const String svgBgGradientColor = 'assets/svg/bg-gradient-color.svg';
   static const String svgBgGradientColorCropped = 'assets/svg/bg-gradient-color-cropped.svg';
   static const String svgCurrentStress = 'assets/svg/current_stress.svg';
