@@ -18,80 +18,89 @@ import '../widgets/goals_card.dart';
 import '../widgets/header.dart';
 import '../widgets/progress_ring.dart';
 import '../widgets/trainer_info_card.dart';
+import 'widgets/fitness_deshboard_widgets/fitness_deshboard.dart';
 
 class HomeView extends BaseView<HomeController> {
   const HomeView({super.key});
 
   @override
   Widget body(BuildContext context) {
-
-
     return Theme(
       data: IconLightTheme.androidLightTheme,
-      child: Builder(builder: (context) {
-        final cs = Theme.of(context).colorScheme;
-       return Scaffold(
-          body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Header(),
-                  16.height,
-                  _UserHeader(),
-                  16.height,
-                  DailyProgressIndicators(),
-                  16.height,
-                  TrainerInfoCard(onPressed: () {}),
-                  16.height,
-                  healthProgressIndicator(),
-                  16.height,
-                  GoalsCard(onPressed: () {}),
-                  16.height,
-                  CommunityCard(color: cs.secondary),
-                  58.height,
-                ],
+      child: Builder(
+        builder: (context) {
+          final cs = Theme.of(context).colorScheme;
+          return Scaffold(
+            body: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 12,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Header(),
+                    16.height,
+                    _UserHeader(),
+                    16.height,
+                    DailyProgressIndicators(),
+                    16.height,
+                    TrainerInfoCard(onPressed: () {}),
+                    16.height,
+                    healthProgressIndicator(),
+                    16.height,
+                    GoalsCard(onPressed: () {}),
+                    16.height,
+                    FitnessDashboard(),
+                    16.height,
+                    CommunityCard(color: cs.secondary),
+                    58.height,
+                  ],
+                ),
               ),
             ),
-          ),
-          bottomNavigationBar: Obx(() {
-            return NavigationBar(
-              backgroundColor: cs.surface,
-              selectedIndex: controller.selectedNavIndex.value,
-              onDestinationSelected: (index) {
-                controller.selectedNavIndex.value = index;
-                if (index == 2) {
-                  final trainerId = UserStore.to.trainerId ?? 1;
-                  Get.toNamed(Routes.ICON_CHAT, arguments: {'trainerId': trainerId});
-                }
-              },
-              destinations: const [
-                NavigationDestination(
-                  icon: Icon(Icons.dashboard_outlined),
-                  selectedIcon: Icon(Icons.dashboard),
-                  label: 'Home',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.analytics_outlined),
-                  selectedIcon: Icon(Icons.analytics),
-                  label: 'Analysis',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.chat_outlined),
-                  selectedIcon: Icon(Icons.chat),
-                  label: 'Chat',
-                ),
-                NavigationDestination(
-                  icon: Icon(Icons.person_outline),
-                  selectedIcon: Icon(Icons.person),
-                  label: 'Profile',
-                ),
-              ],
-            );
-          }),
-        );
-      })
+            bottomNavigationBar: Obx(() {
+              return NavigationBar(
+                backgroundColor: cs.surface,
+                selectedIndex: controller.selectedNavIndex.value,
+                onDestinationSelected: (index) {
+                  controller.selectedNavIndex.value = index;
+                  if (index == 2) {
+                    final trainerId = UserStore.to.trainerId ?? 1;
+                    Get.toNamed(
+                      Routes.ICON_CHAT,
+                      arguments: {'trainerId': trainerId},
+                    );
+                  }
+                },
+                destinations: const [
+                  NavigationDestination(
+                    icon: Icon(Icons.dashboard_outlined),
+                    selectedIcon: Icon(Icons.dashboard),
+                    label: 'Home',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.analytics_outlined),
+                    selectedIcon: Icon(Icons.analytics),
+                    label: 'Analysis',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.chat_outlined),
+                    selectedIcon: Icon(Icons.chat),
+                    label: 'Chat',
+                  ),
+                  NavigationDestination(
+                    icon: Icon(Icons.person_outline),
+                    selectedIcon: Icon(Icons.person),
+                    label: 'Profile',
+                  ),
+                ],
+              );
+            }),
+          );
+        },
+      ),
     );
   }
 

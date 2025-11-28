@@ -14,98 +14,103 @@ class HydrationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 130,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: Colors.green.withValues(alpha: 0.4),
-          width: 1.2,
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double buttonHPad = screenWidth * 0.045;
+    final double buttonVPad = screenWidth * 0.022;
+    final double buttonFontSize = screenWidth * 0.040;
+    return Center(
+      child: Container(
+        height: 130,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.green.withValues(alpha: 0.4),
+            width: 1.2,
+          ),
+          gradient: const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFE8FBE9), Color(0xFFD9F5DA)],
+          ),
         ),
-        gradient: const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Color(0xFFE8FBE9), Color(0xFFD9F5DA)],
-        ),
-      ),
-      child: Stack(
-        children: [
-          // 🌊 Waves Background
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: AnimatedBuilder(
-                animation: _HydrationWaveController.of(context),
-                builder: (context, _) {
-                  return CustomPaint(
-                    painter: OceanWavePainter(
-                      _HydrationWaveController.of(context).value,
-                    ),
-                  );
-                },
+        child: Stack(
+          children: [
+            // Waves Background
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: AnimatedBuilder(
+                  animation: _HydrationWaveController.of(context),
+                  builder: (context, _) {
+                    return CustomPaint(
+                      painter: OceanWavePainter(
+                        _HydrationWaveController.of(context).value,
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-          ),
 
-          // 📌 Main content
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Hydration",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+            // Main content
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        "Hydration",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const Spacer(),
+
+                      Text(
+                        "${remainingLiters.toStringAsFixed(1)}ltr Remaining",
+                        style: TextStyle(
+                          fontSize: screenWidth * 0.025,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 14),
+                  Spacer(),
 
-                // Row with button + remaining text
-                Row(
-                  children: [
-                    // 🟩 Add Water Button
-                    GestureDetector(
-                      onTap: onAddWater,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18,
-                          vertical: 9,
+                  // button
+                  GestureDetector(
+                    onTap: onAddWater,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: buttonHPad,
+                        vertical: buttonVPad,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF3DBE57), Color(0xFF5EDB72)],
                         ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF3DBE57), Color(0xFF5EDB72)],
-                          ),
-                        ),
-                        child: const Text(
-                          "Add Water",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      ),
+                      child: Text(
+                        "Add Water",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: buttonFontSize,
                         ),
                       ),
                     ),
-
-                    const Spacer(),
-
-                    Text(
-                      "${remainingLiters.toStringAsFixed(1)}ltr Remaining",
-                      style: const TextStyle(
-                        fontSize: 15,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
