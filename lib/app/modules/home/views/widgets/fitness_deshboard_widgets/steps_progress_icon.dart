@@ -56,23 +56,28 @@ class StepIconPainter extends CustomPainter {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width * 0.46;
 
-    // ---------- RED ARC ----------
+    // ---------- GRADIENT ARC ----------
+    final arcRect = Rect.fromCircle(center: center, radius: radius);
+
     final arcPaint = Paint()
-      ..color = const Color(0xffB60015)
+      ..shader = SweepGradient(
+        startAngle: -pi / 2,
+        endAngle: 2 * pi - pi / 2,
+        colors: [
+          const Color.fromARGB(255, 234, 137, 137),
+          const Color(0xFFB60015),
+        ],
+        stops: const [0.0, 1.0],
+        transform: GradientRotation(-pi / 2),
+      ).createShader(arcRect)
       ..strokeWidth = size.width * 0.12
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    const startAngle = 1.15 * pi;
+    const startAngle = -pi / 2;
     const sweepAngle = 1.55 * pi;
 
-    canvas.drawArc(
-      Rect.fromCircle(center: center, radius: radius),
-      startAngle,
-      sweepAngle,
-      false,
-      arcPaint,
-    );
+    canvas.drawArc(arcRect, startAngle, sweepAngle, false, arcPaint);
 
     // ---------- ROAD ----------
     final roadWidth = size.width * 0.22;
@@ -115,13 +120,10 @@ class StepIconPainter extends CustomPainter {
       y += totalLength;
     }
 
-    // ---------- WALKING FOOT ----------
-    const double footSize = 32;
-
+    // ---------- WALKING FOOT  ----------
+    const double footSize = 24;
     final footStart = roadTop + dashLength;
     final footEnd = roadTop + roadHeight - dashLength;
-
-    // REVERSE MOVEMENT
     final footY = footStart + (footEnd - footStart) * rev;
 
     // SHADOW
@@ -138,7 +140,7 @@ class StepIconPainter extends CustomPainter {
       Offset(center.dx - shadow.width / 2 + 2, footY - shadow.height / 2 + 5),
     );
 
-    // FOOT
+    // FOOT (emoji, black)
     final painter = TextPainter(
       text: const TextSpan(
         text: "👣",

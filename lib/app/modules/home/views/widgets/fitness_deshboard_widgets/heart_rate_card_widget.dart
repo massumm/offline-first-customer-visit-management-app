@@ -57,7 +57,10 @@ class _HeartRateCardState extends State<HeartRateCard>
             width: 1.1,
           ),
           gradient: const LinearGradient(
-            colors: [Color(0xffE8F1FD), Color.fromARGB(255, 198, 221, 248)],
+            colors: [
+              Color.fromARGB(255, 236, 242, 251),
+              Color.fromARGB(255, 198, 221, 248),
+            ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
