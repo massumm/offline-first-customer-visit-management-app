@@ -5,6 +5,7 @@ import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/models/exercise_model.dart';
 import 'package:icon/app/modules/activity_tracker/views/widgets/routines_card.dart';
+import 'package:icon/app/modules/activity_tracker/views/widgets/workout_image_widget.dart';
 import 'package:icon/app/modules/full_body_tracker/utils/theme_helpers.dart';
 import 'package:icon/app/modules/weekly_routine/utils/enums/equipment_type_enum.dart';
 
@@ -32,16 +33,7 @@ class ScheduledExerciseCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Container(
-            height: 76,
-            width: 76,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              color: ThemeHelpers.secondaryCardColor,
-            ),
-            child: Image.asset(exercise.lightAsset, fit: BoxFit.contain),
-          ),
+          WorkoutImageWidget(imageAsset: exercise.lightAsset),
           12.width,
           Expanded(
             child: Column(
@@ -81,3 +73,4 @@ class ScheduledExerciseCard extends StatelessWidget {
     );
   }
 }
+

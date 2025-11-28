@@ -2,75 +2,144 @@
 class Assets {
   Assets._();
 
-  static const String activityObjectivesCircleInsideTriangle = 'assets/svg/fitness_report/activity_objectives/circle_inside_triangle.svg';
-  static const String activityObjectivesCircleInsideTriangleDark = 'assets/svg/fitness_report/activity_objectives/circle_inside_triangle_dark.svg';
-  static const String activityObjectivesDailyStepGoal = 'assets/svg/fitness_report/activity_objectives/daily_step_goal.svg';
-  static const String activityObjectivesIntensityLevelCircular = 'assets/svg/fitness_report/activity_objectives/intensity_level_circular.svg';
-  static const String activityObjectivesPreferredActivitiesCircular = 'assets/svg/fitness_report/activity_objectives/preferred_activities_circular.svg';
-  static const String activityObjectivesPrimaryGoalCircular = 'assets/svg/fitness_report/activity_objectives/primary_goal_circular.svg';
-  static const String activityObjectivesResistanceTrainingCircular = 'assets/svg/fitness_report/activity_objectives/resistance_training_circular.svg';
-  static const String activityObjectivesRunningCircular = 'assets/svg/fitness_report/activity_objectives/running_circular.svg';
-  static const String activityObjectivesTrainingFocusCircular = 'assets/svg/fitness_report/activity_objectives/training_focus_circular.svg';
-  static const String activityObjectivesTrainingFreqCircular = 'assets/svg/fitness_report/activity_objectives/training_freq_circular.svg';
-  static const String activityObjectivesTriangle = 'assets/svg/fitness_report/activity_objectives/triangle.svg';
-  static const String activityObjectivesTriangleDark = 'assets/svg/fitness_report/activity_objectives/triangle_dark.svg';
-  static const String activityObjectivesWorkoutDurationCircular = 'assets/svg/fitness_report/activity_objectives/workout_duration_circular.svg';
-  static const String activityObjectivesYogaCircular = 'assets/svg/fitness_report/activity_objectives/yoga_circular.svg';
-  static const String activityTrackerActiveMinutes = 'assets/svg/activity_tracker/active_minutes.svg';
-  static const String activityTrackerCaloriesBurned = 'assets/svg/activity_tracker/calories_burned.svg';
-  static const String activityTrackerDeleteIcon = 'assets/svg/activity_tracker/delete_icon.svg';
-  static const String activityTrackerDropdownIcon = 'assets/svg/activity_tracker/dropdown_icon.svg';
-  static const String activityTrackerDropdownUpIcon = 'assets/svg/activity_tracker/dropdown_up_icon.svg';
-  static const String activityTrackerEditIcon = 'assets/svg/activity_tracker/edit_icon.svg';
-  static const String activityTrackerGainMuscle = 'assets/svg/activity_tracker/gain_muscle.svg';
-  static const String activityTrackerGym = 'assets/svg/activity_tracker/gym.svg';
-  static const String activityTrackerHeartRate = 'assets/svg/activity_tracker/heart_rate.svg';
-  static const String activityTrackerProgressDown = 'assets/svg/activity_tracker/progress_down.svg';
-  static const String activityTrackerProgressNone = 'assets/svg/activity_tracker/progress_none.svg';
-  static const String activityTrackerProgressUp = 'assets/svg/activity_tracker/progress_up.svg';
-  static const String activityTrackerRestRecovery = 'assets/svg/activity_tracker/rest_recovery.svg';
-  static const String activityTrackerRoutines = 'assets/svg/activity_tracker/routines.svg';
-  static const String activityTrackerSteps = 'assets/svg/activity_tracker/steps.svg';
-  static const String bodyFatBodyFatHigh = 'assets/images/body_fat/body-fat-high.png';
-  static const String bodyFatBodyFatLow = 'assets/images/body_fat/body-fat-low.png';
-  static const String bodyFatBodyFatModerate = 'assets/images/body_fat/body-fat-moderate.png';
-  static const String bodyFatBodyFatVeryLow = 'assets/images/body_fat/body-fat-very-low.png';
-  static const String commonEnergyCircular = 'assets/svg/common/energy_circular.svg';
-  static const String congratulationsCongo = 'assets/svg/fitness_report/congratulations/congo.svg';
-  static const String congratulationsCongoDark = 'assets/svg/fitness_report/congratulations/congo_dark.svg';
-  static const String dailyGoalsCalorieIntakeGoal = 'assets/svg/fitness_report/daily_goals/calorie_intake_goal.svg';
-  static const String dailyGoalsMoodReflectionGoal = 'assets/svg/fitness_report/daily_goals/mood_reflection_goal.svg';
-  static const String dailyGoalsRepairGoal = 'assets/svg/fitness_report/daily_goals/repair_goal.svg';
-  static const String dailyGoalsSleepGoal = 'assets/svg/fitness_report/daily_goals/sleep_goal.svg';
-  static const String dailyGoalsStepGoal = 'assets/svg/fitness_report/daily_goals/step_goal.svg';
-  static const String dailyGoalsWaterGoal = 'assets/svg/fitness_report/daily_goals/water_goal.svg';
-  static const String dailyGoalsWorkoutDuration = 'assets/svg/fitness_report/daily_goals/workout_duration.svg';
-  static const String fullBodyTrackerBarbellSquat = 'assets/images/full_body_tracker/barbell_squat.png';
-  static const String fullBodyTrackerBarbellSquatDark = 'assets/images/full_body_tracker/barbell_squat_dark.png';
-  static const String fullBodyTrackerDeadlift = 'assets/images/full_body_tracker/deadlift.png';
-  static const String fullBodyTrackerDeadliftDark = 'assets/images/full_body_tracker/deadlift_dark.png';
-  static const String fullBodyTrackerDumbbellSquat = 'assets/images/full_body_tracker/dumbbell_squat.png';
-  static const String fullBodyTrackerDumbbellSquatDark = 'assets/images/full_body_tracker/dumbbell_squat_dark.png';
-  static const String fullBodyTrackerResistanceBand = 'assets/images/full_body_tracker/resistance_band.png';
-  static const String fullBodyTrackerResistanceBandDark = 'assets/images/full_body_tracker/resistance_band_dark.png';
-  static const String fullBodyTrackerWalkingLunges = 'assets/images/full_body_tracker/walking_lunges.png';
-  static const String fullBodyTrackerWalkingLungesDark = 'assets/images/full_body_tracker/walking_lunges_dark.png';
+  static const String activityObjectivesCircleInsideTriangle =
+      'assets/svg/fitness_report/activity_objectives/circle_inside_triangle.svg';
+  static const String activityObjectivesCircleInsideTriangleDark =
+      'assets/svg/fitness_report/activity_objectives/circle_inside_triangle_dark.svg';
+  static const String activityObjectivesDailyStepGoal =
+      'assets/svg/fitness_report/activity_objectives/daily_step_goal.svg';
+  static const String activityObjectivesIntensityLevelCircular =
+      'assets/svg/fitness_report/activity_objectives/intensity_level_circular.svg';
+  static const String activityObjectivesPreferredActivitiesCircular =
+      'assets/svg/fitness_report/activity_objectives/preferred_activities_circular.svg';
+  static const String activityObjectivesPrimaryGoalCircular =
+      'assets/svg/fitness_report/activity_objectives/primary_goal_circular.svg';
+  static const String activityObjectivesResistanceTrainingCircular =
+      'assets/svg/fitness_report/activity_objectives/resistance_training_circular.svg';
+  static const String activityObjectivesRunningCircular =
+      'assets/svg/fitness_report/activity_objectives/running_circular.svg';
+  static const String activityObjectivesTrainingFocusCircular =
+      'assets/svg/fitness_report/activity_objectives/training_focus_circular.svg';
+  static const String activityObjectivesTrainingFreqCircular =
+      'assets/svg/fitness_report/activity_objectives/training_freq_circular.svg';
+  static const String activityObjectivesTriangle =
+      'assets/svg/fitness_report/activity_objectives/triangle.svg';
+  static const String activityObjectivesTriangleDark =
+      'assets/svg/fitness_report/activity_objectives/triangle_dark.svg';
+  static const String activityObjectivesWorkoutDurationCircular =
+      'assets/svg/fitness_report/activity_objectives/workout_duration_circular.svg';
+  static const String activityObjectivesYogaCircular =
+      'assets/svg/fitness_report/activity_objectives/yoga_circular.svg';
+  static const String activityTrackerActiveMinutes =
+      'assets/svg/activity_tracker/active_minutes.svg';
+  static const String activityTrackerCaloriesBurned =
+      'assets/svg/activity_tracker/calories_burned.svg';
+  static const String activityTrackerCardioLog =
+      'assets/svg/activity_tracker/cardio_log.svg';
+  static const String activityTrackerDeleteIcon =
+      'assets/svg/activity_tracker/delete_icon.svg';
+  static const String activityTrackerDiagonalArrow =
+      'assets/svg/activity_tracker/diagonal_arrow.svg';
+  static const String activityTrackerDropdownIcon =
+      'assets/svg/activity_tracker/dropdown_icon.svg';
+  static const String activityTrackerDropdownUpIcon =
+      'assets/svg/activity_tracker/dropdown_up_icon.svg';
+  static const String activityTrackerEditIcon =
+      'assets/svg/activity_tracker/edit_icon.svg';
+  static const String activityTrackerGainMuscle =
+      'assets/svg/activity_tracker/gain_muscle.svg';
+  static const String activityTrackerGym =
+      'assets/svg/activity_tracker/gym.svg';
+  static const String activityTrackerHeartRate =
+      'assets/svg/activity_tracker/heart_rate.svg';
+  static const String activityTrackerLogWorkout =
+      'assets/svg/activity_tracker/log_workout.svg';
+  static const String activityTrackerProgressDown =
+      'assets/svg/activity_tracker/progress_down.svg';
+  static const String activityTrackerProgressNone =
+      'assets/svg/activity_tracker/progress_none.svg';
+  static const String activityTrackerProgressUp =
+      'assets/svg/activity_tracker/progress_up.svg';
+  static const String activityTrackerRepairLog =
+      'assets/svg/activity_tracker/repair_log.svg';
+  static const String activityTrackerRestRecovery =
+      'assets/svg/activity_tracker/rest_recovery.svg';
+  static const String activityTrackerRoutines =
+      'assets/svg/activity_tracker/routines.svg';
+  static const String activityTrackerSteps =
+      'assets/svg/activity_tracker/steps.svg';
+  static const String bodyFatBodyFatHigh =
+      'assets/images/body_fat/body-fat-high.png';
+  static const String bodyFatBodyFatLow =
+      'assets/images/body_fat/body-fat-low.png';
+  static const String bodyFatBodyFatModerate =
+      'assets/images/body_fat/body-fat-moderate.png';
+  static const String bodyFatBodyFatVeryLow =
+      'assets/images/body_fat/body-fat-very-low.png';
+  static const String commonEnergyCircular =
+      'assets/svg/common/energy_circular.svg';
+  static const String congratulationsCongo =
+      'assets/svg/fitness_report/congratulations/congo.svg';
+  static const String congratulationsCongoDark =
+      'assets/svg/fitness_report/congratulations/congo_dark.svg';
+  static const String dailyGoalsCalorieIntakeGoal =
+      'assets/svg/fitness_report/daily_goals/calorie_intake_goal.svg';
+  static const String dailyGoalsMoodReflectionGoal =
+      'assets/svg/fitness_report/daily_goals/mood_reflection_goal.svg';
+  static const String dailyGoalsRepairGoal =
+      'assets/svg/fitness_report/daily_goals/repair_goal.svg';
+  static const String dailyGoalsSleepGoal =
+      'assets/svg/fitness_report/daily_goals/sleep_goal.svg';
+  static const String dailyGoalsStepGoal =
+      'assets/svg/fitness_report/daily_goals/step_goal.svg';
+  static const String dailyGoalsWaterGoal =
+      'assets/svg/fitness_report/daily_goals/water_goal.svg';
+  static const String dailyGoalsWorkoutDuration =
+      'assets/svg/fitness_report/daily_goals/workout_duration.svg';
+  static const String fullBodyTrackerBarbellSquat =
+      'assets/images/full_body_tracker/barbell_squat.png';
+  static const String fullBodyTrackerBarbellSquatDark =
+      'assets/images/full_body_tracker/barbell_squat_dark.png';
+  static const String fullBodyTrackerDeadlift =
+      'assets/images/full_body_tracker/deadlift.png';
+  static const String fullBodyTrackerDeadliftDark =
+      'assets/images/full_body_tracker/deadlift_dark.png';
+  static const String fullBodyTrackerDumbbellSquat =
+      'assets/images/full_body_tracker/dumbbell_squat.png';
+  static const String fullBodyTrackerDumbbellSquatDark =
+      'assets/images/full_body_tracker/dumbbell_squat_dark.png';
+  static const String fullBodyTrackerResistanceBand =
+      'assets/images/full_body_tracker/resistance_band.png';
+  static const String fullBodyTrackerResistanceBandDark =
+      'assets/images/full_body_tracker/resistance_band_dark.png';
+  static const String fullBodyTrackerWalkingLunges =
+      'assets/images/full_body_tracker/walking_lunges.png';
+  static const String fullBodyTrackerWalkingLungesDark =
+      'assets/images/full_body_tracker/walking_lunges_dark.png';
   static const String homeCoach = 'assets/images/home/coach.png';
-  static const String homeNotificationIcon = 'assets/svg/home/notification_icon.svg';
-  static const String homeNotificationIconWithAlert = 'assets/svg/home/notification_icon_with_alert.svg';
+  static const String homeNotificationIcon =
+      'assets/svg/home/notification_icon.svg';
+  static const String homeNotificationIconWithAlert =
+      'assets/svg/home/notification_icon_with_alert.svg';
   static const String iconProfileFirst = 'assets/images/icon_profile/first.png';
-  static const String iconProfileFourth = 'assets/images/icon_profile/fourth.png';
-  static const String iconProfileSecond = 'assets/images/icon_profile/second.png';
+  static const String iconProfileFourth =
+      'assets/images/icon_profile/fourth.png';
+  static const String iconProfileSecond =
+      'assets/images/icon_profile/second.png';
   static const String iconProfileThird = 'assets/images/icon_profile/third.png';
   static const String imagesApple = 'assets/images/apple.png';
   static const String imagesBgGradiemt = 'assets/images/bg-gradiemt.png';
-  static const String imagesBgGradientCrop = 'assets/images/bg-gradient-crop.png';
+  static const String imagesBgGradientCrop =
+      'assets/images/bg-gradient-crop.png';
   static const String imagesBodyScanner = 'assets/images/body_scanner.png';
   static const String imagesFace = 'assets/images/face.png';
   static const String imagesFitbit = 'assets/images/fitbit.png';
-  static const String imagesFitnessReportFace = 'assets/images/fitness_report_face.png';
-  static const String imagesFitnessReportGradientFace = 'assets/images/fitness_report_gradient_face.png';
-  static const String imagesFitnessReportGradientFaceCopy = 'assets/images/fitness_report_gradient_face_copy.png';
+  static const String imagesFitnessReportFace =
+      'assets/images/fitness_report_face.png';
+  static const String imagesFitnessReportGradientFace =
+      'assets/images/fitness_report_gradient_face.png';
+  static const String imagesFitnessReportGradientFaceCopy =
+      'assets/images/fitness_report_gradient_face_copy.png';
   static const String imagesGarmin = 'assets/images/garmin.png';
   static const String imagesGoogle = 'assets/images/google.png';
   static const String imagesGridlineImage = 'assets/images/gridline_image.png';
@@ -81,67 +150,111 @@ class Assets {
   static const String imagesOnboarding1 = 'assets/images/onboarding-1.png';
   static const String imagesOnboarding2 = 'assets/images/onboarding-2.png';
   static const String imagesOnboarding3 = 'assets/images/onboarding-3.png';
-  static const String imagesRegisterButton = 'assets/images/register_button.png';
+  static const String imagesRegisterButton =
+      'assets/images/register_button.png';
   static const String imagesSplashIcon = 'assets/images/splash_icon.png';
-  static const String integrationSummaryWarning = 'assets/svg/fitness_report/integration_summary/warning.svg';
+  static const String integrationSummaryWarning =
+      'assets/svg/fitness_report/integration_summary/warning.svg';
   static const String jsonsProfileLoading = 'assets/jsons/profile_loading.json';
-  static const String mindsetAndMotivationMindsetFocus = 'assets/svg/fitness_report/mindset_and_motivation/mindset_focus.svg';
+  static const String mindsetAndMotivationMindsetFocus =
+      'assets/svg/fitness_report/mindset_and_motivation/mindset_focus.svg';
   static const String musclesBack = 'assets/svg/muscles/back.svg';
   static const String musclesFront = 'assets/svg/muscles/front.svg';
-  static const String nutritionObjectivesCurrentBodyFat = 'assets/svg/fitness_report/nutrition_objectives/current_body_fat.svg';
-  static const String nutritionObjectivesCurrentWeight = 'assets/svg/fitness_report/nutrition_objectives/current_weight.svg';
-  static const String nutritionObjectivesEnergyObjective = 'assets/svg/fitness_report/nutrition_objectives/energy_objective.svg';
-  static const String nutritionObjectivesGoalWeight = 'assets/svg/fitness_report/nutrition_objectives/goal_weight.svg';
-  static const String nutritionObjectivesHealthyHabits = 'assets/svg/fitness_report/nutrition_objectives/healthy_habits.svg';
-  static const String nutritionObjectivesHydrationGoal = 'assets/svg/fitness_report/nutrition_objectives/hydration_goal.svg';
-  static const String nutritionObjectivesMealConsistency = 'assets/svg/fitness_report/nutrition_objectives/meal_consistency.svg';
-  static const String nutritionObjectivesTargetBodyFat = 'assets/svg/fitness_report/nutrition_objectives/target_body_fat.svg';
-  static const String page1BodyFat = 'assets/svg/splash_screen_light/page_1/body_fat.svg';
-  static const String page1CurrentProgress = 'assets/svg/splash_screen_light/page_1/current_progress.svg';
-  static const String page1Duration = 'assets/svg/splash_screen_light/page_1/duration.svg';
-  static const String page1StrengthTraining = 'assets/svg/splash_screen_light/page_1/strength_training.svg';
-  static const String page1XpCompletion = 'assets/svg/splash_screen_light/page_1/xp_completion.svg';
-  static const String page2Performance = 'assets/svg/splash_screen_light/page_2/performance.svg';
-  static const String page2Progress = 'assets/svg/splash_screen_light/page_2/progress.svg';
-  static const String page2Steps = 'assets/svg/splash_screen_light/page_2/steps.svg';
+  static const String nutritionObjectivesCurrentBodyFat =
+      'assets/svg/fitness_report/nutrition_objectives/current_body_fat.svg';
+  static const String nutritionObjectivesCurrentWeight =
+      'assets/svg/fitness_report/nutrition_objectives/current_weight.svg';
+  static const String nutritionObjectivesEnergyObjective =
+      'assets/svg/fitness_report/nutrition_objectives/energy_objective.svg';
+  static const String nutritionObjectivesGoalWeight =
+      'assets/svg/fitness_report/nutrition_objectives/goal_weight.svg';
+  static const String nutritionObjectivesHealthyHabits =
+      'assets/svg/fitness_report/nutrition_objectives/healthy_habits.svg';
+  static const String nutritionObjectivesHydrationGoal =
+      'assets/svg/fitness_report/nutrition_objectives/hydration_goal.svg';
+  static const String nutritionObjectivesMealConsistency =
+      'assets/svg/fitness_report/nutrition_objectives/meal_consistency.svg';
+  static const String nutritionObjectivesTargetBodyFat =
+      'assets/svg/fitness_report/nutrition_objectives/target_body_fat.svg';
+  static const String page1BodyFat =
+      'assets/svg/splash_screen_light/page_1/body_fat.svg';
+  static const String page1CurrentProgress =
+      'assets/svg/splash_screen_light/page_1/current_progress.svg';
+  static const String page1Duration =
+      'assets/svg/splash_screen_light/page_1/duration.svg';
+  static const String page1StrengthTraining =
+      'assets/svg/splash_screen_light/page_1/strength_training.svg';
+  static const String page1XpCompletion =
+      'assets/svg/splash_screen_light/page_1/xp_completion.svg';
+  static const String page2Performance =
+      'assets/svg/splash_screen_light/page_2/performance.svg';
+  static const String page2Progress =
+      'assets/svg/splash_screen_light/page_2/progress.svg';
+  static const String page2Steps =
+      'assets/svg/splash_screen_light/page_2/steps.svg';
   static const String page3Bg = 'assets/svg/splash_screen_light/page_3/bg.svg';
-  static const String page3Ratings = 'assets/svg/splash_screen_light/page_3/ratings.svg';
-  static const String page3Steps = 'assets/svg/splash_screen_light/page_3/steps.svg';
-  static const String splashScreenDarkBg = 'assets/svg/splash_screen_dark/bg.svg';
-  static const String splashScreenDarkPage1BodyFatGoal = 'assets/images/splash_screen_dark/page_1_body_fat_goal.png';
-  static const String splashScreenDarkPage1CurrentProgress = 'assets/svg/splash_screen_dark/page_1_current_progress.svg';
-  static const String splashScreenDarkPage1Duration = 'assets/images/splash_screen_dark/page_1_duration.png';
-  static const String splashScreenDarkPage1StrengthTraining = 'assets/svg/splash_screen_dark/page_1_strength_training.svg';
-  static const String splashScreenDarkPage1XpCompletion = 'assets/images/splash_screen_dark/page_1_xp_completion.png';
-  static const String splashScreenDarkPage2Performance = 'assets/svg/splash_screen_dark/page_2_performance.svg';
-  static const String splashScreenDarkPage2Progress = 'assets/svg/splash_screen_dark/page_2_progress.svg';
-  static const String splashScreenDarkPage2Steps = 'assets/svg/splash_screen_dark/page_2_steps.svg';
-  static const String splashScreenDarkPage3Bg = 'assets/svg/splash_screen_dark/page_3_bg.svg';
-  static const String splashScreenDarkPage3Ratings = 'assets/svg/splash_screen_dark/page_3_ratings.svg';
-  static const String splashScreenDarkPage3Steps = 'assets/images/splash_screen_dark/page_3_steps.png';
-  static const String splashScreenLightBg = 'assets/svg/splash_screen_light/bg.svg';
-  static const String splashScreenLightPage1BodyFatGoal = 'assets/images/splash_screen_light/page_1_body_fat_goal.png';
-  static const String splashScreenLightPage1Duration = 'assets/images/splash_screen_light/page_1_duration.png';
-  static const String splashScreenLightPage1XpCompletion = 'assets/images/splash_screen_light/page_1_xp_completion.png';
-  static const String splashScreenLightPage3Steps = 'assets/images/splash_screen_light/page_3_steps.png';
+  static const String page3Ratings =
+      'assets/svg/splash_screen_light/page_3/ratings.svg';
+  static const String page3Steps =
+      'assets/svg/splash_screen_light/page_3/steps.svg';
+  static const String splashScreenDarkBg =
+      'assets/svg/splash_screen_dark/bg.svg';
+  static const String splashScreenDarkPage1BodyFatGoal =
+      'assets/images/splash_screen_dark/page_1_body_fat_goal.png';
+  static const String splashScreenDarkPage1CurrentProgress =
+      'assets/svg/splash_screen_dark/page_1_current_progress.svg';
+  static const String splashScreenDarkPage1Duration =
+      'assets/images/splash_screen_dark/page_1_duration.png';
+  static const String splashScreenDarkPage1StrengthTraining =
+      'assets/svg/splash_screen_dark/page_1_strength_training.svg';
+  static const String splashScreenDarkPage1XpCompletion =
+      'assets/images/splash_screen_dark/page_1_xp_completion.png';
+  static const String splashScreenDarkPage2Performance =
+      'assets/svg/splash_screen_dark/page_2_performance.svg';
+  static const String splashScreenDarkPage2Progress =
+      'assets/svg/splash_screen_dark/page_2_progress.svg';
+  static const String splashScreenDarkPage2Steps =
+      'assets/svg/splash_screen_dark/page_2_steps.svg';
+  static const String splashScreenDarkPage3Bg =
+      'assets/svg/splash_screen_dark/page_3_bg.svg';
+  static const String splashScreenDarkPage3Ratings =
+      'assets/svg/splash_screen_dark/page_3_ratings.svg';
+  static const String splashScreenDarkPage3Steps =
+      'assets/images/splash_screen_dark/page_3_steps.png';
+  static const String splashScreenLightBg =
+      'assets/svg/splash_screen_light/bg.svg';
+  static const String splashScreenLightPage1BodyFatGoal =
+      'assets/images/splash_screen_light/page_1_body_fat_goal.png';
+  static const String splashScreenLightPage1Duration =
+      'assets/images/splash_screen_light/page_1_duration.png';
+  static const String splashScreenLightPage1XpCompletion =
+      'assets/images/splash_screen_light/page_1_xp_completion.png';
+  static const String splashScreenLightPage3Steps =
+      'assets/images/splash_screen_light/page_3_steps.png';
   static const String svgAppIconWhite = 'assets/svg/app_icon_white.svg';
   static const String svgBgGradientColor = 'assets/svg/bg-gradient-color.svg';
-  static const String svgBgGradientColorCropped = 'assets/svg/bg-gradient-color-cropped.svg';
+  static const String svgBgGradientColorCropped =
+      'assets/svg/bg-gradient-color-cropped.svg';
   static const String svgCurrentStress = 'assets/svg/current_stress.svg';
-  static const String svgDeleteDialoguleIcon = 'assets/svg/delete_dialogule_icon.svg';
+  static const String svgDeleteDialoguleIcon =
+      'assets/svg/delete_dialogule_icon.svg';
+  static const String svgDotIcon = 'assets/svg/dot-icon.svg';
   static const String svgGoogleIcon = 'assets/svg/google-icon.svg';
   static const String svgIconLogoDark = 'assets/svg/icon-logo-dark.svg';
   static const String svgIconLogoPink = 'assets/svg/icon-logo-pink.svg';
   static const String svgLevel7 = 'assets/svg/level-7.svg';
-  static const String svgLifestyleConsiderations = 'assets/svg/lifestyle_considerations.svg';
+  static const String svgLifestyleConsiderations =
+      'assets/svg/lifestyle_considerations.svg';
   static const String svgLogo = 'assets/svg/logo.svg';
   static const String svgMorningIcon = 'assets/svg/morning_icon.svg';
   static const String svgOnboarding1 = 'assets/svg/onboarding-1.svg';
   static const String svgOnboarding2 = 'assets/svg/onboarding-2.svg';
   static const String svgOnboarding3 = 'assets/svg/onboarding-3.svg';
-  static const String svgOnboardingExpertIcons = 'assets/svg/onboarding-expert-icons.svg';
+  static const String svgOnboardingExpertIcons =
+      'assets/svg/onboarding-expert-icons.svg';
   static const String svgOnboardingGoals = 'assets/svg/onboarding-goals.svg';
-  static const String svgOnboardingProgress = 'assets/svg/onboarding-progress.svg';
+  static const String svgOnboardingProgress =
+      'assets/svg/onboarding-progress.svg';
   static const String svgPasswordSuccess = 'assets/svg/password_success.svg';
   static const String svgRecoveryDays = 'assets/svg/recovery_days.svg';
   static const String svgRecoveryFocus = 'assets/svg/recovery_focus.svg';
@@ -152,5 +265,4 @@ class Assets {
   static const String svgStar = 'assets/svg/star.svg';
   static const String svgTargetStress = 'assets/svg/target_stress.svg';
   static const String svgUserCircularIcon = 'assets/svg/user-circular-icon.svg';
-
 }
