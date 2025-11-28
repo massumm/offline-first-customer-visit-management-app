@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/theme/icon_light_theme.dart';
-import 'package:icon/app/routes/app_pages.dart';
 import 'package:icon/app/data/local/preference/store/user_store.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
@@ -19,6 +18,7 @@ import '../widgets/header.dart';
 import '../widgets/progress_ring.dart';
 import '../widgets/trainer_info_card.dart';
 import 'widgets/fitness_deshboard_widgets/fitness_deshboard.dart';
+import 'widgets/health_deshboard_widgets/health_deshboard_widget.dart';
 
 class HomeView extends BaseView<HomeController> {
   const HomeView({super.key});
@@ -53,6 +53,8 @@ class HomeView extends BaseView<HomeController> {
                     GoalsCard(onPressed: () {}),
                     16.height,
                     FitnessDashboard(),
+                    16.height,
+                    HealthDashboard(),
                     16.height,
                     CommunityCard(color: cs.secondary),
                     58.height,
