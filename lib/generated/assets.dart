@@ -68,6 +68,28 @@ class Assets {
       'assets/svg/activity_tracker/routines.svg';
   static const String activityTrackerSteps =
       'assets/svg/activity_tracker/steps.svg';
+  static const String appSettingsAccessibility =
+      'assets/svg/app_settings/accessibility.svg';
+  static const String appSettingsActiveSessions =
+      'assets/svg/app_settings/active_sessions.svg';
+  static const String appSettingsAppIntegration =
+      'assets/svg/app_settings/app_integration.svg';
+  static const String appSettingsDeleteAccount =
+      'assets/svg/app_settings/delete_account.svg';
+  static const String appSettingsExportData =
+      'assets/svg/app_settings/export_data.svg';
+  static const String appSettingsFeedback =
+      'assets/svg/app_settings/feedback.svg';
+  static const String appSettingsHelpAndSupport =
+      'assets/svg/app_settings/help_and_support.svg';
+  static const String appSettingsPrivacy =
+      'assets/svg/app_settings/privacy.svg';
+  static const String appSettingsRegionAndLanguage =
+      'assets/svg/app_settings/region_and_language.svg';
+  static const String appSettingsTwoFactorAuthentication =
+      'assets/svg/app_settings/two_factor_authentication.svg';
+  static const String appSettingsUnitsAndPreference =
+      'assets/svg/app_settings/units_and_preference.svg';
   static const String bodyFatBodyFatHigh =
       'assets/images/body_fat/body-fat-high.png';
   static const String bodyFatBodyFatLow =

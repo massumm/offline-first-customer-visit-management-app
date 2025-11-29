@@ -2,6 +2,19 @@ import 'package:get/get.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
+import '../modules/app_settings/bindings/app_settings_binding.dart';
+import '../modules/app_settings/views/app_settings_view.dart';
+import '../modules/app_settings/views/region_and_language_view.dart';
+import '../modules/app_settings/views/units_and_preferrences_view.dart';
+import '../modules/app_settings/views/accessibility_view.dart';
+import '../modules/app_settings/views/two_factor_authentication_view.dart';
+import '../modules/app_settings/views/app_integration_view.dart';
+import '../modules/app_settings/views/active_sessions_view.dart';
+import '../modules/app_settings/views/feedback_view.dart';
+import '../modules/app_settings/views/help_and_support_view.dart';
+import '../modules/app_settings/views/export_data_view.dart';
+import '../modules/app_settings/views/delete_account_view.dart';
+import '../modules/app_settings/views/privacy_view.dart';
 import '../modules/fitness_report/bindings/fitness_report_binding.dart';
 import '../modules/fitness_report/views/report_display_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
@@ -159,6 +172,66 @@ class AppPages {
       name: _Paths.WORKOUT_HISTORY,
       page: () => WorkoutHistoryView(),
       binding: WorkoutHistoryBinding(),
+    ),
+    GetPage(
+      name: _Paths.APP_SETTINGS,
+      page: () => const AppSettingsView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.REGION_AND_LANGUAGE,
+      page: () => const RegionAndLanguageView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.UNITS_AND_PREFERRENCES,
+      page: () => const UnitsAndPreferrencesView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.ACCESSIBILITY,
+      page: () => const AccessibilityView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.TWO_FACTOR_AUTHENTICATION,
+      page: () => const TwoFactorAuthenticationView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.APP_INTEGRATION,
+      page: () => const AppIntegrationView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.ACTIVE_SESSIONS,
+      page: () => const ActiveSessionsView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.FEEDBACK,
+      page: () => const FeedbackView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.HELP_AND_SUPPORT,
+      page: () => const HelpAndSupportView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.EXPORT_DATA,
+      page: () => const ExportDataView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.DELETE_ACCOUNT,
+      page: () => const DeleteAccountView(),
+      binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.PRIVACY,
+      page: () => const PrivacyView(),
+      binding: AppSettingsBinding(),
     ),
   ];
 }

@@ -101,7 +101,7 @@ flutter:
     - assets/svg/fitness_report/mindset_and_motivation/
     - assets/svg/fitness_report/nutrition_objectives/
     - assets/svg/activity_tracker/
-
+    - assets/svg/app_settings/
 
   # fonts:
   #   - family: Schyler
