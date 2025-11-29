@@ -13,10 +13,15 @@ class WeeklyRoutineController extends BaseController {
   final routines = RxList<RoutineModel>([]);
   final availableExercises = RxList<ExerciseModel>([]);
   final weeks = RxList<WeekModel>([]);
+  final deletingWorkouts = <String>{}.obs;
 
   final selectedDay = WeekDays.sunday.obs;
   final searchQuery = ''.obs;
   final selectedWeek = 0.obs;
+
+  // For undo functionality
+  WeekModel? _deletedWeek;
+  int? _deletedIndex;
 
   List<RoutineModel> get currentWeekRoutines => 
     weeks.isNotEmpty ? weeks[selectedWeek.value].routines : [];
@@ -147,5 +152,66 @@ class WeeklyRoutineController extends BaseController {
     return currentRoutine.workOuts.any(
       (existingExercise) => existingExercise.name == exercise.name,
     );
+  }
+
+  void deleteWorkout(ExerciseModel workout) {
+    final currentWeek = weeks[selectedWeek.value];
+    final currentRoutine = currentWeek.routines.firstWhereOrNull(
+      (routine) => routine.day == selectedDay.value,
+    );
+    
+    if (currentRoutine != null) {
+      currentRoutine.workOuts.removeWhere((w) => w.name == workout.name);
+      // Update the weeks list to trigger UI refresh
+      weeks.refresh();
+      CustomToast.showSuccessToast('Workout deleted successfully');
+    }
+  }
+
+  WeekModel? deleteWeek(int index) {
+    if (weeks.length <= 1) {
+      CustomToast.showErrorToast('Cannot delete the last week');
+      return null;
+    }
+
+    if (index < 0 || index >= weeks.length) {
+      CustomToast.showErrorToast('Invalid week index');
+      return null;
+    }
+
+    // Store for undo functionality
+    _deletedWeek = weeks[index];
+    _deletedIndex = index;
+
+    weeks.removeAt(index);
+    
+    // Adjust selectedWeek index
+    if (weeks.isEmpty) {
+      // This shouldn't happen due to the length check above, but handle it
+      selectedWeek.value = 0;
+    } else if (selectedWeek.value == index) {
+      // Deleted the currently selected week, select first week
+      selectedWeek.value = 0;
+    } else if (selectedWeek.value > index) {
+      // Deleted a week before the selected one, decrement selectedWeek
+      selectedWeek.value = selectedWeek.value - 1;
+    } else if (selectedWeek.value >= weeks.length) {
+      // Selected week is now out of bounds, select last week
+      selectedWeek.value = weeks.length - 1;
+    }
+
+    return _deletedWeek;
+  }
+
+  void undoWeek() {
+    if (_deletedWeek != null && _deletedIndex != null) {
+      weeks.insert(_deletedIndex!, _deletedWeek!);
+      
+      // Select the restored week
+      selectedWeek.value = _deletedIndex!;
+      
+      _deletedWeek = null;
+      _deletedIndex = null;
+    }
   }
 }
