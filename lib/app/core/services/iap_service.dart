@@ -18,7 +18,8 @@ class IAPService extends GetxService {
   late StreamSubscription<List<PurchaseDetails>> _subscription;
   
   // Product IDs
-  static const String monthlySubscriptionId = 'monthly_subscription_tier1';
+  static const String monthlySubscriptionId = 'Icon_Credit_100';
+      // 'monthly_subscription_tier1';
   
   // Available products
   final RxList<ProductDetails> _products = <ProductDetails>[].obs;
