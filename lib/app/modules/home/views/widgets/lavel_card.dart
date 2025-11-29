@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/progress_bar/gradient_circular_progress_bar.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
