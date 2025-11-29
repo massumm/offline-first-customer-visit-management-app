@@ -19,6 +19,7 @@ import '../widgets/progress_ring.dart';
 import '../widgets/trainer_info_card.dart';
 import 'widgets/fitness_deshboard_widgets/fitness_deshboard.dart';
 import 'widgets/health_deshboard_widgets/health_deshboard_widget.dart';
+import 'widgets/lavel_card.dart';
 
 class HomeView extends BaseView<HomeController> {
   const HomeView({super.key});
@@ -55,6 +56,8 @@ class HomeView extends BaseView<HomeController> {
                     FitnessDashboard(),
                     16.height,
                     HealthDashboard(),
+                    16.height,
+                    LevelCard(label: 'Level 1'),
                     16.height,
                     CommunityCard(color: cs.secondary),
                     58.height,
