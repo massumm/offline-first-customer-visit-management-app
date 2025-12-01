@@ -111,8 +111,8 @@ class HomeView extends BaseView<HomeController> {
   Widget? bottomNavigationBar(BuildContext context) => Container(
     color: AppColors.lightBgColor,
     child: Padding(
-      padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
-      child: IconicNavBar(
+      padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+      child: IconicNavWrapper(
         currentIndex: controller.selectedNavIndex.value,
         onTap: (index) {
           controller.selectedNavIndex.value = index;
@@ -122,11 +122,11 @@ class HomeView extends BaseView<HomeController> {
   );
 }
 
-class IconicNavBar extends StatelessWidget {
+class IconicNavWrapper extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  const IconicNavBar({
+  const IconicNavWrapper({
     super.key,
     required this.currentIndex,
     required this.onTap,
@@ -134,73 +134,88 @@ class IconicNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 85,
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(24.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 12,
-            offset: const Offset(0, -4),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return SizedBox(
+      height: 80,
+      child: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
-          _navItem(icon: Icons.home_outlined, label: "Home", index: 0),
-          _navItem(
-            icon: Icons.show_chart_outlined,
-            label: "Analytic",
-            index: 1,
-          ),
-
-          /// CENTER BUTTON
-          GestureDetector(
-            onTap: () => onTap(2),
+          /// NAV BAR
+          Positioned(
+            bottom: 0,
+            left: 20,
+            right: 20,
             child: Container(
-              width: 62,
-              height: 62,
+              height: 70,
               decoration: BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.25),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _navItem(icon: Icons.home_outlined, label: "Home", index: 0),
+                  _navItem(
+                    icon: Icons.show_chart_outlined,
+                    label: "Analytic",
+                    index: 1,
+                  ),
+
+                  /// EMPTY SPACE FOR CENTER BUTTON
+                  const SizedBox(width: 62),
+
+                  _navItem(
+                    icon: Icons.group_outlined,
+                    label: "Community",
+                    index: 3,
+                  ),
+
+                  /// PROFILE
+                  GestureDetector(
+                    onTap: () => onTap(4),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 14,
+                          backgroundImage: AssetImage(Assets.imagesMishIcon),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          "Profile",
+                          style: TextStyle(fontSize: 11, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              ),
-              child: Center(
-                child: SuperImage(Assets.svgIcon),
               ),
             ),
           ),
 
-          _navItem(icon: Icons.group_outlined, label: "Community", index: 3),
+          /// CENTER FLOATING BUTTON
+          Positioned(
+            top: 0,
+            child: GestureDetector(
+              onTap: () => onTap(2),
+              child: Container(
+                width: 76,
+                height: 76,
+                decoration: BoxDecoration(
+                  color: AppColors.lightBgColor,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.black,
+                    width: 12,
+                  ),
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    Assets.svgIcon,
 
-          /// PROFILE IMAGE
-          GestureDetector(
-            onTap: () => onTap(4),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 14,
-                  backgroundImage: AssetImage(
-                    Assets.imagesMishIcon
-                  )
+                  ),
                 ),
-                const SizedBox(height: 4),
-                const Text(
-                  "Profile",
-                  style: TextStyle(fontSize: 11, color: Colors.white),
-                ),
-              ],
+              ),
             ),
           ),
         ],
