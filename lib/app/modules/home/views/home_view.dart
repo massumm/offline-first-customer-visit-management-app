@@ -17,6 +17,7 @@ import '../widgets/goals_card.dart';
 import '../widgets/header.dart';
 import '../widgets/progress_ring.dart';
 import '../widgets/trainer_info_card.dart';
+import 'widgets/community_spotlight_card.dart';
 import 'widgets/fitness_deshboard_widgets/fitness_deshboard.dart';
 import 'widgets/health_deshboard_widgets/health_deshboard_widget.dart';
 import 'widgets/lavel_card.dart';
@@ -59,8 +60,8 @@ class HomeView extends BaseView<HomeController> {
                     16.height,
                     LevelCard(label: 'Level 1'),
                     16.height,
-                    CommunityCard(color: cs.secondary),
-                    58.height,
+                    CommunitySpotlightCard(),
+                    16.height,
                   ],
                 ),
               ),
