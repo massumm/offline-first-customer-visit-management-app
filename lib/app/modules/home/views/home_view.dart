@@ -5,6 +5,7 @@ import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/theme/icon_light_theme.dart';
+import 'package:icon/app/core/widgets/super_image.dart';
 import 'package:icon/app/data/local/preference/store/user_store.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
@@ -31,7 +32,6 @@ class HomeView extends BaseView<HomeController> {
       data: IconLightTheme.androidLightTheme,
       child: Builder(
         builder: (context) {
-          final cs = Theme.of(context).colorScheme;
           return Scaffold(
             body: SafeArea(
               child: SingleChildScrollView(
@@ -66,44 +66,6 @@ class HomeView extends BaseView<HomeController> {
                 ),
               ),
             ),
-            bottomNavigationBar: Obx(() {
-              return NavigationBar(
-                backgroundColor: cs.surface,
-                selectedIndex: controller.selectedNavIndex.value,
-                onDestinationSelected: (index) {
-                  controller.selectedNavIndex.value = index;
-                  if (index == 2) {
-                    final trainerId = UserStore.to.trainerId ?? 1;
-                    Get.toNamed(
-                      Routes.ICON_CHAT,
-                      arguments: {'trainerId': trainerId},
-                    );
-                  }
-                },
-                destinations: const [
-                  NavigationDestination(
-                    icon: Icon(Icons.dashboard_outlined),
-                    selectedIcon: Icon(Icons.dashboard),
-                    label: 'Home',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.analytics_outlined),
-                    selectedIcon: Icon(Icons.analytics),
-                    label: 'Analysis',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.chat_outlined),
-                    selectedIcon: Icon(Icons.chat),
-                    label: 'Chat',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.person_outline),
-                    selectedIcon: Icon(Icons.person),
-                    label: 'Profile',
-                  ),
-                ],
-              );
-            }),
           );
         },
       ),
@@ -144,6 +106,133 @@ class HomeView extends BaseView<HomeController> {
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) => null;
+
+  @override
+  Widget? bottomNavigationBar(BuildContext context) => Container(
+    color: AppColors.lightBgColor,
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+      child: IconicNavBar(
+        currentIndex: controller.selectedNavIndex.value,
+        onTap: (index) {
+          controller.selectedNavIndex.value = index;
+        },
+      ),
+    ),
+  );
+}
+
+class IconicNavBar extends StatelessWidget {
+  final int currentIndex;
+  final Function(int) onTap;
+
+  const IconicNavBar({
+    super.key,
+    required this.currentIndex,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 85,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(24.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 12,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _navItem(icon: Icons.home_outlined, label: "Home", index: 0),
+          _navItem(
+            icon: Icons.show_chart_outlined,
+            label: "Analytic",
+            index: 1,
+          ),
+
+          /// CENTER BUTTON
+          GestureDetector(
+            onTap: () => onTap(2),
+            child: Container(
+              width: 62,
+              height: 62,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Center(
+                child: SuperImage(Assets.svgIcon),
+              ),
+            ),
+          ),
+
+          _navItem(icon: Icons.group_outlined, label: "Community", index: 3),
+
+          /// PROFILE IMAGE
+          GestureDetector(
+            onTap: () => onTap(4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CircleAvatar(
+                  radius: 14,
+                  backgroundImage: AssetImage(
+                    Assets.imagesMishIcon
+                  )
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  "Profile",
+                  style: TextStyle(fontSize: 11, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _navItem({
+    required IconData icon,
+    required String label,
+    required int index,
+  }) {
+    final isActive = currentIndex == index;
+
+    return GestureDetector(
+      onTap: () => onTap(index),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 22, color: isActive ? Colors.red : Colors.white70),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: isActive ? Colors.red : Colors.white70,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class DailyProgressIndicators extends StatelessWidget {
