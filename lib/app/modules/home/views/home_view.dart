@@ -22,6 +22,7 @@ import 'widgets/community_spotlight_card.dart';
 import 'widgets/fitness_deshboard_widgets/fitness_deshboard.dart';
 import 'widgets/health_deshboard_widgets/health_deshboard_widget.dart';
 import 'widgets/lavel_card.dart';
+import 'widgets/nav_bar/icon_nav_bar.dart';
 
 class HomeView extends BaseView<HomeController> {
   const HomeView({super.key});
@@ -108,146 +109,21 @@ class HomeView extends BaseView<HomeController> {
   PreferredSizeWidget? appBar(BuildContext context) => null;
 
   @override
-  Widget? bottomNavigationBar(BuildContext context) => Container(
-    color: AppColors.lightBgColor,
-    child: Padding(
-      padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
-      child: IconicNavWrapper(
-        currentIndex: controller.selectedNavIndex.value,
-        onTap: (index) {
-          controller.selectedNavIndex.value = index;
-        },
-      ),
-    ),
-  );
-}
-
-class IconicNavWrapper extends StatelessWidget {
-  final int currentIndex;
-  final Function(int) onTap;
-
-  const IconicNavWrapper({
-    super.key,
-    required this.currentIndex,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 80,
-      child: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          /// NAV BAR
-          Positioned(
-            bottom: 0,
-            left: 20,
-            right: 20,
-            child: Container(
-              height: 70,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _navItem(icon: Icons.home_outlined, label: "Home", index: 0),
-                  _navItem(
-                    icon: Icons.show_chart_outlined,
-                    label: "Analytic",
-                    index: 1,
-                  ),
-
-                  /// EMPTY SPACE FOR CENTER BUTTON
-                  const SizedBox(width: 62),
-
-                  _navItem(
-                    icon: Icons.group_outlined,
-                    label: "Community",
-                    index: 3,
-                  ),
-
-                  /// PROFILE
-                  GestureDetector(
-                    onTap: () => onTap(4),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          radius: 14,
-                          backgroundImage: AssetImage(Assets.imagesMishIcon),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          "Profile",
-                          style: TextStyle(fontSize: 11, color: Colors.white),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+  Widget? bottomNavigationBar(BuildContext context) =>
+      Obx(() {
+        return Container(
+          color: AppColors.lightBgColor,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+            child: IconicNavWrapper(
+              currentIndex: controller.selectedNavIndex.value,
+              onTap: (index) {
+                controller.selectedNavIndex.value = index;
+              },
             ),
           ),
-
-          /// CENTER FLOATING BUTTON
-          Positioned(
-            top: 0,
-            child: GestureDetector(
-              onTap: () => onTap(2),
-              child: Container(
-                width: 76,
-                height: 76,
-                decoration: BoxDecoration(
-                  color: AppColors.lightBgColor,
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 12,
-                  ),
-                ),
-                child: Center(
-                  child: SvgPicture.asset(
-                    Assets.svgIcon,
-
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _navItem({
-    required IconData icon,
-    required String label,
-    required int index,
-  }) {
-    final isActive = currentIndex == index;
-
-    return GestureDetector(
-      onTap: () => onTap(index),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, size: 22, color: isActive ? Colors.red : Colors.white70),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 11,
-              color: isActive ? Colors.red : Colors.white70,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        );
+      });
 }
 
 class DailyProgressIndicators extends StatelessWidget {
