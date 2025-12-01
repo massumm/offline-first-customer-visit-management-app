@@ -5,15 +5,11 @@ import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/theme/icon_light_theme.dart';
-import 'package:icon/app/core/widgets/super_image.dart';
-import 'package:icon/app/data/local/preference/store/user_store.dart';
-import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/actions_card.dart';
-import '../widgets/community_card.dart';
 import '../widgets/goals_card.dart';
 import '../widgets/header.dart';
 import '../widgets/progress_ring.dart';
