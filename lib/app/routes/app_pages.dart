@@ -185,7 +185,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.UNITS_AND_PREFERRENCES,
-      page: () => const UnitsAndPreferrencesView(),
+      page: () => const UnitsAndPreferencesView(),
       binding: AppSettingsBinding(),
     ),
     GetPage(

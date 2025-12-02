@@ -22,7 +22,7 @@ class ThemeHelpers {
   static Color get bgColorRed => AppColors.bgColorRed;
 
   static String getExerciseIconPath(String lightAsset, String darkAsset) {
-    return\ Get.isDarkMode ? darkAsset : lightAsset;
+    return Get.isDarkMode ? darkAsset : lightAsset;
   }
 
   static Color get cardColorWhite =>
