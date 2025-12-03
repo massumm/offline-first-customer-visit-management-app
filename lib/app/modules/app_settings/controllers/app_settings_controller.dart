@@ -29,6 +29,11 @@ class AppSettingsController extends BaseController {
   final is24HourFormat = false.obs;
   final isWeekStartMonday = false.obs;
   
+  // Accessibility
+  final highContrastMode = false.obs;
+  final reduceMotion = false.obs;
+  final boldText = false.obs;
+  
   // Temporary variables for unsaved changes
   final tempSelectedDistance = 'Kilometers (km)'.obs;
   final tempSelectedWeight = 'Kilograms (kg)'.obs;
@@ -36,6 +41,11 @@ class AppSettingsController extends BaseController {
   final tempSelectedTemperature = 'Celsius (°C)'.obs;
   final tempIs24HourFormat = false.obs;
   final tempIsWeekStartMonday = false.obs;
+  
+  // Temporary accessibility variables
+  final tempHighContrastMode = false.obs;
+  final tempReduceMotion = false.obs;
+  final tempBoldText = false.obs;
   
   final distanceList = ['Kilometers (km)', 'Miles (mi)'];
   final weightList = ['Kilograms (kg)', 'Pounds (lbs)', 'Stone (st)'];
@@ -97,6 +107,11 @@ class AppSettingsController extends BaseController {
     is24HourFormat.value = tempIs24HourFormat.value;
     isWeekStartMonday.value = tempIsWeekStartMonday.value;
     
+    // Copy accessibility temporary values to main variables
+    highContrastMode.value = tempHighContrastMode.value;
+    reduceMotion.value = tempReduceMotion.value;
+    boldText.value = tempBoldText.value;
+    
     // TODO: Add persistence logic here (SharedPreferences, API, etc.)
     print('Preferences saved:');
     print('Distance: ${selectedDistance.value}');
@@ -105,6 +120,9 @@ class AppSettingsController extends BaseController {
     print('Temperature: ${selectedTemperature.value}');
     print('24-Hour Format: ${is24HourFormat.value}');
     print('Week Start Monday: ${isWeekStartMonday.value}');
+    print('High Contrast Mode: ${highContrastMode.value}');
+    print('Reduce Motion: ${reduceMotion.value}');
+    print('Bold Text: ${boldText.value}');
   }
   
   void resetTempValues() {
@@ -115,5 +133,10 @@ class AppSettingsController extends BaseController {
     tempSelectedTemperature.value = selectedTemperature.value;
     tempIs24HourFormat.value = is24HourFormat.value;
     tempIsWeekStartMonday.value = isWeekStartMonday.value;
+    
+    // Reset accessibility temporary values to current saved values
+    tempHighContrastMode.value = highContrastMode.value;
+    tempReduceMotion.value = reduceMotion.value;
+    tempBoldText.value = boldText.value;
   }
 }

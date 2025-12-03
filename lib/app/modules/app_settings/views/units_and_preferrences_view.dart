@@ -15,19 +15,6 @@ import 'package:icon/generated/assets.dart';
 class UnitsAndPreferencesView extends BaseView<AppSettingsController> {
   const UnitsAndPreferencesView({super.key});
 
-  @override
-  PreferredSizeWidget? appBar(BuildContext context) {
-    return AppBar(
-      leading: SizedBox(
-        height: 32,
-        width: 32,
-        child: Center(child: ActionPill(onTap: () => Get.back())),
-      ),
-      title: Text('Units & Preferences'),
-      centerTitle: true,
-    );
-  }
-
   Widget _buildUnitSettingsCard({
     required String title,
     required String description,
@@ -212,7 +199,8 @@ class UnitsAndPreferencesView extends BaseView<AppSettingsController> {
                               child: Switch(
                                 value: controller.tempIsWeekStartMonday.value,
                                 onChanged: (value) {
-                                  controller.tempIsWeekStartMonday.value = value;
+                                  controller.tempIsWeekStartMonday.value =
+                                      value;
                                 },
                                 materialTapTargetSize:
                                     MaterialTapTargetSize.shrinkWrap,
@@ -229,7 +217,10 @@ class UnitsAndPreferencesView extends BaseView<AppSettingsController> {
             ),
           ),
           16.height,
-          LoadingButton(onPressed: () => controller.savePreferences(), label: 'Save Preferences'),
+          LoadingButton(
+            onPressed: () => controller.savePreferences(),
+            label: 'Save Preferences',
+          ),
         ],
       ),
     );
