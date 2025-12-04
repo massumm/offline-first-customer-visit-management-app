@@ -27,9 +27,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Firebase
-  await _setupFirebase();
+  //await _setupFirebase();
 
-  await _initCrashlytics();
+  //await _initCrashlytics();
 
   await Get.putAsync<StorageService>(() => StorageService().init());
   await Get.putAsync<ThemeService>(() => ThemeService().init());
