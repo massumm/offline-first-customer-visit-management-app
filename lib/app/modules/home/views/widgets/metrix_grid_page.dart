@@ -87,6 +87,8 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
     return (width - totalPad - spacingTotal) / crossAxisCount;
   }
 
+// ... existing code from _MetricsGridPageState ...
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -95,59 +97,63 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
       child: Column(
         children: [
           if (isEditMode)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // "Add" button
-                GestureDetector(
-                  onTap: addMetric,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.08),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // "Add" button
+                  GestureDetector(
+                    onTap: addMetric,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                        border: Border.all(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.primary.withOpacity(0.25),
+                          width: 1.5,
                         ),
-                      ],
-                      border: Border.all(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.25),
-                        width: 1.5,
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 16,
                       ),
                     ),
-                    child: Icon(
-                      Icons.add,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 16,
-                    ),
                   ),
-                ),
-                // "Done" button
-                TextButton(
-                  onPressed: () => exitEditMode(),
-                  style: TextButton.styleFrom(
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                  // "Done" button
+                  TextButton(
+                    onPressed: () => exitEditMode(),
+                    style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
+                    child: const Text("Done"),
                   ),
-                  child: const Text("Done"),
-                ),
-              ],
+                ],
+              ),
             ),
-          // The grid
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: SizedBox(
-              // height: 600,
+          // The grid or empty state
+          if (items.isEmpty && !isEditMode)
+            _buildEmptyStateCard()
+          else
+            Padding(
+              padding: const EdgeInsets.all(12),
               child: MasonryGridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
@@ -161,8 +167,63 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                 },
               ),
             ),
-          ),
         ],
+      ),
+    );
+  }
+
+  // --------------------------------------------------
+  // Empty State Card
+  Widget _buildEmptyStateCard() {
+    return GestureDetector(
+      onTap: enterEditMode,
+      child: Container(
+        margin: const EdgeInsets.all(12),
+        padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.dashboard_customize_outlined,
+              size: 48,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              "Customize Your Health Board",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Tap here to add your first metric and start tracking.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -532,42 +593,42 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
   }
 }
 
-class GaugePainter extends CustomPainter {
-  final double progress;
-
-  GaugePainter(this.progress);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    const strokeWidth = 14.0;
-
-    final rect = Rect.fromLTWH(0, 0, size.width, size.height * 2);
-
-    final backgroundPaint = Paint()
-      ..color = const Color(0xffF1FEF4)
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    final progressPaint = Paint()
-      ..color = const Color(0xff098C26)
-      ..strokeWidth = strokeWidth
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
-
-    /// Draw background arc (full half circle)
-    canvas.drawArc(
-      rect,
-      math.pi, // start
-      math.pi, // sweep (180°)
-      false,
-      backgroundPaint,
-    );
-
-    /// Draw progress arc
-    canvas.drawArc(rect, math.pi, math.pi * progress, false, progressPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-}
+// class GaugePainter extends CustomPainter {
+//   final double progress;
+//
+//   GaugePainter(this.progress);
+//
+//   @override
+//   void paint(Canvas canvas, Size size) {
+//     const strokeWidth = 14.0;
+//
+//     final rect = Rect.fromLTWH(0, 0, size.width, size.height * 2);
+//
+//     final backgroundPaint = Paint()
+//       ..color = const Color(0xffF1FEF4)
+//       ..strokeWidth = strokeWidth
+//       ..style = PaintingStyle.stroke
+//       ..strokeCap = StrokeCap.round;
+//
+//     final progressPaint = Paint()
+//       ..color = const Color(0xff098C26)
+//       ..strokeWidth = strokeWidth
+//       ..style = PaintingStyle.stroke
+//       ..strokeCap = StrokeCap.round;
+//
+//     /// Draw background arc (full half circle)
+//     canvas.drawArc(
+//       rect,
+//       math.pi, // start
+//       math.pi, // sweep (180°)
+//       false,
+//       backgroundPaint,
+//     );
+//
+//     /// Draw progress arc
+//     canvas.drawArc(rect, math.pi, math.pi * progress, false, progressPaint);
+//   }
+//
+//   @override
+//   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+// }
