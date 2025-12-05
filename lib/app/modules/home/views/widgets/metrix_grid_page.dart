@@ -1,5 +1,4 @@
 import 'dart:math' as math;
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -406,30 +405,40 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
   }
 
   Widget deleteTarget(BuildContext context) {
-    final radius = 30.0;
-    final center = Offset(
-      MediaQuery.of(context).size.width / 2,
-      MediaQuery.of(context).size.height - radius - 10,
-    );
-
-    bool isOver = false;
-    if (dragOffset != null) {
-      final dx = dragOffset!.dx - center.dx;
-      final dy = dragOffset!.dy - center.dy;
-      if (sqrt(dx * dx + dy * dy) <= radius) {
-        isOver = true;
-      }
-    }
-
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 150),
-      height: 60,
-      width: 60,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isOver ? Colors.redAccent : Colors.grey,
-      ),
-      child: const Icon(Icons.delete, color: Colors.white),
+    return DragTarget<int>(
+      builder: (context, candidateData, rejectedData) {
+        // The DragTarget's builder tells us if an item is hovering over it.
+        final isOver = candidateData.isNotEmpty;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          height: 60,
+          width: 60,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            // The color now responds to an item hovering over the target.
+            color: isOver ? Colors.redAccent : Colors.grey.shade700,
+          ),
+          child: const Icon(Icons.delete, color: Colors.white),
+        );
+      },
+      // When a card first hovers over the target, trigger the 'isDeleting'
+      // state to start the scaling animation.
+      onWillAcceptWithDetails: (details) {
+        setState(() => isDeleting = true);
+        return true;
+      },
+      // When a card is dragged away from the target, reset the animation.
+      onLeave: (data) {
+        setState(() => isDeleting = false);
+      },
+      // When a card is dropped on the target, remove it from the list.
+      onAcceptWithDetails: (details) {
+        final index = details.data;
+        setState(() {
+          items.removeAt(index);
+          isDeleting = false; // Reset animation state.
+        });
+      },
     );
   }
 
@@ -457,22 +466,9 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
       childWhenDragging: Opacity(opacity: 0.3, child: buildTile(item)),
       onDragStarted: () => setState(() => draggingIndex = index),
       onDragUpdate: (d) => setState(() => dragOffset = d.globalPosition),
-      onDragEnd: (d) async {
-        if (dragOffset != null) {
-          final y = dragOffset!.dy;
-          final screenH = MediaQuery.of(context).size.height;
-
-          if (y > screenH - 120) {
-            setState(() => isDeleting = true);
-            await Future.delayed(const Duration(milliseconds: 80));
-            if (index < items.length) {
-              setState(() {
-                items.removeAt(index);
-              });
-            }
-          }
-        }
-
+      // The onDragEnd callback is now simplified.
+      onDragEnd: (d) {
+        // Deletion is handled by the new DragTarget. We just reset the state.
         setState(() {
           draggingIndex = null;
           dragOffset = null;
