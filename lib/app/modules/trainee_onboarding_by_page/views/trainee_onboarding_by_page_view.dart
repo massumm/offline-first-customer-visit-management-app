@@ -394,12 +394,19 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.map(
-                    (lifestyle) => _buildWideChoiceButton(
-                      title: lifestyle,
-                      isSelected: controller.lifestyle.value == lifestyle,
-                      onPressed: () => controller.lifestyle.value = lifestyle,
-                    ),
+                  ...options.expand(
+                        (lifestyle) {
+                      return [
+                        _buildWideChoiceButton(
+                          title: lifestyle,
+                          isSelected: controller.lifestyle.value == lifestyle,
+                          onPressed: () =>
+                          controller.lifestyle.value = lifestyle,
+                        ),
+                        if (lifestyle != options.last)
+                          const SizedBox(height: 12),
+                      ];
+                    },
                   ),
                 ],
               ),
