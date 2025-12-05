@@ -18,6 +18,7 @@ import '../controllers/trainee_onboarding_by_page_controller.dart';
 class TraineeOnboardingByPageView
     extends GetView<TraineeOnboardingByPageController> {
   const TraineeOnboardingByPageView({super.key});
+
   // All state and navigation logic will be handled by the controller.
 
   @override
@@ -41,30 +42,44 @@ class TraineeOnboardingByPageView
                     onPressed: null,
                   ),
                 ),
-          title: QandAProgressBar(
-            currentGroup: 1,
-            totalGroups: 1,
-            currentQuestion: controller.currentPage.value + 1,
-            totalQuestions: onboardingSteps,
-          ),
         ),
-        body: PageView(
-          controller: controller.pageController,
+        body: CustomScrollView(
           physics: NeverScrollableScrollPhysics(),
-          onPageChanged: (index) => controller.currentPage.value = index,
-          children: [
-            _buildSexPage(),
-            _buildDobPage(),
-            _buildHeightPage(),
-            _buildWeightPage(),
-            _buildFitnessGoalPage(),
-            _buildLifestylePage(),
-            _buildTrainingDaysPage(),
-            _buildSessionLengthPage(),
-            _buildEatingHabitsPage(),
-            _buildStressLevelPage(),
-            _buildSleepQualityPage(),
-            _buildEmailPage(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12.0,
+                ).copyWith(bottom: 24),
+                child: QandAProgressBar(
+                  currentGroup: 1,
+                  totalGroups: 1,
+                  currentQuestion: controller.currentPage.value + 1,
+                  totalQuestions: onboardingSteps,
+                ),
+              ),
+            ),
+            SliverFillRemaining(
+              child: PageView(
+                controller: controller.pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                onPageChanged: (index) => controller.currentPage.value = index,
+                children: [
+                  _buildSexPage(),
+                  _buildDobPage(),
+                  _buildHeightPage(),
+                  _buildWeightPage(),
+                  _buildFitnessGoalPage(),
+                  _buildLifestylePage(),
+                  _buildTrainingDaysPage(),
+                  _buildSessionLengthPage(),
+                  _buildEatingHabitsPage(),
+                  _buildStressLevelPage(),
+                  _buildSleepQualityPage(),
+                  _buildEmailPage(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -200,15 +215,18 @@ class TraineeOnboardingByPageView
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
-              spacing: 8,
               children: [
-                ...['Male', 'Female', 'Others'].map(
-                  (sex) => _buildWideChoiceButton(
-                    title: sex,
-                    isSelected: controller.sex.value == sex,
-                    onPressed: () => controller.sex.value = sex,
-                  ),
-                ),
+                ...['Male', 'Female', 'Others'].expand((sex) {
+                  const options = ['Male', 'Female', 'Others'];
+                  return [
+                    _buildWideChoiceButton(
+                      title: sex,
+                      isSelected: controller.sex.value == sex,
+                      onPressed: () => controller.sex.value = sex,
+                    ),
+                    if (sex != options.last) const SizedBox(height: 12),
+                  ];
+                }),
               ],
             ),
           ),
@@ -330,7 +348,6 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
                 children: [
                   ...options.map(
                     (goal) => _buildWideChoiceButton(
@@ -370,7 +387,6 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
                 children: [
                   ...options.map(
                     (lifestyle) => _buildWideChoiceButton(
@@ -403,7 +419,6 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
                 children: [
                   WheelListWidget(
                     items: List.generate(7, (i) => '${i + 1}'),
@@ -436,7 +451,6 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
                 children: [
                   ...options.map(
                     (length) => _buildWideChoiceButton(
@@ -471,8 +485,6 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-
                 children: [
                   ...options.map(
                     (habit) => _buildWideChoiceButton(
@@ -506,8 +518,6 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-
                 children: [
                   ...options.map(
                     (level) => _buildWideChoiceButton(
@@ -541,8 +551,6 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-
                 children: [
                   ...options.map(
                     (sleep) => _buildWideChoiceButton(
