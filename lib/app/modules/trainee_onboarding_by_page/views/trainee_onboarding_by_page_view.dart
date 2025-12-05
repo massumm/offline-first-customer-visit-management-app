@@ -48,9 +48,7 @@ class TraineeOnboardingByPageView
           slivers: [
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12.0,
-                ).copyWith(bottom: 24),
+                padding: const EdgeInsets.only(bottom: 24),
                 child: QandAProgressBar(
                   currentGroup: 1,
                   totalGroups: 1,
@@ -349,23 +347,20 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.expand(
-                        (goal) {
-                      return [
-                        _buildWideChoiceButton(
-                          title: goal,
-                          isSelected: controller.fitnessGoal.value == goal,
-                          onPressed: () => controller.fitnessGoal.value = goal,
-                        ),
-                        if (goal != options.last) const SizedBox(height: 12),
-                      ];
-                    },
-                  ),
+                  ...options.expand((goal) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: goal,
+                        isSelected: controller.fitnessGoal.value == goal,
+                        onPressed: () => controller.fitnessGoal.value = goal,
+                      ),
+                      if (goal != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
           ),
-
         ],
       ),
     );
@@ -394,20 +389,16 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.expand(
-                        (lifestyle) {
-                      return [
-                        _buildWideChoiceButton(
-                          title: lifestyle,
-                          isSelected: controller.lifestyle.value == lifestyle,
-                          onPressed: () =>
-                          controller.lifestyle.value = lifestyle,
-                        ),
-                        if (lifestyle != options.last)
-                          const SizedBox(height: 12),
-                      ];
-                    },
-                  ),
+                  ...options.expand((lifestyle) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: lifestyle,
+                        isSelected: controller.lifestyle.value == lifestyle,
+                        onPressed: () => controller.lifestyle.value = lifestyle,
+                      ),
+                      if (lifestyle != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
