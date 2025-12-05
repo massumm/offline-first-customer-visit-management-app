@@ -456,14 +456,19 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.map(
-                    (length) => _buildWideChoiceButton(
-                      title: length,
-                      isSelected: controller.sessionLength.value == length,
-                      onPressed: () => controller.sessionLength.value = length,
-                    ),
+                  ...options.expand(
+                        (length) {
+                      return [
+                        _buildWideChoiceButton(
+                          title: length,
+                          isSelected: controller.sessionLength.value == length,
+                          onPressed: () =>
+                          controller.sessionLength.value = length,
+                        ),
+                        if (length != options.last) const SizedBox(height: 12),
+                      ];
+                    },
                   ),
-                  SizedBox(height: 10),
                 ],
               ),
             ),
