@@ -18,6 +18,7 @@ import 'widgets/community_spotlight_card.dart';
 import 'widgets/fitness_deshboard_widgets/fitness_deshboard.dart';
 import 'widgets/health_deshboard_widgets/health_deshboard_widget.dart';
 import 'widgets/lavel_card.dart';
+import 'widgets/metrix_grid_page.dart';
 import 'widgets/nav_bar/icon_nav_bar.dart';
 
 class HomeView extends BaseView<HomeController> {
@@ -51,9 +52,10 @@ class HomeView extends BaseView<HomeController> {
                     16.height,
                     GoalsCard(onPressed: () {}),
                     16.height,
-                    FitnessDashboard(),
-                    16.height,
-                    HealthDashboard(),
+                    MetricsGridPage(),
+                    // FitnessDashboard(),
+                    // 16.height,
+                    // HealthDashboard(),
                     16.height,
                     LevelCard(label: 'Level 1'),
                     16.height,

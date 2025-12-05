@@ -90,20 +90,13 @@ class _HeartRateCardState extends State<HeartRateCard>
                 children: [
                   LayoutBuilder(
                     builder: (context, constraints) {
-                      return Row(
-                        children: [
-                          Text(
-                            "Heart Rate & HRV",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          // No icon, just spacing
-                          SizedBox(width: 38, height: 38),
-                        ],
+                      return Text(
+                        "Heart Rate & HRV",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
                       );
                     },
                   ),
@@ -119,7 +112,7 @@ class _HeartRateCardState extends State<HeartRateCard>
                       const SizedBox(width: 6),
                       Text(
                         "bpm",
-                        style: textTheme.titleMedium?.copyWith(
+                        style: textTheme.titleSmall?.copyWith(
                           color: Colors.blue,
                           fontWeight: FontWeight.w600,
                         ),
@@ -129,12 +122,12 @@ class _HeartRateCardState extends State<HeartRateCard>
                         duration: const Duration(milliseconds: 400),
                         curve: Curves.easeInOut,
                         padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+                          horizontal: 8,
+                          vertical: 4,
                         ),
                         decoration: BoxDecoration(
                           color: Colors.blue.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
                           "Normal",
