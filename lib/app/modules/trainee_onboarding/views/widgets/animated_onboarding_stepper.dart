@@ -2,39 +2,50 @@ import 'package:flutter/material.dart';
 
 class AnimatedOnboardingStepper extends StatefulWidget {
   final int totalSteps;
-  final int currentStep;        // 0-indexed
-  final double stepProgress;    // NEW: 0..1 progress inside current step
+  final int currentStep; // 0-indexed
+  final double stepProgress; // NEW: 0..1 progress inside current step
 
   const AnimatedOnboardingStepper({
     super.key,
     required this.totalSteps,
     required this.currentStep,
-    this.stepProgress = 0.0,    // default none
+    this.stepProgress = 0.0, // default none
   });
 
   @override
-  State<AnimatedOnboardingStepper> createState() => _AnimatedOnboardingStepperState();
+  State<AnimatedOnboardingStepper> createState() =>
+      _AnimatedOnboardingStepperState();
 }
 
-class _AnimatedOnboardingStepperState extends State<AnimatedOnboardingStepper> with TickerProviderStateMixin {
+class _AnimatedOnboardingStepperState extends State<AnimatedOnboardingStepper>
+    with TickerProviderStateMixin {
   late AnimationController _progressCtrl;
   late Animation<double> _progress; // 0..1 across the whole track
   late AnimationController _pulseCtrl;
 
   double _targetFor(int step, double stepProgress) {
     if (widget.totalSteps <= 1) return 0;
-    // map (currentStep + stepProgress) over (totalSteps-1)
+    // Only fill up to the current step dot (not ahead)
     final segs = (widget.totalSteps - 1).toDouble();
-    final frac = (step.clamp(0, widget.totalSteps - 1) + stepProgress.clamp(0, 1)) / segs;
+    final frac = (step.clamp(0, widget.totalSteps - 1)) / segs;
     return frac.clamp(0, 1);
   }
 
   @override
   void initState() {
     super.initState();
-    _progressCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 450));
-    _pulseCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))..repeat();
-    _progress = CurvedAnimation(parent: _progressCtrl, curve: Curves.easeInOutCubic);
+    _progressCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 450),
+    );
+    _pulseCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+    _progress = CurvedAnimation(
+      parent: _progressCtrl,
+      curve: Curves.easeInOutCubic,
+    );
 
     _progressCtrl.value = _targetFor(widget.currentStep, widget.stepProgress);
   }
@@ -92,7 +103,8 @@ class _AnimatedOnboardingStepperState extends State<AnimatedOnboardingStepper> w
                     width: progressX,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        begin: Alignment.centerLeft, end: Alignment.centerRight,
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
                         colors: [
                           theme.colorScheme.primary.withOpacity(0.85),
                           theme.colorScheme.primary,
@@ -101,7 +113,8 @@ class _AnimatedOnboardingStepperState extends State<AnimatedOnboardingStepper> w
                       boxShadow: [
                         BoxShadow(
                           color: theme.colorScheme.primary.withOpacity(0.35),
-                          blurRadius: 8, spreadRadius: 0.5,
+                          blurRadius: 8,
+                          spreadRadius: 0.5,
                         ),
                       ],
                       borderRadius: BorderRadius.circular(999),
@@ -112,32 +125,41 @@ class _AnimatedOnboardingStepperState extends State<AnimatedOnboardingStepper> w
                   Positioned(
                     left: (progressX - 6).clamp(0, width - 12),
                     child: Container(
-                      width: 12, height: 12,
+                      width: 12,
+                      height: 12,
                       decoration: BoxDecoration(
                         color: theme.colorScheme.primary,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
                             color: theme.colorScheme.primary.withOpacity(0.45),
-                            blurRadius: 10, spreadRadius: 1,
+                            blurRadius: 10,
+                            spreadRadius: 1,
                           ),
                         ],
-                        border: Border.all(color: theme.colorScheme.onPrimary, width: 2),
+                        border: Border.all(
+                          color: theme.colorScheme.onPrimary,
+                          width: 2,
+                        ),
                       ),
                     ),
                   ),
 
                   // step dots
                   ...List.generate(widget.totalSteps, (i) {
-                    final t = widget.totalSteps == 1 ? 0.0 : i / (widget.totalSteps - 1);
+                    final t = widget.totalSteps == 1
+                        ? 0.0
+                        : i / (widget.totalSteps - 1);
                     final dx = t * width;
                     final isActive = i == widget.currentStep;
-                    final isCompleted = i < widget.currentStep ||
+                    final isCompleted =
+                        i < widget.currentStep ||
                         (i == widget.currentStep && widget.stepProgress >= 1.0);
 
                     final baseScale = isCompleted ? 1.0 : 0.92;
                     final activePulse = isActive
-                        ? (0.95 + 0.05 * (0.5 - (0.5 - _pulseCtrl.value).abs()) * 2)
+                        ? (0.95 +
+                              0.05 * (0.5 - (0.5 - _pulseCtrl.value).abs()) * 2)
                         : 1.0;
                     final scale = baseScale * activePulse;
 
@@ -150,21 +172,23 @@ class _AnimatedOnboardingStepperState extends State<AnimatedOnboardingStepper> w
 
                     final List<BoxShadow> glow = isActive
                         ? <BoxShadow>[
-                      BoxShadow(
-                        color: theme.colorScheme.primary.withOpacity(0.45),
-                        blurRadius: 12,
-                        spreadRadius: 2,
-                      ),
-                    ]
+                            BoxShadow(
+                              color: theme.colorScheme.primary.withOpacity(
+                                0.45,
+                              ),
+                              blurRadius: 12,
+                              spreadRadius: 2,
+                            ),
+                          ]
                         : const <BoxShadow>[];
-
 
                     return Positioned(
                       left: dx - (dotSize / 2),
                       child: Transform.scale(
                         scale: scale,
                         child: Container(
-                          width: dotSize, height: dotSize,
+                          width: dotSize,
+                          height: dotSize,
                           decoration: BoxDecoration(
                             color: dotColor,
                             shape: BoxShape.circle,
@@ -177,12 +201,20 @@ class _AnimatedOnboardingStepperState extends State<AnimatedOnboardingStepper> w
                               switchInCurve: Curves.easeOutBack,
                               switchOutCurve: Curves.easeIn,
                               child: isCompleted
-                                  ? Icon(Icons.check, key: ValueKey('check_$i'),
-                                  size: 12, color: theme.colorScheme.onPrimary)
+                                  ? Icon(
+                                      Icons.check,
+                                      key: ValueKey('check_$i'),
+                                      size: 12,
+                                      color: theme.colorScheme.onPrimary,
+                                    )
                                   : isActive
                                   ? Container(key: ValueKey('active_$i'))
-                                  : Icon(Icons.circle, key: ValueKey('idle_$i'),
-                                  size: 6, color: theme.colorScheme.onSurface),
+                                  : Icon(
+                                      Icons.circle,
+                                      key: ValueKey('idle_$i'),
+                                      size: 6,
+                                      color: theme.colorScheme.onSurface,
+                                    ),
                             ),
                           ),
                         ),
