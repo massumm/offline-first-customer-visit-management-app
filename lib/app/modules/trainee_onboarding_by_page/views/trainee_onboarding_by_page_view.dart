@@ -1,100 +1,95 @@
 import 'package:flutter/material.dart';
+
+import 'package:get/get.dart';
+
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:icon/app/core/widgets/input_widgets/date_input_field.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 
-import 'widgets/animated_onboarding_stepper.dart';
+import 'package:icon/app/core/widgets/qanda_progress_bar.dart';
 
-import 'widgets/height_picker.dart';
-import 'widgets/weight_picker.dart';
+import 'package:icon/app/core/widgets/input_widgets/wheel_list_widget.dart';
+import 'package:icon/app/core/widgets/input_widgets/date_input_field.dart';
+import 'package:icon/app/core/widgets/input_widgets/height_picker.dart';
+import 'package:icon/app/core/widgets/input_widgets/weight_picker.dart';
 
-class TraineeOnboardingThroughPageView extends StatefulWidget {
-  const TraineeOnboardingThroughPageView({super.key});
+import '../controllers/trainee_onboarding_by_page_controller.dart';
 
-  @override
-  State<TraineeOnboardingThroughPageView> createState() =>
-      _TraineeOnboardingThroughPageViewState();
-}
-
-class _TraineeOnboardingThroughPageViewState
-    extends State<TraineeOnboardingThroughPageView> {
-  final PageController _pageController = PageController();
-  int _currentPage = 0;
-
-  // Answers
-  String _sex = 'Male';
-  DateTime? _dob;
-  double? _height;
-  double? _weight;
-  String? _fitnessGoal;
-  String? _lifestyle;
-  int _trainingDays = 1;
-  String? _sessionLength;
-  String? _eatingHabits;
-  String? _stressLevel;
-  String? _sleepQuality;
-
-  void _nextPage() {
-    if (_currentPage < 10) {
-      _pageController.nextPage(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
-
-  void _prevPage() {
-    if (_currentPage > 0) {
-      _pageController.previousPage(
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
-    }
-  }
+class TraineeOnboardingByPageView
+    extends GetView<TraineeOnboardingByPageController> {
+  const TraineeOnboardingByPageView({super.key});
+  // All state and navigation logic will be handled by the controller.
 
   @override
   Widget build(BuildContext context) {
-    const int onboardingSteps = 11;
-    return Scaffold(
-      appBar: AppBar(
-        leading: _currentPage > 0
-            ? IconButton(
-                icon: Transform.rotate(
-                  angle: 3.14,
-                  child: SvgPicture.asset('assets/svg/arrow-right.svg'),
+    const int onboardingSteps = 12;
+    return Obx(
+      () => Scaffold(
+        appBar: AppBar(
+          leading: controller.currentPage.value > 0
+              ? IconButton(
+                  icon: Transform.rotate(
+                    angle: 3.14,
+                    child: SvgPicture.asset('assets/svg/arrow-right.svg'),
+                  ),
+                  onPressed: controller.prevPage,
+                )
+              : Opacity(
+                  opacity: 0.0,
+                  child: IconButton(
+                    icon: Icon(Icons.arrow_back),
+                    onPressed: null,
+                  ),
                 ),
-                onPressed: _prevPage,
-              )
-            : Opacity(
-                opacity: 0.0,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: null,
-                ),
-              ),
-        title: AnimatedOnboardingStepper(
-          totalSteps: onboardingSteps,
-          currentStep: _currentPage,
-          stepProgress: 0.0,
+          title: QandAProgressBar(
+            currentGroup: 1,
+            totalGroups: 1,
+            currentQuestion: controller.currentPage.value + 1,
+            totalQuestions: onboardingSteps,
+          ),
+        ),
+        body: PageView(
+          controller: controller.pageController,
+          physics: NeverScrollableScrollPhysics(),
+          onPageChanged: (index) => controller.currentPage.value = index,
+          children: [
+            _buildSexPage(),
+            _buildDobPage(),
+            _buildHeightPage(),
+            _buildWeightPage(),
+            _buildFitnessGoalPage(),
+            _buildLifestylePage(),
+            _buildTrainingDaysPage(),
+            _buildSessionLengthPage(),
+            _buildEatingHabitsPage(),
+            _buildStressLevelPage(),
+            _buildSleepQualityPage(),
+            _buildEmailPage(),
+          ],
         ),
       ),
-      body: PageView(
-        controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
-        onPageChanged: (index) => setState(() => _currentPage = index),
+    );
+  }
+
+  Widget _buildEmailPage() {
+    return _buildNavigation(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSexPage(),
-          _buildDobPage(),
-          _buildHeightPage(),
-          _buildWeightPage(),
-          _buildFitnessGoalPage(),
-          _buildLifestylePage(),
-          _buildTrainingDaysPage(),
-          _buildSessionLengthPage(),
-          _buildEatingHabitsPage(),
-          _buildStressLevelPage(),
-          _buildSleepQualityPage(),
+          Text(
+            'What is your email address?',
+            style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.start,
+          ),
+          SizedBox(height: 24),
+          TextField(
+            decoration: InputDecoration(
+              labelText: 'Email',
+              border: OutlineInputBorder(),
+            ),
+            keyboardType: TextInputType.emailAddress,
+            onChanged: (value) => controller.email.value = value,
+          ),
         ],
       ),
     );
@@ -120,62 +115,25 @@ class _TraineeOnboardingThroughPageViewState
   }
 
   Widget? _buildActionButton() {
-    Widget? actionButton;
-    if (_currentPage < 10) {
-      actionButton = SizedBox(
+    if (controller.currentPage.value < 10) {
+      return SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: _nextPage,
+          onPressed: controller.nextPage,
           child: Text('Next', style: TextStyle(fontSize: 16)),
         ),
       );
     }
-    if (_currentPage == 10) {
-      actionButton = SizedBox(
+    if (controller.currentPage.value == 10) {
+      return SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: () {
-            /* Submit logic */
-          },
+          onPressed: controller.submitAnswers,
           child: Text('Finish'),
         ),
       );
     }
-
-    return actionButton;
-  }
-
-  Widget _buildSmallChoiceButton({
-    required String title,
-    required Function onPressed,
-    required bool isSelected,
-  }) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: isSelected ? AppColors.colorPrimary : Colors.transparent,
-          width: 2,
-        ),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: FilledButton(
-        onPressed: () {
-          onPressed();
-        },
-        style: FilledButton.styleFrom(
-          backgroundColor: Color(0xFF151515),
-          foregroundColor: isSelected ? AppColors.colorPrimary : Colors.white,
-        ),
-        child: Text(
-          title,
-          style: TextStyle(
-            color: isSelected ? AppColors.colorPrimary : Colors.white,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        ),
-      ),
-    );
+    return null;
   }
 
   Widget _buildWideChoiceButton({
@@ -247,8 +205,8 @@ class _TraineeOnboardingThroughPageViewState
                 ...['Male', 'Female', 'Others'].map(
                   (sex) => _buildWideChoiceButton(
                     title: sex,
-                    isSelected: _sex == sex,
-                    onPressed: () => setState(() => _sex = sex),
+                    isSelected: controller.sex.value == sex,
+                    onPressed: () => controller.sex.value = sex,
                   ),
                 ),
               ],
@@ -264,7 +222,11 @@ class _TraineeOnboardingThroughPageViewState
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('What is your date of birth?', style: TextStyle(fontSize: 24)),
+          Text(
+            'What is your date of birth?',
+            style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.start,
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: DatePickerInputField(
@@ -279,7 +241,7 @@ class _TraineeOnboardingThroughPageViewState
                   final yyyy = int.tryParse(parts[2]);
                   if (dd != null && mm != null && yyyy != null) {
                     final dt = DateTime(yyyy, mm, dd);
-                    setState(() => _dob = dt);
+                    controller.dob.value = dt;
                   }
                 }
               },
@@ -299,6 +261,7 @@ class _TraineeOnboardingThroughPageViewState
           const Text(
             'What is your height?',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.start,
           ),
           const SizedBox(height: 16),
           Align(
@@ -307,8 +270,8 @@ class _TraineeOnboardingThroughPageViewState
               minHeightCm: 120,
               maxHeightCm: 250,
               initialHeightCm: 170,
-              onChanged: (double value, HeightUnit unit) {
-                setState(() => _height = value);
+              onChanged: (double value, unit) {
+                controller.height.value = value;
               },
             ),
           ),
@@ -326,6 +289,7 @@ class _TraineeOnboardingThroughPageViewState
           const Text(
             'What is your current weight?',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.start,
           ),
           const SizedBox(height: 16),
           Align(
@@ -334,10 +298,8 @@ class _TraineeOnboardingThroughPageViewState
               minWeightKg: 30,
               maxWeightKg: 200,
               initialWeightKg: 70,
-              onChanged: (double value, WeightUnit unit) {
-                setState(() {
-                  _weight = value;
-                });
+              onChanged: (double value, unit) {
+                controller.weight.value = value;
               },
             ),
           ),
@@ -361,19 +323,20 @@ class _TraineeOnboardingThroughPageViewState
           Text(
             'What is your primary fitness goal?',
             style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.start,
           ),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: Wrap(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 spacing: 8,
-                runSpacing: 8,
                 children: [
                   ...options.map(
-                    (goal) => _buildSmallChoiceButton(
+                    (goal) => _buildWideChoiceButton(
                       title: goal,
-                      isSelected: _fitnessGoal == goal,
-                      onPressed: (val) => setState(() => _fitnessGoal = val),
+                      isSelected: controller.fitnessGoal.value == goal,
+                      onPressed: () => controller.fitnessGoal.value = goal,
                     ),
                   ),
                 ],
@@ -400,20 +363,20 @@ class _TraineeOnboardingThroughPageViewState
           Text(
             'How active is your daily lifestyle?',
             style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.start,
           ),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
-              child: Wrap(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 spacing: 8,
-                runSpacing: 8,
-
                 children: [
                   ...options.map(
-                    (lifestyle) => _buildSmallChoiceButton(
+                    (lifestyle) => _buildWideChoiceButton(
                       title: lifestyle,
-                      isSelected: _lifestyle == lifestyle,
-                      onPressed: () => setState(() => _lifestyle = lifestyle),
+                      isSelected: controller.lifestyle.value == lifestyle,
+                      onPressed: () => controller.lifestyle.value = lifestyle,
                     ),
                   ),
                 ],
@@ -433,31 +396,20 @@ class _TraineeOnboardingThroughPageViewState
           Text(
             'How many days per week can you train?',
             style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.start,
           ),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                spacing: 8,
                 children: [
-                  SizedBox(
-                    height: 100,
-                    child: ListWheelScrollView.useDelegate(
-                      itemExtent: 40,
-                      onSelectedItemChanged: (i) =>
-                          setState(() => _trainingDays = 1 + i),
-                      controller: FixedExtentScrollController(
-                        initialItem: _trainingDays - 1,
-                      ),
-                      childDelegate: ListWheelChildBuilderDelegate(
-                        builder: (context, i) =>
-                            i < 7 ? Text('${1 + i}') : null,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text('Selected: $_trainingDays days'),
+                  WheelListWidget(
+                    items: List.generate(7, (i) => '${i + 1}'),
+                    onNext: (val) {
+                      controller.trainingDays.value = int.parse(val);
+                    },
                   ),
                 ],
               ),
@@ -477,6 +429,7 @@ class _TraineeOnboardingThroughPageViewState
           Text(
             'How long do you want each session to be?',
             style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.start,
           ),
           Expanded(
             child: Align(
@@ -488,15 +441,11 @@ class _TraineeOnboardingThroughPageViewState
                   ...options.map(
                     (length) => _buildWideChoiceButton(
                       title: length,
-                      isSelected: _sessionLength == length,
-                      onPressed: () => setState(() => _sessionLength = length),
+                      isSelected: controller.sessionLength.value == length,
+                      onPressed: () => controller.sessionLength.value = length,
                     ),
                   ),
                   SizedBox(height: 10),
-                  Text(
-                    'Workout intensity tag (higher volume = lower intensity)',
-                    style: TextStyle(fontSize: 12),
-                  ),
                 ],
               ),
             ),
@@ -515,6 +464,7 @@ class _TraineeOnboardingThroughPageViewState
           Text(
             'How would you describe your current eating habits?',
             style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.start,
           ),
           Expanded(
             child: Align(
@@ -522,12 +472,13 @@ class _TraineeOnboardingThroughPageViewState
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 spacing: 8,
+
                 children: [
                   ...options.map(
                     (habit) => _buildWideChoiceButton(
                       title: habit,
-                      isSelected: _eatingHabits == habit,
-                      onPressed: () => setState(() => _eatingHabits = habit),
+                      isSelected: controller.eatingHabits.value == habit,
+                      onPressed: () => controller.eatingHabits.value = habit,
                     ),
                   ),
                 ],
@@ -548,6 +499,7 @@ class _TraineeOnboardingThroughPageViewState
           Text(
             'How would you describe your stress levels?',
             style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.start,
           ),
           Expanded(
             child: Align(
@@ -555,12 +507,13 @@ class _TraineeOnboardingThroughPageViewState
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 spacing: 8,
+
                 children: [
                   ...options.map(
                     (level) => _buildWideChoiceButton(
                       title: level,
-                      isSelected: _stressLevel == level,
-                      onPressed: () => setState(() => _stressLevel = level),
+                      isSelected: controller.stressLevel.value == level,
+                      onPressed: () => controller.stressLevel.value = level,
                     ),
                   ),
                 ],
@@ -578,19 +531,24 @@ class _TraineeOnboardingThroughPageViewState
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('How is your current sleep?', style: TextStyle(fontSize: 24)),
+          Text(
+            'How is your current sleep?',
+            style: TextStyle(fontSize: 24),
+            textAlign: TextAlign.start,
+          ),
           Expanded(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 spacing: 8,
+
                 children: [
                   ...options.map(
                     (sleep) => _buildWideChoiceButton(
                       title: sleep,
-                      isSelected: _sleepQuality == sleep,
-                      onPressed: () => setState(() => _sleepQuality = sleep),
+                      isSelected: controller.sleepQuality.value == sleep,
+                      onPressed: () => controller.sleepQuality.value = sleep,
                     ),
                   ),
                 ],

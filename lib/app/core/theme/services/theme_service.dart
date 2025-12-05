@@ -28,8 +28,12 @@ class ThemeService extends GetxService {
 
   /// Initializes the service by loading the saved theme from storage.
   Future<ThemeService> init() async {
-    final savedTheme = _storageService.getString(_themeKey);
-    _themeMode.value = _getThemeModeFromString(savedTheme);
+    //final savedTheme = _storageService.getString(_themeKey);
+    //_themeMode.value = _getThemeModeFromString(savedTheme);
+    //return this;
+
+    _themeMode.value = ThemeMode.dark;
+    await _saveThemeToStorage(ThemeMode.dark);
     return this;
   }
 

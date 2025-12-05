@@ -20,8 +20,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
-    // Height for bottom progress bar.
-    const double bottomWidgetHeight = 80.0;
     final double totalAppBarHeight = kToolbarHeight;
     // + bottomWidgetHeight;
 
@@ -120,29 +118,6 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               ),
             ],
           ],
-          // bottom: PreferredSize(
-          //   preferredSize: const Size.fromHeight(bottomWidgetHeight),
-          //   child: Padding(
-          //     padding: const EdgeInsets.fromLTRB(16.0, 0, 16.0, 12.0),
-          //     child: Column(
-          //       crossAxisAlignment: CrossAxisAlignment.start,
-          //       mainAxisAlignment: MainAxisAlignment.end,
-          //       children: [
-          //         6.height,
-          //         Text(
-          //           controller.getCurrentGroupName ?? "Getting Started",
-          //           style: Theme.of(context).textTheme.headlineMedium,
-          //         ),
-          //         const SizedBox(height: 8),
-          //         AnimatedOnboardingStepper(
-          //           totalSteps: controller.stepperTotalSteps,
-          //           currentStep: controller.stepperCurrentStep,
-          //           stepProgress: controller.stepperStepProgress,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         );
       }),
     );
@@ -406,17 +381,24 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               alignment: WrapAlignment.center,
               children: displayOptions.map((o) {
                 final optionText = o.toString();
-                final isOtherChip = isMultiplePlusOther && optionText == 'Other';
+                final isOtherChip =
+                    isMultiplePlusOther && optionText == 'Other';
 
-                final isSelected = controller.selectedOption.value == optionText;
+                final isSelected =
+                    controller.selectedOption.value == optionText;
                 final isIOS = GetPlatform.isIOS;
 
                 if (isIOS) {
                   return CupertinoButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 6,
+                    ),
                     borderRadius: BorderRadius.circular(20),
                     color: isSelected
-                        ? CupertinoTheme.of(context).primaryColor.withOpacity(0.15)
+                        ? CupertinoTheme.of(
+                            context,
+                          ).primaryColor.withOpacity(0.15)
                         : CupertinoColors.systemGrey6,
                     pressedOpacity: 0.3,
                     onPressed: () {
@@ -425,13 +407,15 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                       } else {
                         controller.choose(optionText);
                       }
-                    }, minimumSize: Size(32, 32),
+                    },
+                    minimumSize: Size(32, 32),
                     child: Text(
                       optionText,
                       style: TextStyle(
                         color: isSelected
                             ? CupertinoTheme.of(context).primaryColor
-                            : CupertinoTheme.of(context).brightness == Brightness.dark
+                            : CupertinoTheme.of(context).brightness ==
+                                  Brightness.dark
                             ? CupertinoColors.white
                             : CupertinoColors.black,
                         fontSize: 15,
@@ -444,11 +428,11 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   label: Text(optionText),
                   shape: isSelected
                       ? StadiumBorder(
-                    side: BorderSide(
-                      color: Theme.of(context).colorScheme.primary,
-                      width: 1.5,
-                    ),
-                  )
+                          side: BorderSide(
+                            color: Theme.of(context).colorScheme.primary,
+                            width: 1.5,
+                          ),
+                        )
                       : null,
                   onPressed: () {
                     if (isOtherChip) {

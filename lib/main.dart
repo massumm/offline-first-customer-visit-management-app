@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import 'app/core/binding/initial_binding.dart';
@@ -25,11 +26,12 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Get.put(Dio());
 
   // Initialize Firebase
-  //await _setupFirebase();
+  await _setupFirebase();
 
-  //await _initCrashlytics();
+  await _initCrashlytics();
 
   await Get.putAsync<StorageService>(() => StorageService().init());
   await Get.putAsync<ThemeService>(() => ThemeService().init());
@@ -85,7 +87,6 @@ void main() async {
                     ),
                   );
                 },
-
               );
             },
           )
