@@ -8,8 +8,6 @@ import 'fitness_deshboard_widgets/heart_rate_card_widget.dart';
 import 'fitness_deshboard_widgets/hydration_card.dart';
 import 'fitness_deshboard_widgets/steps_card.dart';
 
-
-
 class GridItem {
   final String title;
   final Color color;
@@ -44,7 +42,6 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
 
   int? draggingIndex;
   Offset? dragOffset;
-  bool isDeleting = false;
 
   void enterEditMode() {
     if (!isEditMode) {
@@ -92,89 +89,81 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: () => exitEditMode(),
-          behavior: HitTestBehavior.opaque,
-          child: Column(
-            children: [
-              if (isEditMode)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: addMetric,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+    return GestureDetector(
+      onTap: () => exitEditMode(),
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        children: [
+          if (isEditMode)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // "Add" button
+                GestureDetector(
+                  onTap: addMetric,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.08),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                          border: Border.all(
-                            color: Colors.deepPurpleAccent.withValues(alpha: 0.25),
-                            width: 1.5,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          color: Colors.deepPurpleAccent,
-                          size: 16,
-                        ),
+                      ],
+                      border: Border.all(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.25),
+                        width: 1.5,
                       ),
                     ),
-
-                    TextButton(
-                      onPressed: () => exitEditMode(),
-                      child: const Text("Done"),
+                    child: Icon(
+                      Icons.add,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 16,
                     ),
-                  ],
-                ),
-              // The grid
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: SizedBox(
-                  // height: 600,
-                  child: MasonryGridView.count(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 8,
-                    crossAxisSpacing: 8,
-                    itemCount: items.length,
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      return buildDragTile(item, index, context);
-                    },
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
-        if (isEditMode && draggingIndex != null)
-          Positioned(
-            bottom: 10,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: AnimatedScale(
-                scale: isDeleting ? 1.4 : 1.0,
-                duration: const Duration(milliseconds: 200),
-                child: deleteTarget(context),
+                // "Done" button
+                TextButton(
+                  onPressed: () => exitEditMode(),
+                  style: TextButton.styleFrom(
+                    textStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  child: const Text("Done"),
+                ),
+              ],
+            ),
+          // The grid
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: SizedBox(
+              // height: 600,
+              child: MasonryGridView.count(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                crossAxisCount: 2,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  return buildDragTile(item, index, context);
+                },
               ),
             ),
           ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -182,7 +171,7 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
   // Calories Card
   Widget _caloriesCard() {
     return _card(
-      borderColor: Color(0xff098C26),
+      borderColor: const Color(0xff098C26),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -194,7 +183,6 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
               color: Colors.black,
             ),
           ),
-
           Row(
             children: [
               const Text(
@@ -219,9 +207,8 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                 radius: 18,
                 lineWidth: 2,
                 percent: 0.72,
-                progressColor: Color(0xff098C26),
-                backgroundColor: Color(0xffEBFFF0),
-
+                progressColor: const Color(0xff098C26),
+                backgroundColor: const Color(0xffEBFFF0),
                 center: const Text(
                   "72%",
                   style: TextStyle(fontWeight: FontWeight.bold),
@@ -229,16 +216,14 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
               ),
             ],
           ),
-
-          Row(
+          const Row(
             children: [
-              const Icon(Icons.restaurant_menu, color: Colors.orange, size: 16),
-              const SizedBox(width: 4),
-              const Expanded(
+              Icon(Icons.restaurant_menu, color: Colors.orange, size: 16),
+              SizedBox(width: 4),
+              Expanded(
                 child: Text(
                   "Stay fueled — Dinner planned 600 kcal.",
                   maxLines: 2,
-
                   style: TextStyle(fontSize: 12, color: Colors.black54),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -253,9 +238,8 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
   // --------------------------------------------------
   // Protein Card
   Widget _proteinCard([double progress = 0.57]) {
-    final cardColor = Color(0xff098C26);
+    const cardColor = Color(0xff098C26);
     final screenWidth = MediaQuery.of(context).size.width;
-
 
     final double gaugeWidth = screenWidth * 0.16;
     final double gaugeHeight = gaugeWidth / 2;
@@ -288,7 +272,7 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: cardColor.withValues(alpha: 0.1),
+                      color: cardColor.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -302,7 +286,6 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                   ),
                 ],
               ),
-
               CustomPaint(
                 painter: GaugePainter(progress),
                 child: SizedBox(
@@ -330,7 +313,7 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
   // Sleep Card
   Widget _sleepCard() {
     return _card(
-      borderColor: Color(0xff0064A7),
+      borderColor: const Color(0xff0064A7),
       child: SizedBox(
         height: 210,
         child: Column(
@@ -344,7 +327,7 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Spacer(),
+            const Spacer(),
             const Text(
               "7h 20m",
               style: TextStyle(
@@ -361,20 +344,20 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            Spacer(),
-            Row(
+            const Spacer(),
+            const Row(
               children: [
-                const Icon(Icons.bedtime, color: Colors.grey, size: 16),
-                const SizedBox(width: 4),
-                const Text("Bedtime: 11:15 PM", style: TextStyle(fontSize: 10)),
+                Icon(Icons.bedtime, color: Colors.grey, size: 16),
+                SizedBox(width: 4),
+                Text("Bedtime: 11:15 PM", style: TextStyle(fontSize: 10)),
               ],
             ),
-            SizedBox(height: 8),
-            Row(
+            const SizedBox(height: 8),
+            const Row(
               children: [
-                const Icon(Icons.wb_sunny, color: Colors.orange, size: 16),
-                const SizedBox(width: 4),
-                const Text("Wake-up:  6:35 AM", style: TextStyle(fontSize: 10)),
+                Icon(Icons.wb_sunny, color: Colors.orange, size: 16),
+                SizedBox(width: 4),
+                Text("Wake-up:  6:35 AM", style: TextStyle(fontSize: 10)),
               ],
             ),
           ],
@@ -404,54 +387,44 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
     );
   }
 
-  Widget deleteTarget(BuildContext context) {
-    return DragTarget<int>(
-      builder: (context, candidateData, rejectedData) {
-        // The DragTarget's builder tells us if an item is hovering over it.
-        final isOver = candidateData.isNotEmpty;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          height: 60,
-          width: 60,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            // The color now responds to an item hovering over the target.
-            color: isOver ? Colors.redAccent : Colors.grey.shade700,
-          ),
-          child: const Icon(Icons.delete, color: Colors.white),
-        );
-      },
-      // When a card first hovers over the target, trigger the 'isDeleting'
-      // state to start the scaling animation.
-      onWillAcceptWithDetails: (details) {
-        setState(() => isDeleting = true);
-        return true;
-      },
-      // When a card is dragged away from the target, reset the animation.
-      onLeave: (data) {
-        setState(() => isDeleting = false);
-      },
-      // When a card is dropped on the target, remove it from the list.
-      onAcceptWithDetails: (details) {
-        final index = details.data;
-        setState(() {
-          items.removeAt(index);
-          isDeleting = false; // Reset animation state.
-        });
-      },
-    );
-  }
-
   Widget buildDragTile(GridItem item, int index, BuildContext context) {
+    final tile = buildTile(item);
+
+    // When not in edit mode, just show the tile with a long-press gesture
+    // to enter edit mode.
     if (!isEditMode) {
-      // Normal view (no drag)
-      return GestureDetector(
-        onLongPress: enterEditMode,
-        child: buildTile(item),
-      );
+      return GestureDetector(onLongPress: enterEditMode, child: tile);
     }
 
-    // Edit mode: wrap with drag + delete
+    // In edit mode, wrap the tile in a Stack to add a delete button.
+    final editableTile = Stack(
+      clipBehavior: Clip.none,
+      children: [
+        tile,
+        Positioned(
+          top: -8,
+          right: 0,
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                items.removeAt(index);
+              });
+            },
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+              child: const Icon(Icons.remove, color: Colors.white, size: 16),
+            ),
+          ),
+        ),
+      ],
+    );
+
+    // In edit mode, make the tile draggable for reordering.
     return LongPressDraggable<int>(
       data: index,
       feedback: Material(
@@ -463,32 +436,30 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
           feedbackHeight: tileHeight(item.heightCells),
         ),
       ),
-      childWhenDragging: Opacity(opacity: 0.3, child: buildTile(item)),
+      childWhenDragging: Opacity(opacity: 0.3, child: tile),
       onDragStarted: () => setState(() => draggingIndex = index),
       onDragUpdate: (d) => setState(() => dragOffset = d.globalPosition),
-      // The onDragEnd callback is now simplified.
       onDragEnd: (d) {
-        // Deletion is handled by the new DragTarget. We just reset the state.
+        // Simplified: just reset dragging state. Deletion is handled by the icon.
         setState(() {
           draggingIndex = null;
           dragOffset = null;
-          isDeleting = false;
         });
       },
       child: DragTarget<int>(
         onWillAcceptWithDetails: (d) => d.data != index,
         onAcceptWithDetails: (d) => swapItems(d.data, index),
-        builder: (_, _, _) => buildTile(item),
+        builder: (_, __, ___) => editableTile,
       ),
     );
   }
 
   Widget buildTile(
-      GridItem item, {
-        bool isFeedback = false,
-        double? feedbackWidth,
-        double? feedbackHeight,
-      }) {
+    GridItem item, {
+    bool isFeedback = false,
+    double? feedbackWidth,
+    double? feedbackHeight,
+  }) {
     double width = feedbackWidth ?? tileWidth(context);
     // FIX: Calculate height consistently, regardless of feedback state.
     double height = feedbackHeight ?? tileHeight(item.heightCells);
@@ -568,18 +539,18 @@ class GaugePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final strokeWidth = 14.0;
+    const strokeWidth = 14.0;
 
     final rect = Rect.fromLTWH(0, 0, size.width, size.height * 2);
 
     final backgroundPaint = Paint()
-      ..color = Color(0xffF1FEF4)
+      ..color = const Color(0xffF1FEF4)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
     final progressPaint = Paint()
-      ..color = Color(0xff098C26)
+      ..color = const Color(0xff098C26)
       ..strokeWidth = strokeWidth
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
