@@ -92,7 +92,6 @@ class Assets {
   static const String mindsetAndMotivationMindsetFocus = 'assets/svg/fitness_report/mindset_and_motivation/mindset_focus.svg';
   static const String musclesBack = 'assets/svg/muscles/back.svg';
   static const String musclesFront = 'assets/svg/muscles/front.svg';
-  static const String navBarHome = 'assets/svg/nav_bar/home.svg';
   static const String nutritionObjectivesCurrentBodyFat = 'assets/svg/fitness_report/nutrition_objectives/current_body_fat.svg';
   static const String nutritionObjectivesCurrentWeight = 'assets/svg/fitness_report/nutrition_objectives/current_weight.svg';
   static const String nutritionObjectivesEnergyObjective = 'assets/svg/fitness_report/nutrition_objectives/energy_objective.svg';
@@ -129,6 +128,8 @@ class Assets {
   static const String splashScreenLightPage1Duration = 'assets/images/splash_screen_light/page_1_duration.png';
   static const String splashScreenLightPage1XpCompletion = 'assets/images/splash_screen_light/page_1_xp_completion.png';
   static const String splashScreenLightPage3Steps = 'assets/images/splash_screen_light/page_3_steps.png';
+  static const String svgAnalysisIcon = 'assets/svg/analysis_icon.svg';
+  static const String svgAnalysisIconGrey = 'assets/svg/analysis_icon_grey.svg';
   static const String svgAppIconWhite = 'assets/svg/app_icon_white.svg';
   static const String svgBgGradientColor = 'assets/svg/bg-gradient-color.svg';
   static const String svgBgGradientColorCropped = 'assets/svg/bg-gradient-color-cropped.svg';
@@ -137,6 +138,10 @@ class Assets {
   static const String svgDeleteDialoguleIcon = 'assets/svg/delete_dialogule_icon.svg';
   static const String svgDotIcon = 'assets/svg/dot-icon.svg';
   static const String svgGoogleIcon = 'assets/svg/google-icon.svg';
+  static const String svgGroupIcon = 'assets/svg/group_icon.svg';
+  static const String svgGroupIconGrey = 'assets/svg/group_icon_grey.svg';
+  static const String svgHomeIcon = 'assets/svg/home_icon.svg';
+  static const String svgHomeIconGrey = 'assets/svg/home_icon_grey.svg';
   static const String svgIcon = 'assets/svg/icon.svg';
   static const String svgIconLogoDark = 'assets/svg/icon-logo-dark.svg';
   static const String svgIconLogoPink = 'assets/svg/icon-logo-pink.svg';

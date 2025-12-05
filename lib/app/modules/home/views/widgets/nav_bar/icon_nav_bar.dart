@@ -36,9 +36,15 @@ class IconicNavWrapper extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  _navItem(icon: Icons.home_outlined, label: "Home", index: 0),
                   _navItem(
-                    icon: Icons.show_chart_outlined,
+                    selectedImage: Assets.svgHomeIcon,
+                    unselectedImage: Assets.svgHomeIconGrey,
+                    label: "Home",
+                    index: 0,
+                  ),
+                  _navItem(
+                    selectedImage: Assets.svgAnalysisIcon,
+                    unselectedImage: Assets.svgAnalysisIconGrey,
                     label: "Analytic",
                     index: 1,
                   ),
@@ -47,7 +53,8 @@ class IconicNavWrapper extends StatelessWidget {
                   const SizedBox(width: 62),
 
                   _navItem(
-                    icon: Icons.group_outlined,
+                    selectedImage: Assets.svgGroupIcon,
+                    unselectedImage: Assets.svgGroupIconGrey,
                     label: "Community",
                     index: 3,
                   ),
@@ -87,8 +94,10 @@ class IconicNavWrapper extends StatelessWidget {
   }
 
   /// ANIMATED NAV ITEM
+  /// ANIMATED NAV ITEM
   Widget _navItem({
-    required IconData icon,
+    required String selectedImage,
+    required String unselectedImage,
     required String label,
     required int index,
   }) {
@@ -109,10 +118,14 @@ class IconicNavWrapper extends StatelessWidget {
                 begin: Colors.white70,
                 end: isActive ? Colors.red : Colors.white70,
               ),
-              builder: (_, color, _) => Icon(icon, size: 22, color: color),
+              builder: (_, color, __) => SvgPicture.asset(
+                isActive ? selectedImage : unselectedImage,
+                width: 22,
+                height: 22,
+                colorFilter: ColorFilter.mode(color!, BlendMode.srcIn),
+              ),
             ),
             const SizedBox(height: 4),
-
             AnimatedOpacity(
               duration: const Duration(milliseconds: 250),
               opacity: isActive ? 1.0 : 0.7,
