@@ -495,12 +495,17 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.map(
-                    (habit) => _buildWideChoiceButton(
-                      title: habit,
-                      isSelected: controller.eatingHabits.value == habit,
-                      onPressed: () => controller.eatingHabits.value = habit,
-                    ),
+                  ...options.expand(
+                        (habit) {
+                      return [
+                        _buildWideChoiceButton(
+                          title: habit,
+                          isSelected: controller.eatingHabits.value == habit,
+                          onPressed: () => controller.eatingHabits.value = habit,
+                        ),
+                        if (habit != options.last) const SizedBox(height: 12),
+                      ];
+                    },
                   ),
                 ],
               ),
@@ -528,12 +533,17 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.map(
-                    (level) => _buildWideChoiceButton(
-                      title: level,
-                      isSelected: controller.stressLevel.value == level,
-                      onPressed: () => controller.stressLevel.value = level,
-                    ),
+                  ...options.expand(
+                        (level) {
+                      return [
+                        _buildWideChoiceButton(
+                          title: level,
+                          isSelected: controller.stressLevel.value == level,
+                          onPressed: () => controller.stressLevel.value = level,
+                        ),
+                        if (level != options.last) const SizedBox(height: 12),
+                      ];
+                    },
                   ),
                 ],
               ),
@@ -561,12 +571,17 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.map(
-                    (sleep) => _buildWideChoiceButton(
-                      title: sleep,
-                      isSelected: controller.sleepQuality.value == sleep,
-                      onPressed: () => controller.sleepQuality.value = sleep,
-                    ),
+                  ...options.expand(
+                        (sleep) {
+                      return [
+                        _buildWideChoiceButton(
+                          title: sleep,
+                          isSelected: controller.sleepQuality.value == sleep,
+                          onPressed: () => controller.sleepQuality.value = sleep,
+                        ),
+                        if (sleep != options.last) const SizedBox(height: 12),
+                      ];
+                    },
                   ),
                 ],
               ),
