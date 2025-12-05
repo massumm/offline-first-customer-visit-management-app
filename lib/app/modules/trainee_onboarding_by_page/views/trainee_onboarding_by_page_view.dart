@@ -349,17 +349,23 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.map(
-                    (goal) => _buildWideChoiceButton(
-                      title: goal,
-                      isSelected: controller.fitnessGoal.value == goal,
-                      onPressed: () => controller.fitnessGoal.value = goal,
-                    ),
+                  ...options.expand(
+                        (goal) {
+                      return [
+                        _buildWideChoiceButton(
+                          title: goal,
+                          isSelected: controller.fitnessGoal.value == goal,
+                          onPressed: () => controller.fitnessGoal.value = goal,
+                        ),
+                        if (goal != options.last) const SizedBox(height: 12),
+                      ];
+                    },
                   ),
                 ],
               ),
             ),
           ),
+
         ],
       ),
     );
