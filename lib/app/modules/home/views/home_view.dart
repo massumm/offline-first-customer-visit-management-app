@@ -15,8 +15,6 @@ import '../widgets/header.dart';
 import '../widgets/progress_ring.dart';
 import '../widgets/trainer_info_card.dart';
 import 'widgets/community_spotlight_card.dart';
-import 'widgets/fitness_deshboard_widgets/fitness_deshboard.dart';
-import 'widgets/health_deshboard_widgets/health_deshboard_widget.dart';
 import 'widgets/lavel_card.dart';
 import 'widgets/metrix_grid_page.dart';
 import 'widgets/nav_bar/icon_nav_bar.dart';

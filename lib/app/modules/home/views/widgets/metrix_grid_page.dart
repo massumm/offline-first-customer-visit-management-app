@@ -1,12 +1,13 @@
-import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-import 'fitness_deshboard_widgets/heart_rate_card_widget.dart';
-import 'fitness_deshboard_widgets/hydration_card.dart';
-import 'fitness_deshboard_widgets/steps_card.dart';
+import 'fitness_dashboard_widgets/heart_rate_card_widget.dart';
+import 'fitness_dashboard_widgets/hydration_card.dart';
+import 'fitness_dashboard_widgets/steps_card.dart';
+import 'health_dashboard_widgets/health_deshboard_widget.dart';
+
 
 class GridItem {
   final String title;
@@ -115,7 +116,7 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
+                            color: Colors.black.withValues(alpha: 0.08),
                             blurRadius: 8,
                             offset: const Offset(0, 4),
                           ),
@@ -123,7 +124,7 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                         border: Border.all(
                           color: Theme.of(
                             context,
-                          ).colorScheme.primary.withOpacity(0.25),
+                          ).colorScheme.primary.withValues(alpha: 0.25),
                           width: 1.5,
                         ),
                       ),
@@ -184,12 +185,12 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
             width: 1.5,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -333,7 +334,7 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: cardColor.withOpacity(0.1),
+                      color: cardColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Text(
@@ -510,7 +511,7 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
       child: DragTarget<int>(
         onWillAcceptWithDetails: (d) => d.data != index,
         onAcceptWithDetails: (d) => swapItems(d.data, index),
-        builder: (_, __, ___) => editableTile,
+        builder: (_, _, _) => editableTile,
       ),
     );
   }
@@ -592,43 +593,3 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
     return tile;
   }
 }
-
-// class GaugePainter extends CustomPainter {
-//   final double progress;
-//
-//   GaugePainter(this.progress);
-//
-//   @override
-//   void paint(Canvas canvas, Size size) {
-//     const strokeWidth = 14.0;
-//
-//     final rect = Rect.fromLTWH(0, 0, size.width, size.height * 2);
-//
-//     final backgroundPaint = Paint()
-//       ..color = const Color(0xffF1FEF4)
-//       ..strokeWidth = strokeWidth
-//       ..style = PaintingStyle.stroke
-//       ..strokeCap = StrokeCap.round;
-//
-//     final progressPaint = Paint()
-//       ..color = const Color(0xff098C26)
-//       ..strokeWidth = strokeWidth
-//       ..style = PaintingStyle.stroke
-//       ..strokeCap = StrokeCap.round;
-//
-//     /// Draw background arc (full half circle)
-//     canvas.drawArc(
-//       rect,
-//       math.pi, // start
-//       math.pi, // sweep (180°)
-//       false,
-//       backgroundPaint,
-//     );
-//
-//     /// Draw progress arc
-//     canvas.drawArc(rect, math.pi, math.pi * progress, false, progressPaint);
-//   }
-//
-//   @override
-//   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
-// }
