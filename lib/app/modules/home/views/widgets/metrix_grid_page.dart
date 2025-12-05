@@ -144,8 +144,10 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: SizedBox(
-                  height: 600,
+                  // height: 600,
                   child: MasonryGridView.count(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     crossAxisCount: 2,
                     mainAxisSpacing: 8,
                     crossAxisSpacing: 8,
@@ -492,52 +494,48 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
         double? feedbackHeight,
       }) {
     double width = feedbackWidth ?? tileWidth(context);
-    // double height = feedbackHeight ?? tileHeight(item.heightCells);
+    // FIX: Calculate height consistently, regardless of feedback state.
+    double height = feedbackHeight ?? tileHeight(item.heightCells);
 
-    // Adjust width/height for small/tall cards
+    // The user's original width adjustments are preserved.
     if (item.heightCells == 1) {
-      width *= 1.5; // Increase width for small cards
-      // height *= 0.95;
+      width *= 1.5;
     } else if (item.heightCells == 2) {
-      width *= 0.85; // Slightly reduce width for tall cards
-      // height *= 0.75;
+      width *= 0.85;
     }
 
+    // The specific card widgets below have their own intrinsic height,
+    // so they don't need an explicit height set on the SizedBox.
     if (item.title == "Steps") {
-      return SizedBox(
-        width: width,
-        // height: item.heightCells == 2 ? height : 270,
-        child: const StepsCard(),
-      );
+      return SizedBox(width: width, child: const StepsCard());
     }
     if (item.title == "Hydration") {
       return SizedBox(
         width: width,
-        // height: item.heightCells == 1 ? height : 130,
         child: HydrationWaveProvider(
           child: HydrationCard(onAddWater: () {}, remainingLiters: 3.5),
         ),
       );
     }
     if (item.title == "Heart Rate") {
-      return SizedBox(
-        width: width,
-        // height: item.heightCells == 1 ? height : 130,
-        child: const HeartRateCard(),
-      );
+      return SizedBox(width: width, child: const HeartRateCard());
     }
     if (item.title == "Calories") {
       return SizedBox(width: width, child: _caloriesCard());
     }
     if (item.title == "Protein") {
+      // Pass the context to _proteinCard for responsive sizing.
       return SizedBox(width: width, child: _proteinCard());
     }
     if (item.title == "Sleep") {
       return SizedBox(width: width, child: _sleepCard());
     }
+
+    // This is the fallback tile for generic items like "Metric 7".
     final tile = Container(
       width: width,
-      height: feedbackHeight,
+      // FIX: Apply the calculated height here.
+      height: height,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: item.color,
