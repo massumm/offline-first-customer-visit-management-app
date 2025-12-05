@@ -93,7 +93,7 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => exitEditMode(),
+      // onTap: () => exitEditMode(),
       behavior: HitTestBehavior.opaque,
       child: Column(
         children: [
