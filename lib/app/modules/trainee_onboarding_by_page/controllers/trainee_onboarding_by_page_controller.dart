@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/network/exceptions/not_found_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
@@ -84,6 +85,10 @@ class TraineeOnboardingByPageController extends GetxController {
       Get.offAllNamed('/goal-tracking');
     } catch (e) {
       "An error occurred during the submission process: $e".log();
+
+      if(kDebugMode){
+        Get.offAllNamed('/goal-tracking');
+      }
 
       if (e is ApiException) {
         CustomToast.showErrorToast(e.description);
