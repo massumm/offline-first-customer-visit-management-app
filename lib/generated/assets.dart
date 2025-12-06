@@ -285,9 +285,7 @@ class Assets {
   static const String svgArrowLeft = 'assets/svg/arrow-left.svg';
   static const String svgArrowRight = 'assets/svg/arrow-right.svg';
   static const String svgBgGradientColor = 'assets/svg/bg-gradient-color.svg';
-  static const String svgBgGradientColorCropped =
-      'assets/svg/bg-gradient-color-cropped.svg';
-  static const String svgCalendar = 'assets/svg/calendar.svg';
+  static const String svgBgGradientColorCropped = 'assets/svg/bg-gradient-color-cropped.svg';
   static const String svgCheckmark = 'assets/svg/checkmark.svg';
   static const String svgCurrentStress = 'assets/svg/current_stress.svg';
   static const String svgDeleteDialoguleIcon =
@@ -325,4 +323,5 @@ class Assets {
   static const String svgTargetStress = 'assets/svg/target_stress.svg';
   static const String svgTick = 'assets/svg/tick.svg';
   static const String svgUserCircularIcon = 'assets/svg/user-circular-icon.svg';
+
 }
