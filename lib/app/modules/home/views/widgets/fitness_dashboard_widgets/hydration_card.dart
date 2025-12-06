@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 
 class HydrationCard extends StatelessWidget {
   final double remainingLiters;
@@ -58,50 +59,48 @@ class HydrationCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      const Text(
-                        "Hydration",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const Spacer(),
+                  const Text(
+                    "Hydration",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  6.height,
 
-                      Text(
-                        "${remainingLiters.toStringAsFixed(1)}ltr Remaining",
-                        style: TextStyle(
-                          fontSize: screenWidth * 0.025,
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    "${remainingLiters.toStringAsFixed(1)}ltr Remaining",
+                    style: TextStyle(
+                      fontSize: screenWidth * 0.025,
+                      color: Colors.black54,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   Spacer(),
 
                   // button
-                  GestureDetector(
-                    onTap: onAddWater,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: buttonHPad,
-                        vertical: buttonVPad,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF3DBE57), Color(0xFF5EDB72)],
+                  Center(
+                    child: GestureDetector(
+                      onTap: onAddWater,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: buttonHPad,
+                          vertical: buttonVPad,
                         ),
-                      ),
-                      child: Text(
-                        "Add Water",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: buttonFontSize,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF3DBE57), Color(0xFF5EDB72)],
+                          ),
+                        ),
+                        child: Text(
+                          "Add Water",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: buttonFontSize,
+                          ),
                         ),
                       ),
                     ),

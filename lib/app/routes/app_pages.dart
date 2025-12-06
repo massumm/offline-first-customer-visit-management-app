@@ -19,6 +19,8 @@ import '../modules/fitness_report/bindings/fitness_report_binding.dart';
 import '../modules/fitness_report/views/report_display_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/forgot_password/views/forgot_password_view.dart';
+import '../modules/goal_tracking/bindings/goal_tracking_binding.dart';
+import '../modules/goal_tracking/views/goal_tracking_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/icon_chat/bindings/icon_chat_binding.dart';
@@ -42,6 +44,8 @@ import '../modules/trainee_fitness_report_generation/bindings/trainee_fitness_re
 import '../modules/trainee_fitness_report_generation/views/trainee_fitness_report_generation_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
+import '../modules/trainee_onboarding_by_page/bindings/trainee_onboarding_by_page_binding.dart';
+import '../modules/trainee_onboarding_by_page/views/trainee_onboarding_by_page_view.dart';
 import '../modules/trainee_register/bindings/trainee_register_binding.dart';
 import '../modules/trainee_register/views/trainee_register_view.dart';
 import '../modules/trainer_onboarding/bindings/trainer_onboarding_binding.dart';
@@ -52,13 +56,21 @@ import '../modules/weekly_routine/views/explore_view.dart';
 import '../modules/weekly_routine/views/weekly_routine_view.dart';
 import '../modules/workout_history/bindings/workout_history_binding.dart';
 import '../modules/workout_history/views/workout_history_view.dart';
+import '../modules/your_activity_goals/bindings/your_activity_goals_binding.dart';
+import '../modules/your_activity_goals/views/your_activity_goals_view.dart';
+import '../modules/your_daily_goals/bindings/your_daily_goals_binding.dart';
+import '../modules/your_daily_goals/views/your_daily_goals_view.dart';
+import '../modules/your_nutrition_goals/bindings/your_nutrition_goals_binding.dart';
+import '../modules/your_nutrition_goals/views/your_nutrition_goals_view.dart';
+import '../modules/your_recovery_goals/bindings/your_recovery_goals_binding.dart';
+import '../modules/your_recovery_goals/views/your_recovery_goals_view.dart';
 
 part 'app_routes.dart';
 
 class AppPages {
   AppPages._();
 
-  static const String INITIAL = Routes.SPLASH;
+  static const String INITIAL = Routes.TRAINEE_ONBOARDING_BY_PAGE;
 
   static final routes = [
     GetPage(
@@ -120,7 +132,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.TRAINEE_ONBOARDING,
-      page: () => TraineeOnboardingView(),
+      page: () => const TraineeOnboardingView(),
       binding: TraineeOnboardingBinding(),
     ),
     GetPage(
@@ -232,6 +244,36 @@ class AppPages {
       name: _Paths.PRIVACY,
       page: () => const PrivacyView(),
       binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.GOAL_TRACKING,
+      page: () => const GoalTrackingView(),
+      binding: GoalTrackingBinding(),
+    ),
+    GetPage(
+      name: _Paths.YOUR_ACTIVITY_GOALS,
+      page: () => const YourActivityGoalsView(),
+      binding: YourActivityGoalsBinding(),
+    ),
+    GetPage(
+      name: _Paths.YOUR_RECOVERY_GOALS,
+      page: () => const YourRecoveryGoalsView(),
+      binding: YourRecoveryGoalsBinding(),
+    ),
+    GetPage(
+      name: _Paths.YOUR_NUTRITION_GOALS,
+      page: () => const YourNutritionGoalsView(),
+      binding: YourNutritionGoalsBinding(),
+    ),
+    GetPage(
+      name: _Paths.YOUR_DAILY_GOALS,
+      page: () => const YourDailyGoalsView(),
+      binding: YourDailyGoalsBinding(),
+    ),
+    GetPage(
+      name: _Paths.TRAINEE_ONBOARDING_BY_PAGE,
+      page: () => const TraineeOnboardingByPageView(),
+      binding: TraineeOnboardingByPageBinding(),
     ),
   ];
 }

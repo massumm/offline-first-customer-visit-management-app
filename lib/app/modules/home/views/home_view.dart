@@ -5,21 +5,19 @@ import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/theme/icon_light_theme.dart';
-import 'package:icon/app/data/local/preference/store/user_store.dart';
-import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/actions_card.dart';
-import '../widgets/community_card.dart';
 import '../widgets/goals_card.dart';
 import '../widgets/header.dart';
 import '../widgets/progress_ring.dart';
 import '../widgets/trainer_info_card.dart';
-import 'widgets/fitness_deshboard_widgets/fitness_deshboard.dart';
-import 'widgets/health_deshboard_widgets/health_deshboard_widget.dart';
+import 'widgets/community_spotlight_card.dart';
 import 'widgets/lavel_card.dart';
+import 'widgets/metrix_grid_page.dart';
+import 'widgets/nav_bar/icon_nav_bar.dart';
 
 class HomeView extends BaseView<HomeController> {
   const HomeView({super.key});
@@ -30,7 +28,6 @@ class HomeView extends BaseView<HomeController> {
       data: IconLightTheme.androidLightTheme,
       child: Builder(
         builder: (context) {
-          final cs = Theme.of(context).colorScheme;
           return Scaffold(
             body: SafeArea(
               child: SingleChildScrollView(
@@ -53,56 +50,19 @@ class HomeView extends BaseView<HomeController> {
                     16.height,
                     GoalsCard(onPressed: () {}),
                     16.height,
-                    FitnessDashboard(),
-                    16.height,
-                    HealthDashboard(),
+                    MetricsGridPage(),
+                    // FitnessDashboard(),
+                    // 16.height,
+                    // HealthDashboard(),
                     16.height,
                     LevelCard(label: 'Level 1'),
                     16.height,
-                    CommunityCard(color: cs.secondary),
-                    58.height,
+                    CommunitySpotlightCard(),
+                    16.height,
                   ],
                 ),
               ),
             ),
-            bottomNavigationBar: Obx(() {
-              return NavigationBar(
-                backgroundColor: cs.surface,
-                selectedIndex: controller.selectedNavIndex.value,
-                onDestinationSelected: (index) {
-                  controller.selectedNavIndex.value = index;
-                  if (index == 2) {
-                    final trainerId = UserStore.to.trainerId ?? 1;
-                    Get.toNamed(
-                      Routes.ICON_CHAT,
-                      arguments: {'trainerId': trainerId},
-                    );
-                  }
-                },
-                destinations: const [
-                  NavigationDestination(
-                    icon: Icon(Icons.dashboard_outlined),
-                    selectedIcon: Icon(Icons.dashboard),
-                    label: 'Home',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.analytics_outlined),
-                    selectedIcon: Icon(Icons.analytics),
-                    label: 'Analysis',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.chat_outlined),
-                    selectedIcon: Icon(Icons.chat),
-                    label: 'Chat',
-                  ),
-                  NavigationDestination(
-                    icon: Icon(Icons.person_outline),
-                    selectedIcon: Icon(Icons.person),
-                    label: 'Profile',
-                  ),
-                ],
-              );
-            }),
           );
         },
       ),
@@ -143,6 +103,23 @@ class HomeView extends BaseView<HomeController> {
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) => null;
+
+  @override
+  Widget? bottomNavigationBar(BuildContext context) =>
+      Obx(() {
+        return Container(
+          color: AppColors.lightBgColor,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
+            child: IconicNavWrapper(
+              currentIndex: controller.selectedNavIndex.value,
+              onTap: (index) {
+                controller.selectedNavIndex.value = index;
+              },
+            ),
+          ),
+        );
+      });
 }
 
 class DailyProgressIndicators extends StatelessWidget {
