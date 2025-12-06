@@ -52,8 +52,8 @@ class TraineeOnboardingByPageView
                 child: QandAProgressBar(
                   currentGroup: 1,
                   totalGroups: 1,
-                  currentQuestion: controller.currentPage.value + 1,
-                  totalQuestions: onboardingSteps,
+                  currentQuestion: controller.currentPage.value,
+                  totalQuestions: onboardingSteps - 1,
                 ),
               ),
             ),
