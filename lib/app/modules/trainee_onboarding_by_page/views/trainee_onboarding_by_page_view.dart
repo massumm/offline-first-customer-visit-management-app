@@ -204,6 +204,7 @@ class TraineeOnboardingByPageView
     return _buildNavigation(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'What is your sex?',
@@ -237,6 +238,7 @@ class TraineeOnboardingByPageView
     return _buildNavigation(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'What is your date of birth?',
