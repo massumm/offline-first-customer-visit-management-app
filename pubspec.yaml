@@ -3,7 +3,7 @@ description: "Icon - Train Smarter"
 
 publish_to: 'none'
 
-version: 1.0.1+2
+version: 1.0.3+3
 
 environment:
   sdk: ^3.10.1
@@ -134,8 +134,8 @@ flutter_native_splash:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/icon-splash.png"
-  adaptive_icon_foreground: "assets/images/icon-splash.png"
+  image_path: "assets/images/icon-launcher-icon.png"
+  adaptive_icon_foreground: "assets/images/icon-launcher-icon.png"
   adaptive_icon_background: "#FFFFFF"
   remove_alpha_ios: true
   min_sdk_android: 21

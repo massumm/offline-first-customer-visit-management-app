@@ -101,6 +101,7 @@ class Assets {
   static const String imagesGoalTrackingPhoneBackground = 'assets/images/goal_tracking_phone_background.png';
   static const String imagesGoogle = 'assets/images/google.png';
   static const String imagesGridlineImage = 'assets/images/gridline_image.png';
+  static const String imagesIconLauncherIcon = 'assets/images/icon-launcher-icon.png';
   static const String imagesIconLogo = 'assets/images/icon-logo.png';
   static const String imagesIconLogoPink = 'assets/images/icon-logo-pink.png';
   static const String imagesIconSplash = 'assets/images/icon-splash.png';
