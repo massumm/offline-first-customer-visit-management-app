@@ -30,7 +30,7 @@ class TraineeOnboardingByPageController extends GetxController {
   RxString email = ''.obs;
 
   void nextPage() {
-    if (currentPage.value < 10) {
+    if (currentPage.value <= 10) {
       pageController.nextPage(
         duration: Duration(milliseconds: 300),
         curve: Curves.easeInOut,

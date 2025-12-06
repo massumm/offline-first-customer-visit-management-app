@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import 'package:icon/app/core/values/app_colors.dart';
 
@@ -88,6 +89,7 @@ class TraineeOnboardingByPageView
     return _buildNavigation(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             'What is your email address?',
@@ -118,66 +120,76 @@ class TraineeOnboardingByPageView
             child: child,
           ),
         ),
+        8.height,
         Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(8.0),
           child: _buildActionButton(),
         ),
       ],
     );
   }
 
-  Widget? _buildActionButton() {
-    const int lastPageIndex = 11;
+  Widget _buildActionButton() {
+    return Obx(() {
+      const int lastPageIndex = 11;
+      final currentPage = controller.currentPage.value;
 
-    bool isInputValid() {
-      switch (controller.currentPage.value) {
+      bool isEnabled;
+      switch (currentPage) {
         case 0: // Sex
-          return controller.sex.value.isNotEmpty;
+          isEnabled = controller.sex.value.isNotEmpty;
+          break;
         case 1: // DOB
-          return controller.dob.value != null;
+          isEnabled = controller.dob.value != null;
+          break;
         case 2: // Height
         case 3: // Weight
         case 6: // Training Days
-          // These pages use pickers with initial default values,
-          // so the button can be enabled by default.
-          return true;
+        // These pages use pickers with initial default values,
+        // so the button is enabled by default.
+          isEnabled = true;
+          break;
         case 4: // Fitness Goal
-          return controller.fitnessGoal.value?.isNotEmpty ?? false;
+          isEnabled = controller.fitnessGoal.value?.isNotEmpty ?? false;
+          break;
         case 5: // Lifestyle
-          return controller.lifestyle.value?.isNotEmpty ?? false;
+          isEnabled = controller.lifestyle.value?.isNotEmpty ?? false;
+          break;
         case 7: // Session Length
-          return controller.sessionLength.value?.isNotEmpty ?? false;
+          isEnabled = controller.sessionLength.value?.isNotEmpty ?? false;
+          break;
         case 8: // Eating Habits
-          return controller.eatingHabits.value?.isNotEmpty ?? false;
+          isEnabled = controller.eatingHabits.value?.isNotEmpty ?? false;
+          break;
         case 9: // Stress Level
-          return controller.stressLevel.value?.isNotEmpty ?? false;
+          isEnabled = controller.stressLevel.value?.isNotEmpty ?? false;
+          break;
         case 10: // Sleep Quality
-          return controller.sleepQuality.value?.isNotEmpty ?? false;
+          isEnabled = controller.sleepQuality.value?.isNotEmpty ?? false;
+          break;
         case 11: // Email
-          return controller.email.value.isNotEmpty;
+          isEnabled = controller.email.value.isNotEmpty;
+          break;
         default:
-          return false;
+          isEnabled = false;
       }
-    }
 
-    final bool isEnabled = isInputValid();
+      final isLastPage = currentPage == lastPageIndex;
 
-    // Show 'Next' button for all pages except the last one.
-    if (controller.currentPage.value < lastPageIndex) {
       return ElevatedButton(
-        onPressed: isEnabled ? controller.nextPage : null,
-        child: const Text('Next', style: TextStyle(fontSize: 16)),
+        onPressed: isEnabled
+            ? (isLastPage ? controller.submitAnswers : controller.nextPage)
+            : null,
+        style: ElevatedButton.styleFrom(
+
+        ),
+        child: Text(
+          isLastPage ? 'Finish' : 'Next',
+          style: const TextStyle(fontSize: 16),
+        ),
       );
-    }
-    // Show 'Finish' button on the last page.
-    if (controller.currentPage.value == lastPageIndex) {
-      return ElevatedButton(
-        onPressed: isEnabled ? controller.submitAnswers : null,
-        child: const Text('Finish'),
-      );
-    }
-    return null;
+    });
   }
 
   Widget _buildWideChoiceButton({
