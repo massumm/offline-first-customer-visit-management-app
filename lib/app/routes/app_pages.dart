@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:icon/app/modules/app_settings/bindings/app_settings_binding.dart';
+import 'package:icon/app/modules/app_settings/views/app_settings_view.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
@@ -57,7 +59,7 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const String INITIAL = Routes.GOAL_TRACKING;
+  static const String INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
@@ -201,6 +203,11 @@ class AppPages {
       name: _Paths.TRAINEE_ONBOARDING_BY_PAGE,
       page: () => const TraineeOnboardingByPageView(),
       binding: TraineeOnboardingByPageBinding(),
+    ),
+    GetPage(
+      name: _Paths.APP_SETTINGS,
+      page: () => const AppSettingsView(),
+      binding: AppSettingsBinding(),
     ),
   ];
 }
