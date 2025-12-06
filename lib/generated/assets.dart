@@ -76,20 +76,38 @@ class Assets {
       'assets/svg/app_settings/app_integration.svg';
   static const String appSettingsDeleteAccount =
       'assets/svg/app_settings/delete_account.svg';
+  static const String appSettingsEmailUsIcon =
+      'assets/svg/app_settings/email_us_icon.svg';
+  static const String appSettingsExportCheck =
+      'assets/svg/app_settings/export_check.svg';
   static const String appSettingsExportData =
       'assets/svg/app_settings/export_data.svg';
+  static const String appSettingsExportUncheck =
+      'assets/svg/app_settings/export_uncheck.svg';
   static const String appSettingsFeedback =
       'assets/svg/app_settings/feedback.svg';
   static const String appSettingsHelpAndSupport =
       'assets/svg/app_settings/help_and_support.svg';
+  static const String appSettingsLaptopIcon =
+      'assets/svg/app_settings/laptop_icon.svg';
+  static const String appSettingsMobileIcon =
+      'assets/svg/app_settings/mobile_icon.svg';
   static const String appSettingsPrivacy =
       'assets/svg/app_settings/privacy.svg';
   static const String appSettingsRegionAndLanguage =
       'assets/svg/app_settings/region_and_language.svg';
+  static const String appSettingsSupportMish =
+      'assets/images/app_settings/support_mish.png';
+  static const String appSettingsSupportYou =
+      'assets/images/app_settings/support_you.png';
   static const String appSettingsTwoFactorAuthentication =
       'assets/svg/app_settings/two_factor_authentication.svg';
   static const String appSettingsUnitsAndPreference =
       'assets/svg/app_settings/units_and_preference.svg';
+  static const String appSettingsWarningIcon =
+      'assets/svg/app_settings/warning_icon.svg';
+  static const String appSettingsWarningUlIcon =
+      'assets/svg/app_settings/warning_ul_icon.svg';
   static const String bodyFatBodyFatHigh =
       'assets/images/body_fat/body-fat-high.png';
   static const String bodyFatBodyFatLow =

@@ -62,87 +62,103 @@ class AppIntegrationView extends BaseView<AppSettingsController> {
 
   @override
   Widget body(BuildContext context) {
+    // Initialize integration states if not already done
+    if (controller.integrationConnectionStates.isEmpty) {
+      controller.initializeIntegrationStates();
+    }
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'App integrations',
-            style: AppTextTheme.titleSmallSemiBold.copyWith(
-              color: ThemeHelpers.primaryTextColor,
-            ),
-          ), //16px, semi bold, black
-
-          8.height,
-          Text(
-            'Connect with your favorite health and fitness apps',
-            style: AppTextTheme.bodyLargeRegular,
-          ), // 14px, regular, secondary text color
-
-          16.height,
-          ...deviceList.map((device) {
-            return Container(
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: ThemeHelpers.primaryCardColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.transparent),
+      child: Obx(
+        () => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'App integrations',
+              style: AppTextTheme.titleSmallSemiBold.copyWith(
+                color: ThemeHelpers.primaryTextColor,
               ),
-              child: ListTile(
-                leading: IntegrationIconContainer(
-                  icon: device.icon,
-                  iconColor: device.iconColor,
+            ), //16px, semi bold, black
+
+            8.height,
+            Text(
+              'Connect with your favorite health and fitness apps',
+              style: AppTextTheme.bodyLargeRegular,
+            ), // 14px, regular, secondary text color
+
+            16.height,
+            ...controller.integrationConnectionStates.keys.map((
+              integrationName,
+            ) {
+              final isConnected =
+                  controller.integrationConnectionStates[integrationName] ??
+                  false;
+              final isLoading =
+                  controller.integrationLoadingStates[integrationName] ?? false;
+              final device = deviceList.firstWhere(
+                (d) => d.title.toLowerCase().contains(
+                  integrationName.toLowerCase().split(' ')[0],
                 ),
-                title: Text(
-                  device.title,
-                  style: AppTextTheme.bodyLargeSemiBold.copyWith(
-                    color: ThemeHelpers.primaryTextColor,
-                  ),
-                ), //14px, semi bold, black
-                subtitle: Text(
-                  device.description ?? '',
-                  style: AppTextTheme.bodyLargeRegular.copyWith(
-                    color: ThemeHelpers.secondaryTextColor,
-                  ),
-                ), //14px, regular, secondary text color
-                trailing: InkWell(
-                  onTap: () {},
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: device.connectionStatus == 'Connected'
-                          ? Colors.white
-                          : AppColors.colorPrimary,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: device.connectionStatus == 'Connected'
-                            ? AppColors.lightStockColor
-                            : Colors.transparent,
-                      ),
-                    ),
-                    width: 120,
-                    child: Text(
-                      device.connectionStatus == 'Connected'
-                          ? 'Disconnect'
-                          : 'Connect',
-                      style: AppTextTheme.bodyLargeRegular.copyWith(
-                        color: device.connectionStatus == 'Connected'
-                            ? Colors.black
-                            : Colors.white,
-                      ),
-                      textAlign: TextAlign.center,
-                    ), //14px, regular, white
-                  ),
+                orElse: () => deviceList.first,
+              );
+
+              return Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: ThemeHelpers.primaryCardColor,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(color: Colors.transparent),
                 ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 8),
-              ),
-            );
-          }).toList(),
-        ],
+                child: ListTile(
+                  leading: IntegrationIconContainer(
+                    icon: device.icon,
+                    iconColor: device.iconColor,
+                  ),
+                  title: Text(
+                    integrationName,
+                    style: AppTextTheme.bodyLargeSemiBold.copyWith(
+                      color: ThemeHelpers.primaryTextColor,
+                    ),
+                  ), //14px, semi bold, black
+                  subtitle: Text(
+                    isConnected
+                        ? 'Connected and syncing'
+                        : device.description ?? '',
+                    style: AppTextTheme.bodyLargeRegular.copyWith(
+                      color: ThemeHelpers.secondaryTextColor,
+                    ),
+                  ), //14px, regular, secondary text color
+                  trailing: LoadingButton(
+                    onPressed: isLoading
+                        ? null
+                        : () => controller.toggleIntegrationConnection(
+                            integrationName,
+                          ),
+                    isLoading: isLoading,
+                    label: isConnected ? 'Disconnect' : 'Connect',
+                    width: 125,
+                    borderColor: Get.isDarkMode
+                        ? AppColors.darkStockColor
+                        : Colors.transparent,
+                    // height: 40,
+                    borderRadius: 16,
+                    backgroundColor: isConnected
+                        ? Get.isDarkMode
+                              ? AppColors.darkShapeColor
+                              : Colors.white
+                        : AppColors.colorPrimary,
+                    textColor: isConnected ? Colors.black : Colors.white,
+                    textStyle: AppTextTheme.bodyLargeRegular,
+                    loadingColor: Colors.black,
+                    loadingSize: 16,
+                    loadingStrokeWidth: 2,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+              );
+            }).toList(),
+          ],
+        ),
       ),
     );
   }

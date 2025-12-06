@@ -15,6 +15,19 @@ import 'package:icon/generated/assets.dart';
 class UnitsAndPreferencesView extends BaseView<AppSettingsController> {
   const UnitsAndPreferencesView({super.key});
 
+  @override
+  PreferredSizeWidget? appBar(BuildContext context) {
+    return AppBar(
+      leading: SizedBox(
+        height: 32,
+        width: 32,
+        child: Center(child: ActionPill(onTap: () => Get.back())),
+      ),
+      title: Text('Units & Preferences'),
+      centerTitle: true,
+    );
+  }
+
   Widget _buildUnitSettingsCard({
     required String title,
     required String description,

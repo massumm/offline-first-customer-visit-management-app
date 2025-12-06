@@ -27,4 +27,19 @@ class ThemeHelpers {
 
   static Color get cardColorWhite =>
       Get.isDarkMode ? AppColors.darkShapeColor : Colors.white;
+
+  static Color get cardColorGrey2 =>
+      Get.isDarkMode ? AppColors.black : AppColors.pageBackground;
+
+  static Color get cardColorGrey =>
+      Get.isDarkMode ? AppColors.darkShapeColor : AppColors.pageBackground;
+
+  static Color get warningBgColor =>
+      Get.isDarkMode ? AppColors.darkShapeColor : AppColors.lightWarningColorBG;
+
+  static Color get warningColor =>
+      Get.isDarkMode ? AppColors.black : AppColors.lightWarningColorBG;
+
+  static Color get informationColor =>
+      Get.isDarkMode ? AppColors.black : AppColors.lightWarningColorBG;
 }

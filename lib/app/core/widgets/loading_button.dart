@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 
 class LoadingButton extends StatelessWidget {
@@ -14,6 +15,9 @@ class LoadingButton extends StatelessWidget {
     this.loadingColor = Colors.white,
     this.gradient,
     this.backgroundColor,
+    this.textColor,
+    this.textStyle,
+    this.borderColor = Colors.transparent,
   });
 
   final VoidCallback? onPressed;
@@ -26,6 +30,9 @@ class LoadingButton extends StatelessWidget {
   final Color loadingColor;
   final Gradient? gradient;
   final Color? backgroundColor;
+  final Color? textColor;
+  final TextStyle? textStyle;
+  final Color borderColor;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +43,7 @@ class LoadingButton extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: gradient,
             borderRadius: BorderRadius.circular(borderRadius),
+            border: Border.all(color: borderColor),
           ),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
@@ -55,7 +63,12 @@ class LoadingButton extends StatelessWidget {
                       color: loadingColor,
                     ),
                   )
-                : Text(label),
+                : Text(
+                    label,
+                    style: textStyle ?? AppTextTheme.bodyLargeSemiBold.copyWith(
+                      color: textColor,
+                    ),
+                  ), //16px, semi bold, textColor
           ),
         ),
       );
@@ -68,6 +81,7 @@ class LoadingButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius),
+            side: BorderSide(color: borderColor),
           ),
           backgroundColor: backgroundColor ?? AppColors.colorPrimary,
         ),
@@ -81,7 +95,12 @@ class LoadingButton extends StatelessWidget {
                   color: loadingColor,
                 ),
               )
-            : Text(label),
+            : Text(
+                label,
+                style: textStyle ?? AppTextTheme.bodyLargeSemiBold.copyWith(
+                  color: textColor,
+                ),
+              ),
       ),
     );
   }

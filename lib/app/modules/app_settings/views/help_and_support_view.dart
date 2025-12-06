@@ -1,20 +1,45 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:icon/app/base/base_view.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/modules/app_settings/controllers/app_settings_controller.dart';
+import 'package:icon/app/modules/app_settings/widgets/email_us_widget.dart';
+import 'package:icon/app/modules/app_settings/widgets/faq_widget.dart';
 
-class HelpAndSupportView extends GetView {
+import '../widgets/schedule_a_call_widget.dart';
+
+class HelpAndSupportView extends BaseView<AppSettingsController> {
   const HelpAndSupportView({super.key});
+
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('HelpAndSupportView'),
-        centerTitle: true,
+  PreferredSizeWidget? appBar(BuildContext context) {
+    return AppBar(
+      leading: SizedBox(
+        height: 32,
+        width: 32,
+        child: Center(child: ActionPill(onTap: () => Get.back())),
       ),
-      body: const Center(
-        child: Text(
-          'HelpAndSupportView is working',
-          style: TextStyle(fontSize: 20),
+      title: Text('Help & Support'),
+      centerTitle: true,
+    );
+  }
+
+  @override
+  Widget body(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ScheduleACallWidget(),
+            16.height,
+            EmailUsWidget(),
+            16.height,
+            FaqWidget(),
+          ],
         ),
       ),
     );

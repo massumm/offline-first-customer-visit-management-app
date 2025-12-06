@@ -82,6 +82,7 @@ flutter:
     - assets/images/icon_profile/
     - assets/images/splash_screen_light/
     - assets/images/splash_screen_dark/
+    - assets/images/app_settings/
     - assets/jsons/
 
     - assets/svg/
