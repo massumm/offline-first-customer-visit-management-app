@@ -128,22 +128,53 @@ class TraineeOnboardingByPageView
   }
 
   Widget? _buildActionButton() {
-    if (controller.currentPage.value < 10) {
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: controller.nextPage,
-          child: Text('Next', style: TextStyle(fontSize: 16)),
-        ),
+    const int lastPageIndex = 11;
+
+    bool isInputValid() {
+      switch (controller.currentPage.value) {
+        case 0: // Sex
+          return controller.sex.value.isNotEmpty;
+        case 1: // DOB
+          return controller.dob.value != null;
+        case 2: // Height
+        case 3: // Weight
+        case 6: // Training Days
+          // These pages use pickers with initial default values,
+          // so the button can be enabled by default.
+          return true;
+        case 4: // Fitness Goal
+          return controller.fitnessGoal.value?.isNotEmpty ?? false;
+        case 5: // Lifestyle
+          return controller.lifestyle.value?.isNotEmpty ?? false;
+        case 7: // Session Length
+          return controller.sessionLength.value?.isNotEmpty ?? false;
+        case 8: // Eating Habits
+          return controller.eatingHabits.value?.isNotEmpty ?? false;
+        case 9: // Stress Level
+          return controller.stressLevel.value?.isNotEmpty ?? false;
+        case 10: // Sleep Quality
+          return controller.sleepQuality.value?.isNotEmpty ?? false;
+        case 11: // Email
+          return controller.email.value.isNotEmpty;
+        default:
+          return false;
+      }
+    }
+
+    final bool isEnabled = isInputValid();
+
+    // Show 'Next' button for all pages except the last one.
+    if (controller.currentPage.value < lastPageIndex) {
+      return ElevatedButton(
+        onPressed: isEnabled ? controller.nextPage : null,
+        child: const Text('Next', style: TextStyle(fontSize: 16)),
       );
     }
-    if (controller.currentPage.value == 10) {
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: controller.submitAnswers,
-          child: Text('Finish'),
-        ),
+    // Show 'Finish' button on the last page.
+    if (controller.currentPage.value == lastPageIndex) {
+      return ElevatedButton(
+        onPressed: isEnabled ? controller.submitAnswers : null,
+        child: const Text('Finish'),
       );
     }
     return null;
@@ -458,19 +489,17 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.expand(
-                        (length) {
-                      return [
-                        _buildWideChoiceButton(
-                          title: length,
-                          isSelected: controller.sessionLength.value == length,
-                          onPressed: () =>
-                          controller.sessionLength.value = length,
-                        ),
-                        if (length != options.last) const SizedBox(height: 12),
-                      ];
-                    },
-                  ),
+                  ...options.expand((length) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: length,
+                        isSelected: controller.sessionLength.value == length,
+                        onPressed: () =>
+                            controller.sessionLength.value = length,
+                      ),
+                      if (length != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
@@ -497,18 +526,16 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.expand(
-                        (habit) {
-                      return [
-                        _buildWideChoiceButton(
-                          title: habit,
-                          isSelected: controller.eatingHabits.value == habit,
-                          onPressed: () => controller.eatingHabits.value = habit,
-                        ),
-                        if (habit != options.last) const SizedBox(height: 12),
-                      ];
-                    },
-                  ),
+                  ...options.expand((habit) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: habit,
+                        isSelected: controller.eatingHabits.value == habit,
+                        onPressed: () => controller.eatingHabits.value = habit,
+                      ),
+                      if (habit != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
@@ -535,18 +562,16 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.expand(
-                        (level) {
-                      return [
-                        _buildWideChoiceButton(
-                          title: level,
-                          isSelected: controller.stressLevel.value == level,
-                          onPressed: () => controller.stressLevel.value = level,
-                        ),
-                        if (level != options.last) const SizedBox(height: 12),
-                      ];
-                    },
-                  ),
+                  ...options.expand((level) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: level,
+                        isSelected: controller.stressLevel.value == level,
+                        onPressed: () => controller.stressLevel.value = level,
+                      ),
+                      if (level != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
@@ -573,18 +598,16 @@ class TraineeOnboardingByPageView
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ...options.expand(
-                        (sleep) {
-                      return [
-                        _buildWideChoiceButton(
-                          title: sleep,
-                          isSelected: controller.sleepQuality.value == sleep,
-                          onPressed: () => controller.sleepQuality.value = sleep,
-                        ),
-                        if (sleep != options.last) const SizedBox(height: 12),
-                      ];
-                    },
-                  ),
+                  ...options.expand((sleep) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: sleep,
+                        isSelected: controller.sleepQuality.value == sleep,
+                        onPressed: () => controller.sleepQuality.value = sleep,
+                      ),
+                      if (sleep != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
