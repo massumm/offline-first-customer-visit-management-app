@@ -181,8 +181,6 @@ class Assets {
   static const String imagesFitnessReportGradientFaceCopy =
       'assets/images/fitness_report_gradient_face_copy.png';
   static const String imagesGarmin = 'assets/images/garmin.png';
-  static const String imagesGoalTrackingPhoneBackground =
-      'assets/images/goal_tracking_phone_background.png';
   static const String imagesGoogle = 'assets/images/google.png';
   static const String imagesGridlineImage = 'assets/images/gridline_image.png';
   static const String imagesIconLogo = 'assets/images/icon-logo.png';
@@ -195,14 +193,7 @@ class Assets {
   static const String imagesRegisterButton =
       'assets/images/register_button.png';
   static const String imagesSplashIcon = 'assets/images/splash_icon.png';
-  static const String imagesYourActivityPhoneBackground =
-      'assets/images/your_activity_phone_background.png';
-  static const String imagesYourNutritionPhoneBackground =
-      'assets/images/your_nutrition_phone_background.png';
-  static const String imagesYourRecoveryPhoneBackground =
-      'assets/images/your_recovery_phone_background.png';
-  static const String integrationSummaryWarning =
-      'assets/svg/fitness_report/integration_summary/warning.svg';
+  static const String integrationSummaryWarning = 'assets/svg/fitness_report/integration_summary/warning.svg';
   static const String jsonsProfileLoading = 'assets/jsons/profile_loading.json';
   static const String mindsetAndMotivationMindsetFocus =
       'assets/svg/fitness_report/mindset_and_motivation/mindset_focus.svg';
@@ -286,11 +277,14 @@ class Assets {
   static const String svgArrowRight = 'assets/svg/arrow-right.svg';
   static const String svgBgGradientColor = 'assets/svg/bg-gradient-color.svg';
   static const String svgBgGradientColorCropped = 'assets/svg/bg-gradient-color-cropped.svg';
+  static const String svgCalendar = 'assets/svg/calendar.svg';
   static const String svgCheckmark = 'assets/svg/checkmark.svg';
   static const String svgCurrentStress = 'assets/svg/current_stress.svg';
   static const String svgDeleteDialoguleIcon =
       'assets/svg/delete_dialogule_icon.svg';
   static const String svgDotIcon = 'assets/svg/dot-icon.svg';
+  static const String svgGoalTracking = 'assets/svg/goal_tracking.svg';
+  static const String svgGoalTrackingBg = 'assets/svg/goal_tracking_bg.svg';
   static const String svgGoogleIcon = 'assets/svg/google-icon.svg';
   static const String svgGroupIcon = 'assets/svg/group_icon.svg';
   static const String svgGroupIconGrey = 'assets/svg/group_icon_grey.svg';

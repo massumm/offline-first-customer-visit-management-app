@@ -138,7 +138,7 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
                       elevation: 0,
                     ),
                     onPressed: () {
-                      Get.toNamed(Routes.TRAINEE_ONBOARDING);
+                      Get.toNamed(Routes.TRAINEE_ONBOARDING_BY_PAGE);
                     },
                     child: const Text(
                       "Let's begin",

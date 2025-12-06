@@ -4,6 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import 'package:icon/app/core/widgets/goal_stepper_footer.dart';
+import 'package:icon/app/core/widgets/super_image.dart';
+import 'package:icon/generated/assets.dart';
 
 import '../controllers/your_recovery_goals_controller.dart';
 import 'package:icon/app/modules/your_nutrition_goals/views/your_nutrition_goals_view.dart';
@@ -18,6 +20,12 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
       backgroundColor: kBackground,
       body: Stack(
         children: [
+          SuperImage(
+            Assets.imagesYourRecoveryGoals,
+            height: Get.height,
+            width: Get.width,
+            fit: BoxFit.cover,
+          ),
           Positioned(
             top: 240,
             left: 0,
@@ -36,6 +44,7 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: Get.mediaQuery.padding.top + 16),
               Row(
                 children: [
                   Padding(
@@ -49,11 +58,11 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
                       child: OutlinedButton(
                         onPressed: () {},
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.white),
+                          side: const BorderSide(color: Colors.white),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                         ),
                         child: SvgPicture.asset('assets/svg/arrow-left.svg'),
                       ),
@@ -61,9 +70,9 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
                   ),
                 ],
               ),
-              SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+              const SizedBox(height: 24),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
                   children: [
                     Expanded(
@@ -80,9 +89,9 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
                   ],
                 ),
               ),
-              SizedBox(height: 6),
-              Padding(
-                padding: const EdgeInsets.symmetric(
+              const SizedBox(height: 6),
+              const Padding(
+                padding: EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 8,
                 ),
@@ -95,7 +104,7 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 24),
                 padding: const EdgeInsets.symmetric(
@@ -103,17 +112,16 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
                   vertical: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: Color(0x66072C4A),
+                  color: const Color(0x66072C4A),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8,
                   children: [
                     SvgPicture.asset('assets/svg/tick.svg'),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Connect your favorite wearable for continuous analytics and insights',
                       style: TextStyle(
                         color: Colors.white,
@@ -128,7 +136,7 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
                 stepIndex: 2,
                 onPressed: () {
                   Get.to(
-                    () => YourNutritionGoalsView(),
+                        () => const YourNutritionGoalsView(),
                     transition: Transition.leftToRight,
                   );
                 },

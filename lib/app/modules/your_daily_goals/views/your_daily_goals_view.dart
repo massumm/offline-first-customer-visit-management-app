@@ -177,12 +177,12 @@ class GoalListItem extends StatelessWidget {
   final String description;
   final String frequency;
   const GoalListItem({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
     required this.description,
     required this.frequency,
-  }) : super(key: key);
+  });
   @override
   Widget build(BuildContext context) {
     return Card(

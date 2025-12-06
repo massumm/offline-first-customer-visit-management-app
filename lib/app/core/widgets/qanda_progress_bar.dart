@@ -52,7 +52,7 @@ class _QandAProgressBarState extends State<QandAProgressBar> {
       widget.totalQuestions,
     );
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: TweenAnimationBuilder<double>(
         tween: Tween<double>(begin: _oldProgress, end: totalProgress),
         duration: const Duration(milliseconds: 700),

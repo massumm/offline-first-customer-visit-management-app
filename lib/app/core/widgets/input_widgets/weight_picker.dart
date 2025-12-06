@@ -96,14 +96,18 @@ class _WeightRulerState extends State<WeightRuler> {
   }
 
   String get _formattedValue {
-    if (_unit == WeightUnit.kg) {
-      return '${_weightKg.round()}kg';
-    } else {
-      final totalPounds = _weightKg * 2.20462;
-      final rounded = totalPounds.round();
-      final stones = rounded ~/ 14;
-      final pounds = rounded % 14;
-      return "$stones st $pounds lbs";
+    switch (_unit) {
+      case WeightUnit.kg:
+        return '${_weightKg.round()}kg';
+      case WeightUnit.lbs:
+        final totalPounds = _weightKg * 2.20462;
+        return '${totalPounds.round()} lbs';
+      case WeightUnit.stone:
+        final totalPounds = _weightKg * 2.20462;
+        final rounded = totalPounds.round();
+        final stones = rounded ~/ 14;
+        final pounds = rounded % 14;
+        return "$stones st $pounds lbs";
     }
   }
 
@@ -277,11 +281,13 @@ class _WeightRulerState extends State<WeightRuler> {
     ).colorScheme.onSurface.withValues(alpha: 0.7);
     final minText = _unit == WeightUnit.kg
         ? 'Min weight: ${widget.minWeightKg.toInt()} kg'
-        : 'Min weight: ${(widget.minWeightKg / 2.20462).round()} lbs';
+    // Corrected conversion from division to multiplication
+        : 'Min weight: ${(widget.minWeightKg * 2.20462).round()} lbs';
 
     final maxText = _unit == WeightUnit.kg
         ? 'Max weight: ${widget.maxWeightKg.toInt()} kg'
-        : 'Max weight: ${(widget.maxWeightKg / 2.20462).round()} lbs';
+    // Corrected conversion from division to multiplication
+        : 'Max weight: ${(widget.maxWeightKg * 2.20462).round()} lbs';
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

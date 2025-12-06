@@ -18,7 +18,7 @@ class TraineeOnboardingByPageRepositoryImpl extends BaseRemoteSource
     final String endpoint =
         "${DioProvider.baseUrl}/api/by_trainer/1/onboarding/submit/";
     final Map<String, String> headers = {
-      'Authorization': "Bearer ${token ?? ''}",
+      'Authorization': "Bearer ${UserStore.to.token}",
     };
     Future<Response<dynamic>> dioCall = dioClient.post(
       endpoint,
@@ -28,13 +28,9 @@ class TraineeOnboardingByPageRepositoryImpl extends BaseRemoteSource
     );
 
     try {
-      return callApiWithErrorParser(dioCall).then((Response response) {
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          return;
-        } else {
-          throw Exception('Failed to submit trainee onboarding data');
-        }
-      });
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data);
     } catch (e) {
       rethrow;
     }

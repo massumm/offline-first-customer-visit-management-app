@@ -24,7 +24,7 @@ class TraineeOnboardingAuthRepositoryImpl extends BaseRemoteSource
   }
 
   @override
-  Future<Map<String, dynamic>> getTokenFromEmail(Map<String, dynamic> payload) {
+  Future<LoginResponseModel> getTokenFromEmail(Map<String, dynamic> payload) {
     final String endpoint =
         "${DioProvider.baseUrl}/api/accounts/generate-token-for-email/";
 
@@ -33,7 +33,7 @@ class TraineeOnboardingAuthRepositoryImpl extends BaseRemoteSource
     try {
       return callApiWithErrorParser(
         dioCall,
-      ).then((Response response) => response.data);
+      ).then((Response response) =>LoginResponseModel.fromJson(response.data));
     } catch (e) {
       rethrow;
     }

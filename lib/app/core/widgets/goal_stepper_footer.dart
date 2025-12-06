@@ -35,16 +35,8 @@ class GoalStepperFooter extends StatelessWidget {
           ),
           SizedBox(height: 16),
           SizedBox(
-            width: double.infinity,
             child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: kAccent,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
+
               onPressed: onPressed,
               child: Text(
                 buttonText,

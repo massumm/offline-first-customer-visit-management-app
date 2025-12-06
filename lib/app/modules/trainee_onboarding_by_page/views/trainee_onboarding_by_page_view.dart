@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import 'package:icon/app/core/values/app_colors.dart';
 
@@ -14,67 +15,93 @@ import 'package:icon/app/core/widgets/input_widgets/height_picker.dart';
 import 'package:icon/app/core/widgets/input_widgets/weight_picker.dart';
 
 import '../controllers/trainee_onboarding_by_page_controller.dart';
+import 'widgets/loading_overlay.dart';
 
 class TraineeOnboardingByPageView
     extends GetView<TraineeOnboardingByPageController> {
   const TraineeOnboardingByPageView({super.key});
+
   // All state and navigation logic will be handled by the controller.
 
   @override
   Widget build(BuildContext context) {
-    const int onboardingSteps = 12;
+    return Obx(() {
+      return Stack(
+        children: [
+          _buildMainBody(),
+          LoadingOverlay(isLoading: controller.isLoading.value),
+        ],
+      );
+    });
+  }
+
+
+  Obx _buildMainBody() {
     return Obx(
-      () => Scaffold(
-        appBar: AppBar(
-          leading: controller.currentPage.value > 0
-              ? IconButton(
-                  icon: Transform.rotate(
-                    angle: 3.14,
-                    child: SvgPicture.asset('assets/svg/arrow-right.svg'),
-                  ),
-                  onPressed: controller.prevPage,
-                )
-              : Opacity(
-                  opacity: 0.0,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: null,
-                  ),
+    () => Scaffold(
+      appBar: AppBar(
+        leading: controller.currentPage.value > 0
+            ? IconButton(
+                icon: Transform.rotate(
+                  angle: 3.14,
+                  child: SvgPicture.asset('assets/svg/arrow-right.svg'),
                 ),
-          title: QandAProgressBar(
-            currentGroup: 1,
-            totalGroups: 1,
-            currentQuestion: controller.currentPage.value + 1,
-            totalQuestions: onboardingSteps,
-          ),
-        ),
-        body: PageView(
-          controller: controller.pageController,
-          physics: NeverScrollableScrollPhysics(),
-          onPageChanged: (index) => controller.currentPage.value = index,
-          children: [
-            _buildSexPage(),
-            _buildDobPage(),
-            _buildHeightPage(),
-            _buildWeightPage(),
-            _buildFitnessGoalPage(),
-            _buildLifestylePage(),
-            _buildTrainingDaysPage(),
-            _buildSessionLengthPage(),
-            _buildEatingHabitsPage(),
-            _buildStressLevelPage(),
-            _buildSleepQualityPage(),
-            _buildEmailPage(),
-          ],
-        ),
+                onPressed: controller.prevPage,
+              )
+            : Opacity(
+                opacity: 0.0,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: null,
+                ),
+              ),
       ),
-    );
+      body: CustomScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: QandAProgressBar(
+                currentGroup: 1,
+                totalGroups: 1,
+                currentQuestion: controller.currentPage.value,
+                totalQuestions: controller.onboardingSteps - 1,
+              ),
+            ),
+          ),
+          SliverFillRemaining(
+            child: PageView(
+              controller: controller.pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              onPageChanged: (index) => controller.currentPage.value = index,
+              children: [
+                _buildSexPage(),
+                _buildDobPage(),
+                _buildHeightPage(),
+                _buildWeightPage(),
+                _buildFitnessGoalPage(),
+                _buildLifestylePage(),
+                _buildTrainingDaysPage(),
+                _buildSessionLengthPage(),
+                _buildEatingHabitsPage(),
+                _buildStressLevelPage(),
+                _buildSleepQualityPage(),
+                _buildEmailPage(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
   }
 
   Widget _buildEmailPage() {
     return _buildNavigation(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             'What is your email address?',
@@ -105,35 +132,76 @@ class TraineeOnboardingByPageView
             child: child,
           ),
         ),
+        8.height,
         Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(8.0),
           child: _buildActionButton(),
         ),
       ],
     );
   }
 
-  Widget? _buildActionButton() {
-    if (controller.currentPage.value < 10) {
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: controller.nextPage,
-          child: Text('Next', style: TextStyle(fontSize: 16)),
+  Widget _buildActionButton() {
+    return Obx(() {
+      const int lastPageIndex = 11;
+      final currentPage = controller.currentPage.value;
+
+      bool isEnabled;
+      switch (currentPage) {
+        case 0: // Sex
+          isEnabled = controller.sex.value.isNotEmpty;
+          break;
+        case 1: // DOB
+          isEnabled = controller.dob.value != null;
+          break;
+        case 2: // Height
+        case 3: // Weight
+        case 6: // Training Days
+        // These pages use pickers with initial default values,
+        // so the button is enabled by default.
+          isEnabled = true;
+          break;
+        case 4: // Fitness Goal
+          isEnabled = controller.fitnessGoal.value?.isNotEmpty ?? false;
+          break;
+        case 5: // Lifestyle
+          isEnabled = controller.lifestyle.value?.isNotEmpty ?? false;
+          break;
+        case 7: // Session Length
+          isEnabled = controller.sessionLength.value?.isNotEmpty ?? false;
+          break;
+        case 8: // Eating Habits
+          isEnabled = controller.eatingHabits.value?.isNotEmpty ?? false;
+          break;
+        case 9: // Stress Level
+          isEnabled = controller.stressLevel.value?.isNotEmpty ?? false;
+          break;
+        case 10: // Sleep Quality
+          isEnabled = controller.sleepQuality.value?.isNotEmpty ?? false;
+          break;
+        case 11: // Email
+          isEnabled = controller.email.value.isNotEmpty;
+          break;
+        default:
+          isEnabled = false;
+      }
+
+      final isLastPage = currentPage == lastPageIndex;
+
+      return ElevatedButton(
+        onPressed: isEnabled
+            ? (isLastPage ? controller.submitAnswers : controller.nextPage)
+            : null,
+        style: ElevatedButton.styleFrom(
+
+        ),
+        child: Text(
+          isLastPage ? 'Finish' : 'Next',
+          style: const TextStyle(fontSize: 16),
         ),
       );
-    }
-    if (controller.currentPage.value == 10) {
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton(
-          onPressed: controller.submitAnswers,
-          child: Text('Finish'),
-        ),
-      );
-    }
-    return null;
+    });
   }
 
   Widget _buildWideChoiceButton({
@@ -191,6 +259,7 @@ class TraineeOnboardingByPageView
     return _buildNavigation(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'What is your sex?',
@@ -200,15 +269,18 @@ class TraineeOnboardingByPageView
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
-              spacing: 8,
               children: [
-                ...['Male', 'Female', 'Others'].map(
-                  (sex) => _buildWideChoiceButton(
-                    title: sex,
-                    isSelected: controller.sex.value == sex,
-                    onPressed: () => controller.sex.value = sex,
-                  ),
-                ),
+                ...['Male', 'Female', 'Others'].expand((sex) {
+                  const options = ['Male', 'Female', 'Others'];
+                  return [
+                    _buildWideChoiceButton(
+                      title: sex,
+                      isSelected: controller.sex.value == sex,
+                      onPressed: () => controller.sex.value = sex,
+                    ),
+                    if (sex != options.last) const SizedBox(height: 12),
+                  ];
+                }),
               ],
             ),
           ),
@@ -221,6 +293,7 @@ class TraineeOnboardingByPageView
     return _buildNavigation(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'What is your date of birth?',
@@ -330,15 +403,17 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
                 children: [
-                  ...options.map(
-                    (goal) => _buildWideChoiceButton(
-                      title: goal,
-                      isSelected: controller.fitnessGoal.value == goal,
-                      onPressed: () => controller.fitnessGoal.value = goal,
-                    ),
-                  ),
+                  ...options.expand((goal) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: goal,
+                        isSelected: controller.fitnessGoal.value == goal,
+                        onPressed: () => controller.fitnessGoal.value = goal,
+                      ),
+                      if (goal != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
@@ -350,7 +425,7 @@ class TraineeOnboardingByPageView
 
   Widget _buildLifestylePage() {
     final options = [
-      'Very sedentary',
+      'Not active',
       'Lightly active',
       'Moderately active',
       'Very active',
@@ -370,15 +445,17 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
                 children: [
-                  ...options.map(
-                    (lifestyle) => _buildWideChoiceButton(
-                      title: lifestyle,
-                      isSelected: controller.lifestyle.value == lifestyle,
-                      onPressed: () => controller.lifestyle.value = lifestyle,
-                    ),
-                  ),
+                  ...options.expand((lifestyle) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: lifestyle,
+                        isSelected: controller.lifestyle.value == lifestyle,
+                        onPressed: () => controller.lifestyle.value = lifestyle,
+                      ),
+                      if (lifestyle != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
@@ -403,7 +480,6 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
                 children: [
                   WheelListWidget(
                     items: List.generate(7, (i) => '${i + 1}'),
@@ -436,16 +512,18 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
                 children: [
-                  ...options.map(
-                    (length) => _buildWideChoiceButton(
-                      title: length,
-                      isSelected: controller.sessionLength.value == length,
-                      onPressed: () => controller.sessionLength.value = length,
-                    ),
-                  ),
-                  SizedBox(height: 10),
+                  ...options.expand((length) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: length,
+                        isSelected: controller.sessionLength.value == length,
+                        onPressed: () =>
+                            controller.sessionLength.value = length,
+                      ),
+                      if (length != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
@@ -471,16 +549,17 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-
                 children: [
-                  ...options.map(
-                    (habit) => _buildWideChoiceButton(
-                      title: habit,
-                      isSelected: controller.eatingHabits.value == habit,
-                      onPressed: () => controller.eatingHabits.value = habit,
-                    ),
-                  ),
+                  ...options.expand((habit) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: habit,
+                        isSelected: controller.eatingHabits.value == habit,
+                        onPressed: () => controller.eatingHabits.value = habit,
+                      ),
+                      if (habit != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
@@ -506,16 +585,17 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-
                 children: [
-                  ...options.map(
-                    (level) => _buildWideChoiceButton(
-                      title: level,
-                      isSelected: controller.stressLevel.value == level,
-                      onPressed: () => controller.stressLevel.value = level,
-                    ),
-                  ),
+                  ...options.expand((level) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: level,
+                        isSelected: controller.stressLevel.value == level,
+                        onPressed: () => controller.stressLevel.value = level,
+                      ),
+                      if (level != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),
@@ -541,16 +621,17 @@ class TraineeOnboardingByPageView
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                spacing: 8,
-
                 children: [
-                  ...options.map(
-                    (sleep) => _buildWideChoiceButton(
-                      title: sleep,
-                      isSelected: controller.sleepQuality.value == sleep,
-                      onPressed: () => controller.sleepQuality.value = sleep,
-                    ),
-                  ),
+                  ...options.expand((sleep) {
+                    return [
+                      _buildWideChoiceButton(
+                        title: sleep,
+                        isSelected: controller.sleepQuality.value == sleep,
+                        onPressed: () => controller.sleepQuality.value = sleep,
+                      ),
+                      if (sleep != options.last) const SizedBox(height: 12),
+                    ];
+                  }),
                 ],
               ),
             ),

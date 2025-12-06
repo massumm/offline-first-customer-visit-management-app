@@ -47,6 +47,7 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
   }
 
   void _onTextChanged() {
+    // The listener is kept for validation display, though direct text input is disabled.
     if (Theme.of(context).platform == TargetPlatform.iOS) {
       setState(() {
         _errorText = _validate(controller.text);
@@ -71,7 +72,6 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
   @override
   Widget build(BuildContext context) {
     final isIOS = Theme.of(context).platform == TargetPlatform.iOS;
-    final hasValue = controller.text.isNotEmpty;
 
     /// ============= iOS (Cupertino) UI =============
     if (isIOS) {
@@ -80,25 +80,15 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
         children: [
           CupertinoTextField(
             controller: controller,
-            keyboardType: TextInputType.number,
             placeholder: widget.hint,
-            inputFormatters: [
-              FilteringTextInputFormatter.digitsOnly,
-              LengthLimitingTextInputFormatter(8),
-              _DateSlashFormatter(),
-            ],
+            readOnly: true,
+            onTap: _pickDate,
             suffix: Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: hasValue
-                  ? CupertinoButton(
+              child: CupertinoButton(
                 padding: EdgeInsets.zero,
-                child: const Icon(CupertinoIcons.arrow_up_circle_fill),
-                onPressed: () => widget.onSelectDate(controller.text),
-              )
-                  : CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: const Icon(CupertinoIcons.calendar),
                 onPressed: _pickDate,
+                child: const Icon(CupertinoIcons.calendar),
               ),
             ),
           ),
@@ -120,26 +110,16 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
     /// ============= Android / Material UI =============
     return TextFormField(
       controller: controller,
-      keyboardType: TextInputType.number,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+      readOnly: true,
+      onTap: _pickDate,
+      validator: _validate,
       decoration: InputDecoration(
         hintText: widget.hint,
-        suffixIcon: hasValue
-            ? IconButton(
-          icon: const Icon(Icons.send),
-          onPressed: () => widget.onSelectDate(controller.text),
-        )
-            : IconButton(
+        suffixIcon: IconButton(
           icon: const Icon(Icons.calendar_month),
           onPressed: _pickDate,
         ),
       ),
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(8),
-        _DateSlashFormatter(),
-      ],
-      validator: _validate,
     );
   }
 
@@ -269,6 +249,7 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
 
     if (picked != null) {
       controller.text = _formatDDMMYYYY(picked);
+      widget.onSelectDate(controller.text);
     }
   }
 
@@ -281,6 +262,7 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
     final yyyy = int.tryParse(parts[2]);
     if (dd == null || mm == null || yyyy == null) return null;
 
+    // This check handles invalid dates like 31/02/2023
     final dt = DateTime(yyyy, mm, dd);
     if (dt.year != yyyy || dt.month != mm || dt.day != dd) return null;
     return dt;
@@ -292,6 +274,8 @@ class _DatePickerInputFieldState extends State<DatePickerInputField> {
           '${d.year}';
 }
 
+// This formatter is no longer strictly necessary if the field is read-only,
+// but it doesn't hurt to keep it for robustness.
 class _DateSlashFormatter extends TextInputFormatter {
   const _DateSlashFormatter();
 
