@@ -15,6 +15,7 @@ import 'package:icon/app/core/widgets/input_widgets/height_picker.dart';
 import 'package:icon/app/core/widgets/input_widgets/weight_picker.dart';
 
 import '../controllers/trainee_onboarding_by_page_controller.dart';
+import 'widgets/loading_overlay.dart';
 
 class TraineeOnboardingByPageView
     extends GetView<TraineeOnboardingByPageController> {
@@ -24,65 +25,76 @@ class TraineeOnboardingByPageView
 
   @override
   Widget build(BuildContext context) {
-    const int onboardingSteps = 12;
+    return Obx(() {
+      return Stack(
+        children: [
+          _buildMainBody(),
+          LoadingOverlay(isLoading: controller.isLoading.value),
+        ],
+      );
+    });
+  }
+
+
+  Obx _buildMainBody() {
     return Obx(
-      () => Scaffold(
-        appBar: AppBar(
-          leading: controller.currentPage.value > 0
-              ? IconButton(
-                  icon: Transform.rotate(
-                    angle: 3.14,
-                    child: SvgPicture.asset('assets/svg/arrow-right.svg'),
-                  ),
-                  onPressed: controller.prevPage,
-                )
-              : Opacity(
-                  opacity: 0.0,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: null,
-                  ),
+    () => Scaffold(
+      appBar: AppBar(
+        leading: controller.currentPage.value > 0
+            ? IconButton(
+                icon: Transform.rotate(
+                  angle: 3.14,
+                  child: SvgPicture.asset('assets/svg/arrow-right.svg'),
                 ),
-        ),
-        body: CustomScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 24),
-                child: QandAProgressBar(
-                  currentGroup: 1,
-                  totalGroups: 1,
-                  currentQuestion: controller.currentPage.value,
-                  totalQuestions: onboardingSteps - 1,
+                onPressed: controller.prevPage,
+              )
+            : Opacity(
+                opacity: 0.0,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: null,
                 ),
               ),
-            ),
-            SliverFillRemaining(
-              child: PageView(
-                controller: controller.pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: (index) => controller.currentPage.value = index,
-                children: [
-                  _buildSexPage(),
-                  _buildDobPage(),
-                  _buildHeightPage(),
-                  _buildWeightPage(),
-                  _buildFitnessGoalPage(),
-                  _buildLifestylePage(),
-                  _buildTrainingDaysPage(),
-                  _buildSessionLengthPage(),
-                  _buildEatingHabitsPage(),
-                  _buildStressLevelPage(),
-                  _buildSleepQualityPage(),
-                  _buildEmailPage(),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
-    );
+      body: CustomScrollView(
+        physics: NeverScrollableScrollPhysics(),
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24),
+              child: QandAProgressBar(
+                currentGroup: 1,
+                totalGroups: 1,
+                currentQuestion: controller.currentPage.value,
+                totalQuestions: controller.onboardingSteps - 1,
+              ),
+            ),
+          ),
+          SliverFillRemaining(
+            child: PageView(
+              controller: controller.pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              onPageChanged: (index) => controller.currentPage.value = index,
+              children: [
+                _buildSexPage(),
+                _buildDobPage(),
+                _buildHeightPage(),
+                _buildWeightPage(),
+                _buildFitnessGoalPage(),
+                _buildLifestylePage(),
+                _buildTrainingDaysPage(),
+                _buildSessionLengthPage(),
+                _buildEatingHabitsPage(),
+                _buildStressLevelPage(),
+                _buildSleepQualityPage(),
+                _buildEmailPage(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
   }
 
   Widget _buildEmailPage() {

@@ -25,6 +25,7 @@ class TraineeOnboardingByPageController extends GetxController {
   final PageController pageController = PageController();
 
   RxInt currentPage = 0.obs;
+  final int onboardingSteps = 12;
   RxString sex = 'Male'.obs;
   Rxn<DateTime> dob = Rxn<DateTime>();
   RxnDouble height = RxnDouble();
@@ -37,6 +38,8 @@ class TraineeOnboardingByPageController extends GetxController {
   RxnString stressLevel = RxnString();
   RxnString sleepQuality = RxnString();
   RxString email = ''.obs;
+
+  RxBool isLoading = false.obs;
 
   void nextPage() {
     if (currentPage.value <= 10) {
@@ -58,6 +61,8 @@ class TraineeOnboardingByPageController extends GetxController {
 
   Future<void> submitAnswers() async {
     try {
+      isLoading.value = true;
+
       final data = TraineeOnboardingDataModel(
         sex: sex.value,
         dob: dob.value,
@@ -74,10 +79,7 @@ class TraineeOnboardingByPageController extends GetxController {
       );
 
       await _getUserRegister();
-
-      "Submitting onboarding data...".log();
       await repository.submitTraineeOnboardingData(data);
-      "Onboarding data submitted successfully.".log();
 
       Get.offAllNamed('/goal-tracking');
     } catch (e) {
@@ -96,6 +98,8 @@ class TraineeOnboardingByPageController extends GetxController {
           colorText: Colors.white,
         );
       }
+    } finally {
+      isLoading(false);
     }
   }
 
