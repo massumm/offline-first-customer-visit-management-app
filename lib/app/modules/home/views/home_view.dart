@@ -114,7 +114,7 @@ class HomeView extends BaseView<HomeController> {
             child: IconicNavWrapper(
               currentIndex: controller.selectedNavIndex.value,
               onTap: (index) {
-                controller.selectedNavIndex.value = index;
+                controller.handleNavigation(index);
               },
             ),
           ),

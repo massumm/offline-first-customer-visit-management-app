@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/values/app_colors.dart' show AppColors;
+import 'package:icon/app/routes/app_pages.dart';
 
 enum HeartRateStatus { normal, high, low }
 
@@ -28,6 +29,18 @@ class HomeController extends BaseController {
   // .............. Nav ................
   var currentIndex = 3.obs;
   var selectedNavIndex = 0.obs;
+
+  // Navigation method
+  void handleNavigation(int index) {
+    if (index == 4) {
+      // Navigate to App Settings for Profile tab
+      Get.toNamed(Routes.APP_SETTINGS);
+      selectedNavIndex.value = index;
+    } else {
+      // Update index for other tabs
+      selectedNavIndex.value = index;
+    }
+  }
 
   // steps
   var steps = 8450.obs;
