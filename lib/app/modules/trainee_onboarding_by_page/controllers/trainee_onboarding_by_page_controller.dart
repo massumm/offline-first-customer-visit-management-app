@@ -1,3 +1,6 @@
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
+import 'package:icon/app/base/network/exceptions/not_found_exception.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import '../repository/trainee_onboarding_by_page_repository.dart';
@@ -72,7 +75,8 @@ class TraineeOnboardingByPageController extends GetxController {
         await authRepository.registerEmail({'email': email.value});
         "Email registered successfully.".log();
       } catch (e) {
-        "Registration failed: $e. Assuming user exists, attempting to get token...".log();
+        "Registration failed: $e. Assuming user exists, attempting to get token..."
+            .log();
         await authRepository.getTokenFromEmail({'email': email.value});
         "Successfully retrieved token for existing user.".log();
       }
@@ -85,13 +89,19 @@ class TraineeOnboardingByPageController extends GetxController {
     } catch (e) {
       "An error occurred during the submission process: $e".log();
 
-      Get.snackbar(
-        'Submission Failed',
-        'We couldn\'t save your information. Please check your network connection and try again.',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      } else if (e is NotFoundException) {
+        CustomToast.showErrorToast(e.description);
+      } else {
+        Get.snackbar(
+          'Submission Failed',
+          'We couldn\'t save your information. Please check your network connection and try again.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
     }
   }
 }
