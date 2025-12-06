@@ -18,7 +18,7 @@ class TraineeOnboardingByPageRepositoryImpl extends BaseRemoteSource
     final String endpoint =
         "${DioProvider.baseUrl}/api/by_trainer/1/onboarding/submit/";
     final Map<String, String> headers = {
-      'Authorization': "Bearer ${token ?? ''}",
+      'Authorization': "Bearer ${UserStore.to.token}",
     };
     Future<Response<dynamic>> dioCall = dioClient.post(
       endpoint,

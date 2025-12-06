@@ -2,6 +2,9 @@ import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/network/exceptions/not_found_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/extensions/firebase_crashlytics.dart';
+import 'package:icon/app/data/local/preference/store/user_store.dart';
+import 'package:icon/app/modules/login/models/login_response_model.dart';
 
 import '../repository/trainee_onboarding_by_page_repository.dart';
 import 'package:get/get.dart';
@@ -70,16 +73,7 @@ class TraineeOnboardingByPageController extends GetxController {
         email: email.value,
       );
 
-      try {
-        "Attempting to register email...".log();
-        await authRepository.registerEmail({'email': email.value});
-        "Email registered successfully.".log();
-      } catch (e) {
-        "Registration failed: $e. Assuming user exists, attempting to get token..."
-            .log();
-        await authRepository.getTokenFromEmail({'email': email.value});
-        "Successfully retrieved token for existing user.".log();
-      }
+      await _getUserRegister();
 
       "Submitting onboarding data...".log();
       await repository.submitTraineeOnboardingData(data);
@@ -102,6 +96,34 @@ class TraineeOnboardingByPageController extends GetxController {
           colorText: Colors.white,
         );
       }
+    }
+  }
+
+  Future<void> _getUserRegister() async {
+    try {
+      "Attempting to register email...".log();
+      final loginModel = await authRepository.registerEmail({
+        'email': email.value,
+      });
+      await _storeUserData(loginModel);
+      "Email registered successfully.".log();
+    } catch (e) {
+      "Registration failed: $e. Assuming user exists, attempting to get token..."
+          .log();
+      final loginModel = await authRepository.getTokenFromEmail({
+        'email': email.value,
+      });
+      await _storeUserData(loginModel);
+      "Successfully retrieved token for existing user.".log();
+    }
+  }
+
+  Future<void> _storeUserData(LoginResponseModel model) async {
+    try {
+      await UserStore.to.saveProfileAndToken(model);
+    } catch (e, s) {
+      "Error storing user data: $e".log();
+      e.logToCrashlytics(s);
     }
   }
 }
