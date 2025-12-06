@@ -4,20 +4,27 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 import 'package:icon/app/core/widgets/goal_stepper_footer.dart';
+import 'package:icon/app/core/widgets/super_image.dart';
+import 'package:icon/generated/assets.dart';
 
+import '../../your_activity_goals/views/your_activity_goals_view.dart';
 import '../controllers/goal_tracking_controller.dart';
-import 'package:icon/app/modules/your_activity_goals/views/your_activity_goals_view.dart';
 
 class GoalTrackingView extends GetView<GoalTrackingController> {
   const GoalTrackingView({super.key});
   @override
   Widget build(BuildContext context) {
-    const kBackground = Color(0xFF0F0F0F);
+
 
     return Scaffold(
-      backgroundColor: kBackground,
       body: Stack(
         children: [
+          SuperImage(
+            Assets.imagesGoalTracking,
+            height: Get.height,
+            width: Get.width,
+            fit: BoxFit.cover,
+          ),
           Positioned(
             top: 240,
             left: 0,
@@ -36,6 +43,7 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: Get.mediaQuery.padding.top + 16),
               Row(
                 children: [
                   Padding(
@@ -49,11 +57,11 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
                       child: OutlinedButton(
                         onPressed: () {},
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.white),
+                          side: const BorderSide(color: Colors.white),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                         ),
                         child: SvgPicture.asset('assets/svg/arrow-left.svg'),
                       ),
@@ -61,9 +69,9 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
                   ),
                 ],
               ),
-              SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+              const SizedBox(height: 24),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
                   children: [
                     Expanded(
@@ -80,9 +88,9 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
                   ],
                 ),
               ),
-              SizedBox(height: 6),
-              Padding(
-                padding: const EdgeInsets.symmetric(
+              const SizedBox(height: 6),
+              const Padding(
+                padding: EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 8,
                 ),
@@ -95,7 +103,7 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 24),
                 padding: const EdgeInsets.symmetric(
@@ -103,17 +111,16 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
                   vertical: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: Color(0x66AE2400),
+                  color: const Color(0x66AE2400),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8,
                   children: [
                     SvgPicture.asset('assets/svg/tick.svg'),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Not every day is the same. This is where our adaptive engine kicks in, modifying your daily goals based on your life',
                       style: TextStyle(
                         color: Colors.white,
@@ -128,7 +135,7 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
                 stepIndex: 0,
                 onPressed: () {
                   Get.to(
-                    () => YourActivityGoalsView(),
+                        () => const YourActivityGoalsView(),
                     transition: Transition.leftToRight,
                   );
                 },

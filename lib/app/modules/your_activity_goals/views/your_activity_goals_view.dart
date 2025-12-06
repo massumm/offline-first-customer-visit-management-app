@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 
 import 'package:icon/app/core/widgets/goal_stepper_footer.dart';
 
+import '../../../../generated/assets.dart';
+import '../../../core/widgets/super_image.dart';
 import '../controllers/your_activity_goals_controller.dart';
 import 'package:icon/app/modules/your_recovery_goals/views/your_recovery_goals_view.dart';
 
@@ -18,6 +20,12 @@ class YourActivityGoalsView extends GetView<YourActivityGoalsController> {
       backgroundColor: kBackground,
       body: Stack(
         children: [
+          SuperImage(
+            Assets.imagesYourActivityGoals,
+            height: Get.height,
+            width: Get.width,
+            fit: BoxFit.cover,
+          ),
           Positioned(
             top: 240,
             left: 0,
@@ -36,6 +44,7 @@ class YourActivityGoalsView extends GetView<YourActivityGoalsController> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: Get.mediaQuery.padding.top + 16),
               Row(
                 children: [
                   Padding(
@@ -49,11 +58,11 @@ class YourActivityGoalsView extends GetView<YourActivityGoalsController> {
                       child: OutlinedButton(
                         onPressed: () {},
                         style: OutlinedButton.styleFrom(
-                          side: BorderSide(color: Colors.white),
+                          side: const BorderSide(color: Colors.white),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          padding: EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
                         ),
                         child: SvgPicture.asset('assets/svg/arrow-left.svg'),
                       ),
@@ -61,9 +70,9 @@ class YourActivityGoalsView extends GetView<YourActivityGoalsController> {
                   ),
                 ],
               ),
-              SizedBox(height: 24),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+              const SizedBox(height: 24),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 24),
                 child: Row(
                   children: [
                     Expanded(
@@ -80,9 +89,9 @@ class YourActivityGoalsView extends GetView<YourActivityGoalsController> {
                   ],
                 ),
               ),
-              SizedBox(height: 6),
-              Padding(
-                padding: const EdgeInsets.symmetric(
+              const SizedBox(height: 6),
+              const Padding(
+                padding: EdgeInsets.symmetric(
                   horizontal: 24,
                   vertical: 8,
                 ),
@@ -95,7 +104,7 @@ class YourActivityGoalsView extends GetView<YourActivityGoalsController> {
                   ),
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 24),
                 padding: const EdgeInsets.symmetric(
@@ -103,17 +112,16 @@ class YourActivityGoalsView extends GetView<YourActivityGoalsController> {
                   vertical: 16,
                 ),
                 decoration: BoxDecoration(
-                  color: Color(0x66851717),
+                  color: const Color(0x66851717),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 8,
                   children: [
                     SvgPicture.asset('assets/svg/tick.svg'),
-                    Text(
+                    const SizedBox(height: 8),
+                    const Text(
                       'Find consistency with an adaptive plan, which changes according to your needs',
                       style: TextStyle(
                         color: Colors.white,
@@ -128,7 +136,7 @@ class YourActivityGoalsView extends GetView<YourActivityGoalsController> {
                 stepIndex: 1,
                 onPressed: () {
                   Get.to(
-                    () => YourRecoveryGoalsView(),
+                        () => const YourRecoveryGoalsView(),
                     transition: Transition.leftToRight,
                   );
                 },
