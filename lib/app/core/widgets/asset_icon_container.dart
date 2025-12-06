@@ -7,23 +7,30 @@ class AssetIconContainer extends StatelessWidget {
   final String iconPath;
   final double width;
   final double height;
+  final BoxShape shape;
+  final EdgeInsets padding;
 
   const AssetIconContainer({
     super.key,
     required this.iconPath,
     this.width = 28,
     this.height = 28,
+    this.shape = BoxShape.circle,
+    this.padding = const EdgeInsets.all(8),
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(8),
+      padding: padding,
       decoration: BoxDecoration(
         color: Get.isDarkMode
             ? AppColors.darkBgColor
             : AppColors.iconBgColorLight,
-        borderRadius: BorderRadius.circular(24),
+        shape: shape,
+        borderRadius: shape == BoxShape.rectangle
+            ? BorderRadius.circular(12)
+            : null,
       ),
       child: SvgPicture.asset(iconPath, width: width, height: height),
     );

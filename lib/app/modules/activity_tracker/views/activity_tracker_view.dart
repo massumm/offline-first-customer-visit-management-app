@@ -5,9 +5,11 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/enums/body_areas.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/models/wearable_device.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/integration_icon_container.dart';
 import 'package:icon/app/core/widgets/loading_button.dart';
 import 'package:icon/app/models/exercise_model.dart';
 import 'package:icon/app/modules/weekly_routine/utils/enums/equipment_type_enum.dart';
@@ -393,7 +395,7 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
   }
 
   Widget? wearableIntegrationWidget() {
-    final List<WearableDevice> deviceList = [
+    final deviceList = [
       const WearableDevice(
         icon: Assets.imagesApple,
         title: 'Apple Watch',
@@ -458,13 +460,9 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
                 ),
                 child: Row(
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                        color: Color(int.parse(device.iconColor, radix: 16)),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Image.asset(device.icon, width: 28, height: 28),
+                    IntegrationIconContainer(
+                      icon: device.icon,
+                      iconColor: device.iconColor,
                     ),
                     8.width,
                     Expanded(
@@ -613,20 +611,6 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
         return const SizedBox.shrink();
     }
   }
-}
-
-class WearableDevice {
-  final String icon;
-  final String title;
-  final String connectionStatus;
-  final String iconColor;
-
-  const WearableDevice({
-    required this.icon,
-    required this.title,
-    required this.connectionStatus,
-    required this.iconColor,
-  });
 }
 
 class ActivityLogModel {

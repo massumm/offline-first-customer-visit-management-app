@@ -84,6 +84,7 @@ flutter:
     - assets/images/icon_profile/
     - assets/images/splash_screen_light/
     - assets/images/splash_screen_dark/
+    - assets/images/app_settings/
     - assets/jsons/
 
     - assets/svg/
@@ -103,7 +104,7 @@ flutter:
     - assets/svg/fitness_report/mindset_and_motivation/
     - assets/svg/fitness_report/nutrition_objectives/
     - assets/svg/activity_tracker/
-
+    - assets/svg/app_settings/
 
   # fonts:
   #   - family: Schyler

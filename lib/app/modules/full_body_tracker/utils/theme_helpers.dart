@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/values/app_colors.dart';
@@ -6,23 +5,41 @@ import 'package:icon/app/core/values/app_colors.dart';
 class ThemeHelpers {
   static Color get primaryCardColor =>
       Get.isDarkMode ? AppColors.darkBgColorSecondary : Colors.white;
-      
+
   static Color get secondaryCardColor =>
       Get.isDarkMode ? AppColors.darkBgColor : AppColors.lightBgColorSecondary;
-      
+
   static Color get primaryTextColor =>
       Get.isDarkMode ? Colors.white : AppColors.black;
-      
-  static Color get secondaryTextColor =>
-      Get.isDarkMode ? Colors.white : AppColors.black;
 
-      
+  static Color get secondaryTextColor => Get.isDarkMode
+      ? AppColors.subTextColor
+      : AppColors.lightTextSecondaryColor;
+
   static Color get tagBackgroundColor =>
       Get.isDarkMode ? AppColors.darkBgColor : AppColors.colorSecondary;
-      
+
   static Color get bgColorRed => AppColors.bgColorRed;
-      
+
   static String getExerciseIconPath(String lightAsset, String darkAsset) {
     return Get.isDarkMode ? darkAsset : lightAsset;
   }
+
+  static Color get cardColorWhite =>
+      Get.isDarkMode ? AppColors.darkShapeColor : Colors.white;
+
+  static Color get cardColorGrey2 =>
+      Get.isDarkMode ? AppColors.black : AppColors.pageBackground;
+
+  static Color get cardColorGrey =>
+      Get.isDarkMode ? AppColors.darkShapeColor : AppColors.pageBackground;
+
+  static Color get warningBgColor =>
+      Get.isDarkMode ? AppColors.darkShapeColor : AppColors.lightWarningColorBG;
+
+  static Color get warningColor =>
+      Get.isDarkMode ? AppColors.black : AppColors.lightWarningColorBG;
+
+  static Color get informationColor =>
+      Get.isDarkMode ? AppColors.black : AppColors.lightWarningColorBG;
 }

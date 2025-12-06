@@ -55,6 +55,18 @@ abstract class Routes {
   static const YOUR_NUTRITION_GOALS = _Paths.YOUR_NUTRITION_GOALS;
   static const YOUR_DAILY_GOALS = _Paths.YOUR_DAILY_GOALS;
   static const TRAINEE_ONBOARDING_BY_PAGE = _Paths.TRAINEE_ONBOARDING_BY_PAGE;
+  static const APP_SETTINGS = _Paths.APP_SETTINGS;
+  static const REGION_AND_LANGUAGE = _Paths.REGION_AND_LANGUAGE;
+  static const UNITS_AND_PREFERRENCES = _Paths.UNITS_AND_PREFERRENCES;
+  static const ACCESSIBILITY = _Paths.ACCESSIBILITY;
+  static const TWO_FACTOR_AUTHENTICATION = _Paths.TWO_FACTOR_AUTHENTICATION;
+  static const APP_INTEGRATION = _Paths.APP_INTEGRATION;
+  static const ACTIVE_SESSIONS = _Paths.ACTIVE_SESSIONS;
+  static const FEEDBACK = _Paths.FEEDBACK;
+  static const HELP_AND_SUPPORT = _Paths.HELP_AND_SUPPORT;
+  static const EXPORT_DATA = _Paths.EXPORT_DATA;
+  static const DELETE_ACCOUNT = _Paths.DELETE_ACCOUNT;
+  static const PRIVACY = _Paths.PRIVACY;
 }
 
 abstract class _Paths {
@@ -85,6 +97,18 @@ abstract class _Paths {
   static const ADD_EXERCISE_TO_ROUTINE = '/add-exercise-to-routine';
   static const EXPLORE = '/explore';
   static const WORKOUT_HISTORY = '/workout-history';
+  static const APP_SETTINGS = '/app-settings';
+  static const REGION_AND_LANGUAGE = '/region-and-language';
+  static const UNITS_AND_PREFERRENCES = '/units-and-preferrences';
+  static const ACCESSIBILITY = '/accessibility';
+  static const TWO_FACTOR_AUTHENTICATION = '/two-factor-authentication';
+  static const APP_INTEGRATION = '/app-integration';
+  static const ACTIVE_SESSIONS = '/active-sessions';
+  static const FEEDBACK = '/feedback';
+  static const HELP_AND_SUPPORT = '/help-and-support';
+  static const EXPORT_DATA = '/export-data';
+  static const DELETE_ACCOUNT = '/delete-account';
+  static const PRIVACY = '/privacy';
   static const WORKOUT_LOGGER = '/workout-logger';
   static const LOG_SET = '/log-set';
   static const LOG_CARDIO = '/log-cardio';

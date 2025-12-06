@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/models/wearable_device.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/loading_button.dart';
 import 'package:icon/app/modules/fitness_report/controllers/fitness_report_controller.dart';
@@ -13,31 +14,31 @@ import 'package:icon/generated/assets.dart';
 class IntegrationSummaryPageView extends BaseView<FitnessReportController> {
   IntegrationSummaryPageView({super.key});
 
-  final List<Map<String, String>> deviceList = [
-    {
-      'icon': Assets.imagesApple,
-      'title': 'Apple Watch',
-      'connectionStatus': 'Connected',
-      'iconColor': 'FFEFEFEF',
-    },
-    {
-      'icon': Assets.imagesFitbit,
-      'title': 'Fitbit',
-      'connectionStatus': 'Not Connected',
-      'iconColor': 'FFE9FEFF',
-    },
-    {
-      'icon': Assets.imagesGoogle,
-      'title': 'Google',
-      'connectionStatus': 'Connected',
-      'iconColor': 'FFE6FFEF',
-    },
-    {
-      'icon': Assets.imagesGarmin,
-      'title': 'Garmin',
-      'connectionStatus': 'Not Connected',
-      'iconColor': 'FFFEFEC',
-    },
+  static final deviceList = [
+    const WearableDevice(
+      icon: Assets.imagesApple,
+      title: 'Apple Watch',
+      connectionStatus: 'Connected',
+      iconColor: 'FFEFEFEF',
+    ),
+    const WearableDevice(
+      icon: Assets.imagesFitbit,
+      title: 'Fitbit',
+      connectionStatus: 'Not Connected',
+      iconColor: 'FFE9FEFF',
+    ),
+    const WearableDevice(
+      icon: Assets.imagesGoogle,
+      title: 'Google',
+      connectionStatus: 'Connected',
+      iconColor: 'FFE6FFEF',
+    ),
+    const WearableDevice(
+      icon: Assets.imagesGarmin,
+      title: 'Garmin',
+      connectionStatus: 'Not Connected',
+      iconColor: 'FFFEFEC',
+    ),
   ];
 
   @override
@@ -101,7 +102,7 @@ class IntegrationSummaryPageView extends BaseView<FitnessReportController> {
                       color: Get.theme.colorScheme.onPrimaryContainer,
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
-                        color: device['connectionStatus']! == 'Connected'
+                        color: device.connectionStatus == 'Connected'
                             ? AppColors.positiveBorderColor
                             : Colors.transparent,
                         width: 1,
@@ -114,12 +115,12 @@ class IntegrationSummaryPageView extends BaseView<FitnessReportController> {
                           padding: const EdgeInsets.all(6),
                           decoration: BoxDecoration(
                             color: Color(
-                              int.parse(device['iconColor']!, radix: 16),
+                              int.parse(device.iconColor, radix: 16),
                             ),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Image.asset(
-                            device['icon']!,
+                            device.icon,
                             width: 28,
                             height: 28,
                           ),
@@ -129,19 +130,19 @@ class IntegrationSummaryPageView extends BaseView<FitnessReportController> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              device['title']!,
+                              device.title,
                               style: Get.textTheme.bodyMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             4.height,
                             Text(
-                              device['connectionStatus']! == 'Connected'
+                              device.connectionStatus == 'Connected'
                                   ? 'Connected'
                                   : 'Connect',
                               style: Get.textTheme.bodySmall?.copyWith(
                                 color:
-                                    device['connectionStatus']! == 'Connected'
+                                    device.connectionStatus == 'Connected'
                                     ? AppColors.positiveBorderColor
                                     : AppColors.colorPrimary,
                               ),
