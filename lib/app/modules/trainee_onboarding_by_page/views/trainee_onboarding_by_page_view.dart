@@ -368,7 +368,7 @@ class TraineeOnboardingByPageView
 
   Widget _buildLifestylePage() {
     final options = [
-      'Very sedentary',
+      'Not active',
       'Lightly active',
       'Moderately active',
       'Very active',
