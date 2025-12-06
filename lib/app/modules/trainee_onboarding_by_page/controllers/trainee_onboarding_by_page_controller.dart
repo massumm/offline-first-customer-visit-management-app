@@ -1,3 +1,5 @@
+import 'package:icon/app/core/extensions/app_extansions.dart';
+
 import '../repository/trainee_onboarding_by_page_repository.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ class TraineeOnboardingByPageController extends GetxController {
   final TraineeOnboardingByPageRepository repository;
   final TraineeOnboardingAuthRepository authRepository =
       TraineeOnboardingAuthRepositoryImpl();
+
   TraineeOnboardingByPageController(this.repository);
 
   final PageController pageController = PageController();
@@ -48,27 +51,47 @@ class TraineeOnboardingByPageController extends GetxController {
   }
 
   Future<void> submitAnswers() async {
-    final data = TraineeOnboardingDataModel(
-      sex: sex.value,
-      dob: dob.value,
-      height: height.value,
-      weight: weight.value,
-      fitnessGoal: fitnessGoal.value,
-      lifestyle: lifestyle.value,
-      trainingDays: trainingDays.value,
-      sessionLength: sessionLength.value,
-      eatingHabits: eatingHabits.value,
-      stressLevel: stressLevel.value,
-      sleepQuality: sleepQuality.value,
-      email: email.value,
-    );
     try {
-      await authRepository.registerEmail({'email': email.value});
-    } catch (e) {
-      await authRepository.getTokenFromEmail({'email': email.value});
-    }
-    await repository.submitTraineeOnboardingData(data);
+      final data = TraineeOnboardingDataModel(
+        sex: sex.value,
+        dob: dob.value,
+        height: height.value,
+        weight: weight.value,
+        fitnessGoal: fitnessGoal.value,
+        lifestyle: lifestyle.value,
+        trainingDays: trainingDays.value,
+        sessionLength: sessionLength.value,
+        eatingHabits: eatingHabits.value,
+        stressLevel: stressLevel.value,
+        sleepQuality: sleepQuality.value,
+        email: email.value,
+      );
 
-    Get.offAllNamed('/goal-tracking');
+      try {
+        "Attempting to register email...".log();
+        await authRepository.registerEmail({'email': email.value});
+        "Email registered successfully.".log();
+      } catch (e) {
+        "Registration failed: $e. Assuming user exists, attempting to get token...".log();
+        await authRepository.getTokenFromEmail({'email': email.value});
+        "Successfully retrieved token for existing user.".log();
+      }
+
+      "Submitting onboarding data...".log();
+      await repository.submitTraineeOnboardingData(data);
+      "Onboarding data submitted successfully.".log();
+
+      Get.offAllNamed('/goal-tracking');
+    } catch (e) {
+      "An error occurred during the submission process: $e".log();
+
+      Get.snackbar(
+        'Submission Failed',
+        'We couldn\'t save your information. Please check your network connection and try again.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 }

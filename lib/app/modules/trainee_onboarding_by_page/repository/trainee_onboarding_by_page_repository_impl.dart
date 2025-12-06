@@ -28,13 +28,9 @@ class TraineeOnboardingByPageRepositoryImpl extends BaseRemoteSource
     );
 
     try {
-      return callApiWithErrorParser(dioCall).then((Response response) {
-        if (response.statusCode == 200 || response.statusCode == 201) {
-          return;
-        } else {
-          throw Exception('Failed to submit trainee onboarding data');
-        }
-      });
+      return callApiWithErrorParser(
+        dioCall,
+      ).then((Response response) => response.data);
     } catch (e) {
       rethrow;
     }
