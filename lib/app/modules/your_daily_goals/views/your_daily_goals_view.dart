@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 
 import '../controllers/your_daily_goals_controller.dart';
 
@@ -34,6 +35,17 @@ class YourDailyGoalsView extends GetView<YourDailyGoalsController> {
                   color: Colors.white,
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                "Here are your daily goals - created for you, your lifestyle, and your fitness ambitions",
+                style: TextStyle(
+                  color: AppColors.darkTextSecondaryColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),
