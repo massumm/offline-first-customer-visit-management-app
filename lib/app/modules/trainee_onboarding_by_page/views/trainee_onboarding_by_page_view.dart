@@ -37,60 +37,70 @@ class TraineeOnboardingByPageView
 
   Obx _buildMainBody() {
     return Obx(
-      () => Scaffold(
-        appBar: AppBar(
-          leading: controller.currentPage.value > 0
-              ? IconButton(
-                  icon: Transform.rotate(
-                    angle: 3.14,
-                    child: SvgPicture.asset('assets/svg/arrow-right.svg'),
+      () => PopScope(
+        canPop: controller.currentPage.value == 0,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+
+          // Otherwise, handle back manually
+          controller.prevPage();
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            leading: controller.currentPage.value > 0
+                ? IconButton(
+                    icon: Transform.rotate(
+                      angle: 3.14,
+                      child: SvgPicture.asset('assets/svg/arrow-right.svg'),
+                    ),
+                    onPressed: controller.prevPage,
+                  )
+                : Opacity(
+                    opacity: 0.0,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: null,
+                    ),
                   ),
-                  onPressed: controller.prevPage,
-                )
-              : Opacity(
-                  opacity: 0.0,
-                  child: IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: null,
+          ),
+          body: CustomScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
+                  child: QandAProgressBar(
+                    currentGroup: 1,
+                    totalGroups: 1,
+                    currentQuestion: controller.currentPage.value,
+                    totalQuestions: controller.onboardingSteps - 1,
                   ),
                 ),
-        ),
-        body: CustomScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12, 0, 12, 24),
-                child: QandAProgressBar(
-                  currentGroup: 1,
-                  totalGroups: 1,
-                  currentQuestion: controller.currentPage.value,
-                  totalQuestions: controller.onboardingSteps - 1,
+              ),
+              SliverFillRemaining(
+                child: PageView(
+                  controller: controller.pageController,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onPageChanged: (index) =>
+                      controller.currentPage.value = index,
+                  children: [
+                    _buildSexPage(),
+                    _buildDobPage(),
+                    _buildHeightPage(),
+                    _buildWeightPage(),
+                    _buildFitnessGoalPage(),
+                    _buildLifestylePage(),
+                    _buildTrainingDaysPage(),
+                    _buildSessionLengthPage(),
+                    _buildEatingHabitsPage(),
+                    _buildStressLevelPage(),
+                    _buildSleepQualityPage(),
+                    _buildEmailPage(),
+                  ],
                 ),
               ),
-            ),
-            SliverFillRemaining(
-              child: PageView(
-                controller: controller.pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                onPageChanged: (index) => controller.currentPage.value = index,
-                children: [
-                  _buildSexPage(),
-                  _buildDobPage(),
-                  _buildHeightPage(),
-                  _buildWeightPage(),
-                  _buildFitnessGoalPage(),
-                  _buildLifestylePage(),
-                  _buildTrainingDaysPage(),
-                  _buildSessionLengthPage(),
-                  _buildEatingHabitsPage(),
-                  _buildStressLevelPage(),
-                  _buildSleepQualityPage(),
-                  _buildEmailPage(),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
