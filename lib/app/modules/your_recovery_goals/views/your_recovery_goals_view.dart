@@ -3,15 +3,15 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 
-import 'package:icon/app/core/widgets/goal_stepper_footer.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 import 'package:icon/generated/assets.dart';
 
+import '../../../core/extensions/app_extansions.dart';
 import '../controllers/your_recovery_goals_controller.dart';
-import 'package:icon/app/modules/your_nutrition_goals/views/your_nutrition_goals_view.dart';
 
 class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
   const YourRecoveryGoalsView({super.key});
+
   @override
   Widget build(BuildContext context) {
     const kBackground = Color(0xFF0F0F0F);
@@ -91,10 +91,7 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
               ),
               const SizedBox(height: 6),
               const Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24,
-                  vertical: 8,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 child: Text(
                   'We have created a custom recovery goal list for you, one that will repair your body over time. This can be accomplished through mobility sessions, hydration, and plenty of sleep.',
                   style: TextStyle(
@@ -104,7 +101,7 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
                   ),
                 ),
               ),
-              const Spacer(),
+              (Get.height * 0.39).height,
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 24),
                 padding: const EdgeInsets.symmetric(
@@ -131,15 +128,6 @@ class YourRecoveryGoalsView extends GetView<YourRecoveryGoalsController> {
                     ),
                   ],
                 ),
-              ),
-              GoalStepperFooter(
-                stepIndex: 2,
-                onPressed: () {
-                  Get.to(
-                        () => const YourNutritionGoalsView(),
-                    transition: Transition.leftToRight,
-                  );
-                },
               ),
             ],
           ),

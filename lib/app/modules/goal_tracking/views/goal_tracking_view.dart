@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import 'package:icon/app/core/widgets/goal_stepper_footer.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
@@ -103,7 +104,7 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
                   ),
                 ),
               ),
-              const Spacer(),
+              (Get.height * 0.45).height,
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 24),
                 padding: const EdgeInsets.symmetric(
@@ -130,15 +131,6 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
                     ),
                   ],
                 ),
-              ),
-              GoalStepperFooter(
-                stepIndex: 0,
-                onPressed: () {
-                  Get.to(
-                        () => const YourActivityGoalsView(),
-                    transition: Transition.leftToRight,
-                  );
-                },
               ),
             ],
           ),
