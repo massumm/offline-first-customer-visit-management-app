@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
+import 'package:icon/app/core/extensions/firebase_crashlytics.dart';
+import 'package:icon/app/modules/your_daily_goals/repository/daily_goal_repository.dart';
+
+import '../../goal_tracking/models/daily_goal_model.dart';
 
 // Define an enum for goal categories to ensure type safety.
 enum GoalCategory { activity, nutrition, recovery }
@@ -26,16 +32,10 @@ class Goal {
 }
 
 class YourDailyGoalsController extends GetxController {
-
   final selectedTabIndex = 0.obs;
 
   /// Defines the titles for the tabs.
-  final List<String> tabs = [
-    'All Goals',
-    'Activity',
-    'Nutrition',
-    'Recovery',
-  ];
+  final List<String> tabs = ['All Goals', 'Activity', 'Nutrition', 'Recovery'];
 
   /// Private list of all goals.
   final List<Goal> _allGoals = [
@@ -95,16 +95,42 @@ class YourDailyGoalsController extends GetxController {
     ),
   ];
 
-
   List<Goal> get filteredGoals {
     if (selectedTabIndex.value == 0) {
       return _allGoals;
     }
 
     final selectedCategory = GoalCategory.values[selectedTabIndex.value - 1];
-    return _allGoals.where((goal) => goal.category == selectedCategory).toList();
+    return _allGoals
+        .where((goal) => goal.category == selectedCategory)
+        .toList();
   }
 
+  final DailyGoalRepository _repository = Get.find<DailyGoalRepository>(
+    tag: (DailyGoalRepository).toString(),
+  );
+
+  RxList goalData = RxList<DailyGoalModel>();
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    fetchGoalData();
+  }
+
+  Future<void> fetchGoalData() async {
+    try {
+      final response = await _repository.fetchDailyGoals();
+
+      goalData.assignAll(response);
+    } catch (e, s) {
+      if (e is ApiException) {
+        CustomToast.showErrorToast(e.description);
+      }
+      e.logToCrashlytics(s);
+    }
+  }
 
   void selectTab(int index) {
     selectedTabIndex.value = index;
