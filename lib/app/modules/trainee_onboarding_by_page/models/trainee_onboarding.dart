@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class TraineeOnboardingDataModel {
   final String sex;
   final DateTime? dob;
@@ -11,6 +13,7 @@ class TraineeOnboardingDataModel {
   final String? stressLevel;
   final String? sleepQuality;
   final String? email;
+  final int? traineeProfile;
 
   const TraineeOnboardingDataModel({
     required this.sex,
@@ -25,6 +28,7 @@ class TraineeOnboardingDataModel {
     this.stressLevel,
     this.sleepQuality,
     this.email,
+    required this.traineeProfile,
   });
 
   factory TraineeOnboardingDataModel.fromJson(Map<String, dynamic> json) {
@@ -41,12 +45,13 @@ class TraineeOnboardingDataModel {
       stressLevel: json['stressLevel'] as String?,
       sleepQuality: json['sleepQuality'] as String?,
       email: json['email'] as String?,
+      traineeProfile: json['traineeProfile'] as int?,
     );
   }
 
   Map<String, dynamic> toJson() => {
     'sex': sex,
-    'dob': dob?.toIso8601String(),
+    'dob': dob != null ? DateFormat('yyyy-MM-dd').format(dob!) : null,
     'height': height,
     'weight': weight,
     'fitnessGoal': fitnessGoal,
@@ -57,5 +62,6 @@ class TraineeOnboardingDataModel {
     'stressLevel': stressLevel,
     'sleepQuality': sleepQuality,
     'email': email,
+    'trainee_profile': traineeProfile,
   };
 }

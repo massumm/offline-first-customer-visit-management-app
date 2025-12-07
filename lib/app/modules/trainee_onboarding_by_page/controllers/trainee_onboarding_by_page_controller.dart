@@ -6,6 +6,8 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/extensions/firebase_crashlytics.dart';
 import 'package:icon/app/data/local/preference/store/user_store.dart';
 import 'package:icon/app/modules/login/models/login_response_model.dart';
+import 'package:icon/app/routes/app_pages.dart';
+import 'package:intl/intl.dart';
 
 import '../repository/trainee_onboarding_by_page_repository.dart';
 import 'package:get/get.dart';
@@ -64,6 +66,8 @@ class TraineeOnboardingByPageController extends GetxController {
     try {
       isLoading.value = true;
 
+      await _getUserRegister();
+
       final data = TraineeOnboardingDataModel(
         sex: sex.value,
         dob: dob.value,
@@ -77,18 +81,17 @@ class TraineeOnboardingByPageController extends GetxController {
         stressLevel: stressLevel.value,
         sleepQuality: sleepQuality.value,
         email: email.value,
+        traineeProfile: UserStore.to.profile?.traineeProfile?.id ?? 1,
       );
-
-      await _getUserRegister();
       await repository.submitTraineeOnboardingData(data);
 
-      Get.offAllNamed('/goal-tracking');
+      Get.offAllNamed(Routes.GOAL_TRACKING);
     } catch (e) {
       "An error occurred during the submission process: $e".log();
 
-      if(kDebugMode){
-        Get.offAllNamed('/goal-tracking');
-      }
+      // if (kDebugMode) {
+      //   Get.offAllNamed(Routes.GOAL_TRACKING);
+      // }
 
       if (e is ApiException) {
         CustomToast.showErrorToast(e.description);
