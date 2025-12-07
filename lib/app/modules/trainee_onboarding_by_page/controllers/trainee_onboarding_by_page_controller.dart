@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/network/exceptions/not_found_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
@@ -7,7 +6,6 @@ import 'package:icon/app/core/extensions/firebase_crashlytics.dart';
 import 'package:icon/app/data/local/preference/store/user_store.dart';
 import 'package:icon/app/modules/login/models/login_response_model.dart';
 import 'package:icon/app/routes/app_pages.dart';
-import 'package:intl/intl.dart';
 
 import '../repository/trainee_onboarding_by_page_repository.dart';
 import 'package:get/get.dart';
@@ -85,7 +83,7 @@ class TraineeOnboardingByPageController extends GetxController {
       );
       await repository.submitTraineeOnboardingData(data);
 
-      Get.offAllNamed(Routes.GOAL_TRACKING);
+      Get.offAllNamed(Routes.FITNESS_REPORT);
     } catch (e) {
       "An error occurred during the submission process: $e".log();
 
