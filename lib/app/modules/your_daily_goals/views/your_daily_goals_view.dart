@@ -54,38 +54,41 @@ class YourDailyGoalsView extends GetView<YourDailyGoalsController> {
             // --------- TABS  ---------
             SizedBox(
               height: 36,
-              child: ListView.builder(
+              child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: controller.tabs.length,
+                separatorBuilder: (context, index) => const SizedBox(width: 8),
                 itemBuilder: (context, index) {
                   final title = controller.tabs[index];
-                  final isSelected = controller.selectedTabIndex.value == index;
-                  return GestureDetector(
-                    onTap: () => controller.selectTab(index),
-                    child: Container(
-                      margin: const EdgeInsets.only(right: 8),
+                  // Wrap only the ChoiceChip in an Obx
+                  return Obx(() {
+                    final isSelected =
+                        controller.selectedTabIndex.value == index;
+                    return ChoiceChip(
+                      label: Text(title),
+                      selected: isSelected,
+                      onSelected: (_) {
+                        controller.selectTab(index);
+                      },
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.white : kAccent,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      backgroundColor: Colors.transparent,
+                      selectedColor: kAccent,
+                      shape: RoundedRectangleBorder(
+                        side: const BorderSide(color: kAccent, width: 1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      showCheckmark: false,
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
+                        horizontal: 10,
                         vertical: 6,
                       ),
-                      decoration: BoxDecoration(
-                        color: isSelected ? kAccent : Colors.transparent,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: kAccent, width: 1),
-                      ),
-                      child: Center(
-                        child: Text(
-                          title,
-                          style: TextStyle(
-                            color: isSelected ? Colors.white : kAccent,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
+                    );
+                  });
                 },
               ),
             ),
@@ -115,21 +118,17 @@ class YourDailyGoalsView extends GetView<YourDailyGoalsController> {
 
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                width: double.infinity,
-                height: 52,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: () {},
-                  child: const Text(
-                    "Continue",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                ),
+                onPressed: () {},
+                child: const Text(
+                  "Continue",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
