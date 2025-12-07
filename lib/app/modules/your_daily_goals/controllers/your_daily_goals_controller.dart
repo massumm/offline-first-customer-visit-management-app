@@ -7,123 +7,65 @@ import 'package:icon/app/modules/your_daily_goals/repository/daily_goal_reposito
 
 import '../../goal_tracking/models/daily_goal_model.dart';
 
-// Define an enum for goal categories to ensure type safety.
-enum GoalCategory { activity, nutrition, recovery }
-
-// Define a model for a goal.
-class Goal {
-  final String title;
-  final String value;
-  final String description;
-  final String frequency;
-  final Color color;
-  final IconData icon;
-  final GoalCategory category;
-
-  Goal({
-    required this.title,
-    required this.value,
-    required this.description,
-    required this.frequency,
-    required this.color,
-    required this.icon,
-    required this.category,
-  });
-}
-
 class YourDailyGoalsController extends GetxController {
   final selectedTabIndex = 0.obs;
 
-  /// Defines the titles for the tabs.
-  final List<String> tabs = ['All Goals', 'Activity', 'Nutrition', 'Recovery'];
-
-  /// Private list of all goals.
-  final List<Goal> _allGoals = [
-    Goal(
-      title: 'Step Goal',
-      value: '7,000 steps',
-      description: 'From zero steps in a day… the right direction!',
-      frequency: 'Everyday',
-      color: Colors.red,
-      icon: Icons.directions_walk,
-      category: GoalCategory.activity,
-    ),
-    Goal(
-      title: 'Workout',
-      value: '45–60 mins',
-      description: 'Training sessions aligned to overall performance.',
-      frequency: 'Everyday',
-      color: Colors.red,
-      icon: Icons.fitness_center,
-      category: GoalCategory.activity,
-    ),
-    Goal(
-      title: 'Calorie Intake',
-      value: '2,100 kcal',
-      description: 'Caloric intake aligned to optimize energy.',
-      frequency: 'Everyday',
-      color: Colors.green,
-      icon: Icons.local_fire_department,
-      category: GoalCategory.nutrition,
-    ),
-    Goal(
-      title: 'Protein Intake',
-      value: '110 grams',
-      description: 'Helps maximize growth through protein.',
-      frequency: 'Everyday',
-      color: Colors.green,
-      icon: Icons.egg_outlined,
-      category: GoalCategory.nutrition,
-    ),
-    Goal(
-      title: 'Water Goal',
-      value: '2.5 L',
-      description: 'Stay hydrated for daily performance.',
-      frequency: 'Everyday',
-      color: Colors.blue,
-      icon: Icons.water_drop,
-      category: GoalCategory.nutrition,
-    ),
-    Goal(
-      title: 'Repair Goal',
-      value: '5 min mobility',
-      description: 'Daily recovery routine to improve mobility.',
-      frequency: 'Everyday',
-      color: Colors.orange,
-      icon: Icons.self_improvement,
-      category: GoalCategory.recovery,
-    ),
-  ];
-
-  List<Goal> get filteredGoals {
-    if (selectedTabIndex.value == 0) {
-      return _allGoals;
-    }
-
-    final selectedCategory = GoalCategory.values[selectedTabIndex.value - 1];
-    return _allGoals
-        .where((goal) => goal.category == selectedCategory)
-        .toList();
-  }
+  /// The list of tabs is now reactive. It starts with 'All Goals' and is
+  /// populated dynamically from the fetched data. Your view must observe
+  /// this list to rebuild the tabs when they are loaded.
+  final RxList<String> tabs = ['All Goals'].obs;
 
   final DailyGoalRepository _repository = Get.find<DailyGoalRepository>(
     tag: (DailyGoalRepository).toString(),
   );
 
-  RxList goalData = RxList<DailyGoalModel>();
+  /// This now serves as the single source of truth for your goals.
+  final goalData = RxList<DailyGoalModel>();
+
+  /// A computed list of goals that automatically filters based on the selected tab.
+  /// Your view should observe this list to display the correct goals.
+  List<DailyGoalModel> get filteredGoals {
+    // If 'All Goals' is selected, return the entire list.
+    if (selectedTabIndex.value == 0) {
+      return goalData;
+    }
+
+    // Prevent range error if tabs are still loading
+    if (selectedTabIndex.value >= tabs.length) {
+      return [];
+    }
+
+    // Get the category name from the tabs list (e.g., "Workout").
+    final selectedCategory = tabs[selectedTabIndex.value];
+
+    // Filter the goalData list where the goal's section matches the
+    // selected category. This comparison is case-insensitive for robustness.
+    return goalData
+        .where((goal) =>
+    goal.section.toLowerCase() == selectedCategory.toLowerCase())
+        .toList();
+  }
 
   @override
   void onInit() {
     super.onInit();
-
     fetchGoalData();
   }
 
+  /// Fetches daily goals and dynamically builds the list of tabs.
   Future<void> fetchGoalData() async {
     try {
       final response = await _repository.fetchDailyGoals();
-
       goalData.assignAll(response);
+
+      // --- DYNAMIC TAB GENERATION ---
+      // Extract unique, non-empty section names from the fetched data.
+      final uniqueSections =
+      response.map((goal) => goal.section).toSet().toList();
+
+      // Add the unique sections to the tabs list, preserving 'All Goals'.
+      tabs.assignAll(['All Goals', ...uniqueSections]);
+
     } catch (e, s) {
       if (e is ApiException) {
         CustomToast.showErrorToast(e.description);
@@ -132,7 +74,39 @@ class YourDailyGoalsController extends GetxController {
     }
   }
 
+  /// Updates the selected tab index. Because `selectedTabIndex` is an observable,
+  /// this will automatically cause `filteredGoals` to be re-evaluated.
   void selectTab(int index) {
     selectedTabIndex.value = index;
+  }
+
+  // --- Helper Methods for the View ---
+
+  /// Converts a hex color string from your model into a `Color` object.
+  /// Assumes `goal.color` is a string like "#RRGGBB".
+  Color getColorForGoal(DailyGoalModel goal) {
+    final hexColor = goal.color;
+    if (hexColor.startsWith('#') && hexColor.length >= 7) {
+      try {
+        return Color(int.parse(hexColor.substring(1, 7), radix: 16) + 0xFF000000);
+      } catch (e) {
+        return Colors.grey; // Fallback color
+      }
+    }
+    return Colors.grey; // Default color
+  }
+
+  /// Maps an icon name string from your model to a real `IconData` object.
+  /// You should expand this map to include all icon names from your API.
+  IconData getIconForGoal(DailyGoalModel goal) {
+    const iconMap = {
+      'directions_walk': Icons.directions_walk,
+      'fitness_center': Icons.fitness_center,
+      'local_fire_department': Icons.local_fire_department,
+      'egg_outlined': Icons.egg_outlined,
+      'water_drop': Icons.water_drop,
+      'self_improvement': Icons.self_improvement,
+    };
+    return iconMap[goal.icon] ?? Icons.help_outline; // Default icon
   }
 }
