@@ -16,7 +16,8 @@ class TraineeOnboardingByPageRepositoryImpl extends BaseRemoteSource
     TraineeOnboardingDataModel data,
   ) async {
     final String endpoint =
-        "${DioProvider.baseUrl}/api/by_trainer/1/onboarding/submit/";
+        // "${DioProvider.baseUrl}/api/by_trainer/1/onboarding/submit/";
+    "${DioProvider.baseUrl}/api/trainee_onboarding/by_trainer/1/onboarding/submit/";
     final Map<String, String> headers = {
       'Authorization': "Bearer ${UserStore.to.token}",
     };
