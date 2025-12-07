@@ -7,4 +7,6 @@ class StorageKeys {
   static const String STORAGE_USER_TOKEN_KEY = 'user_unique_token';
   static const String STORAGE_USER_KEY = 'user_profile_offline';
   static const String STORAGE_TRAINEE_ONBOARDING_MODEL_KEY = 'trainee_on_boarding_model';
+
+  static String STORAGE_USER_EMAIL_KEY = 'trainee_email_address';
 }

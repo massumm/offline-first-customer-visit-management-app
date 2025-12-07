@@ -139,7 +139,7 @@ class YourDailyGoalsView extends GetView<YourDailyGoalsController> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: controller.navToRegisture,
                   child: const Text(
                     "Continue",
                     style:

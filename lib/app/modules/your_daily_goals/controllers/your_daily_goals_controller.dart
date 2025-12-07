@@ -4,6 +4,7 @@ import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/firebase_crashlytics.dart';
 import 'package:icon/app/modules/your_daily_goals/repository/daily_goal_repository.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 import '../../goal_tracking/models/daily_goal_model.dart';
 
@@ -94,5 +95,9 @@ class YourDailyGoalsController extends GetxController {
       'self_improvement': Icons.self_improvement,
     };
     return iconMap[goal.icon] ?? Icons.help_outline; // Default icon
+  }
+
+  void navToRegisture() {
+    Get.offAndToNamed(Routes.TRAINEE_REGISTER);
   }
 }

@@ -117,6 +117,8 @@ class TraineeOnboardingByPageController extends GetxController {
       });
       await _storeUserData(loginModel);
       "Email registered successfully.".log();
+      await UserStore.to.saveTraineeEmailAddress(email.value);
+      "Email saved to storage.".log();
     } catch (e) {
       "Registration failed: $e. Assuming user exists, attempting to get token..."
           .log();
