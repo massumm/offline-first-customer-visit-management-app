@@ -8,10 +8,9 @@ import '../controllers/goal_tracking_controller.dart';
 
 class GoalTrackingView extends GetView<GoalTrackingController> {
   const GoalTrackingView({super.key});
+
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       body: Stack(
         children: [
@@ -87,10 +86,7 @@ class GoalTrackingView extends GetView<GoalTrackingController> {
                 ),
                 const SizedBox(height: 6),
                 const Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 8,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                   child: Text(
                     'No more app juggling. Everything is now in one place - convenient and effective.',
                     style: TextStyle(
