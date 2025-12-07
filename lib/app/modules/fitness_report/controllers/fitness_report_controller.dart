@@ -2,6 +2,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 class FitnessReportController extends GetxController {
   final pageController = PageController();
@@ -27,9 +28,7 @@ class FitnessReportController extends GetxController {
         curve: Curves.easeInOut,
       );
     } else {
-      // You are on the last page.
-      // Implement what should happen next, e.g., navigate to a summary screen.
-      print("End of report reached.");
+      Get.toNamed(Routes.YOUR_DAILY_GOALS);
     }
   }
 }

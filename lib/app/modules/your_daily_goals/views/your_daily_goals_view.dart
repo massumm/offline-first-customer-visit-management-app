@@ -1,242 +1,219 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 
 import '../controllers/your_daily_goals_controller.dart';
 
 class YourDailyGoalsView extends GetView<YourDailyGoalsController> {
   const YourDailyGoalsView({super.key});
+
   @override
   Widget build(BuildContext context) {
     const kBackground = Color(0xFF0F0F0F);
     const kAccent = Color(0xFFE44933);
-    final List<Map<String, dynamic>> tabs = [
-      {'title': 'All Goals', 'selected': true},
-      {'title': 'Active', 'selected': false},
-      {'title': 'Discovery', 'selected': false},
-    ];
-    final List<Map<String, dynamic>> goals = [
-      {
-        'section': 'Workout',
-        'items': [
-          {
-            'title': 'Workout',
-            'value': '45-60 mins',
-            'description': 'Complete a workout session',
-            'frequency': 'Day',
-          },
-        ],
-      },
-      {
-        'section': 'Nutrition',
-        'items': [
-          {
-            'title': 'Calorie Intake',
-            'value': '2,200 kcal',
-            'description': 'Stay within daily calorie target',
-            'frequency': 'Everyday',
-          },
-          {
-            'title': 'Protein Intake',
-            'value': '150g',
-            'description': 'Meet daily protein goal',
-            'frequency': 'Everyday',
-          },
-          {
-            'title': 'Meal Frequency',
-            'value': '3 meals',
-            'description': 'Eat regular meals',
-            'frequency': 'Day',
-          },
-          {
-            'title': 'Water Goal',
-            'value': '2L',
-            'description': 'Drink enough water',
-            'frequency': 'Day',
-          },
-        ],
-      },
-      {
-        'section': 'Mood & Recovery',
-        'items': [
-          {
-            'title': 'Mood Reflection',
-            'value': 'Daily',
-            'description': 'Reflect on your mood',
-            'frequency': 'Night',
-          },
-          {
-            'title': 'Repair Goal',
-            'value': '20g',
-            'description': 'Consume repair nutrients',
-            'frequency': 'Day',
-          },
-        ],
-      },
-    ];
+
     return Scaffold(
       backgroundColor: kBackground,
-      appBar: AppBar(
-        backgroundColor: kBackground,
-        elevation: 0,
-        title: Text('Your Daily Goals', style: TextStyle(color: Colors.white)),
-        centerTitle: false,
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: 16),
-          // Tabs
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: tabs.map((tab) {
-                return Expanded(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 4),
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: tab['selected'] ? kAccent : Colors.grey[900],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      tab['title'],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: tab['selected'] ? Colors.white : Colors.white70,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GestureDetector(
+                onTap: () => Get.back(),
+                child: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              ),
             ),
-          ),
-          SizedBox(height: 16),
-          Expanded(
-            child: ListView.builder(
+            const SizedBox(height: 12),
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              itemCount: goals.length,
-              itemBuilder: (context, i) {
-                final section = goals[i];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      section['section'],
-                      style: TextStyle(
-                        color: kAccent,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    ...List.generate((section['items'] as List).length, (j) {
-                      final item = section['items'][j];
-                      return GoalListItem(
-                        title: item['title'],
-                        value: item['value'],
-                        description: item['description'],
-                        frequency: item['frequency'],
-                      );
-                    }),
-                  ],
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kAccent,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () {},
-                child: Text(
-                  'Continue',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              child: Text(
+                "Your Daily Goals",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-          ),
-        ],
+            const SizedBox(height: 16),
+
+            // --------- TABS  ---------
+            SizedBox(
+              height: 36,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: controller.tabs.length,
+                itemBuilder: (context, index) {
+                  final title = controller.tabs[index];
+                  final isSelected = controller.selectedTabIndex.value == index;
+                  return GestureDetector(
+                    onTap: () => controller.selectTab(index),
+                    child: Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isSelected ? kAccent : Colors.transparent,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: kAccent, width: 1),
+                      ),
+                      child: Center(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            color: isSelected ? Colors.white : kAccent,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // --------- GOAL LIST  ---------
+            Expanded(
+              child: Obx(
+                () => ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: controller.filteredGoals.length,
+                  itemBuilder: (_, index) {
+                    final goal = controller.filteredGoals[index];
+                    return GoalCard(
+                      title: goal.title,
+                      value: goal.value,
+                      description: goal.description,
+                      frequency: goal.frequency,
+                      color: goal.color,
+                      icon: goal.icon, // Pass the dynamic icon
+                    );
+                  },
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () {},
+                  child: const Text(
+                    "Continue",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-class GoalListItem extends StatelessWidget {
+// UPDATE GOAL CARD TO ACCEPT AN ICON
+class GoalCard extends StatelessWidget {
   final String title;
   final String value;
   final String description;
   final String frequency;
-  const GoalListItem({
+  final Color color;
+  final IconData icon; // Add icon property
+
+  const GoalCard({
     super.key,
     required this.title,
     required this.value,
     required this.description,
     required this.frequency,
+    required this.color,
+    required this.icon, // Make it required
   });
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.grey[900],
-      margin: EdgeInsets.symmetric(vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: TextStyle(
-                      color: Color(0xFFE44933),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.15),
+              shape: BoxShape.circle,
             ),
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    description,
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
+            child: Icon(icon, color: color, size: 22), // Use the dynamic icon
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    frequency,
-                    style: TextStyle(color: Colors.white38, fontSize: 12),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                    height: 1.2,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade900,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              frequency,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+        ],
       ),
     );
   }
