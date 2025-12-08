@@ -264,18 +264,20 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const Spacer(),
-              CircularPercentIndicator(
-                radius: 18,
-                lineWidth: 2,
-                percent: 0.72,
-                progressColor: const Color(0xff098C26),
-                backgroundColor: const Color(0xffEBFFF0),
-                center: const Text(
-                  "72%",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
+              // const Spacer(),
+              // Expanded(
+              //   child: CircularPercentIndicator(
+              //     radius: 18,
+              //     lineWidth: 2,
+              //     percent: 0.72,
+              //     progressColor: const Color(0xff098C26),
+              //     backgroundColor: const Color(0xffEBFFF0),
+              //     center: const Text(
+              //       "72%",
+              //       style: TextStyle(fontWeight: FontWeight.bold),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
           const Row(
@@ -348,17 +350,19 @@ class _MetricsGridPageState extends State<MetricsGridPage> {
                   ),
                 ],
               ),
-              CustomPaint(
-                painter: GaugePainter(progress),
-                child: SizedBox(
-                  width: gaugeWidth,
-                  height: gaugeHeight,
-                  child: Center(
-                    child: Text(
-                      "${(progress * 100).round()}%",
-                      style: TextStyle(
-                        fontSize: fontSize,
-                        fontWeight: FontWeight.bold,
+              Expanded(
+                child: CustomPaint(
+                  painter: GaugePainter(progress),
+                  child: SizedBox(
+                    width: gaugeWidth,
+                    height: gaugeHeight,
+                    child: Center(
+                      child: Text(
+                        "${(progress * 100).round()}%",
+                        style: TextStyle(
+                          fontSize: fontSize,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),

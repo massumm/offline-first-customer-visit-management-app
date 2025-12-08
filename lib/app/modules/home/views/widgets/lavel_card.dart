@@ -72,49 +72,51 @@ class LevelCard extends StatelessWidget {
                 animationDuration: const Duration(seconds: 4),
               ),
 
-              const SizedBox(width: 16),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  DiamondListRow(),
-                  Divider(
-                    color: const Color(0xFFE1E3E9),
-                    thickness: 1,
-                    height: 16,
-                  ),
-                  Row(
-                    children: [
-                      SuperImage(Assets.svgCheckmark, height: 16, width: 16),
-                      8.width,
-                      Text(
-                        '7-Day Workout Streak',
-                        style: TextStyle(
-                          color: const Color(
-                            0xFF241814,
-                          ) /* User-Light-Typography-Primary */,
-                          fontSize: 12,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DiamondListRow(),
+                    Divider(
+                      color: const Color(0xFFE1E3E9),
+                      thickness: 1,
+                      height: 16,
+                    ),
+                    Row(
+                      children: [
+                        SuperImage(Assets.svgCheckmark, height: 16, width: 16),
+                        8.width,
+                        Text(
+                          '7-Day Workout Streak',
+                          style: TextStyle(
+                            color: const Color(
+                              0xFF241814,
+                            ) /* User-Light-Typography-Primary */,
+                            fontSize: 12,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      SuperImage(Assets.svgCheckmark, height: 16, width: 16),
-                      8.width,
-                      Text(
-                        '5K Personal Record',
-                        style: TextStyle(
-                          color: const Color(0xFF241814),
-                          fontSize: 12,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w500,
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SuperImage(Assets.svgCheckmark, height: 16, width: 16),
+                        8.width,
+                        Text(
+                          '5K Personal Record',
+                          style: TextStyle(
+                            color: const Color(0xFF241814),
+                            fontSize: 12,
+                            fontFamily: 'Inter',
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -117,23 +117,25 @@ class _HeartRateCardState extends State<HeartRateCard>
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      const Spacer(),
-                      AnimatedContainer(
-                        duration: const Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          "Normal",
-                          style: textTheme.titleSmall?.copyWith(
-                            color: Colors.blue,
-                            fontWeight: FontWeight.w600,
+
+                      Flexible(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeInOut,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            "Normal",
+                            style: textTheme.titleSmall?.copyWith(
+                              color: Colors.blue,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
                       ),
