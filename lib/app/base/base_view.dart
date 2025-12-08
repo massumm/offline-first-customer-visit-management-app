@@ -55,7 +55,6 @@ abstract class BaseView<Controller extends BaseController>
     return _BaseViewScaffold(view: this);
   }
 
-  //region Helper Methods (used by the internal scaffold builder)
 
   SystemUiOverlayStyle getMaterialOverlayStyle(BuildContext context) {
     final Color bgColor = pageBackgroundColor(context);
@@ -161,15 +160,35 @@ class _BaseViewScaffoldState<Controller extends BaseController>
   /// —————————————————————
   /// Cupertino (iOS)
   /// —————————————————————
-  /// —————————————————————
-  /// Cupertino (iOS)
-  /// —————————————————————
   Widget _buildCupertino(BuildContext context) {
     final brightness = CupertinoTheme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
     final overlay =
     isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
     final navigationBar = widget.view.cupertinoNavigationBar(context);
+    final bottomNavBar = widget.view.bottomNavigationBar(context);
+
+    // The main content stack, including overlays
+    final Widget contentStack = Stack(
+      children: [
+        widget.view.body(context),
+        Obx(
+              () => controller.pageState == PageState.LOADING
+              ? widget.view._showCupertinoLoading()
+              : const SizedBox.shrink(),
+        ),
+        Obx(
+              () => controller.pageState == PageState.CHANNEL_TRANSITION_LOADING
+              ? widget.view._showChannelSwitchLoading()
+              : const SizedBox.shrink(),
+        ),
+        Obx(
+              () => controller.networkErrorMsg.isNotEmpty
+              ? _showCupertinoError(controller.networkErrorMsg)
+              : const SizedBox.shrink(),
+        ),
+      ],
+    );
 
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -178,29 +197,19 @@ class _BaseViewScaffoldState<Controller extends BaseController>
         child: CupertinoPageScaffold(
           backgroundColor: CupertinoTheme.of(context).scaffoldBackgroundColor,
           navigationBar: navigationBar,
-          child: Stack(
+          child: Column(
             children: [
-              SafeArea(
-                top: navigationBar == null,
-                bottom: true,
-                child: widget.view.body(context),
+              // Body content expands to fill available space.
+              Expanded(
+                child: SafeArea(
+                  top: navigationBar == null,
+                  bottom: false,
+                  child: contentStack,
+                ),
               ),
-              Obx(
-                    () => controller.pageState == PageState.LOADING
-                    ? widget.view._showCupertinoLoading()
-                    : const SizedBox.shrink(),
-              ),
-              Obx(
-                    () => controller.pageState ==
-                    PageState.CHANNEL_TRANSITION_LOADING
-                    ? widget.view._showChannelSwitchLoading()
-                    : const SizedBox.shrink(),
-              ),
-              Obx(
-                    () => controller.networkErrorMsg.isNotEmpty
-                    ? _showCupertinoError(controller.networkErrorMsg)
-                    : const SizedBox.shrink(),
-              ),
+              // The bottom navigation bar is placed here, outside the Expanded body.
+              // It will now appear on iOS.
+              if (bottomNavBar != null) bottomNavBar,
             ],
           ),
         ),
