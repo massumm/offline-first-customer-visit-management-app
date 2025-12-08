@@ -33,7 +33,7 @@ dependencies:
   in_app_purchase: ^3.2.3
 
   # Font
-  google_fonts: ^6.3.2
+  google_fonts: ^6.3.3
 
   image_picker: ^1.2.1
 
