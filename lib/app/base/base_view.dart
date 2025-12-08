@@ -160,6 +160,9 @@ class _BaseViewScaffoldState<Controller extends BaseController>
   /// —————————————————————
   /// Cupertino (iOS)
   /// —————————————————————
+  /// —————————————————————
+  /// Cupertino (iOS)
+  /// —————————————————————
   Widget _buildCupertino(BuildContext context) {
     final brightness = CupertinoTheme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
@@ -204,7 +207,10 @@ class _BaseViewScaffoldState<Controller extends BaseController>
                 child: SafeArea(
                   top: navigationBar == null,
                   bottom: false,
-                  child: contentStack,
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: contentStack,
+                  ),
                 ),
               ),
               // The bottom navigation bar is placed here, outside the Expanded body.
