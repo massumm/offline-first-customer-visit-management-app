@@ -5,7 +5,7 @@ import 'package:icon/app/modules/app_settings/views/app_settings_view.dart';
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
 import '../modules/fitness_report/bindings/fitness_report_binding.dart';
-import '../modules/fitness_report/views/report_display_view.dart';
+import '../modules/fitness_report/views/fitness_report_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
 import '../modules/forgot_password/views/forgot_password_view.dart';
 import '../modules/goal_tracking/bindings/goal_tracking_binding.dart';
@@ -29,8 +29,6 @@ import '../modules/register/views/two_factor_success_page_view.dart';
 import '../modules/register/views/two_factor_verification_page_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
-import '../modules/trainee_fitness_report_generation/bindings/trainee_fitness_report_generation_binding.dart';
-import '../modules/trainee_fitness_report_generation/views/trainee_fitness_report_generation_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
 import '../modules/trainee_onboarding_by_page/bindings/trainee_onboarding_by_page_binding.dart';
@@ -131,13 +129,8 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.FITNESS_REPORT,
-      page: () => ReportDisplayView(),
+      page: () => const FitnessReportView(),
       binding: FitnessReportBinding(),
-    ),
-    GetPage(
-      name: _Paths.TRAINEE_FITNESS_REPORT_GENERATION,
-      page: () => TraineeFitnessReportGenerationView(),
-      binding: TraineeFitnessReportGenerationBinding(),
     ),
     GetPage(
       name: _Paths.OTP_VALIDATION,

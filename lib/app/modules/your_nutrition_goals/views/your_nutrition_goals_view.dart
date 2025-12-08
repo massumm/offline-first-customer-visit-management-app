@@ -7,6 +7,7 @@ import 'package:icon/app/core/widgets/goal_stepper_footer.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 import 'package:icon/generated/assets.dart';
 
+import '../../../core/extensions/app_extansions.dart';
 import '../controllers/your_nutrition_goals_controller.dart';
 import 'package:icon/app/modules/your_daily_goals/views/your_daily_goals_view.dart';
 
@@ -104,7 +105,7 @@ class YourNutritionGoalsView extends GetView<YourNutritionGoalsController> {
                   ),
                 ),
               ),
-              const Spacer(),
+              (Get.height * 0.45).height,
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 24),
                 padding: const EdgeInsets.symmetric(
@@ -132,15 +133,7 @@ class YourNutritionGoalsView extends GetView<YourNutritionGoalsController> {
                   ],
                 ),
               ),
-              GoalStepperFooter(
-                stepIndex: 3,
-                onPressed: () {
-                  Get.to(
-                        () => const YourDailyGoalsView(),
-                    transition: Transition.leftToRight,
-                  );
-                },
-              ),
+
             ],
           ),
         ],

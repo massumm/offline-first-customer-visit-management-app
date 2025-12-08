@@ -1,168 +1,215 @@
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/core/values/app_colors.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../controllers/your_daily_goals_controller.dart';
 
 class YourDailyGoalsView extends GetView<YourDailyGoalsController> {
   const YourDailyGoalsView({super.key});
+
   @override
   Widget build(BuildContext context) {
     const kBackground = Color(0xFF0F0F0F);
     const kAccent = Color(0xFFE44933);
-    final List<Map<String, dynamic>> tabs = [
-      {'title': 'All Goals', 'selected': true},
-      {'title': 'Active', 'selected': false},
-      {'title': 'Discovery', 'selected': false},
-    ];
-    final List<Map<String, dynamic>> goals = [
-      {
-        'section': 'Workout',
-        'items': [
-          {
-            'title': 'Workout',
-            'value': '45-60 mins',
-            'description': 'Complete a workout session',
-            'frequency': 'Day',
-          },
-        ],
-      },
-      {
-        'section': 'Nutrition',
-        'items': [
-          {
-            'title': 'Calorie Intake',
-            'value': '2,200 kcal',
-            'description': 'Stay within daily calorie target',
-            'frequency': 'Everyday',
-          },
-          {
-            'title': 'Protein Intake',
-            'value': '150g',
-            'description': 'Meet daily protein goal',
-            'frequency': 'Everyday',
-          },
-          {
-            'title': 'Meal Frequency',
-            'value': '3 meals',
-            'description': 'Eat regular meals',
-            'frequency': 'Day',
-          },
-          {
-            'title': 'Water Goal',
-            'value': '2L',
-            'description': 'Drink enough water',
-            'frequency': 'Day',
-          },
-        ],
-      },
-      {
-        'section': 'Mood & Recovery',
-        'items': [
-          {
-            'title': 'Mood Reflection',
-            'value': 'Daily',
-            'description': 'Reflect on your mood',
-            'frequency': 'Night',
-          },
-          {
-            'title': 'Repair Goal',
-            'value': '20g',
-            'description': 'Consume repair nutrients',
-            'frequency': 'Day',
-          },
-        ],
-      },
-    ];
+
     return Scaffold(
       backgroundColor: kBackground,
-      appBar: AppBar(
-        backgroundColor: kBackground,
-        elevation: 0,
-        title: Text('Your Daily Goals', style: TextStyle(color: Colors.white)),
-        centerTitle: false,
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: 16),
-          // Tabs
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: tabs.map((tab) {
-                return Expanded(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 4),
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    decoration: BoxDecoration(
-                      color: tab['selected'] ? kAccent : Colors.grey[900],
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      tab['title'],
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: tab['selected'] ? Colors.white : Colors.white70,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: GestureDetector(
+                onTap: () => Get.back(),
+                child: const Icon(Icons.arrow_back_ios, color: Colors.white),
+              ),
             ),
-          ),
-          SizedBox(height: 16),
-          Expanded(
-            child: ListView.builder(
+            const SizedBox(height: 12),
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16),
-              itemCount: goals.length,
-              itemBuilder: (context, i) {
-                final section = goals[i];
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      section['section'],
-                      style: TextStyle(
-                        color: kAccent,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    ...List.generate((section['items'] as List).length, (j) {
-                      final item = section['items'][j];
-                      return GoalListItem(
-                        title: item['title'],
-                        value: item['value'],
-                        description: item['description'],
-                        frequency: item['frequency'],
-                      );
-                    }),
-                  ],
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kAccent,
-                  foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () {},
-                child: Text(
-                  'Continue',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              child: Text(
+                "Your Daily Goals",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                "Here are your daily goals - created for you, your lifestyle, and your fitness ambitions",
+                style: TextStyle(
+                  color: AppColors.darkTextSecondaryColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // --------- TABS  ---------
+            Obx(() {
+              if (controller.isLoading.value) {
+                return const _TabsShimmer();
+              }
+              return SizedBox(
+                height: 36,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: controller.tabs.length,
+                  separatorBuilder: (context, index) =>
+                  const SizedBox(width: 8),
+                  itemBuilder: (context, index) {
+                    final title = controller.tabs[index];
+                    return Obx(() {
+                      final isSelected =
+                          controller.selectedTabIndex.value == index;
+                      return ChoiceChip(
+                        label: Text(title),
+                        selected: isSelected,
+                        onSelected: (_) {
+                          controller.selectTab(index);
+                        },
+                        labelStyle: TextStyle(
+                          color: isSelected ? Colors.white : kAccent,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        backgroundColor: Colors.transparent,
+                        selectedColor: kAccent,
+                        shape: RoundedRectangleBorder(
+                          side: const BorderSide(color: kAccent, width: 1),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        showCheckmark: false,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 6,
+                        ),
+                      );
+                    });
+                  },
+                ),
+              );
+            }),
+
+            const SizedBox(height: 12),
+
+            // --------- GOAL LIST  ---------
+            Expanded(
+              child: Obx(() {
+                if (controller.isLoading.value) {
+                  return const _GoalListShimmer();
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: controller.filteredGoals.length,
+                  itemBuilder: (_, index) {
+                    final goal = controller.filteredGoals[index];
+                    return GoalCard(
+                      title: goal.title,
+                      value: goal.value,
+                      description: goal.description,
+                      frequency: goal.frequency,
+                      color: controller.getColorForGoal(goal),
+                      icon: controller.getIconForGoal(goal),
+                    );
+                  },
+                );
+              }),
+            ),
+
+            // ... (Rest of the view remains the same)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 50,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: kAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: controller.navToRegisture,
+                  child: const Text(
+                    "Continue",
+                    style:
+                    TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// --- SHIMMER WIDGETS ---
+
+class _GoalListShimmer extends StatelessWidget {
+  const _GoalListShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[850]!,
+      highlightColor: Colors.grey[800]!,
+      child: ListView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: 5, // Display 5 shimmer cards
+        itemBuilder: (_, _) => const _GoalCardShimmer(),
+      ),
+    );
+  }
+}
+
+
+class _GoalCardShimmer extends StatelessWidget {
+  const _GoalCardShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const CircleAvatar(radius: 21, backgroundColor: Colors.black),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(width: 150, height: 16, color: Colors.black),
+                const SizedBox(height: 6),
+                Container(width: 100, height: 15, color: Colors.black),
+                const SizedBox(height: 6),
+                Container(width: 200, height: 12, color: Colors.black),
+              ],
+            ),
+          ),
+          Container(
+            width: 60,
+            height: 28,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(12),
             ),
           ),
         ],
@@ -171,72 +218,123 @@ class YourDailyGoalsView extends GetView<YourDailyGoalsController> {
   }
 }
 
-class GoalListItem extends StatelessWidget {
+/// A shimmer placeholder for the filter tabs.
+class _TabsShimmer extends StatelessWidget {
+  const _TabsShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[850]!,
+      highlightColor: Colors.grey[800]!,
+      child: SizedBox(
+        height: 36,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemCount: 8,
+          separatorBuilder: (context, index) => const SizedBox(width: 8),
+          itemBuilder: (context, index) {
+            return Container(
+              width: 100,
+              height: 36,
+              decoration: BoxDecoration(
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class GoalCard extends StatelessWidget {
   final String title;
   final String value;
   final String description;
   final String frequency;
-  const GoalListItem({
+  final Color color;
+  final IconData icon;
+
+  const GoalCard({
     super.key,
     required this.title,
     required this.value,
     required this.description,
     required this.frequency,
+    required this.color,
+    required this.icon,
   });
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.grey[900],
-      margin: EdgeInsets.symmetric(vertical: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    value,
-                    style: TextStyle(
-                      color: Color(0xFFE44933),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFF1A1A1A),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 42,
+            height: 42,
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.15),
+              shape: BoxShape.circle,
             ),
-            Expanded(
-              flex: 3,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    description,
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
+            child: Icon(icon, color: color, size: 22),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
                   ),
-                  SizedBox(height: 4),
-                  Text(
-                    frequency,
-                    style: TextStyle(color: Colors.white38, fontSize: 12),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: TextStyle(
+                    color: color,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  description,
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                    height: 1.2,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade900,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              frequency,
+              style: const TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+        ],
       ),
     );
   }

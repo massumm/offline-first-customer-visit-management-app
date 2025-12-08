@@ -1,3 +1,5 @@
+import 'package:icon/app/data/local/preference/store/user_store.dart';
+
 import '../../../base/base_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,7 +12,9 @@ import '../../../core/theme/services/theme_service.dart';
 import '../../../core/widgets/google_sign_in_api.dart';
 
 class TraineeRegisterController extends BaseController {
-  final emailCtr = TextEditingController();
+  final emailCtr = TextEditingController(
+    text: UserStore.to.traineeEmailAddress,
+  );
   final passwordCtr = TextEditingController();
   final confirmPasswordCtr = TextEditingController();
   final nameCtr = TextEditingController();
@@ -46,7 +50,7 @@ class TraineeRegisterController extends BaseController {
   onInit() {
     super.onInit();
 
-    emailCtr.text = Get.arguments ?? 'abc@domain.com';
+    'Email address: ${emailCtr.text}';
   }
 
   String? validateEmail(String? value) {

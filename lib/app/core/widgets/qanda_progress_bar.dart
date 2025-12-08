@@ -51,23 +51,44 @@ class _QandAProgressBarState extends State<QandAProgressBar> {
       widget.currentQuestion,
       widget.totalQuestions,
     );
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: TweenAnimationBuilder<double>(
-        tween: Tween<double>(begin: _oldProgress, end: totalProgress),
-        duration: const Duration(milliseconds: 700),
-        curve: Curves.easeOutCubic,
-        builder: (context, value, child) {
-          return Stack(
-            alignment: Alignment.centerLeft,
-            children: [
-              Container(
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: _oldProgress, end: totalProgress),
+      duration: const Duration(milliseconds: 700),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              height: 5,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withAlpha(30),
+                    theme.colorScheme.primary.withAlpha(20),
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(15),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+            ),
+            FractionallySizedBox(
+              widthFactor: value,
+              child: Container(
                 height: 5,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      theme.colorScheme.primary.withAlpha(30),
-                      theme.colorScheme.primary.withAlpha(20),
+                      theme.colorScheme.secondary,
+                      theme.colorScheme.primary,
                     ],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
@@ -75,48 +96,24 @@ class _QandAProgressBarState extends State<QandAProgressBar> {
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withAlpha(15),
-                      blurRadius: 6,
+                      color: theme.colorScheme.primary.withAlpha(46),
+                      blurRadius: 8,
                       offset: const Offset(0, 2),
+                    ),
+                    // Glowing effect
+                    BoxShadow(
+                      color: theme.colorScheme.primary.withAlpha(115),
+                      blurRadius: 18,
+                      spreadRadius: 2,
+                      offset: const Offset(0, 0),
                     ),
                   ],
                 ),
               ),
-              FractionallySizedBox(
-                widthFactor: value,
-                child: Container(
-                  height: 5,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        theme.colorScheme.secondary,
-                        theme.colorScheme.primary,
-                      ],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: theme.colorScheme.primary.withAlpha(46),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                      // Glowing effect
-                      BoxShadow(
-                        color: theme.colorScheme.primary.withAlpha(115),
-                        blurRadius: 18,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 0),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
