@@ -198,7 +198,9 @@ class LoginController extends BaseController {
         CustomToast.showErrorToast("Google Login Failed");
       }
     } catch (e) {
-      CustomToast.showErrorToast("Google Login Failed");
+      CustomToast.showErrorToast(
+        "Couldn't sign in with Google. Please try again.",
+      );
     }
   }
 }
