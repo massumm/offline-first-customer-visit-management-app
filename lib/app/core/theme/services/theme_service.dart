@@ -1,52 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/data/local/preference/preference_service.dart';
 
 class ThemeService extends GetxService {
-  final _storageService = Get.find<StorageService>();
-  final _themeKey = 'theme_mode';
+  late final StorageService _storageService;
+  static const _themeModeKey = 'theme_mode';
 
-  final _themeMode = ThemeMode.system.obs;
-
-  ThemeMode get themeMode => _themeMode.value;
+  final themeMode = ThemeMode.system.obs;
 
   bool get isDarkMode {
-    if (_themeMode.value == ThemeMode.system) {
-      return Get.isPlatformDarkMode;
+    if (themeMode.value == ThemeMode.system) {
+      return SchedulerBinding.instance.platformDispatcher.platformBrightness ==
+          Brightness.dark;
     } else {
-      return _themeMode.value == ThemeMode.dark;
+      return themeMode.value == ThemeMode.dark;
     }
   }
 
+  /// Initializes the service by loading the saved theme from storage.
   Future<ThemeService> init() async {
-    _themeMode.value = ThemeMode.dark;
-    await _saveThemeToStorage(ThemeMode.dark);
+    _storageService = Get.find<StorageService>();
+
+    final savedTheme = _storageService.getString(_themeModeKey) as String?;
+
+    if (savedTheme != null) {
+      themeMode.value = ThemeMode.values.firstWhere(
+        (e) => e.name == savedTheme,
+        orElse: () => ThemeMode.system,
+      );
+    }
+
     return this;
   }
 
-  void changeThemeMode(ThemeMode newThemeMode) {
-    if (_themeMode.value == newThemeMode) return;
-
-    _themeMode.value = newThemeMode;
-    _saveThemeToStorage(newThemeMode);
-  }
-
-  void switchTheme() {
-    changeThemeMode(isDarkMode ? ThemeMode.light : ThemeMode.dark);
-  }
-
-  ThemeMode _getThemeModeFromString(String? themeString) {
-    switch (themeString) {
-      case 'dark':
-        return ThemeMode.dark;
-      case 'light':
-        return ThemeMode.light;
-      default:
-        return ThemeMode.system;
-    }
-  }
-
-  Future<void> _saveThemeToStorage(ThemeMode themeMode) async {
-    await _storageService.setString(_themeKey, themeMode.name);
+  void saveThemeMode(ThemeMode mode) {
+    themeMode.value = mode;
+    _storageService.setString(_themeModeKey, mode.name);
   }
 }
