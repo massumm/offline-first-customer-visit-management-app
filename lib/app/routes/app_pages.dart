@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
-import 'package:icon/app/modules/app_settings/bindings/app_settings_binding.dart';
-import 'package:icon/app/modules/app_settings/views/app_settings_view.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
+import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
+import '../modules/activity_tracker/views/activity_tracker_view.dart';
+import '../modules/app_settings/bindings/app_settings_binding.dart';
+import '../modules/app_settings/views/app_settings_view.dart';
 import '../modules/fitness_report/bindings/fitness_report_binding.dart';
 import '../modules/fitness_report/views/fitness_report_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
@@ -57,20 +59,14 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const String INITIAL = Routes.SPLASH;
+  static const String INITIAL = Routes.ACTIVITY_TRACKER;
 
   static final routes = [
+    GetPage(name: _Paths.HOME, page: () => HomeView(), binding: HomeBinding()),
     GetPage(
-      name: _Paths.HOME,
-      page: () => HomeView(),
-      binding: HomeBinding(),
-      children: [
-        GetPage(
-          name: _Paths.ACTIVITY_TRACKER,
-          page: () => ActivityTrackerView(),
-          binding: ActivityTrackerBinding(),
-        ),
-      ],
+      name: _Paths.ACTIVITY_TRACKER,
+      page: () => ActivityTrackerView(),
+      binding: ActivityTrackerBinding(),
     ),
     GetPage(
       name: _Paths.SPLASH,
