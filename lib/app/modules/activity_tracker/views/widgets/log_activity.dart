@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 
 import '../../../../core/extensions/app_extansions.dart';
 import '../../controllers/activity_tracker_controller.dart';
@@ -38,29 +39,34 @@ class LogActivitySection extends GetView<ActivityTrackerController> {
         children: [
           Text('Log Activity', style: textTheme.titleMedium),
           14.height,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _BottomButton(
-                label: "Workout",
-                icon: Icons.fitness_center,
-                theme: theme,
-                onTap: controller.onWorkoutTap,
-              ),
-              _BottomButton(
-                label: "Cardio",
-                icon: Icons.monitor_heart,
-                theme: theme,
-                onTap: controller.onCardioTap,
-              ),
-              _BottomButton(
-                label: "Repair",
-                icon: Icons.settings,
-                theme: theme,
-                onTap: controller.onRepairTap,
-              ),
-            ],
-          ),
+          Obx(() {
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _BottomButton(
+                  label: "Workout",
+                  icon: Icons.fitness_center,
+                  theme: theme,
+                  onTap: controller.onWorkoutTap,
+                  isSelected: controller.isWorkoutBtnSelected.isTrue,
+                ),
+                _BottomButton(
+                  label: "Cardio",
+                  icon: Icons.monitor_heart,
+                  theme: theme,
+                  onTap: controller.onCardioTap,
+                  isSelected: controller.isCardioBtnSelected.isTrue,
+                ),
+                _BottomButton(
+                  label: "Repair",
+                  icon: Icons.settings,
+                  theme: theme,
+                  onTap: controller.onRepairTap,
+                  isSelected: controller.isRepairBtnSelected.isTrue,
+                ),
+              ],
+            );
+          }),
           14.height,
           // Workout Section
           Obx(() {
@@ -221,7 +227,7 @@ class WorkoutSection extends StatelessWidget {
         Text('Quick Start', style: theme.textTheme.titleMedium),
         Text(
           "Want to jump in without a plan? Start an empty session"
-          " and build as you go.",
+              " and build as you go.",
           style: theme.textTheme.labelLarge,
         ),
         12.height,
@@ -272,6 +278,7 @@ class _BottomButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final ThemeData theme;
+  final bool isSelected;
   final void Function() onTap;
 
   const _BottomButton({
@@ -279,6 +286,7 @@ class _BottomButton extends StatelessWidget {
     required this.icon,
     required this.theme,
     required this.onTap,
+    this.isSelected = false,
   });
 
   @override
@@ -288,7 +296,9 @@ class _BottomButton extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16),
       child: Material(
-        color: colorScheme.surface,
+        color: isSelected
+            ? AppColors.activityPrimaryColor
+            : colorScheme.surface,
         child: InkWell(
           onTap: onTap,
           child: SizedBox(
