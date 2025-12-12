@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import '../controllers/activity_tracker_controller.dart';
+import 'widgets/log_activity.dart';
 
 class ActivityTrackerView extends BaseView<ActivityTrackerController> {
   const ActivityTrackerView({super.key});
@@ -85,54 +86,7 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
           ),
         ),
 
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-            boxShadow: [
-              BoxShadow(
-                blurRadius: 6,
-                spreadRadius: 2,
-                offset: const Offset(0, -2),
-                color: Colors.black.withValues(alpha: 0.05),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Log Activity', style: textTheme.titleMedium),
-              14.height,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _BottomButton(
-                    label: "Workout",
-                    icon: Icons.fitness_center,
-                    theme: theme,
-                    onTap: controller.onWorkoutTap,
-                  ),
-                  _BottomButton(
-                    label: "Cardio",
-                    icon: Icons.monitor_heart,
-                    theme: theme,
-                    onTap: controller.onCardioTap,
-                  ),
-                  _BottomButton(
-                    label: "Repair",
-                    icon: Icons.settings,
-                    theme: theme,
-                    onTap: controller.onRepairTap,
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
+        LogActivitySection(theme: theme, textTheme: textTheme),
       ],
     );
   }
@@ -189,48 +143,6 @@ class _ActivityCard extends StatelessWidget {
           ),
           Icon(Icons.arrow_forward, color: theme.iconTheme.color, size: 20),
         ],
-      ),
-    );
-  }
-}
-
-class _BottomButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final ThemeData theme;
-  final void Function() onTap;
-
-  const _BottomButton({
-    required this.label,
-    required this.icon,
-    required this.theme,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = theme.colorScheme;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Material(
-        color: colorScheme.surface,
-        child: InkWell(
-          onTap: onTap,
-          child: SizedBox(
-            width: 95,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Column(
-                children: [
-                  Icon(icon, size: 28, color: colorScheme.primary),
-                  6.height,
-                  Text(label, style: theme.textTheme.titleSmall),
-                ],
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }

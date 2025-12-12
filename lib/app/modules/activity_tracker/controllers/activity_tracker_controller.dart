@@ -9,20 +9,20 @@ class ActivityTrackerController extends BaseController {
 
   // Bottom Buttons tripper methods
   void onWorkoutTap() {
-    isWorkoutBtnSelected(true);
+    isWorkoutBtnSelected.toggle();
     isCardioBtnSelected(false);
     isRepairBtnSelected(false);
   }
 
   void onCardioTap() {
     isWorkoutBtnSelected(false);
-    isCardioBtnSelected(true);
+    isCardioBtnSelected.toggle();
     isRepairBtnSelected(false);
   }
 
   void onRepairTap() {
     isWorkoutBtnSelected(false);
     isCardioBtnSelected(false);
-    isRepairBtnSelected(true);
+    isRepairBtnSelected.toggle();
   }
 }
