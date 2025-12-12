@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:hugeicons/hugeicons.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-
 import '../controllers/activity_tracker_controller.dart';
 
 class ActivityTrackerView extends BaseView<ActivityTrackerController> {
@@ -31,57 +28,196 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.all(12),
-      child: CustomScrollView(
-        physics: const NeverScrollableScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Activity Log', style: textTheme.titleMedium),
-                      Text(
-                        '12 min ago',
-                        style: textTheme.bodySmall?.copyWith(color: colorScheme.primary),
-                      )
-                    ],
+    return Column(
+      children: [
+        Expanded(
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(child: 12.height),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Container(
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Activity Log', style: textTheme.titleMedium),
+                            Text(
+                              '12 min ago',
+                              style: textTheme.bodySmall?.copyWith(
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                          ],
+                        ),
+                        12.height,
+
+                        /// Activity Card 1
+                        _ActivityCard(
+                          icon: Icons.directions_run,
+                          title: "Morning Run",
+                          subtitle: "Workout • 25 min • 8:10 am",
+                          theme: theme,
+                        ),
+
+                        12.height,
+
+                        /// Activity Card 2
+                        _ActivityCard(
+                          icon: Icons.fitness_center,
+                          title: "Upper Body Strength",
+                          subtitle: "Cardio • 25 min • 7:30 am",
+                          theme: theme,
+                        ),
+                      ],
+                    ),
                   ),
-                  8.height,
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: HugeIcon(
-                        icon: HugeIcons.strokeRoundedLiftTruck,
-                        color: colorScheme.primary,
-                        size: 30.0,
-                      ),
-                    ),
-                    title: const Text('Morning Run'),
-                    subtitle: const Text('Workout - 25 min - 7:30 pm'),
-                    trailing: HugeIcon(
-                      icon: HugeIcons.strokeRoundedArrowUpRight01,
-                      color: theme.iconTheme.color,
-                    ),
-                  )
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainerHighest,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 6,
+                spreadRadius: 2,
+                offset: const Offset(0, -2),
+                color: Colors.black.withValues(alpha: 0.05),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Log Activity', style: textTheme.titleMedium),
+              14.height,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _BottomButton(
+                    label: "Workout",
+                    icon: Icons.fitness_center,
+                    theme: theme,
+                  ),
+                  _BottomButton(
+                    label: "Cardio",
+                    icon: Icons.monitor_heart,
+                    theme: theme,
+                  ),
+                  _BottomButton(
+                    label: "Repair",
+                    icon: Icons.settings,
+                    theme: theme,
+                  ),
                 ],
               ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ActivityCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final ThemeData theme;
+
+  const _ActivityCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: colorScheme.surface,
+              borderRadius: BorderRadius.circular(12),
             ),
-          )
+            child: Icon(icon, size: 26, color: colorScheme.primary),
+          ),
+          12.width,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: theme.textTheme.titleSmall),
+                4.height,
+                Text(
+                  subtitle,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.hintColor,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Icon(Icons.arrow_forward, color: theme.iconTheme.color, size: 20),
+        ],
+      ),
+    );
+  }
+}
+
+class _BottomButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final ThemeData theme;
+
+  const _BottomButton({
+    required this.label,
+    required this.icon,
+    required this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      width: 95,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, size: 28, color: colorScheme.primary),
+          6.height,
+          Text(label, style: theme.textTheme.titleSmall),
         ],
       ),
     );
