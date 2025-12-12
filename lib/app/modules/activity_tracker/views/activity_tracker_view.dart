@@ -114,16 +114,19 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
                     label: "Workout",
                     icon: Icons.fitness_center,
                     theme: theme,
+                    onTap: controller.onWorkoutTap,
                   ),
                   _BottomButton(
                     label: "Cardio",
                     icon: Icons.monitor_heart,
                     theme: theme,
+                    onTap: controller.onCardioTap,
                   ),
                   _BottomButton(
                     label: "Repair",
                     icon: Icons.settings,
                     theme: theme,
+                    onTap: controller.onRepairTap,
                   ),
                 ],
               ),
@@ -195,30 +198,39 @@ class _BottomButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final ThemeData theme;
+  final void Function() onTap;
 
   const _BottomButton({
     required this.label,
     required this.icon,
     required this.theme,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = theme.colorScheme;
 
-    return Container(
-      width: 95,
-      padding: const EdgeInsets.symmetric(vertical: 16),
-      decoration: BoxDecoration(
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(16),
+      child: Material(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, size: 28, color: colorScheme.primary),
-          6.height,
-          Text(label, style: theme.textTheme.titleSmall),
-        ],
+        child: InkWell(
+          onTap: onTap,
+          child: SizedBox(
+            width: 95,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Column(
+                children: [
+                  Icon(icon, size: 28, color: colorScheme.primary),
+                  6.height,
+                  Text(label, style: theme.textTheme.titleSmall),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

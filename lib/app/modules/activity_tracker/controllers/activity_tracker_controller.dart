@@ -1,25 +1,28 @@
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
 
-class ActivityTrackerController extends BaseController
-{
-  //TODO: Implement ActivityTrackerController
+class ActivityTrackerController extends BaseController {
+  // ---------------  States ---------------
+  final RxBool isWorkoutBtnSelected = false.obs;
+  final RxBool isCardioBtnSelected = false.obs;
+  final RxBool isRepairBtnSelected = false.obs;
 
-  final count = 0.obs;
-  @override
-  void onInit() {
-    super.onInit();
+  // Bottom Buttons tripper methods
+  void onWorkoutTap() {
+    isWorkoutBtnSelected(true);
+    isCardioBtnSelected(false);
+    isRepairBtnSelected(false);
   }
 
-  @override
-  void onReady() {
-    super.onReady();
+  void onCardioTap() {
+    isWorkoutBtnSelected(false);
+    isCardioBtnSelected(true);
+    isRepairBtnSelected(false);
   }
 
-  @override
-  void onClose() {
-    super.onClose();
+  void onRepairTap() {
+    isWorkoutBtnSelected(false);
+    isCardioBtnSelected(false);
+    isRepairBtnSelected(true);
   }
-
-  void increment() => count.value++;
 }
