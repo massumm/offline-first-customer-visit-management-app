@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
+import 'package:icon/app/base/base_controller.dart';
 
-class StartWorkoutController extends GetxController {
+class StartWorkoutController extends BaseController {
   //TODO: Implement StartWorkoutController
 
   final count = 0.obs;

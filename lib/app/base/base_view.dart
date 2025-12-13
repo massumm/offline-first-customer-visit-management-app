@@ -160,9 +160,6 @@ class _BaseViewScaffoldState<Controller extends BaseController>
   /// —————————————————————
   /// Cupertino (iOS)
   /// —————————————————————
-  /// —————————————————————
-  /// Cupertino (iOS)
-  /// —————————————————————
   Widget _buildCupertino(BuildContext context) {
     final brightness = CupertinoTheme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
