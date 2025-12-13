@@ -309,7 +309,9 @@ class _BottomButton extends StatelessWidget {
                 children: [
                   Icon(icon, size: 28, color: colorScheme.primary),
                   6.height,
-                  Text(label, style: theme.textTheme.titleSmall),
+                  Text(label, style: theme.textTheme.titleSmall!.copyWith(
+                    color: isSelected ? Colors.white : Colors.black
+                  )),
                 ],
               ),
             ),
