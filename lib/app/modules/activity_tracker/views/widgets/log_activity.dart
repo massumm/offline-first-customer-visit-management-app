@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/values/app_colors.dart';
+import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../core/extensions/app_extansions.dart';
 import '../../controllers/activity_tracker_controller.dart';
@@ -227,22 +228,34 @@ class WorkoutSection extends StatelessWidget {
         Text('Quick Start', style: theme.textTheme.titleMedium),
         Text(
           "Want to jump in without a plan? Start an empty session"
-              " and build as you go.",
+          " and build as you go.",
           style: theme.textTheme.labelLarge,
         ),
         12.height,
-        Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('Start Empty Workout', style: theme.textTheme.titleMedium),
-              Icon(Icons.keyboard_arrow_right, color: theme.iconTheme.color),
-            ],
+        Material(
+          color: theme.scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(16),
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: () {
+              Get.toNamed(Routes.START_WORKOUT);
+            },
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Start Empty Workout',
+                    style: theme.textTheme.titleMedium,
+                  ),
+                  Icon(
+                    Icons.keyboard_arrow_right,
+                    color: theme.iconTheme.color,
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
         12.height,
@@ -309,9 +322,12 @@ class _BottomButton extends StatelessWidget {
                 children: [
                   Icon(icon, size: 28, color: colorScheme.primary),
                   6.height,
-                  Text(label, style: theme.textTheme.titleSmall!.copyWith(
-                    color: isSelected ? Colors.white : Colors.black
-                  )),
+                  Text(
+                    label,
+                    style: theme.textTheme.titleSmall!.copyWith(
+                      color: isSelected ? Colors.white : Colors.black,
+                    ),
+                  ),
                 ],
               ),
             ),
