@@ -53,12 +53,14 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
                 color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: AppColors.activityPrimaryColor.withOpacity(0.45),
-                  width: 1.4,
+                  color: AppColors.activityPrimaryColor.withValues(alpha: 0.42),
+                  width: 1.3,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.activityPrimaryColor.withOpacity(0.10),
+                    color: AppColors.activityPrimaryColor.withValues(
+                      alpha: 0.08,
+                    ),
                     blurRadius: 6,
                     offset: const Offset(0, 3),
                   ),
@@ -75,21 +77,17 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
-                    side: BorderSide.none, // ✅ remove inner border
+                    side: BorderSide.none,
                   ),
                   textStyle: theme.textTheme.titleSmall?.copyWith(
                     fontWeight: FontWeight.w600,
-                    letterSpacing: 0.25,
+                    letterSpacing: 0.3,
+                  ),
+                  overlayColor: AppColors.activityPrimaryColor.withValues(
+                    alpha: 0.06,
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.add_rounded, size: 20),
-                    SizedBox(width: 8),
-                    Text('Add Exercise'),
-                  ],
-                ),
+                child: Text('Add Exercise'),
               ),
             ),
           ),
