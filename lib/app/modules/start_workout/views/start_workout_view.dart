@@ -28,7 +28,7 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
       ),
       8.width,
       ActionPill(
-        onTap: () {},
+        onTap: controller.onSettingTap,
         height: 40,
         width: 40,
         icon: Icons.settings_outlined,

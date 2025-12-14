@@ -15,4 +15,8 @@ class StartWorkoutController extends BaseController {
 
     settingsService.attach(this);
   }
+
+  void onSettingTap() {
+    Get.to(() => WorkoutSettingsView());
+  }
 }
