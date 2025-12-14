@@ -81,7 +81,6 @@ abstract class BaseView<Controller extends BaseController>
   Widget _showCupertinoLoading() =>
       const Center(child: CupertinoActivityIndicator());
 
-//endregion
 }
 
 /// Internal StatefulWidget that builds the actual UI.
@@ -110,9 +109,9 @@ class _BaseViewScaffoldState<Controller extends BaseController>
     return Platform.isIOS ? _buildCupertino(context) : _buildMaterial(context);
   }
 
-  /// —————————————————————
+
   /// Material (Android)
-  /// —————————————————————
+
   Widget _buildMaterial(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -157,12 +156,9 @@ class _BaseViewScaffoldState<Controller extends BaseController>
     );
   }
 
-  /// —————————————————————
+
   /// Cupertino (iOS)
-  /// —————————————————————
-  /// —————————————————————
-  /// Cupertino (iOS)
-  /// —————————————————————
+
   Widget _buildCupertino(BuildContext context) {
     final brightness = CupertinoTheme.of(context).brightness;
     final isDark = brightness == Brightness.dark;
@@ -223,9 +219,9 @@ class _BaseViewScaffoldState<Controller extends BaseController>
     );
   }
 
-  /// —————————————————————
+
   /// Error & Loading helpers
-  /// —————————————————————
+
   Widget _showErrorSnackBar(String message) {
     final snackBar = SnackBar(content: Text(message));
     WidgetsBinding.instance.addPostFrameCallback((_) {
