@@ -20,7 +20,7 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
     centerTitle: true,
     actions: [
       ActionPill(
-        onTap: () {},
+        onTap: () => controller.onClockTap(context),
         height: 40,
         width: 40,
         icon: Icons.alarm,
