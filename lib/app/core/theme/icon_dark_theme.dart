@@ -156,6 +156,7 @@ class IconDarkTheme {
       onPrimaryContainer: AppColors.darkShapeColor,
       secondary: AppColors.activityPrimaryColor,
       secondaryContainer: AppColors.activitySecondaryColor,
+      onSecondaryContainer: AppColors.darkTextPrimaryColor,
 
       error: AppColors.warningColor,
 
