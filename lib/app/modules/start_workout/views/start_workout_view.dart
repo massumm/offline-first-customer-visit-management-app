@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/action_pill.dart';
 
 import '../controllers/start_workout_controller.dart';
@@ -39,10 +40,61 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
   );
 
   @override
-  @override
   Widget body(BuildContext context) {
+    final theme = Theme.of(context);
     return CustomScrollView(
-      slivers: [SliverToBoxAdapter(child: DumbbellSquatCard())],
+      slivers: [
+        SliverToBoxAdapter(child: DumbbellSquatCard()),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          sliver: SliverToBoxAdapter(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: AppColors.activityPrimaryColor.withOpacity(0.45),
+                  width: 1.4,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.activityPrimaryColor.withOpacity(0.10),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: OutlinedButton(
+                onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Colors.transparent,
+                  foregroundColor: AppColors.activityPrimaryColor,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 16,
+                    horizontal: 20,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    side: BorderSide.none, // ✅ remove inner border
+                  ),
+                  textStyle: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.25,
+                  ),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.add_rounded, size: 20),
+                    SizedBox(width: 8),
+                    Text('Add Exercise'),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
