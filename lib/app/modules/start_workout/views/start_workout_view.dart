@@ -67,7 +67,7 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
                 ],
               ),
               child: OutlinedButton(
-                onPressed: () {},
+                onPressed: controller.onAddExerciseTap,
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   foregroundColor: AppColors.activityPrimaryColor,
