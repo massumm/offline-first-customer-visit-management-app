@@ -1,24 +1,18 @@
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/modules/start_workout/views/workout_settings_view.dart';
+
+import '../services/start_workout_services_index.dart';
 
 class StartWorkoutController extends BaseController {
-  //TODO: Implement StartWorkoutController
+  // ---------- Services ---------------
+  final WorkoutSettingsService settingsService =
+      Get.find<WorkoutSettingsService>();
 
-  final count = 0.obs;
   @override
   void onInit() {
     super.onInit();
-  }
 
-  @override
-  void onReady() {
-    super.onReady();
+    settingsService.attach(this);
   }
-
-  @override
-  void onClose() {
-    super.onClose();
-  }
-
-  void increment() => count.value++;
 }
