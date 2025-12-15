@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../core/theme/app_text_theme.dart';
 import '../../../../core/values/app_colors.dart';
 import '../../controllers/home_controller.dart';
+import '../../models/utils_models.dart';
 import '../../widgets/progress_ring.dart';
 
 class DailyProgressIndicators extends GetView<HomeController> {

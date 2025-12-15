@@ -51,6 +51,7 @@ class HomeView extends BaseView<HomeController> {
             color: controller.actionCards[0].color,
             percent: controller.actionCards[0].percent,
             gradient: controller.actionCards[0].gradient,
+
           ),
           16.width,
           ActionsCard(
@@ -65,6 +66,8 @@ class HomeView extends BaseView<HomeController> {
             color: controller.actionCards[2].color,
             percent: controller.actionCards[2].percent,
             gradient: controller.actionCards[2].gradient,
+            onTap: controller.onActivityCardTap,
+
           ),
         ],
       ),

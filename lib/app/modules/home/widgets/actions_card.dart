@@ -8,26 +8,35 @@ class ActionsCard extends StatelessWidget {
     required this.color,
     required this.percent,
     this.gradient,
+    this.onTap,
   });
 
   final String title;
   final Color color;
   final double percent;
   final LinearGradient? gradient;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 126,
-      width: 126,
-      child: ProgressRing(
-        value: percent,
-        thickness: 12,
-        trackColor: Colors.white10,
-        valueColor: color,
-        valueGradient: gradient,
-        title: title,
-        size: 126,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(100),
+        onTap: onTap,
+        child: SizedBox(
+          height: 126,
+          width: 126,
+          child: ProgressRing(
+            value: percent,
+            thickness: 12,
+            trackColor: Colors.white10,
+            valueColor: color,
+            valueGradient: gradient,
+            title: title,
+            size: 126,
+          ),
+        ),
       ),
     );
   }
