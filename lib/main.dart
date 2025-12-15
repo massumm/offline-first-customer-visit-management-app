@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:dio/dio.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import 'app/core/binding/initial_binding.dart';
