@@ -87,7 +87,10 @@ class Assets {
   static const String iconProfileSecond = 'assets/images/icon_profile/second.png';
   static const String iconProfileThird = 'assets/images/icon_profile/third.png';
   static const String iconsArrowUpLeft = 'assets/svg/icons/arrow-up-left.svg';
+  static const String iconsCardiogram = 'assets/svg/icons/cardiogram.svg';
   static const String iconsUpperBody = 'assets/svg/icons/upper_body.svg';
+  static const String iconsWorkout = 'assets/svg/icons/workout.svg';
+  static const String iconsYoga = 'assets/svg/icons/yoga.svg';
   static const String imagesApple = 'assets/images/apple.png';
   static const String imagesBgGradiemt = 'assets/images/bg-gradiemt.png';
   static const String imagesBgGradientCrop = 'assets/images/bg-gradient-crop.png';
