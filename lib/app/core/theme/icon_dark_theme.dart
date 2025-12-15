@@ -44,20 +44,20 @@ class IconDarkTheme {
     titleLarge: GoogleFonts.inter(
       fontSize: 20,
       fontWeight: FontWeight.bold,
-      color: Colors.white,
+      color: AppColors.darkTextPrimaryColor,
     ),
     titleMedium: GoogleFonts.inter(
       fontSize: 18,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.15,
-      color: Colors.white,
+      color: AppColors.darkTextPrimaryColor,
     ),
     titleSmall: GoogleFonts.inter(
       fontSize: 14,
       fontWeight: FontWeight.w500,
       letterSpacing: 0.1,
       height: 1.50,
-      color: Colors.white,
+      color: AppColors.darkTextPrimaryColor,
     ),
 
     bodyLarge: GoogleFonts.inter(

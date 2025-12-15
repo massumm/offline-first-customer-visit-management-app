@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
+import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+import '../../../../generated/assets.dart';
 import '../controllers/activity_tracker_controller.dart';
 import 'widgets/log_activity.dart';
 
@@ -16,9 +20,9 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
       backgroundColor: appBarTheme.backgroundColor,
       title: Text('Activity Tracker', style: appBarTheme.titleTextStyle),
       centerTitle: true,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => Get.back(),
+      leading: Padding(
+        padding: EdgeInsets.all(10),
+        child: ActionPill(onTap: Get.back),
       ),
     );
   }
@@ -62,7 +66,9 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
 
                         /// Activity Card 1
                         _ActivityCard(
-                          icon: Icons.directions_run,
+                          iconSource: const SuperIconSource.icon(
+                            Icons.directions_run,
+                          ),
                           title: "Morning Run",
                           subtitle: "Workout • 25 min • 8:10 am",
                           theme: theme,
@@ -72,7 +78,9 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
 
                         /// Activity Card 2
                         _ActivityCard(
-                          icon: Icons.fitness_center,
+                          iconSource: SuperIconSource.svgAsset(
+                            Assets.iconsUpperBody,
+                          ),
                           title: "Upper Body Strength",
                           subtitle: "Cardio • 25 min • 7:30 am",
                           theme: theme,
@@ -93,16 +101,16 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
 }
 
 class _ActivityCard extends StatelessWidget {
-  final IconData icon;
   final String title;
   final String subtitle;
   final ThemeData theme;
+  final SuperIconSource iconSource;
 
   const _ActivityCard({
-    required this.icon,
     required this.title,
     required this.subtitle,
     required this.theme,
+    required this.iconSource,
   });
 
   @override
@@ -112,7 +120,7 @@ class _ActivityCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: theme.cardColor,
+        color: theme.scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -123,7 +131,11 @@ class _ActivityCard extends StatelessWidget {
               color: colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, size: 26, color: colorScheme.primary),
+            child: SuperIcon(
+              source: iconSource,
+              size: 26,
+              color: theme.textTheme.titleSmall?.color,
+            ),
           ),
           12.width,
           Expanded(
@@ -141,7 +153,11 @@ class _ActivityCard extends StatelessWidget {
               ],
             ),
           ),
-          Icon(Icons.arrow_forward, color: theme.iconTheme.color, size: 20),
+          SuperIcon(
+            source: SuperIconSource.svgAsset(Assets.iconsArrowUpLeft),
+            color: theme.iconTheme.color,
+            size: 20,
+          ),
         ],
       ),
     );
