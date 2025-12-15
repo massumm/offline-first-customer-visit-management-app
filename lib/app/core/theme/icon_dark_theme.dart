@@ -154,27 +154,21 @@ class IconDarkTheme {
       // --- Core Brand Colors ---
       primary: AppColors.colorPrimary,
       onPrimaryContainer: AppColors.darkShapeColor,
-      // Assuming AppColors has a secondary color defined
-      // secondary: AppColors.colorSecondary,
+      secondary: AppColors.activityPrimaryColor,
+      secondaryContainer: AppColors.activitySecondaryColor,
+      onSecondaryContainer: AppColors.darkTextPrimaryColor,
+
       error: AppColors.warningColor,
 
-      // --- Surface and Background Colors ---
-      // Aligns with scaffoldBackgroundColor
-      // Aligns with cardColor and dialogTheme.backgroundColor
       surface: AppColors.darkShapeColor,
 
-      // --- "On" Colors (for text and icons) ---
-      // Defines the color of content placed on top of the key colors above.
-      // Setting these explicitly ensures high contrast.
       onPrimary: Colors.white,
-      // onSecondary: Colors.black,
+
       onError: AppColors.warningColor,
       onSurface: Colors.white,
       onSurfaceVariant: Colors.white,
       surfaceContainerHighest: AppColors.darkShapeColor,
 
-      // --- Other Colors ---
-      // Aligns with the border color used in InputDecorationTheme
       outline: AppColors.darkStockColor,
     ),
     inputDecorationTheme: InputDecorationTheme(
@@ -183,11 +177,9 @@ class IconDarkTheme {
       isDense: true,
       contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.6)),
-      // Lighter hint text
-      // Ensure icon colors are also light
+
       iconColor: Colors.white.withValues(alpha: 0.6),
-      // Your border definitions are good, but you might want to adjust the
-      // enabledBorder color to be less prominent in a dark theme.
+
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(color: AppColors.darkStockColor, width: 1),
@@ -204,7 +196,6 @@ class IconDarkTheme {
         borderRadius: BorderRadius.circular(16),
         borderSide: BorderSide(color: AppColors.warningColor, width: 0.5),
       ),
-
     ),
     elevatedButtonTheme: appElevatedButtonThemeDark,
     // textButtonTheme: TextButtonThemeData(

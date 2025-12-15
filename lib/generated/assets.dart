@@ -178,6 +178,7 @@ class Assets {
   static const String svgHomeIcon = 'assets/svg/home_icon.svg';
   static const String svgHomeIconGrey = 'assets/svg/home_icon_grey.svg';
   static const String svgIcon = 'assets/svg/icon.svg';
+  static const String svgIconDark = 'assets/svg/icon_dark.svg';
   static const String svgIconLogoDark = 'assets/svg/icon-logo-dark.svg';
   static const String svgIconLogoPink = 'assets/svg/icon-logo-pink.svg';
   static const String svgLevel7 = 'assets/svg/level-7.svg';

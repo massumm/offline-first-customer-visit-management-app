@@ -68,7 +68,9 @@ abstract class AppColors {
   static const Color greyColor1 = Color(0xFF2B2B2B);
   static const Color darkWarningColorBG = Color(0XFFFEF7E8);
 
-  //..............
+  //................. Activity Section .....................
+  static const Color activityPrimaryColor = Color(0xffC31212);
+  static const Color activitySecondaryColor = Color(0xffC31212);
 
   static const Color hintTextColor = Color(0xFF8E8E93);
   static const Color menuSubColor = Color(0xFF575757);

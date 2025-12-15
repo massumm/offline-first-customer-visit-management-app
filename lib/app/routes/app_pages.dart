@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:icon/app/modules/app_settings/bindings/app_settings_binding.dart';
-import 'package:icon/app/modules/app_settings/views/app_settings_view.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
+import '../modules/app_settings/bindings/app_settings_binding.dart';
+import '../modules/app_settings/views/app_settings_view.dart';
 import '../modules/fitness_report/bindings/fitness_report_binding.dart';
 import '../modules/fitness_report/views/fitness_report_view.dart';
 import '../modules/forgot_password/bindings/forgot_password_binding.dart';
@@ -29,6 +29,8 @@ import '../modules/register/views/two_factor_success_page_view.dart';
 import '../modules/register/views/two_factor_verification_page_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
+import '../modules/start_workout/bindings/start_workout_binding.dart';
+import '../modules/start_workout/views/start_workout_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
 import '../modules/trainee_onboarding_by_page/bindings/trainee_onboarding_by_page_binding.dart';
@@ -60,17 +62,11 @@ class AppPages {
   static const String INITIAL = Routes.SPLASH;
 
   static final routes = [
+    GetPage(name: _Paths.HOME, page: () => HomeView(), binding: HomeBinding()),
     GetPage(
-      name: _Paths.HOME,
-      page: () => HomeView(),
-      binding: HomeBinding(),
-      children: [
-        GetPage(
-          name: _Paths.ACTIVITY_TRACKER,
-          page: () => ActivityTrackerView(),
-          binding: ActivityTrackerBinding(),
-        ),
-      ],
+      name: _Paths.ACTIVITY_TRACKER,
+      page: () => ActivityTrackerView(),
+      binding: ActivityTrackerBinding(),
     ),
     GetPage(
       name: _Paths.SPLASH,
@@ -201,6 +197,11 @@ class AppPages {
       name: _Paths.APP_SETTINGS,
       page: () => const AppSettingsView(),
       binding: AppSettingsBinding(),
+    ),
+    GetPage(
+      name: _Paths.START_WORKOUT,
+      page: () => const StartWorkoutView(),
+      binding: StartWorkoutBinding(),
     ),
   ];
 }
