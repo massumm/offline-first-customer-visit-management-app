@@ -22,11 +22,8 @@ import 'app/flavors/environment.dart';
 import 'app/routes/app_pages.dart';
 import 'firebase_options.dart';
 
-// final String token = UserStore.to.token;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Get.put(Dio());
 
   // Initialize Firebase
   await _setupFirebase();

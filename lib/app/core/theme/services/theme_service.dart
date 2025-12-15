@@ -25,9 +25,11 @@ class ThemeService extends GetxService {
     final savedTheme = _storageService.getString(_themeModeKey) as String?;
 
     if (savedTheme != null) {
+      // For now dark is default. but change this to system after first MVP
       themeMode.value = ThemeMode.values.firstWhere(
         (e) => e.name == savedTheme,
-        orElse: () => ThemeMode.system,
+        orElse: () => ThemeMode.dark,
+        // ThemeMode.system,
       );
     }
 
