@@ -16,15 +16,21 @@ class GoalsCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
 
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(24),
+        side: BorderSide(color: theme.colorScheme.outline, width: 2),
+      ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
         child: Container(
           decoration: BoxDecoration(
-            color: AppColors.lightCardBgColor,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: AppColors.lightBorderGrayColor, width: 1),
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: theme.colorScheme.outline, width: 2),
           ),
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Row(
@@ -34,10 +40,7 @@ class GoalsCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Your Daily Goals',
-                      style: AppTextTheme.headlineSmallBold,
-                    ),
+                    Text('Your Daily Goals', style: textTheme.titleMedium),
                     const SizedBox(height: 6),
                     Obx(
                       () => RichText(
@@ -73,6 +76,7 @@ class GoalsCard extends StatelessWidget {
                       : 0.0,
                   valueColor: AppColors.gradientRedStart,
                   valueGradient: AppColors.redGradient,
+                  trackColor: AppColors.darkShapeColor,
                   thickness: 8,
                   showPercentage: true,
                   percentageFontSize: 12,

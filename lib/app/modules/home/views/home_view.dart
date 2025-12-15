@@ -25,11 +25,11 @@ class HomeView extends BaseView<HomeController> {
         slivers: [
           SliverToBoxAdapter(child: const Header()),
           hSpace,
-          SliverToBoxAdapter(child: _UserHeader()),
-          hSpace,
+          // SliverToBoxAdapter(child: _UserHeader()),
+          // hSpace,
           SliverToBoxAdapter(child: DailyProgressIndicators()),
           hSpace,
-          SliverToBoxAdapter(child: healthProgressIndicator()),
+          SliverToBoxAdapter(child: trackerProgressIndicator()),
           hSpace,
           SliverToBoxAdapter(child: GoalsCard(onPressed: () {})),
         ],
@@ -39,7 +39,7 @@ class HomeView extends BaseView<HomeController> {
 
   SliverToBoxAdapter get hSpace => SliverToBoxAdapter(child: 16.height);
 
-  SingleChildScrollView healthProgressIndicator() {
+  SingleChildScrollView trackerProgressIndicator() {
     final controller = Get.find<HomeController>();
 
     return SingleChildScrollView(

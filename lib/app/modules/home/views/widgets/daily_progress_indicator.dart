@@ -31,16 +31,18 @@ class DayCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isToday = item.isToday;
+    final theme = Theme.of(context);
+
 
     return Container(
       width: 60,
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.outline,
         borderRadius: BorderRadius.circular(16),
         border: isToday
-            ? Border.all(color: const Color(0xFFE35D5D), width: 2)
-            : Border.all(color: AppColors.lightBorderGrayColor, width: 2),
+            ? Border.all(color: theme.colorScheme.primary, width: 2)
+            : Border.all(color: theme.colorScheme.surface, width: 2),
       ),
       child: FittedBox(
         fit: BoxFit.scaleDown,
@@ -53,7 +55,7 @@ class DayCard extends StatelessWidget {
               child: ProgressRing(
                 value: item.progress,
                 thickness: 4,
-                trackColor: AppColors.lightBorderGrayColor,
+                trackColor: theme.colorScheme.onPrimaryContainer,
                 valueColor: AppColors.redProgressColor,
                 valueGradient: AppColors.redGradient,
               ),
