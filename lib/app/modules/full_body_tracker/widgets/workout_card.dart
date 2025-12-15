@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/modules/activity_tracker/views/widgets/routines_card.dart';
 import 'package:icon/app/modules/full_body_tracker/models/workout_model.dart';
 import 'package:icon/app/modules/full_body_tracker/utils/theme_helpers.dart';
 import 'package:icon/app/modules/full_body_tracker/widgets/exercise_card.dart';
@@ -43,13 +42,13 @@ class WorkoutCard extends StatelessWidget {
                       ),
                     ),
                     16.width,
-                    TagChip(
-                      data: TagData(
-                        workout.day,
-                        fg: AppColors.colorPrimary,
-                        bg: ThemeHelpers.tagBackgroundColor,
-                      ),
-                    ),
+                    // TagChip(
+                    //   data: TagData(
+                    //     workout.day,
+                    //     fg: AppColors.colorPrimary,
+                    //     bg: ThemeHelpers.tagBackgroundColor,
+                    //   ),
+                    // ),
                     Spacer(),
                     Obx(
                       () => workout.expanded.value

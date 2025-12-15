@@ -62,19 +62,19 @@ class IconLightTheme {
 
     bodyLarge: GoogleFonts.inter(
       fontSize: 14,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
       letterSpacing: 0.5,
       color: AppColors.lightTextSecondaryColor,
     ),
     bodyMedium: GoogleFonts.inter(
       fontSize: 12,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
       letterSpacing: 0.25,
       color: AppColors.lightTextSecondaryColor,
     ),
     bodySmall: GoogleFonts.inter(
       fontSize: 10,
-      fontWeight: FontWeight.w400,
+      fontWeight: FontWeight.w500,
       letterSpacing: 0.4,
       color: AppColors.lightTextSecondaryColor,
     ),
@@ -110,7 +110,8 @@ class IconLightTheme {
       brightness: Brightness.light,
       primary: AppColors.colorPrimary,
       onPrimaryContainer: AppColors.lightShapeColor,
-      secondary: AppColors.greenColor,
+      secondary: AppColors.activityPrimaryColor,
+      secondaryContainer: AppColors.activitySecondaryColor,
       tertiary: AppColors.informationColor,
       error: AppColors.warningColor,
       surface: AppColors.lightBgColor,

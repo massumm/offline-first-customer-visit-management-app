@@ -14,7 +14,6 @@ abstract class Routes {
   static const TRAINER_ONBOARDING = _Paths.TRAINER_ONBOARDING;
   static const ICON_CHAT = _Paths.ICON_CHAT;
   static const PROFILE_CREATE_ANIMATION = _Paths.PROFILE_CREATE_ANIMATION;
-  static const ACTIVITY_TRACKER = _Paths.HOME + _Paths.ACTIVITY_TRACKER;
   static const TRAINEE_ONBOARDING = _Paths.TRAINEE_ONBOARDING;
   static const FORGOT_PASSWORD = _Paths.FORGOT_PASSWORD;
   static const FITNESS_REPORT = _Paths.FITNESS_REPORT;
@@ -67,6 +66,8 @@ abstract class Routes {
   static const EXPORT_DATA = _Paths.EXPORT_DATA;
   static const DELETE_ACCOUNT = _Paths.DELETE_ACCOUNT;
   static const PRIVACY = _Paths.PRIVACY;
+  static const ACTIVITY_TRACKER = _Paths.ACTIVITY_TRACKER;
+  static const START_WORKOUT = _Paths.START_WORKOUT;
 }
 
 abstract class _Paths {
@@ -135,4 +136,5 @@ abstract class _Paths {
   static const YOUR_NUTRITION_GOALS = '/your-nutrition-goals';
   static const YOUR_DAILY_GOALS = '/your-daily-goals';
   static const TRAINEE_ONBOARDING_BY_PAGE = '/trainee-onboarding-by-page';
+  static const START_WORKOUT = '/start-workout';
 }

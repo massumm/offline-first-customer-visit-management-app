@@ -16,6 +16,8 @@ class IconicNavWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SizedBox(
       height: 80,
       child: Stack(
@@ -29,7 +31,7 @@ class IconicNavWrapper extends StatelessWidget {
             child: Container(
               height: 70,
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(18),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -81,7 +83,10 @@ class IconicNavWrapper extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.lightBgColor,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.black, width: 12),
+                    border: Border.all(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      width: 12,
+                    ),
                   ),
                   child: Center(child: SvgPicture.asset(Assets.svgIcon)),
                 ),
