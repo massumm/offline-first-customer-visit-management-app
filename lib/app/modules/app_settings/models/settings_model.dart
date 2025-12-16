@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:icon/generated/assets.dart';
 
 class SettingsModel {
   final String title;

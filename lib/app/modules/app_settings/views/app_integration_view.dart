@@ -6,7 +6,7 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/models/wearable_device.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/integration_icon_container.dart';
 import 'package:icon/app/core/widgets/loading_button.dart';
 import 'package:icon/app/modules/app_settings/controllers/app_settings_controller.dart';
@@ -53,7 +53,7 @@ class AppIntegrationView extends BaseView<AppSettingsController> {
       leading: SizedBox(
         height: 32,
         width: 32,
-        child: Center(child: ActionPill(onTap: () => Get.back())),
+        child: Center(child: ActionButton(onTap: () => Get.back())),
       ),
       title: Text('App integrations'),
       centerTitle: true,
@@ -156,7 +156,7 @@ class AppIntegrationView extends BaseView<AppSettingsController> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 8),
                 ),
               );
-            }).toList(),
+            }),
           ],
         ),
       ),

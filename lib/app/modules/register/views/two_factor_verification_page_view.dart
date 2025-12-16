@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/modules/register/controllers/register_controller.dart';
 
 class TwoFactorVerificationPageView extends BaseView<RegisterController> {
@@ -17,7 +17,7 @@ class TwoFactorVerificationPageView extends BaseView<RegisterController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ActionPill(onTap: Get.back),
+              ActionButton(onTap: Get.back),
               30.height,
 
               // Title

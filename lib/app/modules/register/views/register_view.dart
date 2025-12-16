@@ -10,7 +10,7 @@ import 'package:icon/app/core/values/app_colors.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 import '../../../../generated/assets.dart';
-import '../../../core/widgets/action_pill.dart';
+import '../../../core/widgets/action_button.dart';
 import '../../../core/widgets/google_signin_button.dart';
 import '../../../core/widgets/input_widgets/adaptive_text_field.dart';
 import '../../../core/widgets/super_image.dart';
@@ -26,7 +26,7 @@ class RegisterView extends BaseView<RegisterController> {
       alignment: Alignment.topCenter,
       children: [
         _buildBody(context),
-        Positioned(top: 20, left: 16, child: ActionPill(onTap: Get.back)),
+        Positioned(top: 20, left: 16, child: ActionButton(onTap: Get.back)),
         //TODO: Background Effects
         // SuperImage(
         //   Assets.svgBgGradientColor

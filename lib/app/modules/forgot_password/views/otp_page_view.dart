@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/input_widgets/otp_digit_field.dart';
 import 'package:icon/app/modules/forgot_password/controllers/forgot_password_controller.dart';
 
@@ -27,7 +27,7 @@ class OtpPageView extends BaseView<ForgotPasswordController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ActionPill(onTap: controller.gotToPreviousPage),
+                  ActionButton(onTap: controller.gotToPreviousPage),
                   controller.forgotPasswordDefaultHeight,
                   Text("Enter OTP Code", style: Get.textTheme.titleLarge),
                   10.height,

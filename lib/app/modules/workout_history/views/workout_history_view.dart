@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/modules/workout_history/views/workout_view.dart';
 import 'package:icon/app/modules/workout_history/views/charts_view.dart';
 import 'package:icon/app/modules/workout_history/views/records_view.dart';
@@ -21,7 +21,7 @@ class WorkoutHistoryView extends BaseView<WorkoutHistoryController> {
         height: 32,
         width: 32,
         child: Center(
-          child: ActionPill(onTap: () => Navigator.maybePop(context)),
+          child: ActionButton(onTap: () => Navigator.maybePop(context)),
         ),
       ),
       title: Text('Dumbbell Squat'),

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/loading_button.dart';
 import 'package:icon/app/modules/full_body_tracker/controllers/full_body_tracker_controller.dart';
 import 'package:icon/app/modules/full_body_tracker/widgets/program_suggestion_card.dart';
@@ -20,7 +20,7 @@ class FullBodyTrackerView extends BaseView<FullBodyTrackerController> {
         height: 32,
         width: 32,
         child: Center(
-          child: ActionPill(onTap: () => Navigator.maybePop(context)),
+          child: ActionButton(onTap: () => Navigator.maybePop(context)),
         ),
       ),
       title: Text('Full Body'),

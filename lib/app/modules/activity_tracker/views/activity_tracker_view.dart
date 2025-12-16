@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
 import '../../../../generated/assets.dart';
@@ -22,7 +22,7 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
       centerTitle: true,
       leading: Padding(
         padding: EdgeInsets.all(10),
-        child: ActionPill(onTap: Get.back),
+        child: ActionButton(onTap: Get.back),
       ),
     );
   }

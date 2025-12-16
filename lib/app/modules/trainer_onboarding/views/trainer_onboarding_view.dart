@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 import '../../../../generated/assets.dart';
 import '../controllers/trainer_onboarding_controller.dart';
@@ -18,7 +18,7 @@ class TrainerOnboardingView extends GetView<TrainerOnboardingController> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ActionPill(onTap: () => Navigator.maybePop(context)),
+          ActionButton(onTap: () => Navigator.maybePop(context)),
           Expanded(
             child: Stack(
               children: [

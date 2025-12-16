@@ -8,7 +8,7 @@ import 'package:icon/app/modules/trainee_onboarding/views/widgets/to_input_widge
 import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../generated/assets.dart';
-import '../../../core/widgets/action_pill.dart';
+import '../../../core/widgets/action_button.dart';
 import '../controllers/trainee_onboarding_controller.dart';
 import '../models/onboarding_qa_model.dart';
 import 'widgets/status_image_bubble.dart';
@@ -89,7 +89,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
               SizedBox(
                 width: 32.0,
                 height: 32.0,
-                child: ActionPill(
+                child: ActionButton(
                   onTap: () => _showExitConfirmationDialog(context),
                 ),
               ),
@@ -100,7 +100,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                   child: SizedBox(
                     width: 32.0,
                     height: 32.0,
-                    child: ActionPill(
+                    child: ActionButton(
                       onTap: controller.goBack,
                       icon: Icons.undo,
                     ),
@@ -194,7 +194,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
             SizedBox(
               width: 32.0,
               height: 32.0,
-              child: ActionPill(
+              child: ActionButton(
                 onTap: () => _showExitConfirmationDialog(context),
               ),
             ),
@@ -204,7 +204,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 child: SizedBox(
                   width: 32.0,
                   height: 32.0,
-                  child: ActionPill(onTap: controller.goBack, icon: Icons.undo),
+                  child: ActionButton(onTap: controller.goBack, icon: Icons.undo),
                 ),
               ),
             12.width,

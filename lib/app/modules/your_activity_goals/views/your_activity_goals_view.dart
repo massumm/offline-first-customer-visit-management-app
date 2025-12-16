@@ -3,13 +3,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:get/get.dart';
 
-import 'package:icon/app/core/widgets/goal_stepper_footer.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/extensions/app_extansions.dart';
 import '../../../core/widgets/super_image.dart';
 import '../controllers/your_activity_goals_controller.dart';
-import 'package:icon/app/modules/your_recovery_goals/views/your_recovery_goals_view.dart';
 
 class YourActivityGoalsView extends GetView<YourActivityGoalsController> {
   const YourActivityGoalsView({super.key});

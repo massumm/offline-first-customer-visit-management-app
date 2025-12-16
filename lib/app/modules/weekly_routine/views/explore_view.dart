@@ -6,7 +6,7 @@ import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/loading_button.dart';
 import 'package:icon/app/models/exercise_model.dart';
 import 'package:icon/app/modules/full_body_tracker/utils/theme_helpers.dart';
@@ -24,7 +24,7 @@ class ExploreView extends BaseView<WeeklyRoutineController> {
         height: 32,
         width: 32,
         child: Center(
-          child: ActionPill(onTap: () => Navigator.maybePop(context)),
+          child: ActionButton(onTap: () => Navigator.maybePop(context)),
         ),
       ),
       title: const Text('Explore'),

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 
 import '../controllers/start_workout_controller.dart';
 
@@ -16,11 +16,11 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
     title: Text('Start Workout'),
     leading: Padding(
       padding: EdgeInsetsGeometry.all(10),
-      child: ActionPill(onTap: Get.back, height: 60, width: 60),
+      child: ActionButton(onTap: Get.back, height: 60, width: 60),
     ),
     centerTitle: true,
     actions: [
-      ActionPill(
+      ActionButton(
         onTap: () => controller.onClockTap(context),
         height: 40,
         width: 40,
@@ -28,7 +28,7 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
         iconSize: 20,
       ),
       8.width,
-      ActionPill(
+      ActionButton(
         onTap: controller.onSettingTap,
         height: 40,
         width: 40,

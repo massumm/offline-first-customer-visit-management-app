@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import '../controllers/start_workout_controller.dart';
 import '../services/exercise_selection_service.dart';
 
@@ -16,8 +16,8 @@ class ExerciseSelectionView extends BaseView<StartWorkoutController> {
       title: Text('Add Exercise', style: theme.textTheme.titleMedium),
       centerTitle: true,
       leading: Padding(
-        padding: EdgeInsetsGeometry.all(10),
-        child: ActionPill(onTap: Get.back),
+        padding: const EdgeInsets.all(6.0),
+        child: ActionButton.compact(onTap: () {}),
       ),
     );
   }
@@ -46,7 +46,7 @@ class ExerciseSelectionView extends BaseView<StartWorkoutController> {
 
   // Spaces
 
-  SliverToBoxAdapter get space  => SliverToBoxAdapter(child: 12.height);
+  SliverToBoxAdapter get space => SliverToBoxAdapter(child: 12.height);
 
   //  Search
   SliverToBoxAdapter _searchBar() {
@@ -81,23 +81,47 @@ class ExerciseSelectionView extends BaseView<StartWorkoutController> {
         ),
         child: Row(
           children: [
-            Expanded(child: _chip('All Equipment', theme)),
+            Expanded(
+              child: ActionButton(
+                label: 'All Equipment',
+                bgColor: theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(6),
+                onTap: () {
+                  "Button Pressed".log();
+                },
+              ),
+            ),
             const SizedBox(width: 8),
-            Expanded(child: _chip('All Muscles', theme)),
+            Expanded(
+              child: ActionButton(
+                label: 'All Muscles',
+                bgColor: theme.scaffoldBackgroundColor,
+                borderRadius: BorderRadius.circular(6),
+                onTap: () {},
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _chip(String label, ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
+  Widget _chip(String label, ThemeData theme, VoidCallback onTap) {
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(6),
+      child: InkWell(
+        onTap: onTap,
         borderRadius: BorderRadius.circular(6),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Center(child: Text(label, style: theme.textTheme.titleSmall)),
+        ),
       ),
-      child: Center(child: Text(label, style: theme.textTheme.titleSmall)),
     );
   }
 

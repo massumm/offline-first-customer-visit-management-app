@@ -46,7 +46,7 @@ class SingleGradientStackCircularProgressBar extends StatefulWidget {
   final TextStyle textStyle;
 
   const SingleGradientStackCircularProgressBar({
-    Key? key,
+    super.key,
     this.size = 100,
     this.startAngle = 0,
     this.barValue = 55,
@@ -61,7 +61,7 @@ class SingleGradientStackCircularProgressBar extends StatefulWidget {
     this.backColor = const Color(0xFF16262D),
     this.animationDuration = const Duration(seconds: 3),
     this.mergeMode = false,
-  }) : super(key: key);
+  });
 
   @override
   _SingleGradientStackCircularProgressBarState createState() =>
