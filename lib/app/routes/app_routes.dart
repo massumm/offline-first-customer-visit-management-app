@@ -68,6 +68,7 @@ abstract class Routes {
   static const PRIVACY = _Paths.PRIVACY;
   static const ACTIVITY_TRACKER = _Paths.ACTIVITY_TRACKER;
   static const START_WORKOUT = _Paths.START_WORKOUT;
+  static const NUTRITION_TRACKER = _Paths.NUTRITION_TRACKER;
 }
 
 abstract class _Paths {
@@ -137,4 +138,5 @@ abstract class _Paths {
   static const YOUR_DAILY_GOALS = '/your-daily-goals';
   static const TRAINEE_ONBOARDING_BY_PAGE = '/trainee-onboarding-by-page';
   static const START_WORKOUT = '/start-workout';
+  static const NUTRITION_TRACKER = '/nutrition-tracker';
 }

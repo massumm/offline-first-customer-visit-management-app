@@ -18,6 +18,8 @@ import '../modules/icon_profile/bindings/icon_profile_binding.dart';
 import '../modules/icon_profile/views/icon_profile_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
+import '../modules/nutrition_tracker/bindings/nutrition_tracker_binding.dart';
+import '../modules/nutrition_tracker/views/nutrition_tracker_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/otp_validation/bindings/otp_validation_binding.dart';
@@ -202,6 +204,11 @@ class AppPages {
       name: _Paths.START_WORKOUT,
       page: () => const StartWorkoutView(),
       binding: StartWorkoutBinding(),
+    ),
+    GetPage(
+      name: _Paths.NUTRITION_TRACKER,
+      page: () => const NutritionTrackerView(),
+      binding: NutritionTrackerBinding(),
     ),
   ];
 }
