@@ -125,4 +125,16 @@ class ExerciseSelectionService extends GetxService {
     equipmentItems.refresh();
   }
 
+  void selectSingleMuscles(int selectedIndex) {
+    for (int i = 0; i < equipmentItems.length; i++) {
+      final currentItem = equipmentItems[i];    final bool isSelected = (i == selectedIndex);
+
+      // Update only if the selection state changes to avoid unnecessary rebuilds
+      if (currentItem.isSelected != isSelected) {
+        equipmentItems[i] = currentItem.copyWith(isSelected: isSelected);
+      }
+    }
+    equipmentItems.refresh();
+  }
+
 }
