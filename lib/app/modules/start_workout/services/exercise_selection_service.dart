@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
+import 'package:icon/app/modules/start_workout/models/equipment_item.dart';
 
 import '../controllers/start_workout_controller.dart';
+import '../models/index.dart';
 
 class Exercise {
   final String id;
@@ -29,6 +31,25 @@ class ExerciseSelectionService extends GetxService {
       allExercises.where((e) => e.isSelected.value).length;
 
   StartWorkoutController? controller;
+
+  final RxList<EquipmentItem> equipmentItems = [
+    EquipmentItem(image: '', label: 'All Equipment', isSelected: true),
+    EquipmentItem(image: '', label: 'Barbell', isSelected: false),
+    EquipmentItem(image: '', label: 'Dumbbell', isSelected: false),
+    EquipmentItem(image: '', label: 'Kettlebell', isSelected: false),
+    EquipmentItem(image: '', label: 'Machine', isSelected: false),
+    EquipmentItem(image: '', label: 'Cardio', isSelected: false),
+  ].obs;
+
+  final RxList<MusclesItem> musclesItems = [
+    MusclesItem(image: '', label: 'All Muscles', isSelected: true),
+    MusclesItem(image: '', label: 'Abdominal', isSelected: false),
+    MusclesItem(image: '', label: 'Abductors', isSelected: false),
+    MusclesItem(image: '', label: 'Adductors', isSelected: false),
+    MusclesItem(image: '', label: 'Triceps', isSelected: false),
+    MusclesItem(image: '', label: 'Lats', isSelected: false),
+    MusclesItem(image: '', label: 'Glutes', isSelected: false),
+  ].obs;
 
   void attach(StartWorkoutController controller) {
     controller = controller;
@@ -91,4 +112,17 @@ class ExerciseSelectionService extends GetxService {
       ),
     ]);
   }
+
+  void selectSingleEquipment(int selectedIndex) {
+    for (int i = 0; i < equipmentItems.length; i++) {
+      final currentItem = equipmentItems[i];    final bool isSelected = (i == selectedIndex);
+
+      // Update only if the selection state changes to avoid unnecessary rebuilds
+      if (currentItem.isSelected != isSelected) {
+        equipmentItems[i] = currentItem.copyWith(isSelected: isSelected);
+      }
+    }
+    equipmentItems.refresh();
+  }
+
 }
