@@ -92,139 +92,7 @@ class ExerciseSelectionView extends BaseView<StartWorkoutController> {
                 bgColor: theme.scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(6),
                 onTap: () {
-                  Get.bottomSheet(
-                    isScrollControlled: true,
-                    DraggableScrollableSheet(
-                      initialChildSize: 0.6,
-                      minChildSize: 0.4,
-                      maxChildSize: 0.95,
-                      expand: false,
-                      builder: (context, scrollController) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(16),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 16,
-                            ),
-                            child: Column(
-                              children: [
-                                // Header with title and close button
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'All Equipment',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.titleMedium,
-                                    ),
-                                    IconButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(),
-                                      icon: const Icon(Icons.close),
-                                    ),
-                                  ],
-                                ),
-
-                                // List of chips
-                                Expanded(
-                                  child: ListView.separated(
-                                    controller: scrollController,
-                                    // Important for DraggableScrollableSheet
-                                    physics: const ClampingScrollPhysics(),
-                                    itemCount: controller
-                                        .exerciseSelectionService
-                                        .equipmentItems
-                                        .length,
-                                    separatorBuilder: (_, _) =>
-                                        const SizedBox(height: 8),
-                                    itemBuilder: (context, index) {
-                                      return Obx(() {
-                                        final item = controller
-                                            .exerciseSelectionService
-                                            .equipmentItems[index];
-                                        final isSelected = item.isSelected;
-                                        return Card(
-                                          color: theme.scaffoldBackgroundColor,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
-                                          elevation: 2,
-                                          child: ListTile(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                            ),
-                                            onTap: () {
-                                              controller
-                                                  .exerciseSelectionService
-                                                  .selectSingleEquipment(index);
-                                            },
-
-                                            contentPadding:
-                                                const EdgeInsets.symmetric(
-                                                  horizontal: 16,
-                                                  vertical: 8,
-                                                ),
-                                            leading: Container(
-                                              padding: const EdgeInsets.all(12),
-                                              decoration: BoxDecoration(
-                                                color: theme
-                                                    .colorScheme
-                                                    .surfaceContainerHighest,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: SuperImage(
-                                                controller
-                                                    .exerciseSelectionService
-                                                    .equipmentItems[index]
-                                                    .image,
-                                                width: 40,
-                                                height: 40,
-                                              ),
-                                            ),
-                                            title: Text(
-                                              controller
-                                                  .exerciseSelectionService
-                                                  .equipmentItems[index]
-                                                  .label,
-                                              style: theme.textTheme.titleSmall
-                                                  ?.copyWith(
-                                                    fontWeight: FontWeight.w500,
-                                                  ),
-                                            ),
-                                            trailing: isSelected
-                                                ? SuperIcon(
-                                                    source: SuperIconSource.svgAsset(
-                                                      Assets
-                                                          .iconsCheckmarkSelected,
-                                                    ),
-                                                  )
-                                                : const SizedBox.shrink(),
-                                          ),
-                                        );
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                  equipmentBottomSheet(context, theme);
                 },
               ),
             ),
@@ -239,6 +107,124 @@ class ExerciseSelectionView extends BaseView<StartWorkoutController> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Future<dynamic> equipmentBottomSheet(BuildContext context, ThemeData theme) {
+    return Get.bottomSheet(
+      isScrollControlled: true,
+      DraggableScrollableSheet(
+        initialChildSize: 0.6,
+        minChildSize: 0.4,
+        maxChildSize: 0.95,
+        expand: false,
+        builder: (context, scrollController) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+              child: Column(
+                children: [
+                  // Header with title and close button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'All Equipment',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(Icons.close),
+                      ),
+                    ],
+                  ),
+
+                  // List of chips
+                  Expanded(
+                    child: ListView.separated(
+                      controller: scrollController,
+                      // Important for DraggableScrollableSheet
+                      physics: const ClampingScrollPhysics(),
+                      itemCount: controller
+                          .exerciseSelectionService
+                          .equipmentItems
+                          .length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 8),
+                      itemBuilder: (context, index) {
+                        return Obx(() {
+                          final item = controller
+                              .exerciseSelectionService
+                              .equipmentItems[index];
+                          final isSelected = item.isSelected;
+                          return Card(
+                            color: theme.scaffoldBackgroundColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                            child: ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              onTap: () {
+                                controller.exerciseSelectionService
+                                    .selectSingleEquipment(index);
+                              },
+
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              leading: Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color:
+                                      theme.colorScheme.surfaceContainerHighest,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: SuperImage(
+                                  controller
+                                      .exerciseSelectionService
+                                      .equipmentItems[index]
+                                      .image,
+                                  width: 40,
+                                  height: 40,
+                                ),
+                              ),
+                              title: Text(
+                                controller
+                                    .exerciseSelectionService
+                                    .equipmentItems[index]
+                                    .label,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              trailing: isSelected
+                                  ? SuperIcon(
+                                      source: SuperIconSource.svgAsset(
+                                        Assets.iconsCheckmarkSelected,
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
+                            ),
+                          );
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }
