@@ -6,11 +6,13 @@ import '../../data/local/preference/store/user_store.dart';
 
 class RequestHeaderInterceptor extends InterceptorsWrapper {
   @override
-  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    getCustomHeaders().then((customHeaders) {
-      options.headers.addAll(customHeaders);
-      super.onRequest(options, handler);
-    });
+  Future<void> onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    final customHeaders = await getCustomHeaders();
+    options.headers.addAll(customHeaders);
+    handler.next(options);
   }
 
   // Without this, authenticated API calls will fail.

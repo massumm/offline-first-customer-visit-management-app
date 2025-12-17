@@ -129,3 +129,5 @@ lib/gen/assets.gen.dart
 .vscode/launch.json
 
 .DS_Store
+
+*.*~
