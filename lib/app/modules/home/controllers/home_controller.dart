@@ -4,6 +4,8 @@ import 'package:icon/app/base/base_controller.dart';
 import 'package:icon/app/core/values/app_colors.dart' show AppColors;
 import 'package:icon/app/routes/app_pages.dart';
 
+import '../models/utils_models.dart';
+
 enum HeartRateStatus { normal, high, low }
 
 enum ProteinStatus { onTrack, above, below }
@@ -113,27 +115,10 @@ class HomeController extends BaseController {
       return DayItem(dayLabel, date.day, progress, isToday);
     });
   }
+
+  void onActivityCardTap() {
+    Get.toNamed(Routes.ACTIVITY_TRACKER);
+  }
 }
 
-class DayItem {
-  final String label; // Mon/Tue...
-  final int date; // 21/22...
-  final double progress; // 0..1
-  final bool isToday;
 
-  DayItem(this.label, this.date, this.progress, this.isToday);
-}
-
-class ActionCardData {
-  final String title;
-  final Color color;
-  final double percent;
-  final LinearGradient? gradient;
-
-  ActionCardData({
-    required this.title,
-    required this.color,
-    required this.percent,
-    this.gradient,
-  });
-}

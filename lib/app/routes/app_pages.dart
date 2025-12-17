@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:icon/app/core/middlewares/login_middleware.dart';
 
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
@@ -58,10 +59,12 @@ import '../modules/your_recovery_goals/views/your_recovery_goals_view.dart';
 
 part 'app_routes.dart';
 
+// ignore_for_file: constant_identifier_names
+
 class AppPages {
   AppPages._();
 
-  static const String INITIAL = Routes.SPLASH;
+  static const String INITIAL = Routes.HOME;
 
   static final routes = [
     GetPage(name: _Paths.HOME, page: () => HomeView(), binding: HomeBinding()),
@@ -74,6 +77,7 @@ class AppPages {
       name: _Paths.SPLASH,
       page: () => const SplashView(),
       binding: SplashBinding(),
+      middlewares: [LoginMiddleware()],
     ),
     GetPage(
       name: _Paths.LOGIN,

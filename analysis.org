@@ -3,14 +3,14 @@
 
 
 * Executive Summary
-** The project uses GetX for state management.
-** Follows an MVC-like (GetX Pattern) architecture.
+  - The project uses GetX for state management.
+  - Follows an MVC-like (GetX Pattern) architecture.
 
-* Critical Issues
-** *Missing Authentication Token in API Headers*
-*** *Location:* *lib/app/base/network/request_headers.dart*
-*** *Issue:* The `RequestHeaderInterceptor` doesn't include authentication tokens in API requests.
-*** Impact: Without this, authenticated API calls will fail.
+* Critical Issues [2/2]
+** DONE *Missing Authentication Token in API Headers*
+  - *Location:* *lib/app/base/network/request_headers.dart*
+  - Issue: The `RequestHeaderInterceptor` doesn't include authentication tokens in API requests.
+  - Impact: Without this, authenticated API calls will fail.
 *** *Current Code:*
 #+BEGIN_SRC dart
   Future<Map<String, String>> getCustomHeaders() async {
@@ -39,9 +39,9 @@
     return customHeaders;
   }
 #+END_SRC
-** Async Header Interceptor Issue
-*** Location: *lib/app/base/network/request_headers.dart* 
-*** Issue: Using .then() in an interceptor can cause race conditions. 
+** DONE Async Header Interceptor Issue
+  - Location: *lib/app/base/network/request_headers.dart* 
+  - Issue: Using .then() in an interceptor can cause race conditions. 
 *** The handler should be called after headers are ready.
 *** Current Code:
 #+BEGIN_SRC dart
@@ -62,8 +62,8 @@
   }
 #+END_SRC 
 
-* High Priority Improvements
-** Missing Token Refresh Mechanism
+* High Priority Improvements [0/3]
+** TODO Missing Token Refresh Mechanism
 *** Location: *lib/app/base/network/dio_provider.dart*
 *** Issue: No automatic token refresh on 401 responses.
 *** Recommendation: Add an interceptor to handle token refresh:
@@ -87,7 +87,7 @@
     }
   }
 #+END_SRC
-** Inconsistent Error Handling 
+** TODO Inconsistent Error Handling 
 *** Location: Multiple controllers 
 *** Issue: Error handling is inconsistent across controllers. Some use try-catch, others use .then().onError().
 *** Recommendation: Create a standardized error handling utility:
@@ -105,7 +105,7 @@
     }
   }
 #+END_SRC 
-** Missing Input Validation 
+** TODO Missing Input Validation 
 *** Location: Various forms (register, login, etc.) 
 *** Issue: Some forms lack comprehensive validation.
 *** Recommendation:

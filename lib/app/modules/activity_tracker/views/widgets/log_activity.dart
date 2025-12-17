@@ -44,21 +44,21 @@ class LogActivitySection extends GetView<ActivityTrackerController> {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _BottomButton(
+                _LogActivityButton(
                   label: "Workout",
                   icon: Icons.fitness_center,
                   theme: theme,
                   onTap: controller.onWorkoutTap,
                   isSelected: controller.isWorkoutBtnSelected.isTrue,
                 ),
-                _BottomButton(
+                _LogActivityButton(
                   label: "Cardio",
                   icon: Icons.monitor_heart,
                   theme: theme,
                   onTap: controller.onCardioTap,
                   isSelected: controller.isCardioBtnSelected.isTrue,
                 ),
-                _BottomButton(
+                _LogActivityButton(
                   label: "Repair",
                   icon: Icons.settings,
                   theme: theme,
@@ -287,14 +287,14 @@ class WorkoutSection extends StatelessWidget {
   }
 }
 
-class _BottomButton extends StatelessWidget {
+class _LogActivityButton extends StatelessWidget {
   final String label;
   final IconData icon;
   final ThemeData theme;
   final bool isSelected;
   final void Function() onTap;
 
-  const _BottomButton({
+  const _LogActivityButton({
     required this.label,
     required this.icon,
     required this.theme,
@@ -310,8 +310,8 @@ class _BottomButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: Material(
         color: isSelected
-            ? AppColors.activityPrimaryColor
-            : colorScheme.surface,
+            ? colorScheme.secondary
+            : theme.scaffoldBackgroundColor,
         child: InkWell(
           onTap: onTap,
           child: SizedBox(
@@ -325,7 +325,9 @@ class _BottomButton extends StatelessWidget {
                   Text(
                     label,
                     style: theme.textTheme.titleSmall!.copyWith(
-                      color: isSelected ? Colors.white : Colors.black,
+                      color: isSelected
+                          ? AppColors.lightShapeColor
+                          : Colors.white,
                     ),
                   ),
                 ],

@@ -70,6 +70,8 @@ class HomeView extends BaseView<HomeController> {
             color: controller.actionCards[2].color,
             percent: controller.actionCards[2].percent,
             gradient: controller.actionCards[2].gradient,
+            onTap: controller.onActivityCardTap,
+
           ),
         ],
       ),
@@ -82,7 +84,7 @@ class HomeView extends BaseView<HomeController> {
   @override
   Widget? bottomNavigationBar(BuildContext context) => Obx(() {
     return Container(
-      color: AppColors.lightBgColor,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Padding(
         padding: const EdgeInsets.fromLTRB(0, 0, 0, 16),
         child: IconicNavWrapper(
