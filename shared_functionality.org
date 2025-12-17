@@ -1,0 +1,2 @@
+#+TITLE: Shared Functionality For This Project
+#+AUTHOR: Shafiqur Rahman
