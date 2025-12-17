@@ -21,8 +21,8 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
       title: Text('Activity Tracker', style: appBarTheme.titleTextStyle),
       centerTitle: true,
       leading: Padding(
-        padding: EdgeInsets.all(10),
-        child: ActionButton(onTap: Get.back),
+        padding: EdgeInsets.all(6),
+        child: ActionButton.compact(onTap: Get.back),
       ),
     );
   }

@@ -15,8 +15,8 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
   PreferredSizeWidget? appBar(BuildContext context) => AppBar(
     title: Text('Start Workout'),
     leading: Padding(
-      padding: EdgeInsetsGeometry.all(10),
-      child: ActionButton(onTap: Get.back, height: 60, width: 60),
+      padding: EdgeInsetsGeometry.all(6),
+      child: ActionButton.compact(onTap: Get.back),
     ),
     centerTitle: true,
     actions: [
