@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/modules/full_body_tracker/utils/theme_helpers.dart';
 
@@ -94,7 +93,7 @@ class DisplayOptionsSelector extends StatelessWidget {
                 contentPadding: EdgeInsets.zero,
               );
             }
-          }).toList(),
+          }),
         ],
       ),
     );

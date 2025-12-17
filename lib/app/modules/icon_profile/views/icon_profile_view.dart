@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/generated/assets.dart';
 
 import '../controllers/icon_profile_controller.dart';
@@ -34,7 +34,7 @@ class IconProfileView extends BaseView<IconProfileController> {
           leading: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             // Ensure ActionPill is also theme-aware.
-            child: ActionPill(onTap: () => Navigator.of(context).pop()),
+            child: ActionButton(onTap: () => Navigator.of(context).pop()),
           ),
         ),
         SliverPadding(

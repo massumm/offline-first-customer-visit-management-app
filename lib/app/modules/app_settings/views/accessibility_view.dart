@@ -3,12 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/widgets/loading_button.dart';
 import 'package:icon/app/modules/app_settings/controllers/app_settings_controller.dart';
-import 'package:icon/app/modules/app_settings/models/radio_button_option.dart';
 import 'package:icon/app/modules/full_body_tracker/utils/theme_helpers.dart';
 import 'package:icon/app/modules/app_settings/widgets/radio_button_selector.dart';
 import 'package:icon/app/modules/app_settings/widgets/switch_button_selector.dart';
@@ -22,7 +20,7 @@ class AccessibilityView extends BaseView<AppSettingsController> {
       leading: SizedBox(
         height: 32,
         width: 32,
-        child: Center(child: ActionPill(onTap: () => Get.back())),
+        child: Center(child: ActionButton(onTap: () => Get.back())),
       ),
       title: Text('Accessibility'),
       centerTitle: true,

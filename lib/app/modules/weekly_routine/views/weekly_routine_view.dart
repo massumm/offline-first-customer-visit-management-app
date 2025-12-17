@@ -8,7 +8,7 @@ import 'package:icon/app/base/widgets/custom_toast.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart'; 
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/asset_icon_container.dart';
 import 'package:icon/app/routes/app_pages.dart';
 import 'package:icon/generated/assets.dart';
@@ -27,7 +27,7 @@ class WeeklyRoutineView extends BaseView<WeeklyRoutineController> {
       leading: SizedBox(
         height: 32,
         width: 32,
-        child: Center(child: ActionPill(onTap: () => Get.back())),
+        child: Center(child: ActionButton(onTap: () => Get.back())),
       ),
       title: Text('Weekly Routine'),
       centerTitle: true,

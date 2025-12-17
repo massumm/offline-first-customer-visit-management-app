@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 
-import '../../../../core/widgets/action_pill.dart';
+import '../../../../core/widgets/action_button.dart';
 import '../../controllers/trainee_onboarding_controller.dart';
 import 'animated_onboarding_stepper.dart';
 
@@ -55,7 +55,7 @@ class OnboardingHeader extends StatelessWidget {
                         child: SizedBox(
                           width: 32.0,
                           height: 32.0,
-                          child: ActionPill(
+                          child: ActionButton(
                             onTap: controller.goBack,
                             icon: Icons.undo,
                           ),
@@ -65,7 +65,7 @@ class OnboardingHeader extends StatelessWidget {
                         child: SizedBox(
                           width: 32.0,
                           height: 32.0,
-                          child: ActionPill(onTap: Get.back),
+                          child: ActionButton(onTap: Get.back),
                         ),
                       ),
               ),

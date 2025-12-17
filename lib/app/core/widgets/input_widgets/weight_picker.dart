@@ -379,7 +379,7 @@ class WeightRulerPainter extends CustomPainter {
           final totalLbs = valueKg * 2.20462;
           final st = totalLbs ~/ 14;
           final lbs = (totalLbs - st * 14).round();
-          label = '${st}st${lbs}';
+          label = '${st}st$lbs';
         }
         textPainter.text = TextSpan(
           text: label,

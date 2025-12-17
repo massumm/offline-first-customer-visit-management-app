@@ -1,7 +1,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
 import 'fitness_dashboard_widgets/heart_rate_card_widget.dart';
 import 'fitness_dashboard_widgets/hydration_card.dart';

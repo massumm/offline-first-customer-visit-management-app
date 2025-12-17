@@ -74,7 +74,7 @@ class RadioButtonSelector extends StatelessWidget {
                 visualDensity: VisualDensity(horizontal: -4, vertical: -4),
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

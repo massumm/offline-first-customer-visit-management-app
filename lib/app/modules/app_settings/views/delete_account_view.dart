@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/modules/app_settings/controllers/app_settings_controller.dart';
 import 'package:icon/app/modules/app_settings/widgets/confirm_account_delete_widget.dart';
 import 'package:icon/app/modules/app_settings/widgets/warning_widget.dart';
@@ -18,7 +18,7 @@ class DeleteAccountView extends BaseView<AppSettingsController> {
       leading: SizedBox(
         height: 32,
         width: 32,
-        child: Center(child: ActionPill(onTap: () => Get.back())),
+        child: Center(child: ActionButton(onTap: () => Get.back())),
       ),
       title: Text('Delete Account'),
       centerTitle: true,

@@ -88,6 +88,10 @@ class Assets {
   static const String iconProfileThird = 'assets/images/icon_profile/third.png';
   static const String iconsArrowUpLeft = 'assets/svg/icons/arrow-up-left.svg';
   static const String iconsCardiogram = 'assets/svg/icons/cardiogram.svg';
+  static const String iconsCheckmark = 'assets/svg/icons/checkmark.svg';
+  static const String iconsCheckmarkCircle = 'assets/svg/icons/checkmark-circle.svg';
+  static const String iconsCheckmarkCircleSelected = 'assets/svg/icons/checkmark-circle-selected.svg';
+  static const String iconsCheckmarkSelected = 'assets/svg/icons/checkmark-selected.svg';
   static const String iconsUpperBody = 'assets/svg/icons/upper_body.svg';
   static const String iconsWorkout = 'assets/svg/icons/workout.svg';
   static const String iconsYoga = 'assets/svg/icons/yoga.svg';

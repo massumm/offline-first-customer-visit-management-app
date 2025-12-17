@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/asset_icon_container.dart';
 import 'package:icon/app/core/theme/app_text_theme.dart';
 import 'package:icon/app/modules/full_body_tracker/utils/theme_helpers.dart';
@@ -20,7 +20,7 @@ class AppSettingsView extends BaseView<AppSettingsController> {
       leading: SizedBox(
         height: 32,
         width: 32,
-        child: Center(child: ActionPill(onTap: () => Get.back())),
+        child: Center(child: ActionButton(onTap: () => Get.back())),
       ),
       title: Text('App Settings'),
       centerTitle: true,

@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
 import '../../../../generated/assets.dart';
-import '../../../core/values/app_colors.dart';
 
 class Header extends StatelessWidget {
   const Header({super.key});

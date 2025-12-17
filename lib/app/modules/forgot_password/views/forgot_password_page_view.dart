@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/action_pill.dart';
+import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/input_widgets/adaptive_text_field.dart';
 import 'package:icon/app/modules/forgot_password/controllers/forgot_password_controller.dart';
 
@@ -21,7 +21,7 @@ class ForgotPasswordPageView extends BaseView<ForgotPasswordController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ActionPill(
+                ActionButton(
                   onTap: controller.currentPageIndex.value == 0
                       ? Get.back
                       : controller.gotToPreviousPage,

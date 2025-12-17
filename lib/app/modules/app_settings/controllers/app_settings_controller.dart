@@ -180,15 +180,7 @@ class AppSettingsController extends BaseController {
     resetTempValues();
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-  }
 
-  @override
-  void onClose() {
-    super.onClose();
-  }
 
   void increment() => count.value++;
 

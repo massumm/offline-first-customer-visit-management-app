@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 
-import '../../../core/widgets/action_pill.dart';
+import '../../../core/widgets/action_button.dart';
 import '../../../routes/app_pages.dart';
 
 class OnboardingIntro extends StatefulWidget {
@@ -73,7 +73,7 @@ class _OnboardingIntroState extends State<OnboardingIntro> {
               AnimatedOpacity(
                 opacity: _animationStep >= 1 ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 500),
-                child: ActionPill(onTap: () => Navigator.maybePop(context)),
+                child: ActionButton(onTap: () => Navigator.maybePop(context)),
               ),
               const SizedBox(height: 32),
 
