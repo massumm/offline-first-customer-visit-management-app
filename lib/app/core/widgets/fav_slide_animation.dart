@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/core/widgets/bottom_sheet/recovery_log_menu.dart';
 import '../enums/fav_enum.dart';
-import 'bottom_sheet/activity_log_recovery.dart';
-import 'bottom_sheet/add_meal_bottomsheet.dart';
 
 
 class AnimatedFab extends StatefulWidget {
@@ -45,20 +42,6 @@ class _AnimatedFabState extends State<AnimatedFab>
     isOpen = true;
     _controller.forward();
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (_) => Padding(
-        padding: const EdgeInsets.only(bottom: 96),
-        child: _getBottomSheet(),
-      ),
-    ).then((_) {
-      if (mounted) {
-        isOpen = false;
-        _controller.reverse();
-      }
-    });
   }
 
 
@@ -67,21 +50,12 @@ class _AnimatedFabState extends State<AnimatedFab>
     _bottomSheetController = null;
   }
 
-  Widget _getBottomSheet() {
-    switch (widget.actionType) {
-      case FabActionType.addMeal:
-        return const AddMealMenu();
-      case FabActionType.activityRecoverLog:
-        return const Activity_RecoveryLogMenu();
-      case FabActionType.recoveryLog:
-        return const RecoveryLogMenu();
-    }
-  }
+
 
   Color _fabColor() {
     switch (widget.actionType) {
       case FabActionType.addMeal:
-        return AppColors.deepGreenFavBgColor;
+        return AppColors.greenColor;
       case FabActionType.activityRecoverLog:
         return Colors.blueAccent;
       case FabActionType.recoveryLog:
