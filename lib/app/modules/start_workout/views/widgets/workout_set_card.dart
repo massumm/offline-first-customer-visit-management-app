@@ -1,0 +1,338 @@
+import 'package:flutter/material.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/values/app_colors.dart';
+import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
+import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+import 'package:icon/generated/assets.dart';
+
+class WorkoutSetCard extends StatelessWidget {
+  const WorkoutSetCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          /// Title Row
+          Row(
+            children: [
+              const Icon(Icons.fitness_center, color: Colors.white, size: 20),
+              const SizedBox(width: 8),
+              const Text(
+                'Dumbbell Squat',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          /// Muscle Chips
+          Row(
+            children: const [
+              _MuscleChip(label: 'Quads'),
+              SizedBox(width: 6),
+              _MuscleChip(label: 'Glutes'),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          /// Rest Timer
+          Row(
+            children: const [
+              Icon(Icons.timer, color: Colors.red, size: 18),
+              SizedBox(width: 6),
+              Text(
+                'Rest Timer',
+                style: TextStyle(color: Colors.red, fontSize: 13),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          /// Table Header
+          Row(
+            children: const [
+              _HeaderCell('SET', flex: 1),
+              _HeaderCell('PREVIOUS', flex: 3),
+              _HeaderCell('KG', flex: 2),
+              _HeaderCell('REPS', flex: 2),
+              _HeaderCell('', flex: 1, showIcon: true),
+            ],
+          ),
+
+          const SizedBox(height: 8),
+
+          /// Sets
+          _SetRow(
+            set: '1',
+            previous: '100 kg x 5',
+            kgController: TextEditingController(text: '100'),
+            repsController: TextEditingController(text: '5'),
+            highlightText: '6.0',
+            highlight: true,
+            completed: true,
+          ),
+          _SetRow(
+            set: '1',
+            previous: '100 kg x 5',
+            kgController: TextEditingController(text: '100'),
+            repsController: TextEditingController(text: '5'),
+            highlightText: '6.0',
+            highlight: true,
+            completed: true,
+          ),
+          _SetRow(
+            set: '1',
+            previous: '100 kg x 5',
+            kgController: TextEditingController(text: '100'),
+            repsController: TextEditingController(text: '5'),
+            highlightText: '6.0',
+            highlight: true,
+            completed: true,
+          ),
+          _SetRow(
+            set: '1',
+            previous: '100 kg x 5',
+            kgController: TextEditingController(text: '100'),
+            repsController: TextEditingController(text: '5'),
+            highlightText: '6.0',
+            highlight: true,
+            completed: true,
+          ),
+
+          const SizedBox(height: 12),
+
+          /// Add Set
+          Center(
+            child: Text(
+              'ADD SET',
+              style: TextStyle(
+                color: Colors.red.shade400,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MuscleChip extends StatelessWidget {
+  final String label;
+
+  const _MuscleChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          color: Colors.black,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
+class _HeaderCell extends StatelessWidget {
+  final String text;
+  final int flex;
+  final bool showIcon;
+
+  const _HeaderCell(this.text, {required this.flex, this.showIcon = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: flex,
+      child: !showIcon
+          ? Text(
+              text,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
+            )
+          : SuperIcon(
+              source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
+              size: 14,
+            ),
+    );
+  }
+}
+
+class _SetRow extends StatelessWidget {
+  final String set;
+  final String previous;
+  final TextEditingController kgController;
+  final TextEditingController repsController;
+  final String highlightText;
+  final bool completed;
+  final bool highlight;
+
+  const _SetRow({
+    required this.set,
+    required this.previous,
+    required this.kgController,
+    required this.repsController,
+    required this.highlightText,
+    required this.completed,
+    this.highlight = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Text(set, style: const TextStyle(color: Colors.white)),
+          ),
+          Expanded(
+            flex: 3,
+            child: Text(previous, style: const TextStyle(color: Colors.grey)),
+          ),
+          Expanded(flex: 2, child: _InputBox(controller: kgController)),
+          6.width,
+          Expanded(
+            flex: 2,
+            child: RepsInputField(
+              repsController: repsController,
+              highlightText: highlightText,
+              highlight: highlight,
+            ),
+          ),
+          const SizedBox(width: 8),
+          Icon(
+            completed ? Icons.check_circle : Icons.radio_button_unchecked,
+            color: completed ? Colors.red : Colors.grey,
+            size: 20,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InputBox extends StatelessWidget {
+  final TextEditingController controller;
+  final bool enabled;
+
+  const _InputBox({required this.controller, this.enabled = true});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return SizedBox(
+      height: 34,
+      child: TextFormField(
+        controller: controller,
+        enabled: enabled,
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+        decoration: InputDecoration(
+          isDense: true,
+          filled: true,
+          fillColor:  theme.scaffoldBackgroundColor,
+          contentPadding: const EdgeInsets.symmetric(vertical: 8),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: AppColors.activityPrimaryColor,
+              width: 1,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RepsInputField extends StatelessWidget {
+  final TextEditingController repsController;
+  final String highlightText;
+  final bool highlight;
+
+  const RepsInputField({
+    super.key,
+    required this.repsController,
+    required this.highlightText,
+    this.highlight = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return TextFormField(
+      controller: repsController,
+      keyboardType: TextInputType.number,
+      textAlign: TextAlign.center,
+      style: const TextStyle(color: Colors.white, fontSize: 14),
+      decoration: InputDecoration(
+        isDense: true,
+        filled: true,
+        fillColor: theme.scaffoldBackgroundColor,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        suffix: Text(
+          highlightText,
+          style: TextStyle(
+            color: highlight ? Colors.orange : Colors.grey,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: AppColors.activityPrimaryColor,
+            width: 1,
+          ),
+        ),
+      ),
+    );
+  }
+}
