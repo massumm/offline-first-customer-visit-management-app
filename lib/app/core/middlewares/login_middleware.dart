@@ -1,4 +1,6 @@
 // In login_middleware.dart (example)
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/data/local/preference/preference_service.dart';
@@ -13,10 +15,14 @@ class LoginMiddleware extends GetMiddleware {
 
   @override
   RouteSettings? redirect(String? route) {
-    final isLoggedIn = StorageService.to.getString(StorageKeys.STORAGE_USER_KEY).isNotEmpty;
+    final bool isLoggedIn = StorageService.to
+        .getString(StorageKeys.STORAGE_USER_KEY)
+        .isNotEmpty;
 
-    if (!isLoggedIn && route != Routes.LOGIN) {
-      return RouteSettings(name: Routes.LOGIN);
+    log("Middleware $isLoggedIn");
+
+    if (!isLoggedIn && route != Routes.SPLASH) {
+      return RouteSettings(name: Routes.SPLASH);
     }
     return null;
   }
