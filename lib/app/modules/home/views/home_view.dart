@@ -7,6 +7,7 @@ import 'package:icon/app/core/theme/app_text_theme.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/actions_card.dart';
 import '../widgets/goals_card.dart';
@@ -59,6 +60,9 @@ class HomeView extends BaseView<HomeController> {
             color: controller.actionCards[1].color,
             percent: controller.actionCards[1].percent,
             gradient: controller.actionCards[1].gradient,
+            onTap: () {
+              Get.toNamed(Routes.NUTRITION_TRACKER);
+            },
           ),
           16.width,
           ActionsCard(
