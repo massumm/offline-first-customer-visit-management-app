@@ -169,19 +169,22 @@ class _HeaderCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       flex: flex,
-      child: !showIcon
-          ? Text(
-              text,
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
+      child: Center(
+        child: showIcon
+            ? SuperIcon(
+                source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
+                size: 14,
+              )
+            : Text(
+                text,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            )
-          : SuperIcon(
-              source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
-              size: 14,
-            ),
+      ),
     );
   }
 }
@@ -207,17 +210,24 @@ class _SetRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
           Expanded(
             flex: 1,
-            child: Text(set, style: const TextStyle(color: Colors.white)),
+            child: Center(
+              child: Text(set, style: const TextStyle(color: Colors.white)),
+            ),
           ),
           Expanded(
             flex: 3,
-            child: Text(previous, style: const TextStyle(color: Colors.grey)),
+            child: Text(
+              previous,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.grey),
+            ),
           ),
           Expanded(flex: 2, child: _InputBox(controller: kgController)),
           6.width,
@@ -230,10 +240,29 @@ class _SetRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Icon(
-            completed ? Icons.check_circle : Icons.radio_button_unchecked,
-            color: completed ? Colors.red : Colors.grey,
-            size: 20,
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: completed
+                    ? theme.colorScheme.secondary
+                    : theme.colorScheme.surfaceContainerHighest,
+              ),
+            ),
+            child: Visibility(
+              visible: completed,
+              replacement: SuperIcon(
+                size: 16,
+                source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
+              ),
+              child: SuperIcon(
+                size: 16,
+                source: SuperIconSource.svgAsset(
+                  Assets.iconsCheckmarkCircleSelected,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -261,7 +290,7 @@ class _InputBox extends StatelessWidget {
         decoration: InputDecoration(
           isDense: true,
           filled: true,
-          fillColor:  theme.scaffoldBackgroundColor,
+          fillColor: theme.scaffoldBackgroundColor,
           contentPadding: const EdgeInsets.symmetric(vertical: 8),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
