@@ -67,6 +67,7 @@ abstract class AppColors {
   static const Color screenBgColor = Color(0xFF0d0d0d);
   static const Color greyColor1 = Color(0xFF2B2B2B);
   static const Color darkWarningColorBG = Color(0XFFFEF7E8);
+  static const Color deepGreenFavBgColor = Color(0xFF098C26);
 
   //................. Activity Section .....................
   static const Color activityPrimaryColor = Color(0xffC31212);

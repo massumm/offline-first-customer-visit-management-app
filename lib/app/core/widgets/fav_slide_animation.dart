@@ -42,6 +42,7 @@ class _AnimatedFabState extends State<AnimatedFab>
     isOpen = true;
     _controller.forward();
 
+
   }
 
 
@@ -55,7 +56,7 @@ class _AnimatedFabState extends State<AnimatedFab>
   Color _fabColor() {
     switch (widget.actionType) {
       case FabActionType.addMeal:
-        return AppColors.greenColor;
+        return AppColors.deepGreenFavBgColor;
       case FabActionType.activityRecoverLog:
         return Colors.blueAccent;
       case FabActionType.recoveryLog:

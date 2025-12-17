@@ -116,6 +116,7 @@ class Assets {
   static const String imagesOnboarding3 = 'assets/images/onboarding-3.png';
   static const String imagesRegisterButton = 'assets/images/register_button.png';
   static const String imagesSplashIcon = 'assets/images/splash_icon.png';
+  static const String imagePlusSignIcon = 'assets/images/plus-sign.png';
   static const String imagesYourActivityGoals = 'assets/images/your_activity_goals.png';
   static const String imagesYourActivityPhoneBackground = 'assets/images/your_activity_phone_background.png';
   static const String imagesYourNutritionGoals = 'assets/images/your_nutrition_goals.png';
@@ -207,5 +208,6 @@ class Assets {
   static const String svgTargetStress = 'assets/svg/target_stress.svg';
   static const String svgTick = 'assets/svg/tick.svg';
   static const String svgUserCircularIcon = 'assets/svg/user-circular-icon.svg';
+
 
 }
