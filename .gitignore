@@ -121,6 +121,10 @@ app.*.symbols
 .fvm/
 mvp_design/
 PROJECT_STRUCTURE.md
+
+# Warp (repo-specific agent guidance)
+WARP.md
+
 lib/gen/assets.gen.dart
 .vscode/launch.json
 
