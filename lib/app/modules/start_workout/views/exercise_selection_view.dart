@@ -6,10 +6,10 @@ import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
-import 'package:icon/app/modules/start_workout/models/equipment_item.dart';
 import '../../../../generated/assets.dart';
 import '../controllers/start_workout_controller.dart';
 import '../services/exercise_selection_service.dart';
+import 'widgets/exercise_tile.dart';
 
 class ExerciseSelectionView extends BaseView<StartWorkoutController> {
   const ExerciseSelectionView({super.key});
@@ -22,7 +22,7 @@ class ExerciseSelectionView extends BaseView<StartWorkoutController> {
       centerTitle: true,
       leading: Padding(
         padding: const EdgeInsets.all(6.0),
-        child: ActionButton.compact(onTap: () {}),
+        child: ActionButton.compact(onTap: Get.back),
       ),
     );
   }
@@ -43,7 +43,8 @@ class ExerciseSelectionView extends BaseView<StartWorkoutController> {
           Obx(() => _exerciseList(service.recentExercises)),
           _sectionTitle('All Exercises'),
           Obx(() => _exerciseList(service.allExercises)),
-          _bottomButton(),
+          space,
+          _bottomButton(context),
         ],
       ),
     );
@@ -345,39 +346,6 @@ class ExerciseSelectionView extends BaseView<StartWorkoutController> {
     );
   }
 
-  Widget _chip({
-    required String title,
-    String label = '',
-    required ThemeData theme,
-    required VoidCallback onTap,
-    required bool isSelected,
-  }) {
-    return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(6),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(6),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: theme.scaffoldBackgroundColor,
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Row(
-            children: [
-              SuperImage('', radius: 100),
-              const SizedBox(width: 8),
-              Text(label, style: theme.textTheme.titleSmall),
-              const Spacer(),
-              const Icon(Icons.close, size: 16),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   //  Section title
   SliverToBoxAdapter _sectionTitle(String text) {
     return SliverToBoxAdapter(
@@ -404,50 +372,33 @@ class ExerciseSelectionView extends BaseView<StartWorkoutController> {
     );
   }
 
-  SliverFillRemaining _bottomButton() {
+  SliverFillRemaining _bottomButton(BuildContext context) {
     final ExerciseSelectionService service =
         controller.exerciseSelectionService;
 
+    final theme = Theme.of(context);
+
     return SliverFillRemaining(
       hasScrollBody: false,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Align(
-          alignment: Alignment.bottomCenter,
-          child: Obx(
-            () => SizedBox(
-              width: double.infinity,
-              height: 52,
-              child: ElevatedButton(
-                onPressed: service.selectedCount == 0 ? null : () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(26),
-                  ),
-                ),
-                child: Text(
-                  'Added ${service.selectedCount} Workout',
-                  style: const TextStyle(fontSize: 16),
-                ),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Obx(
+          () => SizedBox(
+            width: double.infinity,
+            height: 52,
+            child: ElevatedButton(
+              onPressed: service.selectedCount == 0 ? null : () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.secondary,
+              ),
+              child: Text(
+                'Added ${service.selectedCount} Workout',
+                style: const TextStyle(fontSize: 16),
               ),
             ),
           ),
         ),
       ),
-    );
-  }
-}
-
-class ExerciseTile extends StatelessWidget {
-  final Exercise exercise;
-
-  const ExerciseTile({super.key, required this.exercise});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
     );
   }
 }

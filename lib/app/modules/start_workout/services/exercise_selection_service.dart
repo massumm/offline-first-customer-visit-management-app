@@ -1,21 +1,20 @@
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
-import 'package:icon/app/modules/start_workout/models/equipment_item.dart';
 
 import '../controllers/start_workout_controller.dart';
 import '../models/index.dart';
 
 class Exercise {
   final String id;
-  final String name;
+  final String title;
   final String subtitle;
   final IconData icon;
   final RxBool isSelected;
 
   Exercise({
     required this.id,
-    required this.name,
+    required this.title,
     required this.subtitle,
     required this.icon,
     bool selected = false,
@@ -51,6 +50,8 @@ class ExerciseSelectionService extends GetxService {
     MusclesItem(image: '', label: 'Glutes', isSelected: false),
   ].obs;
 
+  final RxList selectedExercise = <Exercise>[].obs;
+
   void attach(StartWorkoutController controller) {
     controller = controller;
   }
@@ -61,6 +62,12 @@ class ExerciseSelectionService extends GetxService {
 
   void toggleExercise(Exercise exercise) {
     exercise.isSelected.toggle();
+
+    if (exercise.isSelected.isTrue) {
+      selectedExercise.add(exercise);
+    } else{
+      selectedExercise.remove(exercise);
+    }
   }
 
   @override
@@ -70,14 +77,14 @@ class ExerciseSelectionService extends GetxService {
     recentExercises.assignAll([
       Exercise(
         id: 'squat',
-        name: 'Barbell Squat',
+        title: 'Barbell Squat',
         subtitle: 'Quads, Glutes',
         icon: Icons.fitness_center,
         selected: true,
       ),
       Exercise(
         id: 'deadlift',
-        name: 'Deadlift',
+        title: 'Deadlift',
         subtitle: 'Hamstrings, Glutes',
         icon: Icons.fitness_center,
         selected: true,
@@ -87,26 +94,26 @@ class ExerciseSelectionService extends GetxService {
     allExercises.assignAll([
       Exercise(
         id: 'db_squat',
-        name: 'Dumbbell Squat',
+        title: 'Dumbbell Squat',
         subtitle: 'Quads, Glutes',
         icon: Icons.fitness_center,
       ),
       Exercise(
         id: 'lunges',
-        name: 'Walking Lunges',
+        title: 'Walking Lunges',
         subtitle: 'Full Legs',
         icon: Icons.directions_walk,
         selected: true,
       ),
       Exercise(
         id: 'running',
-        name: 'Running',
+        title: 'Running',
         subtitle: 'Cardio',
         icon: Icons.directions_run,
       ),
       Exercise(
         id: 'band',
-        name: 'Resistance Band',
+        title: 'Resistance Band',
         subtitle: 'Calves',
         icon: Icons.loop,
       ),
@@ -115,7 +122,8 @@ class ExerciseSelectionService extends GetxService {
 
   void selectSingleEquipment(int selectedIndex) {
     for (int i = 0; i < equipmentItems.length; i++) {
-      final currentItem = equipmentItems[i];    final bool isSelected = (i == selectedIndex);
+      final currentItem = equipmentItems[i];
+      final bool isSelected = (i == selectedIndex);
 
       // Update only if the selection state changes to avoid unnecessary rebuilds
       if (currentItem.isSelected != isSelected) {
@@ -127,7 +135,8 @@ class ExerciseSelectionService extends GetxService {
 
   void selectSingleMuscles(int selectedIndex) {
     for (int i = 0; i < musclesItems.length; i++) {
-      final currentItem = musclesItems[i];    final bool isSelected = (i == selectedIndex);
+      final currentItem = musclesItems[i];
+      final bool isSelected = (i == selectedIndex);
 
       // Update only if the selection state changes to avoid unnecessary rebuilds
       if (currentItem.isSelected != isSelected) {
@@ -136,5 +145,4 @@ class ExerciseSelectionService extends GetxService {
     }
     musclesItems.refresh();
   }
-
 }
