@@ -275,7 +275,10 @@ class _SetRow extends StatelessWidget {
               style: const TextStyle(color: Colors.grey),
             ),
           ),
-          Expanded(flex: 2, child: _InputBox(controller: kgController)),
+          Expanded(
+            flex: 2,
+            child: _InputBox(controller: kgController, enabled: true),
+          ),
           6.width,
           Expanded(
             flex: 2,
