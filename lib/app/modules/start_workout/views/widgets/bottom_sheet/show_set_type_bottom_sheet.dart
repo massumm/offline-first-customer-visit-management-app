@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../core/values/app_colors.dart';
+
 enum SetType { warmUp, normal, failure, drop, remove }
 
 extension SetTypeProperties on SetType {
@@ -16,6 +18,37 @@ extension SetTypeProperties on SetType {
         return "Drop Set";
       case SetType.remove:
         return "Remove Set";
+    }
+  }
+
+  String get shortLabel {
+    switch (this) {
+      case SetType.warmUp:
+        return "W";
+      case SetType.normal:
+        return "N";
+      case SetType.failure:
+        return "F";
+      case SetType.drop:
+        return "D";
+      case SetType.remove:
+        return "R";
+    }
+  }
+
+  // Get color
+  Color get color {
+    switch (this) {
+      case SetType.warmUp:
+        return Colors.amber;
+      case SetType.normal:
+        return Colors.grey;
+      case SetType.failure:
+        return Colors.redAccent;
+      case SetType.drop:
+        return Colors.blue;
+      case SetType.remove:
+        return Colors.redAccent;
     }
   }
 

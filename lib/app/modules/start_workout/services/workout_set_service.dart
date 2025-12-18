@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
+import 'package:icon/app/modules/start_workout/views/widgets/bottom_sheet/show_set_type_bottom_sheet.dart';
 
 import '../models/workout_set_data.dart';
 
@@ -35,8 +36,11 @@ class WorkoutSetService extends GetxService {
     }
   }
 
-  void updateSetType( int index, String type,) {
-    workoutSets[index].copyWith(setType: type);
-    workoutSets.refresh();
+  void updateSetType(int index, String type) {
+    // Number Set Type
+    if (type == SetType.normal.shortLabel) {
+      return;
+    }
+    workoutSets[index] = workoutSets[index].copyWith(setType: type);
   }
 }

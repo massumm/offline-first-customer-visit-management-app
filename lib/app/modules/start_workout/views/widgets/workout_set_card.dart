@@ -82,25 +82,27 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
           const SizedBox(height: 8),
 
           /// Sets
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: controller.workoutSetService.workoutSets.length,
-            itemBuilder: (context, index) {
-              final set = controller.workoutSetService.workoutSets[index];
-              return _SetRow(
-                set: set.setType,
-                previous: set.previous,
-                kgController: set.kgController,
-                repsController: set.repsController,
-                highlightText: '6.0',
-                completed: false,
-                onSetTapped: (newType) {
-                  controller.workoutSetService.updateSetType(index, newType);
-                },
-              );
-            },
-          ),
+          Obx(() {
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.workoutSetService.workoutSets.length,
+              itemBuilder: (context, index) {
+                final set = controller.workoutSetService.workoutSets[index];
+                return _SetRow(
+                  set: set.setType,
+                  previous: set.previous,
+                  kgController: set.kgController,
+                  repsController: set.repsController,
+                  highlightText: '6.0',
+                  completed: false,
+                  onSetTapped: (newType) {
+                    controller.workoutSetService.updateSetType(index, newType);
+                  },
+                );
+              },
+            );
+          }),
           const SizedBox(height: 12),
 
           /// Add Set
@@ -217,11 +219,14 @@ class _SetRow extends StatelessWidget {
                     if (newSetType == SetType.remove) {
                       return;
                     }
-                    onSetTapped(newSetType.label);
+                    onSetTapped(newSetType.shortLabel);
                   }
                 },
                 child: Center(
-                  child: Text(set, style: const TextStyle(color: Colors.white)),
+                  child: Text(
+                    set,
+                    style: const TextStyle(color:Colors.grey ),
+                  ),
                 ),
               ),
             ),
