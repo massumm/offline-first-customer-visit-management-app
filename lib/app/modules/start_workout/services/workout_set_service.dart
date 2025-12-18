@@ -43,6 +43,8 @@ class WorkoutSetService extends GetxService {
       isComplete: false,
     ),
   ].obs;
+
+  // Main Controller.
   StartWorkoutController? _controller;
 
   void attach(StartWorkoutController controller) {
@@ -139,6 +141,11 @@ class WorkoutSetService extends GetxService {
 
   void onSetComplete(int index) {
     workoutSets[index] = workoutSets[index].copyWith(isComplete: true);
+    workoutSets.refresh();
+  }
+
+  void toggleCompletion(int index, bool isCompleted) {
+    workoutSets[index] = workoutSets[index].copyWith(isComplete: isCompleted);
     workoutSets.refresh();
   }
 }

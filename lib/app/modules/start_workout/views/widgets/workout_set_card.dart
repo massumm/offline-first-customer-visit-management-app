@@ -4,11 +4,13 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
 import 'package:icon/generated/assets.dart';
 
 import '../../../activity_tracker/views/widgets/activity_rep_keyboard_widget.dart';
+import 'bottom_sheet/show_set_type_bottom_sheet.dart';
 
-class WorkoutSetCard extends StatelessWidget {
+class WorkoutSetCard extends GetView<StartWorkoutController> {
   const WorkoutSetCard({super.key});
 
   @override
@@ -16,7 +18,7 @@ class WorkoutSetCard extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16).copyWith(bottom: 0),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
@@ -80,54 +82,58 @@ class WorkoutSetCard extends StatelessWidget {
 
           const SizedBox(height: 8),
 
-          /// Sets
-          _SetRow(
-            set: '1',
-            previous: '100 kg x 5',
-            kgController: TextEditingController(text: '100'),
-            repsController: TextEditingController(text: '5'),
-            highlightText: '6.0',
-            highlight: true,
-            completed: true,
-          ),
-          _SetRow(
-            set: '1',
-            previous: '100 kg x 5',
-            kgController: TextEditingController(text: '100'),
-            repsController: TextEditingController(text: '5'),
-            highlightText: '6.0',
-            highlight: true,
-            completed: true,
-          ),
-          _SetRow(
-            set: '1',
-            previous: '100 kg x 5',
-            kgController: TextEditingController(text: '100'),
-            repsController: TextEditingController(text: '5'),
-            highlightText: '6.0',
-            highlight: true,
-            completed: true,
-          ),
-          _SetRow(
-            set: '1',
-            previous: '100 kg x 5',
-            kgController: TextEditingController(text: '100'),
-            repsController: TextEditingController(text: '5'),
-            highlightText: '6.0',
-            highlight: true,
-            completed: true,
-          ),
+          Obx(() {
+            return ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: controller.workoutSetService.workoutSets.length,
+              itemBuilder: (context, index) {
+                final set = controller.workoutSetService.workoutSets[index];
 
-          const SizedBox(height: 12),
+                return _SetRow(
+                  set: set.setType,
+                  previous: set.previous,
+                  kgController: set.kgController,
+                  repsController: set.repsController,
+                  highlightText: '5.00',
+                  completed: set.isComplete,
+                  highlight: true,
+                  onSetTapped: (newSetType) {
+                    controller.workoutSetService.updateSetType(
+                      index,
+                      newSetType,
+                    );
+                  },
+                  onCompleteTap: (isCompleted) {
+                    controller.workoutSetService.toggleCompletion(
+                      index,
+                      isCompleted,
+                    );
+                  },
+                );
+              },
+            );
+          }),
 
           /// Add Set
           Center(
-            child: Text(
-              'ADD SET',
-              style: TextStyle(
-                color: Colors.red.shade400,
-                fontWeight: FontWeight.w600,
+            child: TextButton(
+              onPressed: () {
+                controller.workoutSetService.addSet();
+              },
+              style: TextButton.styleFrom(
+                foregroundColor: theme.colorScheme.secondary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                textStyle: TextStyle(
+                  color: theme.colorScheme.secondary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  decoration: TextDecoration.underline,
+                ),
               ),
+              child: Text('ADD SET'),
             ),
           ),
         ],
@@ -200,6 +206,8 @@ class _SetRow extends StatelessWidget {
   final String highlightText;
   final bool completed;
   final bool highlight;
+  final ValueChanged<SetType> onSetTapped;
+  final ValueChanged<bool> onCompleteTap;
 
   const _SetRow({
     required this.set,
@@ -208,20 +216,55 @@ class _SetRow extends StatelessWidget {
     required this.repsController,
     required this.highlightText,
     required this.completed,
-    this.highlight = false,
+    required this.onSetTapped,
+    required this.onCompleteTap,
+    this.highlight = true,
   });
+
+  Color _getSetColor() {
+    final sets = SetType.values.where((t) => t != SetType.remove).toList();
+
+    for (var s in sets) {
+      if (s.shortLabel == set) {
+        return s.color;
+      }
+    }
+
+    return Colors.grey;
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
         children: [
           Expanded(
             flex: 1,
-            child: Center(
-              child: Text(set, style: const TextStyle(color: Colors.white)),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: () async {
+                  final SetType? newSetType = await showSetTypeBottomSheet(
+                    context,
+                  );
+                  if (newSetType != null) {
+                    onSetTapped(newSetType);
+                  }
+                },
+                child: Center(
+                  child: Text(
+                    set,
+                    style: TextStyle(
+                      color: _getSetColor(),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
           Expanded(
@@ -232,7 +275,10 @@ class _SetRow extends StatelessWidget {
               style: const TextStyle(color: Colors.grey),
             ),
           ),
-          Expanded(flex: 2, child: _InputBox(controller: kgController)),
+          Expanded(
+            flex: 2,
+            child: _InputBox(controller: kgController, enabled: true),
+          ),
           6.width,
           Expanded(
             flex: 2,
@@ -243,26 +289,30 @@ class _SetRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(
-                color: completed
-                    ? theme.colorScheme.secondary
-                    : theme.colorScheme.surfaceContainerHighest,
+          InkWell(
+            onTap: () => onCompleteTap(!completed),
+            borderRadius: BorderRadius.circular(6),
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: completed
+                      ? theme.colorScheme.secondary
+                      : theme.colorScheme.outline,
+                ),
               ),
-            ),
-            child: Visibility(
-              visible: completed,
-              replacement: SuperIcon(
-                size: 16,
-                source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
-              ),
-              child: SuperIcon(
-                size: 16,
-                source: SuperIconSource.svgAsset(
-                  Assets.iconsCheckmarkCircleSelected,
+              child: Visibility(
+                visible: completed,
+                replacement: SuperIcon(
+                  size: 16,
+                  source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
+                ),
+                child: SuperIcon(
+                  size: 16,
+                  source: SuperIconSource.svgAsset(
+                    Assets.iconsCheckmarkCircleSelected,
+                  ),
                 ),
               ),
             ),
