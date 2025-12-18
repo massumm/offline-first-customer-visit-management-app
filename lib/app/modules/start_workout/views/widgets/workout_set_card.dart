@@ -360,7 +360,7 @@ class RepsInputField extends StatelessWidget {
     super.key,
     required this.repsController,
     required this.highlightText,
-    this.highlight = false,
+    this.highlight = true,
   });
 
   @override
