@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -6,10 +5,12 @@ import '../../../../generated/assets.dart';
 import '../../../base/base_view.dart';
 import '../../../core/enums/fav_enum.dart';
 import '../../../core/extensions/app_extansions.dart';
+import '../../../core/values/app_colors.dart';
 import '../../../core/widgets/fab_widgets/animated_fab.dart';
 import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
 import '../../../core/widgets/fab_widgets/fab_card_item.dart';
 import '../../../core/widgets/super_widgets/super_icon_source.dart';
+import '../../activity_tracker/views/activity_tracker_view.dart';
 import '../controllers/recovery_tracker_controller.dart';
 
 class RecoveryTrackerView extends BaseView<RecoveryTrackerController> {
@@ -113,7 +114,7 @@ class RecoveryTrackerView extends BaseView<RecoveryTrackerController> {
       ),
 
       floatingActionButton: AnimatedFab(
-        actionType: FabActionType.addMeal,
+        actionType: FabActionType.recoveryLog,
         isOpen: controller.isOpened,
       ),
 
@@ -138,47 +139,74 @@ class RecoveryTrackerView extends BaseView<RecoveryTrackerController> {
               ),
               12.height,
               Row(
-                mainAxisAlignment: .spaceAround,
                 spacing: 8,
                 children: [
-                  FabCardItem(
-                    title: "Search",
-                    source: SuperIconSource.imageAsset(
-                      Assets.nutritionTrackerSearchIcon,
-                    ), onTap: () {  },
-                  ),
-                  FabCardItem(
-                    title: "Barcode Scanner",
-                    source: SuperIconSource.imageAsset(
-                      Assets.nutritionTrackerQrCode,
-                    ), onTap: () {  },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                mainAxisAlignment: .spaceAround,
-                spacing: 8,
-                children: [
-                  FabCardItem(
-                      title: "Manual",
-                      source: SuperIconSource.imageAsset(
-                        Assets.nutritionTrackerNotebookIcon,
+                  Obx(() {
+                    return FabCardItem(
+                      title: "Repair",
+                      source: SuperIconSource.svgAsset(Assets.iconsYoga),
+                      onTap: () {
+                        controller.recoveryTypeSelected(RecoveryType.repair);
+                      },
+                      color: controller.isRepairBtnSelected.value
+                          ? AppColors.deepBlueFavBgColor
+                          : AppColors.black,
+                    );
+                  }),
+                  Obx(() {
+                    return FabCardItem(
+                      title: "Sleep",
+                      source: SuperIconSource.svgAsset(Assets.svgSleepCircular),
+                      onTap: () {
+                        controller.recoveryTypeSelected(RecoveryType.sleep);
+                      },
+                      color: controller.isSleepBtnSelected.value
+                          ? AppColors.deepBlueFavBgColor
+                          : AppColors.black,
+                    );
+                  }),
+                  Obx(() {
+                    return FabCardItem(
+                      title: "Wellbeing",
+                      source: SuperIconSource.svgAsset(
+                        Assets.appSettingsRepair,
                       ),
-                      onTap: controller.onRecoveryEntryCardTap
-                  ),
-                  FabCardItem(
-                    title: "Take Photo",
-                    source: SuperIconSource.imageAsset(
-                      Assets.nutritionTrackerCameraIcon,
-                    ), onTap: () { print("on tap"); },
-                  ),
+                      onTap: () {
+                        controller.recoveryTypeSelected(RecoveryType.wellbeing);
+                      },
+                      color: controller.isWellbeingBtnSelected.value
+                          ? AppColors.deepBlueFavBgColor
+                          : AppColors.black,
+                    );
+                  }),
                 ],
               ),
+              Obx(() {
+                if (controller.isRepairBtnSelected.value) {
+                  return repairSection();
+                } else if (controller.isSleepBtnSelected.value) {
+                  return repairSection();
+                } else if (controller.isWellbeingBtnSelected.value) {
+                  return repairSection();
+                } else {
+                  return Container();
+                }
+              }),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget repairSection() {
+    return Column(
+      spacing: 10,
+      children: [
+        12.height,
+        SubMenuBtn(title: "Quick Add", onTap: controller.gotoQuickAddPage),
+        SubMenuBtn(title: "Start Live Tracking", onTap: () {}),
+      ],
     );
   }
 }

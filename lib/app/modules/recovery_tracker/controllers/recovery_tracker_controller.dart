@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+
 import '../../../routes/app_pages.dart';
 
 enum RecoveryActivityType {
@@ -18,6 +19,8 @@ enum RecoveryActivityType {
   pilates,
   mindfulness,
 }
+
+enum RecoveryType { repair, sleep, wellbeing }
 
 extension RecoveryActivityTypeX on RecoveryActivityType {
   String get label {
@@ -53,6 +56,10 @@ extension RecoveryActivityTypeX on RecoveryActivityType {
 }
 
 class RecoveryTrackerController extends BaseController {
+  final RxBool isRepairBtnSelected = false.obs;
+  final RxBool isSleepBtnSelected = false.obs;
+  final RxBool isWellbeingBtnSelected = false.obs;
+
   /// ---------------- UI STATE ----------------
   final RxBool isOpened = false.obs;
   final RxDouble height = 0.0.obs;
@@ -60,11 +67,11 @@ class RecoveryTrackerController extends BaseController {
   final double openedHeight = Get.height;
 
   /// ---------------- FORM STATE ----------------
-  final Rxn<RecoveryActivityType> selectedType =
-  Rxn<RecoveryActivityType>();
+  final Rxn<RecoveryActivityType> selectedType = Rxn<RecoveryActivityType>();
 
-  final TextEditingController durationController =
-  TextEditingController(text: '20');
+  final TextEditingController durationController = TextEditingController(
+    text: '20',
+  );
 
   /// ---------------- LIFECYCLE ----------------
   @override
@@ -73,7 +80,12 @@ class RecoveryTrackerController extends BaseController {
 
     ever(isOpened, (bool opened) {
       height.value = opened ? openedHeight : 0.0;
-      cardContainerHeight.value = opened ? 290 : 0.0;
+      cardContainerHeight.value = opened ? 180 : 0.0;
+      if (!opened) {
+        isRepairBtnSelected.value = false;
+        isSleepBtnSelected.value = false;
+        isWellbeingBtnSelected.value = false;
+      }
     });
   }
 
@@ -108,5 +120,31 @@ class RecoveryTrackerController extends BaseController {
     // TODO: API / Repository call
 
     Get.back(); // optional
+  }
+
+  void recoveryTypeSelected(RecoveryType recoveryType) {
+    switch (recoveryType) {
+      case RecoveryType.repair:
+        isRepairBtnSelected.value = true;
+        isSleepBtnSelected.value = false;
+        isWellbeingBtnSelected.value = false;
+        break;
+      case RecoveryType.sleep:
+        isSleepBtnSelected.value = true;
+        isRepairBtnSelected.value = false;
+        isWellbeingBtnSelected.value = false;
+        break;
+      case RecoveryType.wellbeing:
+        isWellbeingBtnSelected.value = true;
+        isRepairBtnSelected.value = false;
+        isSleepBtnSelected.value = false;
+        break;
+    }
+
+    cardContainerHeight.value = 290;
+  }
+
+  void gotoQuickAddPage() {
+    Get.toNamed(Routes.RECOVERY_TRACKER_ENTRY);
   }
 }
