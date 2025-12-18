@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
-import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/enums/fav_enum.dart';
+import '../../../core/extensions/app_extansions.dart';
 import '../../../core/widgets/fab_widgets/animated_fab.dart';
 import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
 import '../../../core/widgets/fab_widgets/fab_card_item.dart';
+import '../../../core/widgets/super_widgets/super_icon_source.dart';
 import '../controllers/nutrition_tracker_controller.dart';
 
 class NutritionTrackerView extends BaseView<NutritionTrackerController> {
@@ -145,12 +145,14 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
                     source: SuperIconSource.imageAsset(
                       Assets.nutritionTrackerSearchIcon,
                     ),
+                    onTap: () {},
                   ),
                   FabCardItem(
                     title: "Barcode Scanner",
                     source: SuperIconSource.imageAsset(
                       Assets.nutritionTrackerQrCode,
                     ),
+                    onTap: () {},
                   ),
                 ],
               ),
@@ -164,12 +166,14 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
                     source: SuperIconSource.imageAsset(
                       Assets.nutritionTrackerNotebookIcon,
                     ),
+                    onTap: () {},
                   ),
                   FabCardItem(
                     title: "Take Photo",
                     source: SuperIconSource.imageAsset(
                       Assets.nutritionTrackerCameraIcon,
                     ),
+                    onTap: () {},
                   ),
                 ],
               ),

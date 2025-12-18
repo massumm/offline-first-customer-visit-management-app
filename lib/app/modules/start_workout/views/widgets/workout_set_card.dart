@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
 import 'package:icon/generated/assets.dart';
+
+import '../../../activity_tracker/views/widgets/activity_rep_keyboard_widget.dart';
 
 class WorkoutSetCard extends StatelessWidget {
   const WorkoutSetCard({super.key});
@@ -330,7 +333,21 @@ class RepsInputField extends StatelessWidget {
     final theme = Theme.of(context);
     return TextFormField(
       controller: repsController,
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.none,
+      onTap: () {
+        Get.bottomSheet(
+          ActivityRepKeyboard(
+            controller: repsController,
+            onDone: () {
+              Get.back();
+            },
+            onRPE: () {
+              Get.back();
+            },
+            initialValue: double.tryParse(highlightText),
+          ),
+        );
+      },
       textAlign: TextAlign.center,
       style: const TextStyle(color: Colors.white, fontSize: 14),
       decoration: InputDecoration(
