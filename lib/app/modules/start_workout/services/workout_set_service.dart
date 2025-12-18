@@ -21,6 +21,27 @@ class WorkoutSetService extends GetxService {
       repsController: TextEditingController(text: '8'),
       isComplete: false,
     ),
+    WorkoutSetData(
+      setType: '3',
+      previous: '100 kg x 8',
+      kgController: TextEditingController(text: '100'),
+      repsController: TextEditingController(text: '8'),
+      isComplete: false,
+    ),
+    WorkoutSetData(
+      setType: '4',
+      previous: '100 kg x 8',
+      kgController: TextEditingController(text: '100'),
+      repsController: TextEditingController(text: '8'),
+      isComplete: false,
+    ),
+    WorkoutSetData(
+      setType: '5',
+      previous: '100 kg x 8',
+      kgController: TextEditingController(text: '100'),
+      repsController: TextEditingController(text: '8'),
+      isComplete: false,
+    ),
   ].obs;
   StartWorkoutController? _controller;
 
@@ -40,29 +61,35 @@ class WorkoutSetService extends GetxService {
     if (type == SetType.remove) {
       workoutSets.removeAt(index);
     } else if (type == SetType.normal) {
-      // If the set is already a numbered set,
-      if (int.tryParse(workoutSets[index].setType) != null) {
-        return;
-      }
-      // Mark the set as a normal set.
+      // Mark as a number so it gets picked up by the numbering logic
       workoutSets[index] = workoutSets[index].copyWith(setType: '1');
     } else {
-      // Handle other set types
+      // Apply special types
       workoutSets[index] = workoutSets[index].copyWith(
         setType: type.shortLabel,
       );
     }
 
-    // Handle the number order,
-    int normalSetCounter = 1;
+    int counter = 1;
+
     for (int i = 0; i < workoutSets.length; i++) {
-      if (int.tryParse(workoutSets[i].setType) != null) {
-        workoutSets[i] = workoutSets[i].copyWith(
-          setType: normalSetCounter.toString(),
-        );
-        normalSetCounter++;
+      final currentSet = workoutSets[i];
+      final isFailure = currentSet.setType == SetType.failure.shortLabel;
+      final isNormal = int.tryParse(currentSet.setType) != null;
+
+      if (isFailure) {
+        continue;
+      } else if (isNormal) {
+        workoutSets[i] = currentSet.copyWith(setType: counter.toString());
+        counter++;
+      } else {
+        // Other types
+        // They keep their label but consume a number in the sequence.
+        counter++;
       }
     }
+
+    // Notify listeners that the list has changed.
     workoutSets.refresh();
   }
 }
