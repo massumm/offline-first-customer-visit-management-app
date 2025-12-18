@@ -141,4 +141,9 @@ class WorkoutSetService extends GetxService {
     workoutSets[index] = workoutSets[index].copyWith(isComplete: true);
     workoutSets.refresh();
   }
+
+  void toggleCompletion(int index, bool isCompleted) {
+    workoutSets[index] = workoutSets[index].copyWith(isComplete: isCompleted);
+    workoutSets.refresh();
+  }
 }
