@@ -44,27 +44,27 @@ class LogActivitySection extends GetView<ActivityTrackerController> {
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _LogActivityButton(
-                  label: "Workout",
-                  icon: Icons.fitness_center,
-                  theme: theme,
-                  onTap: controller.onWorkoutTap,
-                  isSelected: controller.isWorkoutBtnSelected.isTrue,
-                ),
-                _LogActivityButton(
-                  label: "Cardio",
-                  icon: Icons.monitor_heart,
-                  theme: theme,
-                  onTap: controller.onCardioTap,
-                  isSelected: controller.isCardioBtnSelected.isTrue,
-                ),
-                _LogActivityButton(
-                  label: "Repair",
-                  icon: Icons.settings,
-                  theme: theme,
-                  onTap: controller.onRepairTap,
-                  isSelected: controller.isRepairBtnSelected.isTrue,
-                ),
+                // _LogActivityButton(
+                //   label: ,
+                //   icon: Icons.fitness_center,
+                //   theme: theme,
+                //   onTap: controller.onWorkoutTap,
+                //   isSelected: controller.isWorkoutBtnSelected.isTrue,
+                // ),
+                // _LogActivityButton(
+                //   label: ,
+                //   icon: Icons.monitor_heart,
+                //   theme: theme,
+                //   onTap: controller.onCardioTap,
+                //   isSelected: controller.isCardioBtnSelected.isTrue,
+                // ),
+                // _LogActivityButton(
+                //   label: ,
+                //   icon: Icons.settings,
+                //   theme: theme,
+                //   onTap: controller.onRepairTap,
+                //   isSelected: controller.isRepairBtnSelected.isTrue,
+                // ),
               ],
             );
           }),
