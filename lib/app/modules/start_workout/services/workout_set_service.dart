@@ -88,8 +88,7 @@ class WorkoutSetService extends GetxService {
         counter++;
       }
     }
-
-    // Notify listeners that the list has changed.
+    
     workoutSets.refresh();
   }
 }
