@@ -14,11 +14,15 @@ class StartWorkoutController extends BaseController {
   final ExerciseSelectionService exerciseSelectionService =
       Get.find<ExerciseSelectionService>();
 
+  final WorkoutSetService workoutSetService =
+      Get.find<WorkoutSetService>();
+
   @override
   void onInit() {
     super.onInit();
 
     settingsService.attach(this);
+    workoutSetService.attach(this);
   }
 
   @override

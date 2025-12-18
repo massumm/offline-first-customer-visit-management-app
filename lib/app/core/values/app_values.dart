@@ -7,4 +7,6 @@ abstract class AppValues {
   static const double iconDefaultSize = 28;
   static const double smallRadius = 8;
   static const double margin = 16;
+
+  static const double bottomSheetBorderRadius = 16.0;
 }

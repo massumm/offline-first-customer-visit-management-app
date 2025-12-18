@@ -10,5 +10,6 @@ class StartWorkoutBinding extends Bindings {
     Get.lazyPut<WorkoutSettingsService>(() => WorkoutSettingsService());
     Get.lazyPut<ExerciseSelectionService>(() => ExerciseSelectionService());
     Get.lazyPut<StartWorkoutController>(() => StartWorkoutController());
+    Get.lazyPut<WorkoutSetService>(() => WorkoutSetService());
   }
 }
