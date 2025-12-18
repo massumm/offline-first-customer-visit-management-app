@@ -136,4 +136,9 @@ class WorkoutSetService extends GetxService {
 
     workoutSets.refresh();
   }
+
+  void onSetComplete(int index) {
+    workoutSets[index] = workoutSets[index].copyWith(isComplete: true);
+    workoutSets.refresh();
+  }
 }

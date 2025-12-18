@@ -97,9 +97,13 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
                   kgController: set.kgController,
                   repsController: set.repsController,
                   highlightText: '6.0',
-                  completed: false,
-                  onSetTapped: (newType) {
+                  completed: set.isComplete,
+                  onSetOrderTapped: (newType) {
                     controller.workoutSetService.updateSetType(index, newType);
+                  },
+                  onCompleteTap: (_){
+                    "Pressed".log();
+                    controller.workoutSetService.onSetComplete(index);
                   },
                 );
               },
@@ -190,7 +194,8 @@ class _SetRow extends StatelessWidget {
   final String highlightText;
   final bool completed;
   final bool highlight;
-  final ValueChanged<SetType> onSetTapped;
+  final ValueChanged<SetType> onSetOrderTapped;
+  final ValueChanged<bool> onCompleteTap;
 
   const _SetRow({
     required this.set,
@@ -199,7 +204,8 @@ class _SetRow extends StatelessWidget {
     required this.repsController,
     required this.highlightText,
     required this.completed,
-    required this.onSetTapped,
+    required this.onSetOrderTapped,
+    required this.onCompleteTap,
     this.highlight = false,
   });
 
@@ -234,7 +240,7 @@ class _SetRow extends StatelessWidget {
                     context,
                   );
                   if (newSetType != null) {
-                    onSetTapped(newSetType);
+                    onSetOrderTapped(newSetType);
                   }
                 },
                 child: Center(
@@ -268,26 +274,30 @@ class _SetRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Container(
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(
-                color: completed
-                    ? theme.colorScheme.secondary
-                    : theme.colorScheme.surfaceContainerHighest,
+          InkWell(
+            onTap: () => onCompleteTap(!completed),
+            borderRadius: BorderRadius.circular(6),
+            child: Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                border: Border.all(
+                  color: completed
+                      ? theme.colorScheme.secondary
+                      : theme.colorScheme.outline,
+                ),
               ),
-            ),
-            child: Visibility(
-              visible: completed,
-              replacement: SuperIcon(
-                size: 16,
-                source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
-              ),
-              child: SuperIcon(
-                size: 16,
-                source: SuperIconSource.svgAsset(
-                  Assets.iconsCheckmarkCircleSelected,
+              child: Visibility(
+                visible: completed,
+                replacement: SuperIcon(
+                  size: 16,
+                  source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
+                ),
+                child: SuperIcon(
+                  size: 16,
+                  source: SuperIconSource.svgAsset(
+                    Assets.iconsCheckmarkCircleSelected,
+                  ),
                 ),
               ),
             ),
