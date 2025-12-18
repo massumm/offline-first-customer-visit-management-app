@@ -36,11 +36,33 @@ class WorkoutSetService extends GetxService {
     }
   }
 
-  void updateSetType(int index, String type) {
-    // Number Set Type
-    if (type == SetType.normal.shortLabel) {
-      return;
+  void updateSetType(int index, SetType type) {
+    if (type == SetType.remove) {
+      workoutSets.removeAt(index);
+    } else if (type == SetType.normal) {
+      // If the set is already a numbered set,
+      if (int.tryParse(workoutSets[index].setType) != null) {
+        return;
+      }
+      // Mark the set as a normal set.
+      workoutSets[index] = workoutSets[index].copyWith(setType: '1');
+    } else {
+      // Handle other set types
+      workoutSets[index] = workoutSets[index].copyWith(
+        setType: type.shortLabel,
+      );
     }
-    workoutSets[index] = workoutSets[index].copyWith(setType: type);
+
+    // Handle the number order,
+    int normalSetCounter = 1;
+    for (int i = 0; i < workoutSets.length; i++) {
+      if (int.tryParse(workoutSets[i].setType) != null) {
+        workoutSets[i] = workoutSets[i].copyWith(
+          setType: normalSetCounter.toString(),
+        );
+        normalSetCounter++;
+      }
+    }
+    workoutSets.refresh();
   }
 }

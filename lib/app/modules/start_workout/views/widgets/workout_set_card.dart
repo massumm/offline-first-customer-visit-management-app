@@ -185,7 +185,7 @@ class _SetRow extends StatelessWidget {
   final String highlightText;
   final bool completed;
   final bool highlight;
-  final ValueChanged<String> onSetTapped;
+  final ValueChanged<SetType> onSetTapped;
 
   const _SetRow({
     required this.set,
@@ -198,9 +198,22 @@ class _SetRow extends StatelessWidget {
     this.highlight = false,
   });
 
+  Color _getSetColor() {
+    final sets = SetType.values.where((t) => t != SetType.remove).toList();
+
+    for (var s in sets) {
+      if (s.shortLabel == set) {
+        return s.color;
+      }
+    }
+
+    return Colors.grey;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
@@ -216,16 +229,16 @@ class _SetRow extends StatelessWidget {
                     context,
                   );
                   if (newSetType != null) {
-                    if (newSetType == SetType.remove) {
-                      return;
-                    }
-                    onSetTapped(newSetType.shortLabel);
+                    onSetTapped(newSetType);
                   }
                 },
                 child: Center(
                   child: Text(
                     set,
-                    style: const TextStyle(color:Colors.grey ),
+                    style: TextStyle(
+                      color: _getSetColor(),
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
                 ),
               ),
