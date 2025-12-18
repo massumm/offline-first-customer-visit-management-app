@@ -44,9 +44,9 @@ class _AnimatedFabState extends State<AnimatedFab>
       case FabActionType.addMeal:
         return AppColors.deepGreenFavBgColor;
       case FabActionType.activityRecoverLog:
-        return Colors.blueAccent;
+        return AppColors.deepRedFavBgColor;
       case FabActionType.recoveryLog:
-        return Colors.orangeAccent;
+        return AppColors.deepBlueFavBgColor;
     }
   }
 
