@@ -5,9 +5,13 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+
 import '../../../../generated/assets.dart';
+import '../../../core/enums/fav_enum.dart';
+import '../../../core/widgets/fab_widgets/animated_fab.dart';
+import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
+import '../../../core/widgets/fab_widgets/fab_card_item.dart';
 import '../controllers/activity_tracker_controller.dart';
-import 'widgets/log_activity.dart';
 
 class ActivityTrackerView extends BaseView<ActivityTrackerController> {
   const ActivityTrackerView({super.key});
@@ -20,6 +24,7 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
       backgroundColor: appBarTheme.backgroundColor,
       title: Text('Activity Tracker', style: appBarTheme.titleTextStyle),
       centerTitle: true,
+
       leading: Padding(
         padding: EdgeInsets.all(6),
         child: ActionButton.compact(onTap: Get.back),
@@ -28,73 +33,121 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
   }
 
   @override
+  Widget? floatingActionButton() => AnimatedFab(
+    actionType: FabActionType.activityRecoverLog,
+    isOpen: controller.isOpened,
+  );
+
+  @override
   Widget body(BuildContext context) {
     final theme = Theme.of(context);
     final textTheme = theme.textTheme;
     final colorScheme = theme.colorScheme;
 
-    return Column(
+    return Stack(
       children: [
-        Expanded(
-          child: CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(child: 12.height),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Container(
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainerHighest,
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        Column(
+          children: [
+            Expanded(
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(child: 12.height),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surfaceContainerHighest,
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: Column(
                           children: [
-                            Text('Activity Log', style: textTheme.titleMedium),
-                            Text(
-                              '12 min ago',
-                              style: textTheme.bodySmall?.copyWith(
-                                color: colorScheme.primary,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Activity Log',
+                                  style: textTheme.titleMedium,
+                                ),
+                                Text(
+                                  '12 min ago',
+                                  style: textTheme.bodySmall?.copyWith(
+                                    color: colorScheme.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            12.height,
+
+                            /// Activity Card 1
+                            _ActivityCard(
+                              iconSource: const SuperIconSource.icon(
+                                Icons.directions_run,
                               ),
+                              title: "Morning Run",
+                              subtitle: "Workout • 25 min • 8:10 am",
+                              theme: theme,
+                            ),
+
+                            12.height,
+
+                            /// Activity Card 2
+                            _ActivityCard(
+                              iconSource: SuperIconSource.svgAsset(
+                                Assets.iconsUpperBody,
+                              ),
+                              title: "Upper Body Strength",
+                              subtitle: "Cardio • 25 min • 7:30 am",
+                              theme: theme,
                             ),
                           ],
                         ),
-                        12.height,
-
-                        /// Activity Card 1
-                        _ActivityCard(
-                          iconSource: const SuperIconSource.icon(
-                            Icons.directions_run,
-                          ),
-                          title: "Morning Run",
-                          subtitle: "Workout • 25 min • 8:10 am",
-                          theme: theme,
-                        ),
-
-                        12.height,
-
-                        /// Activity Card 2
-                        _ActivityCard(
-                          iconSource: SuperIconSource.svgAsset(
-                            Assets.iconsUpperBody,
-                          ),
-                          title: "Upper Body Strength",
-                          subtitle: "Cardio • 25 min • 7:30 am",
-                          theme: theme,
-                        ),
-                      ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
 
-        LogActivitySection(theme: theme, textTheme: textTheme),
+            //LogActivitySection(theme: theme, textTheme: textTheme),
+          ],
+        ),
+        AnimatedFabCard(
+          height: controller.height,
+          cardContainerHeight: controller.cardContainerHeight,
+          fabCards: [
+            const Text(
+              "Log Recovery",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.start,
+            ),
+            12.height,
+            Row(
+              spacing: 8,
+              children: [
+                FabCardItem(
+                  title: "Workout",
+                  source: SuperIconSource.imageAsset(
+                    Assets.activityTrackerWorkout,
+                  ),
+                ),
+                FabCardItem(
+                  title: "Cardio",
+                  source: SuperIconSource.svgAsset(Assets.iconsCardiogram),
+                ),
+                FabCardItem(
+                  title: "Repair",
+                  source: SuperIconSource.svgAsset(Assets.appSettingsRepair),
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
     );
   }
