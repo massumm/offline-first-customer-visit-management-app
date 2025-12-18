@@ -87,6 +87,8 @@ flutter:
     - assets/images/splash_screen_light/
     - assets/images/splash_screen_dark/
     - assets/images/app_settings/
+    - assets/images/nutrition_tracker/
+    - assets/images/activity_tracker/
     - assets/jsons/
 
     - assets/svg/
