@@ -43,6 +43,8 @@ class WorkoutSetService extends GetxService {
       isComplete: false,
     ),
   ].obs;
+
+  // Main Controller.
   StartWorkoutController? _controller;
 
   void attach(StartWorkoutController controller) {
