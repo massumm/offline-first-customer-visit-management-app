@@ -8,6 +8,7 @@ import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/enums/fav_enum.dart';
+import '../../../core/values/app_colors.dart';
 import '../../../core/widgets/fab_widgets/animated_fab.dart';
 import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
 import '../../../core/widgets/fab_widgets/fab_card_item.dart';
@@ -79,8 +80,6 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
                               ],
                             ),
                             12.height,
-
-                            /// Activity Card 1
                             _ActivityCard(
                               iconSource: const SuperIconSource.icon(
                                 Icons.directions_run,
@@ -89,10 +88,7 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
                               subtitle: "Workout • 25 min • 8:10 am",
                               theme: theme,
                             ),
-
                             12.height,
-
-                            /// Activity Card 2
                             _ActivityCard(
                               iconSource: SuperIconSource.svgAsset(
                                 Assets.iconsUpperBody,
@@ -130,25 +126,128 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
             Row(
               spacing: 8,
               children: [
-                FabCardItem(
-                  title: "Workout",
-                  source: SuperIconSource.imageAsset(
-                    Assets.activityTrackerWorkout,
-                  ),
-                ),
-                FabCardItem(
-                  title: "Cardio",
-                  source: SuperIconSource.svgAsset(Assets.iconsCardiogram),
-                ),
-                FabCardItem(
-                  title: "Repair",
-                  source: SuperIconSource.svgAsset(Assets.appSettingsRepair),
-                ),
+                Obx(() {
+                  return FabCardItem(
+                    title: "Workout",
+                    source: SuperIconSource.imageAsset(
+                      Assets.activityTrackerWorkout,
+                    ),
+                    onTap: () {
+                      controller.activityBtnSelected(ActionType.workout);
+                    },
+                    color: controller.isWorkoutBtnSelected.value
+                        ? AppColors.deepRedFavBgColor
+                        : AppColors.black,
+                  );
+                }),
+                Obx(() {
+                  return FabCardItem(
+                    title: "Cardio",
+                    source: SuperIconSource.svgAsset(Assets.iconsCardiogram),
+                    onTap: () {
+                      controller.activityBtnSelected(ActionType.cardio);
+                    },
+                    color: controller.isCardioBtnSelected.value
+                        ? AppColors.deepRedFavBgColor
+                        : AppColors.black,
+                  );
+                }),
+                Obx(() {
+                  return FabCardItem(
+                    title: "Repair",
+                    source: SuperIconSource.svgAsset(Assets.appSettingsRepair),
+                    onTap: () {
+                      controller.activityBtnSelected(ActionType.repair);
+                    },
+                    color: controller.isRepairBtnSelected.value
+                        ? AppColors.deepBlueFavBgColor
+                        : AppColors.black,
+                  );
+                }),
               ],
             ),
+
+            Obx(() {
+              if (controller.isWorkoutBtnSelected.value) {
+                return workoutSection();
+              } else if (controller.isCardioBtnSelected.value) {
+                return cardioSection();
+              } else if (controller.isRepairBtnSelected.value) {
+                return repairSection();
+              } else {
+                return Container();
+              }
+            }),
           ],
         ),
       ],
+    );
+  }
+
+  Column workoutSection() {
+    return Column(
+      spacing: 10,
+      children: [
+        12.height,
+        SubMenuBtn(
+          title: "Start Empty Workout",
+          onTap: controller.gotoStratWorkOut,
+        ),
+        SubMenuBtn(title: "Choose Workout Template", onTap: () {}),
+      ],
+    );
+  }
+
+  Widget cardioSection() {
+    return Column(
+      spacing: 10,
+      children: [
+        12.height,
+        SubMenuBtn(title: "Quick Add", onTap: () {}),
+        SubMenuBtn(title: "Start Live Tracking", onTap: () {}),
+      ],
+    );
+  }
+
+  Widget repairSection() {
+    return Column(
+      spacing: 10,
+      children: [
+        12.height,
+        SubMenuBtn(title: "Quick Add", onTap: () {}),
+        SubMenuBtn(title: "Start Live Tracking", onTap: () {}),
+      ],
+    );
+  }
+}
+
+class SubMenuBtn extends StatelessWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const SubMenuBtn({super.key, required this.title, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: Color(0xff0D0D0D),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Row(
+          mainAxisAlignment: .spaceBetween,
+          children: [
+            Text(title),
+            SuperIcon(
+              source: SuperIconSource.svgAsset(Assets.svgArrowRight),
+              size: 15,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

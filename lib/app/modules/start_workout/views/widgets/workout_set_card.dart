@@ -4,12 +4,11 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
-import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
 import 'package:icon/generated/assets.dart';
 
-import 'bottom_sheet/show_set_type_bottom_sheet.dart';
+import '../../../activity_tracker/views/widgets/activity_rep_keyboard_widget.dart';
 
-class WorkoutSetCard extends GetView<StartWorkoutController> {
+class WorkoutSetCard extends StatelessWidget {
   const WorkoutSetCard({super.key});
 
   @override
@@ -17,9 +16,7 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16).copyWith(
-        bottom: 8
-      ),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
@@ -84,44 +81,53 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
           const SizedBox(height: 8),
 
           /// Sets
-          Obx(() {
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.workoutSetService.workoutSets.length,
-              itemBuilder: (context, index) {
-                final set = controller.workoutSetService.workoutSets[index];
-                return _SetRow(
-                  set: set.setType,
-                  previous: set.previous,
-                  kgController: set.kgController,
-                  repsController: set.repsController,
-                  highlightText: '6.0',
-                  completed: set.isComplete,
-                  onSetOrderTapped: (newType) {
-                    controller.workoutSetService.updateSetType(index, newType);
-                  },
-                  onCompleteTap: (_){
-                    "Pressed".log();
-                    controller.workoutSetService.onSetComplete(index);
-                  },
-                );
-              },
-            );
-          }),
+          _SetRow(
+            set: '1',
+            previous: '100 kg x 5',
+            kgController: TextEditingController(text: '100'),
+            repsController: TextEditingController(text: '5'),
+            highlightText: '6.0',
+            highlight: true,
+            completed: true,
+          ),
+          _SetRow(
+            set: '1',
+            previous: '100 kg x 5',
+            kgController: TextEditingController(text: '100'),
+            repsController: TextEditingController(text: '5'),
+            highlightText: '6.0',
+            highlight: true,
+            completed: true,
+          ),
+          _SetRow(
+            set: '1',
+            previous: '100 kg x 5',
+            kgController: TextEditingController(text: '100'),
+            repsController: TextEditingController(text: '5'),
+            highlightText: '6.0',
+            highlight: true,
+            completed: true,
+          ),
+          _SetRow(
+            set: '1',
+            previous: '100 kg x 5',
+            kgController: TextEditingController(text: '100'),
+            repsController: TextEditingController(text: '5'),
+            highlightText: '6.0',
+            highlight: true,
+            completed: true,
+          ),
+
+          const SizedBox(height: 12),
+
           /// Add Set
           Center(
-            child: TextButton(
-              onPressed: controller.workoutSetService.addSet,
-              style: TextButton.styleFrom(
-                foregroundColor: theme.colorScheme.secondary,
-                textStyle: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  decoration: TextDecoration.underline,
-                ),
+            child: Text(
+              'ADD SET',
+              style: TextStyle(
+                color: Colors.red.shade400,
+                fontWeight: FontWeight.w600,
               ),
-              child: Text('ADD SET'),
             ),
           ),
         ],
@@ -194,8 +200,6 @@ class _SetRow extends StatelessWidget {
   final String highlightText;
   final bool completed;
   final bool highlight;
-  final ValueChanged<SetType> onSetOrderTapped;
-  final ValueChanged<bool> onCompleteTap;
 
   const _SetRow({
     required this.set,
@@ -204,55 +208,20 @@ class _SetRow extends StatelessWidget {
     required this.repsController,
     required this.highlightText,
     required this.completed,
-    required this.onSetOrderTapped,
-    required this.onCompleteTap,
     this.highlight = false,
   });
-
-  Color _getSetColor() {
-    final sets = SetType.values.where((t) => t != SetType.remove).toList();
-
-    for (var s in sets) {
-      if (s.shortLabel == set) {
-        return s.color;
-      }
-    }
-
-    return Colors.grey;
-  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         children: [
           Expanded(
             flex: 1,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                customBorder: const CircleBorder(),
-                onTap: () async {
-                  final SetType? newSetType = await showSetTypeBottomSheet(
-                    context,
-                  );
-                  if (newSetType != null) {
-                    onSetOrderTapped(newSetType);
-                  }
-                },
-                child: Center(
-                  child: Text(
-                    set,
-                    style: TextStyle(
-                      color: _getSetColor(),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
+            child: Center(
+              child: Text(set, style: const TextStyle(color: Colors.white)),
             ),
           ),
           Expanded(
@@ -274,30 +243,26 @@ class _SetRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          InkWell(
-            onTap: () => onCompleteTap(!completed),
-            borderRadius: BorderRadius.circular(6),
-            child: Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                border: Border.all(
-                  color: completed
-                      ? theme.colorScheme.secondary
-                      : theme.colorScheme.outline,
-                ),
+          Container(
+            padding: EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(
+                color: completed
+                    ? theme.colorScheme.secondary
+                    : theme.colorScheme.surfaceContainerHighest,
               ),
-              child: Visibility(
-                visible: completed,
-                replacement: SuperIcon(
-                  size: 16,
-                  source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
-                ),
-                child: SuperIcon(
-                  size: 16,
-                  source: SuperIconSource.svgAsset(
-                    Assets.iconsCheckmarkCircleSelected,
-                  ),
+            ),
+            child: Visibility(
+              visible: completed,
+              replacement: SuperIcon(
+                size: 16,
+                source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
+              ),
+              child: SuperIcon(
+                size: 16,
+                source: SuperIconSource.svgAsset(
+                  Assets.iconsCheckmarkCircleSelected,
                 ),
               ),
             ),
@@ -360,7 +325,7 @@ class RepsInputField extends StatelessWidget {
     super.key,
     required this.repsController,
     required this.highlightText,
-    this.highlight = true,
+    this.highlight = false,
   });
 
   @override
@@ -368,7 +333,21 @@ class RepsInputField extends StatelessWidget {
     final theme = Theme.of(context);
     return TextFormField(
       controller: repsController,
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.none,
+      onTap: () {
+        Get.bottomSheet(
+          ActivityRepKeyboard(
+            controller: repsController,
+            onDone: () {
+              Get.back();
+            },
+            onRPE: () {
+              Get.back();
+            },
+            initialValue: double.tryParse(highlightText),
+          ),
+        );
+      },
       textAlign: TextAlign.center,
       style: const TextStyle(color: Colors.white, fontSize: 14),
       decoration: InputDecoration(
