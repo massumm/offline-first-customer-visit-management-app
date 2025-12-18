@@ -35,7 +35,7 @@ class WorkoutSetService extends GetxService {
     }
   }
 
-  void updateSetType(String type, int index) {
+  void updateSetType( int index, String type,) {
     workoutSets[index].copyWith(setType: type);
     workoutSets.refresh();
   }

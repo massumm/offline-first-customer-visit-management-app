@@ -1,9 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-Future<String> showSetTypeBottomSheet(BuildContext context) async {
+enum SetType { warmUp, normal, failure, drop, remove }
+
+extension SetTypeProperties on SetType {
+  String get label {
+    switch (this) {
+      case SetType.warmUp:
+        return "Warm Up Set";
+      case SetType.normal:
+        return "Normal Set";
+      case SetType.failure:
+        return "Failure Set";
+      case SetType.drop:
+        return "Drop Set";
+      case SetType.remove:
+        return "Remove Set";
+    }
+  }
+
+  Widget get leading {
+    final style = const TextStyle(fontWeight: FontWeight.bold, fontSize: 16);
+    switch (this) {
+      case SetType.warmUp:
+        return Text("W", style: style.copyWith(color: Colors.amber));
+      case SetType.normal:
+        return Text("1", style: style.copyWith(color: Colors.white));
+      case SetType.failure:
+        return Text("F", style: style.copyWith(color: Colors.redAccent));
+      case SetType.drop:
+        return Text("D", style: style.copyWith(color: Colors.blue));
+      case SetType.remove:
+        return const Icon(Icons.close, color: Colors.redAccent, size: 20);
+    }
+  }
+
+  bool get isDestructive => this == SetType.remove;
+
+  bool get showInfo => this != SetType.remove;
+}
+
+Future<SetType?> showSetTypeBottomSheet(BuildContext context) async {
   final theme = Theme.of(context);
- return await showModalBottomSheet(
+  return await showModalBottomSheet<SetType>(
     context: context,
     backgroundColor: theme.colorScheme.surfaceContainerHighest,
     shape: const RoundedRectangleBorder(
@@ -11,6 +50,11 @@ Future<String> showSetTypeBottomSheet(BuildContext context) async {
     ),
     isScrollControlled: true,
     builder: (context) {
+      final standardOptions = SetType.values
+          .where((t) => t != SetType.remove)
+          .toList();
+      final removeOption = SetType.remove;
+
       return Padding(
         padding: const EdgeInsets.only(bottom: 20.0),
         child: Column(
@@ -42,86 +86,27 @@ Future<String> showSetTypeBottomSheet(BuildContext context) async {
               ),
             ),
             const Divider(height: 1, color: Colors.white10),
-            _buildSetTypeOption(
-              context: context,
-              label: "Warm Up Set",
-              leading: const Text(
-                "W",
-                style: TextStyle(
-                  color: Colors.amber,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
+
+            ...standardOptions.map(
+              (setType) => _buildSetTypeOption(
+                context: context,
+                label: setType.label,
+                leading: setType.leading,
+                showInfo: setType.showInfo,
+                onTap: () {
+                  Get.back(result: setType);
+                },
               ),
-              showInfo: true,
-              onTap: () {
-                Get.back(result: 'W');
-              },
             ),
 
             _buildSetTypeOption(
               context: context,
-              label: "Normal Set",
-              leading: const Text(
-                "1",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              showInfo: true,
+              label: removeOption.label,
+              leading: removeOption.leading,
+              showInfo: removeOption.showInfo,
+              isDestructive: removeOption.isDestructive,
               onTap: () {
-                Get.back(result: '1');
-              },
-            ),
-
-            _buildSetTypeOption(
-              context: context,
-              label: "Failure Set",
-              leading: const Text(
-                "F",
-                style: TextStyle(
-                  color: Colors.redAccent,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              showInfo: true,
-              onTap: () {
-                Get.back(result: 'F');
-              },
-            ),
-
-            _buildSetTypeOption(
-              context: context,
-              label: "Drop Set",
-              leading: const Text(
-                "D",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              showInfo: true,
-              onTap: () {
-                Get.back(result: 'D');
-              },
-            ),
-
-            _buildSetTypeOption(
-              context: context,
-              label: "Remove Set",
-              leading: const Icon(
-                Icons.close,
-                color: Colors.redAccent,
-                size: 20,
-              ),
-              showInfo: false,
-              isDestructive: true,
-              onTap: () {
-                Navigator.pop(context);
+                Get.back(result: removeOption);
               },
             ),
           ],
@@ -139,6 +124,8 @@ Widget _buildSetTypeOption({
   bool showInfo = true,
   bool isDestructive = false,
 }) {
+  final labelColor = isDestructive ? Colors.redAccent : Colors.white;
+
   return Column(
     children: [
       Material(
@@ -156,20 +143,16 @@ Widget _buildSetTypeOption({
                   width: 30,
                   child: Align(alignment: Alignment.centerLeft, child: leading),
                 ),
-
-                // Label
                 Expanded(
                   child: Text(
                     label,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: labelColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-
-                // Info Icon (Right side)
                 if (showInfo)
                   const Icon(Icons.help_outline, color: Colors.grey, size: 20),
               ],
@@ -177,7 +160,6 @@ Widget _buildSetTypeOption({
           ),
         ),
       ),
-      // Thin divider
       const Divider(
         height: 1,
         color: Colors.white10,

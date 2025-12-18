@@ -82,43 +82,25 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
           const SizedBox(height: 8),
 
           /// Sets
-          _SetRow(
-            set: '1',
-            previous: '100 kg x 5',
-            kgController: TextEditingController(text: '100'),
-            repsController: TextEditingController(text: '5'),
-            highlightText: '6.0',
-            highlight: true,
-            completed: true,
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: controller.workoutSetService.workoutSets.length,
+            itemBuilder: (context, index) {
+              final set = controller.workoutSetService.workoutSets[index];
+              return _SetRow(
+                set: set.setType,
+                previous: set.previous,
+                kgController: set.kgController,
+                repsController: set.repsController,
+                highlightText: '6.0',
+                completed: false,
+                onSetTapped: (newType) {
+                  controller.workoutSetService.updateSetType(index, newType);
+                },
+              );
+            },
           ),
-          _SetRow(
-            set: '1',
-            previous: '100 kg x 5',
-            kgController: TextEditingController(text: '100'),
-            repsController: TextEditingController(text: '5'),
-            highlightText: '6.0',
-            highlight: true,
-            completed: true,
-          ),
-          _SetRow(
-            set: '1',
-            previous: '100 kg x 5',
-            kgController: TextEditingController(text: '100'),
-            repsController: TextEditingController(text: '5'),
-            highlightText: '6.0',
-            highlight: true,
-            completed: true,
-          ),
-          _SetRow(
-            set: '1',
-            previous: '100 kg x 5',
-            kgController: TextEditingController(text: '100'),
-            repsController: TextEditingController(text: '5'),
-            highlightText: '6.0',
-            highlight: true,
-            completed: true,
-          ),
-
           const SizedBox(height: 12),
 
           /// Add Set
@@ -201,6 +183,7 @@ class _SetRow extends StatelessWidget {
   final String highlightText;
   final bool completed;
   final bool highlight;
+  final ValueChanged<String> onSetTapped;
 
   const _SetRow({
     required this.set,
@@ -209,6 +192,7 @@ class _SetRow extends StatelessWidget {
     required this.repsController,
     required this.highlightText,
     required this.completed,
+    required this.onSetTapped,
     this.highlight = false,
   });
 
@@ -226,8 +210,15 @@ class _SetRow extends StatelessWidget {
               child: InkWell(
                 customBorder: const CircleBorder(),
                 onTap: () async {
-                  final String set = await showSetTypeBottomSheet(context);
-                  "Selected set value: $set".log();
+                  final SetType? newSetType = await showSetTypeBottomSheet(
+                    context,
+                  );
+                  if (newSetType != null) {
+                    if (newSetType == SetType.remove) {
+                      return;
+                    }
+                    onSetTapped(newSetType.label);
+                  }
                 },
                 child: Center(
                   child: Text(set, style: const TextStyle(color: Colors.white)),
