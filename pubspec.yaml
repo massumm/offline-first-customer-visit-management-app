@@ -139,8 +139,8 @@ flutter_native_splash:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/images/icon-launcher-icon.png"
-  adaptive_icon_foreground: "assets/images/icon-launcher-icon.png"
+  image_path: "assets/images/play_store_512.png"
+  adaptive_icon_foreground: "assets/images/play_store_512.png"
   adaptive_icon_background: "#FFFFFF"
   remove_alpha_ios: true
   min_sdk_android: 21

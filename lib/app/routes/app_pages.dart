@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 
-import '../core/middlewares/login_middleware.dart';
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
 import '../modules/app_settings/bindings/app_settings_binding.dart';
@@ -68,10 +67,15 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const String INITIAL = Routes.START_WORKOUT;
+  static const String INITIAL = Routes.HOME;
 
   static final routes = [
-    GetPage(name: _Paths.HOME, page: () => HomeView(), binding: HomeBinding()),
+    GetPage(
+      name: _Paths.HOME,
+      page: () => HomeView(),
+      binding: HomeBinding(),
+      //middlewares: [LoginMiddleware()],
+    ),
     GetPage(
       name: _Paths.ACTIVITY_TRACKER,
       page: () => ActivityTrackerView(),
@@ -81,7 +85,6 @@ class AppPages {
       name: _Paths.SPLASH,
       page: () => const SplashView(),
       binding: SplashBinding(),
-      middlewares: [LoginMiddleware()],
     ),
     GetPage(
       name: _Paths.LOGIN,
