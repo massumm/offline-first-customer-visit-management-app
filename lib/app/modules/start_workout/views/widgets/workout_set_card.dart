@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
 import 'package:icon/generated/assets.dart';
+
+import 'bottom_sheet/show_set_type_bottom_sheet.dart';
 
 class WorkoutSetCard extends StatelessWidget {
   const WorkoutSetCard({super.key});
@@ -217,8 +220,18 @@ class _SetRow extends StatelessWidget {
         children: [
           Expanded(
             flex: 1,
-            child: Center(
-              child: Text(set, style: const TextStyle(color: Colors.white)),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                customBorder: const CircleBorder(),
+                onTap: () async {
+                  final String set = await showSetTypeBottomSheet(context);
+                  "Selected set value: $set".log();
+                },
+                child: Center(
+                  child: Text(set, style: const TextStyle(color: Colors.white)),
+                ),
+              ),
             ),
           ),
           Expanded(

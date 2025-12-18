@@ -46,6 +46,7 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(child: WorkoutSetCard()),
+        // ADD BUTTON
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           sliver: SliverToBoxAdapter(
