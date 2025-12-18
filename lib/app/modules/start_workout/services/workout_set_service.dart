@@ -148,4 +148,30 @@ class WorkoutSetService extends GetxService {
     workoutSets[index] = workoutSets[index].copyWith(isComplete: isCompleted);
     workoutSets.refresh();
   }
+
+  void removeSet(int index) {
+    workoutSets[index].kgController.dispose();
+    workoutSets[index].repsController.dispose();
+
+    workoutSets.removeAt(index);
+
+    // Reorder the set type numbers to maintain sequence.
+    int counter = 1;
+    for (int i = 0; i < workoutSets.length; i++) {
+      final currentSet = workoutSets[i];
+      final isNormal = int.tryParse(currentSet.setType) != null;
+
+      if (currentSet.setType == 'F') {
+        // Failure sets are not part of the main numbering, so we skip.
+        continue;
+      } else if (isNormal) {
+        workoutSets[i] = currentSet.copyWith(setType: counter.toString());
+        counter++;
+      } else {
+        counter++;
+      }
+    }
+
+    workoutSets.refresh();
+  }
 }

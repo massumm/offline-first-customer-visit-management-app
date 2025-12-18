@@ -90,26 +90,47 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               itemBuilder: (context, index) {
                 final set = controller.workoutSetService.workoutSets[index];
 
-                return _SetRow(
-                  set: set.setType,
-                  previous: set.previous,
-                  kgController: set.kgController,
-                  repsController: set.repsController,
-                  highlightText: '5.00',
-                  completed: set.isComplete,
-                  highlight: true,
-                  onSetTapped: (newSetType) {
-                    controller.workoutSetService.updateSetType(
-                      index,
-                      newSetType,
-                    );
+                return Dismissible(
+                  key: ObjectKey(set),
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) {
+                    controller.workoutSetService.removeSet(index);
                   },
-                  onCompleteTap: (isCompleted) {
-                    controller.workoutSetService.toggleCompletion(
-                      index,
-                      isCompleted,
-                    );
-                  },
+                  background: Container(
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: const Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(right: 16.0),
+                        child: Icon(Icons.delete, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  child: _SetRow(
+                    set: set.setType,
+                    previous: set.previous,
+                    kgController: set.kgController,
+                    repsController: set.repsController,
+                    highlightText: '5.00',
+                    completed: set.isComplete,
+                    highlight: true,
+                    onSetTapped: (newSetType) {
+                      controller.workoutSetService.updateSetType(
+                        index,
+                        newSetType,
+                      );
+                    },
+                    onCompleteTap: (isCompleted) {
+                      controller.workoutSetService.toggleCompletion(
+                        index,
+                        isCompleted,
+                      );
+                    },
+                  ),
                 );
               },
             );
