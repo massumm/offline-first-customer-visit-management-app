@@ -4,11 +4,12 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
 import 'package:icon/generated/assets.dart';
 
 import 'bottom_sheet/show_set_type_bottom_sheet.dart';
 
-class WorkoutSetCard extends StatelessWidget {
+class WorkoutSetCard extends GetView<StartWorkoutController> {
   const WorkoutSetCard({super.key});
 
   @override
