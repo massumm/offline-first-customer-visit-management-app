@@ -52,6 +52,7 @@ class HomeView extends BaseView<HomeController> {
             color: controller.actionCards[0].color,
             percent: controller.actionCards[0].percent,
             gradient: controller.actionCards[0].gradient,
+            onTap: controller.onRecoveryCardTap,
 
           ),
           16.width,
@@ -60,9 +61,7 @@ class HomeView extends BaseView<HomeController> {
             color: controller.actionCards[1].color,
             percent: controller.actionCards[1].percent,
             gradient: controller.actionCards[1].gradient,
-            onTap: () {
-              Get.toNamed(Routes.NUTRITION_TRACKER);
-            },
+            onTap: controller.onNutritionCardTap,
           ),
           16.width,
           ActionsCard(

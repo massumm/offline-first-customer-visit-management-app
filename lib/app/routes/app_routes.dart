@@ -70,6 +70,9 @@ abstract class Routes {
   static const ACTIVITY_TRACKER = _Paths.ACTIVITY_TRACKER;
   static const START_WORKOUT = _Paths.START_WORKOUT;
   static const NUTRITION_TRACKER = _Paths.NUTRITION_TRACKER;
+  static const NUTRITION_TRACKER_ENTRY = _Paths.NUTRITION_TRACKER_ENTRY;
+  static const RECOVERY_TRACKER = _Paths.RECOVERY_TRACKER;
+  static const RECOVERY_TRACKER_ENTRY = _Paths.RECOVERY_TRACKER_ENTRY;
 }
 
 abstract class _Paths {
@@ -140,4 +143,7 @@ abstract class _Paths {
   static const TRAINEE_ONBOARDING_BY_PAGE = '/trainee-onboarding-by-page';
   static const START_WORKOUT = '/start-workout';
   static const NUTRITION_TRACKER = '/nutrition-tracker';
+  static const NUTRITION_TRACKER_ENTRY = '/nutrition-tracker-Entry';
+  static const RECOVERY_TRACKER = '/recovery-tracker';
+  static const RECOVERY_TRACKER_ENTRY = '/recovery-tracker-entry';
 }

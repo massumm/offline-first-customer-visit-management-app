@@ -119,6 +119,12 @@ class HomeController extends BaseController {
   void onActivityCardTap() {
     Get.toNamed(Routes.ACTIVITY_TRACKER);
   }
+  void onNutritionCardTap() {
+    Get.toNamed(Routes.NUTRITION_TRACKER);
+  }
+  void onRecoveryCardTap() {
+    Get.toNamed(Routes.RECOVERY_TRACKER);
+  }
 }
 
 
