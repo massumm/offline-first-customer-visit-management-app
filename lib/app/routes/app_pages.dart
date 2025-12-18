@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:icon/app/core/middlewares/login_middleware.dart';
 
+import '../core/middlewares/login_middleware.dart';
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
 import '../modules/app_settings/bindings/app_settings_binding.dart';
@@ -20,11 +20,15 @@ import '../modules/icon_profile/views/icon_profile_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/nutrition_tracker/bindings/nutrition_tracker_binding.dart';
+import '../modules/nutrition_tracker/views/nutrition_tracker_entry_view.dart';
 import '../modules/nutrition_tracker/views/nutrition_tracker_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
 import '../modules/onboarding/views/onboarding_view.dart';
 import '../modules/otp_validation/bindings/otp_validation_binding.dart';
 import '../modules/otp_validation/views/otp_validation_view.dart';
+import '../modules/recovery_tracker/bindings/recovery_tracker_binding.dart';
+import '../modules/recovery_tracker/views/recovery_tracker_entry_view.dart';
+import '../modules/recovery_tracker/views/recovery_tracker_view.dart';
 import '../modules/register/bindings/register_binding.dart';
 import '../modules/register/views/email_verification_otp_page_view.dart';
 import '../modules/register/views/register_view.dart';
@@ -212,6 +216,21 @@ class AppPages {
     GetPage(
       name: _Paths.NUTRITION_TRACKER,
       page: () => const NutritionTrackerView(),
+      binding: NutritionTrackerBinding(),
+    ),
+    GetPage(
+      name: _Paths.RECOVERY_TRACKER,
+      page: () => const RecoveryTrackerView(),
+      binding: RecoveryTrackerBinding(),
+    ),
+    GetPage(
+      name: _Paths.RECOVERY_TRACKER_ENTRY,
+      page: () => const LogRecoveryEntryView(),
+      binding: RecoveryTrackerBinding(),
+    ),
+    GetPage(
+      name: _Paths.NUTRITION_TRACKER_ENTRY,
+      page: () => const NutritionTrackerEntryView(),
       binding: NutritionTrackerBinding(),
     ),
   ];
