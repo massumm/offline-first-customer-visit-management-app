@@ -57,6 +57,51 @@ class WorkoutSetService extends GetxService {
     }
   }
 
+  void addSet() {
+    if (workoutSets.isEmpty) {
+      workoutSets.add(
+        WorkoutSetData(
+          setType: '1',
+          previous: '',
+          kgController: TextEditingController(text: ''),
+          repsController: TextEditingController(text: ''),
+          isComplete: false,
+        ),
+      );
+      return;
+    }
+
+    final lastSet = workoutSets.last;
+    workoutSets.add(
+      WorkoutSetData(
+        setType: '1',
+        previous: '',
+        kgController: TextEditingController(text: lastSet.kgController.text),
+        repsController: TextEditingController(
+          text: lastSet.repsController.text,
+        ),
+        isComplete: false,
+      ),
+    );
+
+    int counter = 1;
+    for (int i = 0; i < workoutSets.length; i++) {
+      final currentSet = workoutSets[i];
+      final isNormal = int.tryParse(currentSet.setType) != null;
+
+      if (currentSet.setType == 'F') {
+        continue;
+      } else if (isNormal) {
+        workoutSets[i] = currentSet.copyWith(setType: counter.toString());
+        counter++;
+      } else {
+        counter++;
+      }
+    }
+
+    workoutSets.refresh();
+  }
+
   void updateSetType(int index, SetType type) {
     if (type == SetType.remove) {
       workoutSets.removeAt(index);

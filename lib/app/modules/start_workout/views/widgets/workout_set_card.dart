@@ -17,7 +17,9 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
     final theme = Theme.of(context);
     return Container(
       margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16).copyWith(
+        bottom: 8
+      ),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
@@ -103,16 +105,19 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               },
             );
           }),
-          const SizedBox(height: 12),
-
           /// Add Set
           Center(
-            child: Text(
-              'ADD SET',
-              style: TextStyle(
-                color: Colors.red.shade400,
-                fontWeight: FontWeight.w600,
+            child: TextButton(
+              onPressed: controller.workoutSetService.addSet,
+              style: TextButton.styleFrom(
+                foregroundColor: theme.colorScheme.secondary,
+                textStyle: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                  decoration: TextDecoration.underline,
+                ),
               ),
+              child: Text('ADD SET'),
             ),
           ),
         ],
