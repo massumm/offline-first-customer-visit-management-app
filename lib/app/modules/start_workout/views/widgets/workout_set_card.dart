@@ -55,40 +55,54 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
           ),
 
           6.height,
-
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(12),
-              onTap: () {
-                Get.bottomSheet(
-                  RestTimerBottomSheet(selectedMinute: 0, selectedSecond: 0),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-
-                  children: const [
-                    Icon(
-                      Icons.timer,
-                      color: AppColors.activityPrimaryColor,
-                      size: 18,
-                    ),
-                    SizedBox(width: 6),
-                    Text(
-                      'Rest Timer',
-                      style: TextStyle(
+          // Rest Timer
+          Obx(() {
+            final isResting =
+                controller.restTimerService.totalRestTimeInSec.value > 0;
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () => controller.onRestTimerTap(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.timer,
                         color: AppColors.activityPrimaryColor,
-                        fontSize: 13,
+                        size: 18,
                       ),
-                    ),
-                  ],
+                      const SizedBox(width: 6),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Rest Timer',
+                          style: TextStyle(
+                            color: AppColors.activityPrimaryColor,
+                            fontSize: 13,
+                          ),
+                          children: [
+                            if (isResting)
+                              TextSpan(
+                                text:
+                                    ' (${controller.restTimerService.readableRestTime})',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          }),
 
           6.height,
 
