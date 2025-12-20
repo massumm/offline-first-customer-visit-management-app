@@ -5,6 +5,7 @@ import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
 import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
+import 'package:icon/app/modules/start_workout/views/widgets/set_delete_dialog.dart';
 import 'package:icon/generated/assets.dart';
 
 import '../../../activity_tracker/views/widgets/activity_rep_keyboard_widget.dart';
@@ -132,13 +133,28 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
                     Dismissible(
                       key: ObjectKey(set),
                       direction: DismissDirection.endToStart,
-                      onDismissed: (direction) {
-                        controller.workoutSetService.removeSet(index);
+                      confirmDismiss: (direction) {
+                        final kgText = set.kgController.text.isNotEmpty
+                            ? set.kgController.text
+                            : '0';
+                        final repsText = set.repsController.text.isNotEmpty
+                            ? set.repsController.text
+                            : '0';
+                        final details = '$kgText kg x $repsText reps';
+
+                        return showDeleteConfirmationDialog(
+                          context: context,
+                          title: 'Delete Set ${set.setType} ($details)?',
+                          message:
+                              'Are you sure you want to remove this set? This action cannot be undone.',
+                          onDelete: () =>
+                              controller.workoutSetService.removeSet(index),
+                        );
                       },
                       background: Container(
                         margin: const EdgeInsets.symmetric(vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.red,
+                          color: AppColors.activityPrimaryColor,
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: const Align(
@@ -184,7 +200,6 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
                               .restTimerService
                               .totalRestTimeInSec
                               .value,
-
                         ),
                       );
                     }),
