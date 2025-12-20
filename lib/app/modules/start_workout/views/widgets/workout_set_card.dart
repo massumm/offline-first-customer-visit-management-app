@@ -8,6 +8,7 @@ import 'package:icon/app/modules/start_workout/controllers/start_workout_control
 import 'package:icon/generated/assets.dart';
 
 import '../../../activity_tracker/views/widgets/activity_rep_keyboard_widget.dart';
+import 'bottom_sheet/rest_timer_bottom_sheet.dart';
 import 'bottom_sheet/show_set_type_bottom_sheet.dart';
 
 class WorkoutSetCard extends GetView<StartWorkoutController> {
@@ -53,21 +54,43 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
             ],
           ),
 
-          const SizedBox(height: 12),
+          6.height,
 
-          /// Rest Timer
-          Row(
-            children: const [
-              Icon(Icons.timer, color: Colors.red, size: 18),
-              SizedBox(width: 6),
-              Text(
-                'Rest Timer',
-                style: TextStyle(color: Colors.red, fontSize: 13),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () {
+                Get.bottomSheet(
+                  RestTimerBottomSheet(selectedMinute: 0, selectedSecond: 0),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+
+                  children: const [
+                    Icon(
+                      Icons.timer,
+                      color: AppColors.activityPrimaryColor,
+                      size: 18,
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      'Rest Timer',
+                      style: TextStyle(
+                        color: AppColors.activityPrimaryColor,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
 
-          const SizedBox(height: 12),
+          6.height,
 
           /// Table Header
           Row(
