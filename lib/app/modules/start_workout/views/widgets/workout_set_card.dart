@@ -108,11 +108,11 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
           /// Table Header
           Row(
             children: const [
-              _HeaderCell('SET', flex: 1),
-              _HeaderCell('PREVIOUS', flex: 3),
-              _HeaderCell('KG', flex: 2),
-              _HeaderCell('REPS', flex: 2),
-              _HeaderCell('', flex: 1, showIcon: true),
+              Expanded(flex: 1, child: _HeaderCell('SET')),
+              Expanded(flex: 3, child: _HeaderCell('PREVIOUS')),
+              Expanded(flex: 2, child: _HeaderCell('KG')),
+              Expanded(flex: 2, child: _HeaderCell('REPS')),
+              Expanded(flex: 1, child: _HeaderCell('', showIcon: true)),
             ],
           ),
           const SizedBox(height: 8),
@@ -264,35 +264,30 @@ class _MuscleChip extends StatelessWidget {
 
 class _HeaderCell extends StatelessWidget {
   final String text;
-  final int flex;
   final bool showIcon;
 
-  const _HeaderCell(this.text, {required this.flex, this.showIcon = false});
+  const _HeaderCell(this.text, {this.showIcon = false});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: flex,
-      child: Center(
-        child: showIcon
-            ? SuperIcon(
-                source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
-                size: 14,
-              )
-            : Text(
-                text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                ),
+    return Center(
+      child: showIcon
+          ? SuperIcon(
+              source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
+              size: 14,
+            )
+          : Text(
+              text,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
               ),
-      ),
+            ),
     );
   }
 }
-
 
 class _SetRow extends StatelessWidget {
   final String set;
@@ -379,7 +374,7 @@ class _SetRow extends StatelessWidget {
             flex: 2,
             child: _KgInputField(initialValue: kg, onChanged: onKgChanged),
           ),
-          6.width,
+          const SizedBox(width: 6),
           Expanded(
             flex: 2,
             child: _RepsInputField(
@@ -426,10 +421,7 @@ class _KgInputField extends StatefulWidget {
   final String initialValue;
   final ValueChanged<String> onChanged;
 
-  const _KgInputField({
-    required this.initialValue,
-    required this.onChanged,
-  });
+  const _KgInputField({required this.initialValue, required this.onChanged});
 
   @override
   State<_KgInputField> createState() => _KgInputFieldState();
@@ -498,10 +490,7 @@ class _KgInputFieldState extends State<_KgInputField> {
 }
 
 class _RepsInputField extends StatefulWidget {
-  const _RepsInputField({
-    required this.initialValue,
-    required this.onChanged,
-  });
+  const _RepsInputField({required this.initialValue, required this.onChanged});
 
   final String initialValue;
   final ValueChanged<String> onChanged;
@@ -536,56 +525,55 @@ class _RepsInputFieldState extends State<_RepsInputField> {
 
   @override
   Widget build(BuildContext context) {
-      final theme = Theme.of(context);
-      return TextFormField(
-        controller: _controller,
-        keyboardType: TextInputType.none,
-        onTap: () {
-          Get.bottomSheet(
-            ActivityRepKeyboard(
-              controller: _controller,
-              onDone: () {
-                Get.back();
-              },
-              onRPE: () {
-                Get.back();
-              },
-              initialValue: double.tryParse(widget.initialValue),
-            ),
-          );
-        },
-        textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.white, fontSize: 14),
-        decoration: InputDecoration(
-          isDense: true,
-          filled: true,
-          fillColor: theme.scaffoldBackgroundColor,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          suffix: Text(
-            widget.initialValue,
-            style: TextStyle(
-              color: Colors.orange,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
+    final theme = Theme.of(context);
+    return TextFormField(
+      controller: _controller,
+      keyboardType: TextInputType.none,
+      onTap: () {
+        Get.bottomSheet(
+          ActivityRepKeyboard(
+            controller: _controller,
+            onDone: () {
+              Get.back();
+            },
+            onRPE: () {
+              Get.back();
+            },
+            initialValue: double.tryParse(widget.initialValue),
           ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: BorderSide(
-              color: AppColors.activityPrimaryColor,
-              width: 1,
-            ),
+        );
+      },
+      textAlign: TextAlign.center,
+      style: const TextStyle(color: Colors.white, fontSize: 14),
+      decoration: InputDecoration(
+        isDense: true,
+        filled: true,
+        fillColor: theme.scaffoldBackgroundColor,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        suffix: Text(
+          widget.initialValue,
+          style: TextStyle(
+            color: Colors.orange,
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
           ),
         ),
-      );
-
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(
+            color: AppColors.activityPrimaryColor,
+            width: 1,
+          ),
+        ),
+      ),
+    );
   }
 }
