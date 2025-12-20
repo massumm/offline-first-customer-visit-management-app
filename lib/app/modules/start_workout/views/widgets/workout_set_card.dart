@@ -8,8 +8,8 @@ import 'package:icon/app/modules/start_workout/controllers/start_workout_control
 import 'package:icon/generated/assets.dart';
 
 import '../../../activity_tracker/views/widgets/activity_rep_keyboard_widget.dart';
-import 'bottom_sheet/rest_timer_bottom_sheet.dart';
 import 'bottom_sheet/show_set_type_bottom_sheet.dart';
+import 'timer_progress_bar.dart';
 
 class WorkoutSetCard extends GetView<StartWorkoutController> {
   const WorkoutSetCard({super.key});
@@ -103,7 +103,6 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               ),
             );
           }),
-
           6.height,
 
           /// Table Header
@@ -127,47 +126,69 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               itemBuilder: (context, index) {
                 final set = controller.workoutSetService.workoutSets[index];
 
-                return Dismissible(
-                  key: ObjectKey(set),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (direction) {
-                    controller.workoutSetService.removeSet(index);
-                  },
-                  background: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: const Align(
-                      alignment: Alignment.centerRight,
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 16.0),
-                        child: Icon(Icons.delete, color: Colors.white),
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Dismissible(
+                      key: ObjectKey(set),
+                      direction: DismissDirection.endToStart,
+                      onDismissed: (direction) {
+                        controller.workoutSetService.removeSet(index);
+                      },
+                      background: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 16.0),
+                            child: Icon(Icons.delete, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      child: _SetRow(
+                        set: set.setType,
+                        previous: set.previous,
+                        kgController: set.kgController,
+                        repsController: set.repsController,
+                        highlightText: '5.00',
+                        completed: set.isComplete,
+                        highlight: true,
+                        onSetTapped: (newSetType) {
+                          controller.workoutSetService.updateSetType(
+                            index,
+                            newSetType,
+                          );
+                        },
+                        onCompleteTap: (isCompleted) {
+                          controller.workoutSetService.toggleCompletion(
+                            index,
+                            isCompleted,
+                          );
+                        },
                       ),
                     ),
-                  ),
-                  child: _SetRow(
-                    set: set.setType,
-                    previous: set.previous,
-                    kgController: set.kgController,
-                    repsController: set.repsController,
-                    highlightText: '5.00',
-                    completed: set.isComplete,
-                    highlight: true,
-                    onSetTapped: (newSetType) {
-                      controller.workoutSetService.updateSetType(
-                        index,
-                        newSetType,
+                    // Timer Progress Bar
+                    Obx(() {
+                      final enableTimer =
+                          controller.restTimerService.totalRestTimeInSec.value >
+                              0 &&
+                          set.isComplete;
+                      return Visibility(
+                        visible: enableTimer,
+                        child: TimedProgressBar(
+                          seconds: controller
+                              .restTimerService
+                              .totalRestTimeInSec
+                              .value,
+                          hideOnComplete: true,
+                        ),
                       );
-                    },
-                    onCompleteTap: (isCompleted) {
-                      controller.workoutSetService.toggleCompletion(
-                        index,
-                        isCompleted,
-                      );
-                    },
-                  ),
+                    }),
+                  ],
                 );
               },
             );
