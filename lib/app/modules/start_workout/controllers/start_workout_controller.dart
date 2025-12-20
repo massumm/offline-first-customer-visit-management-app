@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
@@ -12,28 +13,38 @@ class StartWorkoutController extends BaseController {
   // ---------- Services ---------------
   final WorkoutSettingsService settingsService =
       Get.find<WorkoutSettingsService>();
-
   final ExerciseSelectionService exerciseSelectionService =
       Get.find<ExerciseSelectionService>();
-
   final WorkoutSetService workoutSetService = Get.find<WorkoutSetService>();
-
   final RestTimerService restTimerService = Get.find<RestTimerService>();
 
   // ------------- States -------------------
+  Timer? _workoutTimer;
+  final RxInt _elapsedSeconds = 0.obs;
+
+  String get onWorkoutDuration {
+    final int minutes = _elapsedSeconds.value ~/ 60;
+    final int seconds = _elapsedSeconds.value % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
 
   @override
   void onInit() {
     super.onInit();
-
     settingsService.attach(this);
     workoutSetService.attach(this);
     restTimerService.attach(this);
     exerciseSelectionService.attach(this);
+
+    // Start the workout timer
+    _workoutTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _elapsedSeconds.value++;
+    });
   }
 
   @override
   void onClose() {
+    _workoutTimer?.cancel();
     settingsService.detach();
     exerciseSelectionService.detach();
     workoutSetService.detach();
@@ -64,7 +75,6 @@ class StartWorkoutController extends BaseController {
         onSecondChanged: (value) {
           restTimerService.selectedSecond.value = value;
         },
-
         onStart: () {
           restTimerService.totalRestTimeInSec.value =
               restTimerService.selectedMinute.value * 60 +

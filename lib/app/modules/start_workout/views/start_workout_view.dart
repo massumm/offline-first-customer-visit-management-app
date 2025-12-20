@@ -8,6 +8,7 @@ import 'package:icon/app/core/widgets/action_button.dart';
 
 import '../controllers/start_workout_controller.dart';
 import 'widgets/workout_set_card.dart';
+import 'widgets/workout_summary_widget.dart';
 
 class StartWorkoutView extends BaseView<StartWorkoutController> {
   const StartWorkoutView({super.key});
@@ -95,6 +96,15 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
           ),
         ),
       ],
+    );
+  }
+
+  @override
+  Widget? bottomNavigationBar(BuildContext context) {
+    return WorkoutSummaryWidget(
+      totalVolume: 50,
+      onDiscard: () {},
+      onSave: () {},
     );
   }
 }
