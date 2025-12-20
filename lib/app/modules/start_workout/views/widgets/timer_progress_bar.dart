@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 import 'package:vibration/vibration.dart';
 
 class TimedProgressBar extends StatefulWidget {
@@ -83,6 +85,26 @@ class _TimedProgressBarState extends State<TimedProgressBar> {
       builder: (context, remaining, child) {
         if (widget.hideOnComplete && remaining == 0) {
           return const SizedBox.shrink();
+        }
+
+        if (remaining <= 0) {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Divider(),
+              6.width,
+              Text(
+                _formattedTime(widget.seconds),
+                style: TextStyle(
+                  color: AppColors.activityPrimaryColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              6.width,
+              Divider(),
+            ],
+          );
         }
 
         double progress = _progress(remaining);

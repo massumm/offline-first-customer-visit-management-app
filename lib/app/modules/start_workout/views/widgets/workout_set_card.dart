@@ -184,7 +184,7 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
                               .restTimerService
                               .totalRestTimeInSec
                               .value,
-                          hideOnComplete: true,
+
                         ),
                       );
                     }),
