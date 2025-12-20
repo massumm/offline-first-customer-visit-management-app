@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/modules/nutrition_tracker/controllers/nutrition_tracker_controller.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 
 class NutritionTrackerEntryView
     extends GetView<NutritionTrackerController> {
@@ -10,14 +12,9 @@ class NutritionTrackerEntryView
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        leading: const BackButton(color: Colors.white),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Add New Meal',
-          style: TextStyle(color: Colors.white),
-        ),
+      appBar: const CustomAppBar(
+        title: 'Add New Meal',
+        showBackButton: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -29,66 +26,80 @@ class NutritionTrackerEntryView
               controller.mealNameController,
               hint: 'e.g. Protein Smoothie Bowl',
             ),
-            const SizedBox(height: 16),
-
-            _label('Calories'),
-            _input(controller.caloriesController, suffix: 'kcal'),
-            const SizedBox(height: 16),
-
-            Row(
-              children: [
-                Expanded(
-                  child: _macroInput(
-                    title: 'Protein',
-                    controller: controller.proteinController,
-                    unit: 'g',
+            const SizedBox(height: 24),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildCaloriesCard(
+                    title: 'Calories',
+                    controller: controller.caloriesController,
+                    hint: '548',
+                    subtitle: 'Per meal',
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _macroInput(
-                    title: 'Fats',
-                    controller: controller.fatsController,
-                    unit: 'g',
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildMacroCard(
+                          title: 'Protein',
+                          controller: controller.proteinController,
+                          hint: '27g',
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildMacroCard(
+                          title: 'Fats',
+                          controller: controller.fatsController,
+                          hint: '3g',
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: _buildMacroCard(
+                          title: 'Carbs',
+                          controller: controller.carbsController,
+                          hint: '32g',
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _macroInput(
-                    title: 'Carbs',
-                    controller: controller.carbsController,
-                    unit: 'g',
-                  ),
-                ),
-              ],
+                ]
             ),
-
+            ),
             const Spacer(),
-
             _quantitySelector(),
-
             const SizedBox(height: 16),
-
             _saveButton(),
+
           ],
         ),
       ),
     );
   }
 
+  // 2. Added the _label helper widget
   Widget _label(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
       child: Text(
         text,
         style: TextStyle(
-          color: Colors.grey.shade400,
-          fontSize: 12,
+          color: Colors.white,
+          fontSize: 14,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );
   }
 
+  // 3. Added the _input helper widget for the text field
   Widget _input(
       TextEditingController controller, {
         String? hint,
@@ -101,30 +112,124 @@ class NutritionTrackerEntryView
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey.shade600),
         suffixText: suffix,
-        suffixStyle: TextStyle(color: Colors.grey.shade400),
+        suffixStyle: const TextStyle(color: Colors.white),
         filled: true,
         fillColor: Colors.grey.shade900,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
       ),
     );
   }
 
-  Widget _macroInput({
+  // New Widget for the main Calories card
+  Widget _buildCaloriesCard({
     required String title,
     required TextEditingController controller,
-    required String unit,
+    required String subtitle,
+    String? hint,
   }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _label(title),
-        _input(controller, suffix: unit),
-      ],
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+              ),
+              const Icon(Icons.edit, color: Colors.white, size: 20),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              // Use an intrinsic width to allow the textfield to be inline
+              IntrinsicWidth(
+                child: TextField(
+                  controller: controller,
+                  style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 28, fontWeight: FontWeight.bold),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 4), // Align with text baseline
+                child: Text(
+                  subtitle,
+                  style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
+
+  // New Widget for the smaller Protein, Fats, and Carbs cards
+  Widget _buildMacroCard({
+    required String title,
+    required TextEditingController controller,
+    String? hint,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.black,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
+              ),
+              const Icon(Icons.edit, color: Colors.white, size: 16),
+            ],
+          ),
+          const SizedBox(height: 4),
+          // Use a TextField that looks like simple text
+          TextField(
+            controller: controller,
+            style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              hintText: hint,
+              hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 22, fontWeight: FontWeight.bold),
+              border: InputBorder.none,
+              isDense: true,
+              contentPadding: EdgeInsets.zero,
+              suffixText: 'g', // Add the 'g' unit here
+              suffixStyle: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   Widget _quantitySelector() {
     return Obx(
@@ -133,29 +238,36 @@ class NutritionTrackerEntryView
         children: [
           const Text(
             'Quantity',
-            style: TextStyle(color: Colors.white),
+            style: TextStyle(color: Colors.white, fontSize: 16),
           ),
-          Row(
-            children: [
-              _qtyButton(
-                icon: Icons.remove,
-                onTap: controller.decrementQty,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Text(
-                  controller.quantity.value.toString(),
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+          Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade900,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Row(
+              children: [
+                _qtyButton(
+                  icon: Icons.remove,
+                  onTap: controller.decrementQty,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    controller.quantity.value.toString()+"x",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
-              ),
-              _qtyButton(
-                icon: Icons.add,
-                onTap: controller.incrementQty,
-              ),
-            ],
+                _qtyButton(
+                  icon: Icons.add,
+                  onTap: controller.incrementQty,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -165,14 +277,14 @@ class NutritionTrackerEntryView
   Widget _qtyButton({required IconData icon, required VoidCallback onTap}) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(10),
       child: Container(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
-          color: Colors.grey.shade900,
-          borderRadius: BorderRadius.circular(8),
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(20),
         ),
-        child: Icon(icon, color: Colors.green),
+        child: Icon(icon, color: Colors.white),
       ),
     );
   }
@@ -184,7 +296,7 @@ class NutritionTrackerEntryView
       child: ElevatedButton(
         onPressed: controller.saveMeal,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.green,
+          backgroundColor: AppColors.deepGreenFavBgColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),

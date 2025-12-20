@@ -5,6 +5,7 @@ import 'package:icon/app/base/base_view.dart';
 import '../../../../generated/assets.dart';
 import '../../../core/enums/fav_enum.dart';
 import '../../../core/extensions/app_extansions.dart';
+import '../../../core/widgets/custom_app_bar.dart';
 import '../../../core/widgets/fab_widgets/animated_fab.dart';
 import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
 import '../../../core/widgets/fab_widgets/fab_card_item.dart';
@@ -53,7 +54,7 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
 
   Widget _mealTile({required String title, required String subtitle}) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(12),
@@ -90,7 +91,12 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
             ),
           ),
 
-          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white),
+          Image.asset(
+            Assets.imagesArrowUpLeft,
+            width: 24, // Set the size to match the previous icon
+            height: 24,
+            color: Colors.white, // Apply a color tint if needed
+          ),
         ],
       ),
     );
@@ -100,15 +106,10 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
   Widget body(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: Get.back,
-        ),
-        title: const Text('Nutrition tracker'),
+      appBar: const CustomAppBar(
+        title: 'Nutrition Tracker',
+        // showBackButton is true by default, so you can omit it if you want it visible
+        showBackButton: true,
       ),
 
       floatingActionButton: AnimatedFab(
@@ -166,7 +167,7 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
                     source: SuperIconSource.imageAsset(
                       Assets.nutritionTrackerNotebookIcon,
                     ),
-                    onTap: () {},
+                    onTap: controller.onManualCardTap,
                   ),
                   FabCardItem(
                     title: "Take Photo",

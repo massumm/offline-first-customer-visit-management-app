@@ -216,6 +216,8 @@ class Assets {
   static const String imagesOnboarding3 = 'assets/images/onboarding-3.png';
   static const String imagesPlayStore512 = 'assets/images/play_store_512.png';
   static const String imagesPlusSign = 'assets/images/plus-sign.png';
+  static const String imagesBackButton = 'assets/images/back_image.png';
+  static const String imagesArrowUpLeft = 'assets/images/arrow-up-left.png';
   static const String imagesRegisterButton =
       'assets/images/register_button.png';
   static const String imagesSplashIcon = 'assets/images/splash_icon.png';
