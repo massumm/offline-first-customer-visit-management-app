@@ -1,32 +1,30 @@
-import 'package:flutter/material.dart';
-
 class WorkoutSetData {
   final String setType;
   final String previous;
-  final TextEditingController kgController;
-  final TextEditingController repsController;
+  final String kg;
+  final String reps;
   final bool isComplete;
 
   WorkoutSetData({
     required this.setType,
     required this.previous,
-    required this.kgController,
-    required this.repsController,
+    required this.kg,
+    required this.reps,
     required this.isComplete,
   });
 
-  // Copy with method
   WorkoutSetData copyWith({
     String? setType,
     String? previous,
-    TextEditingController? kgController,
-    TextEditingController? repsController,
+    String? kg,
+    String? reps,
     bool? isComplete,
-  }) => WorkoutSetData(
-    setType: setType ?? this.setType,
-    previous: previous ?? this.previous,
-    kgController: kgController ?? this.kgController,
-    repsController: repsController ?? this.repsController,
-    isComplete: isComplete ?? this.isComplete,
-  );
+  }) =>
+      WorkoutSetData(
+        setType: setType ?? this.setType,
+        previous: previous ?? this.previous,
+        kg: kg ?? this.kg,
+        reps: reps ?? this.reps,
+        isComplete: isComplete ?? this.isComplete,
+      );
 }

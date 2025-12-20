@@ -43,7 +43,6 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               ),
             ],
           ),
-
           const SizedBox(height: 8),
 
           /// Muscle Chips
@@ -54,8 +53,8 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               _MuscleChip(label: 'Glutes'),
             ],
           ),
-
           6.height,
+
           // Rest Timer
           Obx(() {
             final isResting =
@@ -116,9 +115,9 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               _HeaderCell('', flex: 1, showIcon: true),
             ],
           ),
-
           const SizedBox(height: 8),
 
+          // Main List
           Obx(() {
             return ListView.builder(
               shrinkWrap: true,
@@ -134,12 +133,8 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
                       key: ObjectKey(set),
                       direction: DismissDirection.endToStart,
                       confirmDismiss: (direction) {
-                        final kgText = set.kgController.text.isNotEmpty
-                            ? set.kgController.text
-                            : '0';
-                        final repsText = set.repsController.text.isNotEmpty
-                            ? set.repsController.text
-                            : '0';
+                        final kgText = set.kg.isNotEmpty ? set.kg : '0';
+                        final repsText = set.reps.isNotEmpty ? set.reps : '0';
                         final details = '$kgText kg x $repsText reps';
 
                         return showDeleteConfirmationDialog(
@@ -168,8 +163,8 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
                       child: _SetRow(
                         set: set.setType,
                         previous: set.previous,
-                        kgController: set.kgController,
-                        repsController: set.repsController,
+                        kg: set.kg,
+                        reps: set.reps,
                         highlightText: '5.00',
                         completed: set.isComplete,
                         highlight: true,
@@ -184,6 +179,12 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
                             index,
                             isCompleted,
                           );
+                        },
+                        onKgChanged: (value) {
+                          controller.workoutSetService.updateKg(index, value);
+                        },
+                        onRepsChanged: (value) {
+                          controller.workoutSetService.updateReps(index, value);
                         },
                       ),
                     ),
@@ -292,26 +293,31 @@ class _HeaderCell extends StatelessWidget {
   }
 }
 
+
 class _SetRow extends StatelessWidget {
   final String set;
   final String previous;
-  final TextEditingController kgController;
-  final TextEditingController repsController;
+  final String kg;
+  final String reps;
   final String highlightText;
   final bool completed;
   final bool highlight;
   final ValueChanged<SetType> onSetTapped;
   final ValueChanged<bool> onCompleteTap;
+  final ValueChanged<String> onKgChanged;
+  final ValueChanged<String> onRepsChanged;
 
   const _SetRow({
     required this.set,
     required this.previous,
-    required this.kgController,
-    required this.repsController,
+    required this.kg,
+    required this.reps,
     required this.highlightText,
     required this.completed,
     required this.onSetTapped,
     required this.onCompleteTap,
+    required this.onKgChanged,
+    required this.onRepsChanged,
     this.highlight = true,
   });
 
@@ -371,15 +377,14 @@ class _SetRow extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: _InputBox(controller: kgController, enabled: true),
+            child: _KgInputField(initialValue: kg, onChanged: onKgChanged),
           ),
           6.width,
           Expanded(
             flex: 2,
-            child: RepsInputField(
-              repsController: repsController,
-              highlightText: highlightText,
-              highlight: highlight,
+            child: _RepsInputField(
+              initialValue: reps,
+              onChanged: onRepsChanged,
             ),
           ),
           const SizedBox(width: 8),
@@ -417,11 +422,42 @@ class _SetRow extends StatelessWidget {
   }
 }
 
-class _InputBox extends StatelessWidget {
-  final TextEditingController controller;
-  final bool enabled;
+class _KgInputField extends StatefulWidget {
+  final String initialValue;
+  final ValueChanged<String> onChanged;
 
-  const _InputBox({required this.controller, this.enabled = true});
+  const _KgInputField({
+    required this.initialValue,
+    required this.onChanged,
+  });
+
+  @override
+  State<_KgInputField> createState() => _KgInputFieldState();
+}
+
+class _KgInputFieldState extends State<_KgInputField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController(text: widget.initialValue);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant _KgInputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -429,9 +465,10 @@ class _InputBox extends StatelessWidget {
     return SizedBox(
       height: 34,
       child: TextFormField(
-        controller: controller,
-        enabled: enabled,
+        controller: _controller,
+        enabled: true,
         keyboardType: TextInputType.number,
+        onChanged: widget.onChanged,
         textAlign: TextAlign.center,
         style: const TextStyle(color: Colors.white, fontSize: 14),
         decoration: InputDecoration(
@@ -460,69 +497,95 @@ class _InputBox extends StatelessWidget {
   }
 }
 
-class RepsInputField extends StatelessWidget {
-  final TextEditingController repsController;
-  final String highlightText;
-  final bool highlight;
-
-  const RepsInputField({
-    super.key,
-    required this.repsController,
-    required this.highlightText,
-    this.highlight = false,
+class _RepsInputField extends StatefulWidget {
+  const _RepsInputField({
+    required this.initialValue,
+    required this.onChanged,
   });
+
+  final String initialValue;
+  final ValueChanged<String> onChanged;
+
+  @override
+  State<_RepsInputField> createState() => _RepsInputFieldState();
+}
+
+class _RepsInputFieldState extends State<_RepsInputField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController(text: widget.initialValue);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant _RepsInputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return TextFormField(
-      controller: repsController,
-      keyboardType: TextInputType.none,
-      onTap: () {
-        Get.bottomSheet(
-          ActivityRepKeyboard(
-            controller: repsController,
-            onDone: () {
-              Get.back();
-            },
-            onRPE: () {
-              Get.back();
-            },
-            initialValue: double.tryParse(highlightText),
+      final theme = Theme.of(context);
+      return TextFormField(
+        controller: _controller,
+        keyboardType: TextInputType.none,
+        onTap: () {
+          Get.bottomSheet(
+            ActivityRepKeyboard(
+              controller: _controller,
+              onDone: () {
+                Get.back();
+              },
+              onRPE: () {
+                Get.back();
+              },
+              initialValue: double.tryParse(widget.initialValue),
+            ),
+          );
+        },
+        textAlign: TextAlign.center,
+        style: const TextStyle(color: Colors.white, fontSize: 14),
+        decoration: InputDecoration(
+          isDense: true,
+          filled: true,
+          fillColor: theme.scaffoldBackgroundColor,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          suffix: Text(
+            widget.initialValue,
+            style: TextStyle(
+              color: Colors.orange,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        );
-      },
-      textAlign: TextAlign.center,
-      style: const TextStyle(color: Colors.white, fontSize: 14),
-      decoration: InputDecoration(
-        isDense: true,
-        filled: true,
-        fillColor: theme.scaffoldBackgroundColor,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        suffix: Text(
-          highlightText,
-          style: TextStyle(
-            color: highlight ? Colors.orange : Colors.grey,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: AppColors.activityPrimaryColor,
+              width: 1,
+            ),
           ),
         ),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(
-            color: AppColors.activityPrimaryColor,
-            width: 1,
-          ),
-        ),
-      ),
-    );
+      );
+
   }
 }

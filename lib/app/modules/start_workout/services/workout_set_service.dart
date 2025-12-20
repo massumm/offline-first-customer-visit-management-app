@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
 import 'package:icon/app/modules/start_workout/views/widgets/bottom_sheet/show_set_type_bottom_sheet.dart';
@@ -11,36 +10,36 @@ class WorkoutSetService extends GetxService {
     WorkoutSetData(
       setType: '1',
       previous: '100 kg x 5',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '5'),
+      kg: '100',
+      reps: '5',
       isComplete: false,
     ),
     WorkoutSetData(
       setType: '2',
       previous: '100 kg x 8',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '8'),
+      kg: '100',
+      reps: '8',
       isComplete: false,
     ),
     WorkoutSetData(
       setType: '3',
       previous: '100 kg x 8',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '8'),
+      kg: '100',
+      reps: '8',
       isComplete: false,
     ),
     WorkoutSetData(
       setType: '4',
       previous: '100 kg x 8',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '8'),
+      kg: '100',
+      reps: '8',
       isComplete: false,
     ),
     WorkoutSetData(
       setType: '5',
       previous: '100 kg x 8',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '8'),
+      kg: '100',
+      reps: '8',
       isComplete: false,
     ),
   ].obs;
@@ -54,10 +53,6 @@ class WorkoutSetService extends GetxService {
 
   void detach() {
     _controller = null;
-    for (var set in workoutSets) {
-      set.kgController.dispose();
-      set.repsController.dispose();
-    }
   }
 
   void addSet() {
@@ -66,8 +61,8 @@ class WorkoutSetService extends GetxService {
         WorkoutSetData(
           setType: '1',
           previous: '',
-          kgController: TextEditingController(text: ''),
-          repsController: TextEditingController(text: ''),
+          kg: '',
+          reps: '',
           isComplete: false,
         ),
       );
@@ -79,10 +74,8 @@ class WorkoutSetService extends GetxService {
       WorkoutSetData(
         setType: '1',
         previous: '',
-        kgController: TextEditingController(text: lastSet.kgController.text),
-        repsController: TextEditingController(
-          text: lastSet.repsController.text,
-        ),
+        kg: lastSet.kg,
+        reps: lastSet.reps,
         isComplete: false,
       ),
     );
@@ -131,8 +124,6 @@ class WorkoutSetService extends GetxService {
         workoutSets[i] = currentSet.copyWith(setType: counter.toString());
         counter++;
       } else {
-        // Other types
-        // They keep their label but consume a number in the sequence.
         counter++;
       }
     }
@@ -156,9 +147,6 @@ class WorkoutSetService extends GetxService {
   }
 
   void removeSet(int index) {
-    workoutSets[index].kgController.dispose();
-    workoutSets[index].repsController.dispose();
-
     workoutSets.removeAt(index);
 
     // Reorder the set type numbers to maintain sequence.
@@ -178,6 +166,16 @@ class WorkoutSetService extends GetxService {
       }
     }
 
+    workoutSets.refresh();
+  }
+
+  void updateKg(int index, String value) {
+    workoutSets[index] = workoutSets[index].copyWith(kg: value);
+    workoutSets.refresh();
+  }
+
+  void updateReps(int index, String value) {
+    workoutSets[index] = workoutSets[index].copyWith(reps: value);
     workoutSets.refresh();
   }
 }
