@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
-import 'package:flutter/material.dart';
 import 'package:icon/app/core/values/app_text_styles.dart' as appBarTheme;
 import '../../../../generated/assets.dart';
 import '../../../core/enums/fav_enum.dart';
 import '../../../core/extensions/app_extansions.dart';
 import '../../../core/widgets/action_button.dart';
-import '../../../core/widgets/custom_app_bar.dart';
 import '../../../core/widgets/fab_widgets/animated_fab.dart';
 import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
 import '../../../core/widgets/fab_widgets/fab_card_item.dart';

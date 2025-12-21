@@ -4,7 +4,7 @@ import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/modules/nutrition_tracker/controllers/nutrition_tracker_controller.dart';
 import '../../../core/values/app_text_styles.dart' as appBarTheme;
 import '../../../core/widgets/action_button.dart';
-import '../../../core/widgets/custom_app_bar.dart';
+
 
 class NutritionTrackerEntryView
     extends GetView<NutritionTrackerController> {
