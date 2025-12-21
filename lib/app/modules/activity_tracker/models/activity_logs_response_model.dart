@@ -194,6 +194,27 @@ class ExerciseElement {
             : DateTime.parse(json["updated_at"]),
       );
 
+  // Copy With Method
+  ExerciseElement copyWith({
+    int? id,
+    int? order,
+    int? restTimeSeconds,
+    ExerciseExercise? exercise,
+    List<Set>? sets,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) {
+    return ExerciseElement(
+      id: id ?? this.id,
+      order: order ?? this.order,
+      restTimeSeconds: restTimeSeconds ?? this.restTimeSeconds,
+      exercise: exercise ?? this.exercise,
+      sets: sets ?? this.sets,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
     "id": id,
     "order": order,
