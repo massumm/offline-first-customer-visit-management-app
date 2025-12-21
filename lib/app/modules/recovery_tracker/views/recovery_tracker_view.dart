@@ -6,6 +6,8 @@ import '../../../base/base_view.dart';
 import '../../../core/enums/fav_enum.dart';
 import '../../../core/extensions/app_extansions.dart';
 import '../../../core/values/app_colors.dart';
+import '../../../core/values/app_text_styles.dart' as appBarTheme;
+import '../../../core/widgets/action_button.dart';
 import '../../../core/widgets/fab_widgets/animated_fab.dart';
 import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
 import '../../../core/widgets/fab_widgets/fab_card_item.dart';
@@ -102,15 +104,15 @@ class RecoveryTrackerView extends BaseView<RecoveryTrackerController> {
   Widget body(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+      appBar:
+      AppBar(
+        title: Text('Recovery  tracker', style: appBarTheme.titleTextStyle),
+        centerTitle: true,
 
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: Get.back,
+        leading: Padding(
+          padding: EdgeInsets.all(6),
+          child: ActionButton.compact(onTap: Get.back),
         ),
-        title: const Text('Recovery  tracker'),
       ),
 
       floatingActionButton: AnimatedFab(
