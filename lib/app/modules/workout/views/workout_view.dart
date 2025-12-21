@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+
 import '../controllers/workout_controller.dart';
-import 'widgets/workout_set_card.dart';
-import 'widgets/workout_summary_widget.dart';
+import '../widgets/workout_set_card.dart';
+import '../widgets/workout_summary_widget.dart';
 
 class WorkoutView extends BaseView<WorkoutController> {
   const WorkoutView({super.key});
@@ -34,7 +34,7 @@ class WorkoutView extends BaseView<WorkoutController> {
         onTap: controller.onSettingTap,
         height: 40,
         width: 40,
-        icon:SuperIconSource.icon( Icons.settings_outlined),
+        icon: SuperIconSource.icon(Icons.settings_outlined),
         iconSize: 20,
       ),
       8.width,

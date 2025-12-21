@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 
-import '../../controllers/workout_controller.dart';
+import '../controllers/workout_controller.dart';
 
 class WorkoutSummaryWidget extends GetView<WorkoutController> {
   const WorkoutSummaryWidget({super.key});

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 
-import '../../services/clock_service.dart';
+import '../services/clock_service.dart';
 
 void showClockBottomSheet(BuildContext context) {
   final controller = Get.put(ClockService(), tag: UniqueKey().toString());
@@ -174,9 +174,16 @@ Widget _modeButton(
             color: active ? AppColors.activityPrimaryColor : Colors.transparent,
           ),
         ),
-        child: Center(child: Text(label, style: theme.textTheme.titleSmall!.copyWith(
-          color: active ? theme.colorScheme.secondaryContainer : theme.colorScheme.onSecondaryContainer,
-        ))),
+        child: Center(
+          child: Text(
+            label,
+            style: theme.textTheme.titleSmall!.copyWith(
+              color: active
+                  ? theme.colorScheme.secondaryContainer
+                  : theme.colorScheme.onSecondaryContainer,
+            ),
+          ),
+        ),
       ),
     ),
   );

@@ -1,31 +1,86 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:icon/app/base/base_controller.dart';
-import 'package:icon/app/modules/workout/services/save_workout_service.dart';
-import 'package:icon/app/modules/workout/views/save_workout_view.dart';
+
+import '../../../base/base_controller.dart';
+import '../index.dart';
+import '../models/equipments_response_model.dart';
+import '../models/exercises_response_model.dart';
+import '../models/muscle_group_response_model.dart';
+import '../repository/workout_repository.dart';
 import '../services/rest_timer_service.dart';
+import '../services/save_workout_service.dart';
 import '../services/start_workout_services_index.dart';
-import '../views/index.dart';
-import '../views/widgets/bottom_sheet/rest_timer_bottom_sheet.dart';
-import '../views/widgets/clock_bottom_sheet.dart';
+import '../views/save_workout_view.dart';
+import '../widgets/bottom_sheet/rest_timer_bottom_sheet.dart';
+import '../widgets/clock_bottom_sheet.dart';
 
 class WorkoutController extends BaseController {
-  // ---------- Services ---------------
   final WorkoutSettingsService settingsService =
       Get.find<WorkoutSettingsService>();
-  final ExerciseSelectionService exerciseSelectionService =
-      Get.find<ExerciseSelectionService>();
+
   final WorkoutSetService workoutSetService = Get.find<WorkoutSetService>();
   final RestTimerService restTimerService = Get.find<RestTimerService>();
   final SaveWorkoutService saveWorkoutService = Get.find<SaveWorkoutService>();
 
-  // ------------- States -------------------
   Timer? _workoutTimer;
   final RxInt _elapsedSeconds = 0.obs;
   final RxInt _finalElapsedSeconds = 0.obs;
 
   Rx<DateTime> loggedAt = DateTime.now().obs;
+
+  final WorkoutRepository _workoutRepository = Get.find(
+    tag: (WorkoutRepository).toString(),
+  );
+
+  final RxList<Exercise> recentExercises = <Exercise>[].obs;
+  final RxList<Exercise> allExercises = <Exercise>[].obs;
+  final RxList<Exercise> selectedExercise = <Exercise>[].obs;
+  final RxList<Muscle> musclesItems = <Muscle>[].obs;
+  final RxList<Equipment> equipmentItems = <Equipment>[].obs;
+  final Rx<Muscle> selectedMuscle = Muscle().obs;
+  final Rx<Equipment> selectedEquipment = Equipment().obs;
+
+  final RxBool isLoading = true.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    settingsService.attach(this);
+    workoutSetService.attach(this);
+    restTimerService.attach(this);
+
+    saveWorkoutService.attach(this);
+
+    // Start the workout timer
+    _workoutTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _elapsedSeconds.value++;
+    });
+    _workoutRepository.getMusclesGroups().then((MuscleGroupResponseModel data) {
+      musclesItems.value = data.results!;
+    });
+    _workoutRepository.getEquipments().then((EquipmentResponseModel data) {
+      equipmentItems.value = data.results!;
+    });
+
+    _workoutRepository.getExercises().then((ExercisesResponseModel data) {
+      recentExercises.value = data.recent!;
+      allExercises.value = data.results!;
+      isLoading.value = false;
+    });
+  }
+
+  void toggleExercise(Exercise exercise) {
+    if (!selectedExercise.contains(exercise)) {
+      selectedExercise.add(exercise);
+    } else {
+      selectedExercise.remove(exercise);
+    }
+  }
+
+  bool isExerciseSelected(Exercise exercise) =>
+      selectedExercise.contains(exercise);
 
   double get totalVolume {
     return workoutSetService.workoutSets.where((set) => set.isComplete).fold(
@@ -55,25 +110,9 @@ class WorkoutController extends BaseController {
   int get totalSets => workoutSetService.workoutSets.length;
 
   @override
-  void onInit() {
-    super.onInit();
-    settingsService.attach(this);
-    workoutSetService.attach(this);
-    restTimerService.attach(this);
-    exerciseSelectionService.attach(this);
-    saveWorkoutService.attach(this);
-
-    // Start the workout timer
-    _workoutTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-      _elapsedSeconds.value++;
-    });
-  }
-
-  @override
   void onClose() {
     _workoutTimer?.cancel();
     settingsService.detach();
-    exerciseSelectionService.detach();
     workoutSetService.detach();
     restTimerService.detach();
     saveWorkoutService.detach();

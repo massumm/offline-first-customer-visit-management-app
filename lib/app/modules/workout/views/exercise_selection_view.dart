@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/action_button.dart';
 import 'package:icon/app/core/widgets/super_image.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+
 import '../../../../generated/assets.dart';
+import '../../../base/base_view.dart';
 import '../controllers/workout_controller.dart';
-import '../services/exercise_selection_service.dart';
-import 'widgets/exercise_tile.dart';
+import '../models/exercises_response_model.dart';
+import '../models/muscle_group_response_model.dart';
+import '../widgets/exercise_tile.dart';
 
 class ExerciseSelectionView extends BaseView<WorkoutController> {
   const ExerciseSelectionView({super.key});
@@ -30,8 +32,7 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
   @override
   Widget body(BuildContext context) {
     final theme = Theme.of(context);
-    final ExerciseSelectionService service =
-        controller.exerciseSelectionService;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12.0),
       child: CustomScrollView(
@@ -40,9 +41,21 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
           space,
           _filters(theme, context),
           _sectionTitle('Recent Exercises'),
-          Obx(() => _exerciseList(service.recentExercises)),
+          Obx(
+            () => controller.isLoading.value
+                ? SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : _exerciseList(controller.recentExercises),
+          ),
           _sectionTitle('All Exercises'),
-          Obx(() => _exerciseList(service.allExercises)),
+          Obx(
+            () => controller.isLoading.value
+                ? SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : _exerciseList(controller.allExercises),
+          ),
           space,
           _bottomButton(context),
         ],
@@ -50,7 +63,13 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
     );
   }
 
-  // Spaces
+  SliverList _exerciseList(List<Exercise> exercises) {
+    return SliverList(
+      delegate: SliverChildBuilderDelegate((context, index) {
+        return ExerciseTile(exercise: exercises[index]);
+      }, childCount: exercises.length),
+    );
+  }
 
   SliverToBoxAdapter get space => SliverToBoxAdapter(child: 12.height);
 
@@ -155,17 +174,12 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                       controller: scrollController,
                       // Important for DraggableScrollableSheet
                       physics: const ClampingScrollPhysics(),
-                      itemCount: controller
-                          .exerciseSelectionService
-                          .equipmentItems
-                          .length,
+                      itemCount: controller.equipmentItems.length,
                       separatorBuilder: (_, _) => const SizedBox(height: 8),
                       itemBuilder: (context, index) {
                         return Obx(() {
-                          final item = controller
-                              .exerciseSelectionService
-                              .equipmentItems[index];
-                          final isSelected = item.isSelected;
+                          final item = controller.equipmentItems[index];
+
                           return Card(
                             color: theme.scaffoldBackgroundColor,
                             shape: RoundedRectangleBorder(
@@ -177,8 +191,7 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               onTap: () {
-                                controller.exerciseSelectionService
-                                    .selectSingleEquipment(index);
+                                controller.selectedEquipment.value = item;
                               },
 
                               contentPadding: const EdgeInsets.symmetric(
@@ -193,24 +206,19 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: SuperImage(
-                                  controller
-                                      .exerciseSelectionService
-                                      .equipmentItems[index]
-                                      .image,
+                                  controller.equipmentItems[index].iconImage,
                                   width: 40,
                                   height: 40,
                                 ),
                               ),
                               title: Text(
-                                controller
-                                    .exerciseSelectionService
-                                    .equipmentItems[index]
-                                    .label,
+                                controller.equipmentItems[index].name ?? "",
                                 style: theme.textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              trailing: isSelected
+                              trailing:
+                                  controller.selectedEquipment.value == item
                                   ? SuperIcon(
                                       source: SuperIconSource.svgAsset(
                                         Assets.iconsCheckmarkSelected,
@@ -267,22 +275,17 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                     ],
                   ),
 
-                  // List of chips
+                  //  List of chips
                   Expanded(
                     child: ListView.separated(
                       controller: scrollController,
                       physics: const ClampingScrollPhysics(),
-                      itemCount: controller
-                          .exerciseSelectionService
-                          .musclesItems
-                          .length,
+                      itemCount: controller.musclesItems.length,
                       separatorBuilder: (_, _) => const SizedBox(height: 8),
                       itemBuilder: (context, index) {
                         return Obx(() {
-                          final item = controller
-                              .exerciseSelectionService
-                              .musclesItems[index];
-                          final isSelected = item.isSelected;
+                          final Muscle item = controller.musclesItems[index];
+
                           return Card(
                             color: theme.scaffoldBackgroundColor,
                             shape: RoundedRectangleBorder(
@@ -294,8 +297,7 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               onTap: () {
-                                controller.exerciseSelectionService
-                                    .selectSingleMuscles(index);
+                                controller.selectedMuscle.value = item;
                               },
 
                               contentPadding: const EdgeInsets.symmetric(
@@ -310,21 +312,18 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: SuperImage(
-                                  controller
-                                      .exerciseSelectionService
-                                      .musclesItems[index]
-                                      .image,
+                                  controller.musclesItems[index].iconImage,
                                   width: 40,
                                   height: 40,
                                 ),
                               ),
                               title: Text(
-                                item.label,
+                                item.name ?? "",
                                 style: theme.textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              trailing: isSelected
+                              trailing: item == controller.selectedMuscle.value
                                   ? SuperIcon(
                                       source: SuperIconSource.svgAsset(
                                         Assets.iconsCheckmarkSelected,
@@ -363,41 +362,33 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
     );
   }
 
-  // Exercise list
-  SliverList _exerciseList(List<Exercise> exercises) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate((context, index) {
-        return ExerciseTile(exercise: exercises[index]);
-      }, childCount: exercises.length),
-    );
-  }
-
   SliverFillRemaining _bottomButton(BuildContext context) {
-    final ExerciseSelectionService service =
-        controller.exerciseSelectionService;
-
     final theme = Theme.of(context);
 
     return SliverFillRemaining(
       hasScrollBody: false,
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: Obx(
-          () => SizedBox(
-            width: double.infinity,
-            height: 52,
-            child: ElevatedButton(
-              onPressed: service.selectedCount == 0 ? null : () {},
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.secondary,
-              ),
-              child: Text(
-                'Added ${service.selectedCount} Workout',
-                style: const TextStyle(fontSize: 16),
-              ),
+        child: SizedBox(
+          width: double.infinity,
+          height: 52,
+          child: ElevatedButton(
+            // onPressed: service.selectedCount == 0 ? null : () {},
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.colorScheme.secondary,
             ),
+            child: Obx(() {
+              return Text(
+                'Added ${controller.selectedExercise.length} Workout',
+
+                style: const TextStyle(fontSize: 16),
+              );
+            }),
           ),
         ),
+
+        // Obx(() =>),
       ),
     );
   }
