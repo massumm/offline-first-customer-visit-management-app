@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
+import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
 import 'package:icon/app/modules/trainee_onboarding/views/widgets/to_input_widget.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
@@ -102,7 +103,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                     height: 32.0,
                     child: ActionButton(
                       onTap: controller.goBack,
-                      icon: Icons.undo,
+                      icon: SuperIconSource.icon(Icons.undo),
                     ),
                   ),
                 ),
@@ -204,7 +205,7 @@ class TraineeOnboardingView extends BaseView<TraineeOnboardingController> {
                 child: SizedBox(
                   width: 32.0,
                   height: 32.0,
-                  child: ActionButton(onTap: controller.goBack, icon: Icons.undo),
+                  child: ActionButton(onTap: controller.goBack, icon:  SuperIconSource.icon(Icons.undo)),
                 ),
               ),
             12.width,

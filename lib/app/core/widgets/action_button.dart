@@ -4,11 +4,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
+import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
+import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+
+import '../../../generated/assets.dart';
 
 class ActionButton extends StatefulWidget {
   final String? label;
   final VoidCallback? onTap;
-  final IconData? icon;
+  final SuperIconSource? icon;
   final double? height;
   final double? width;
   final double? iconSize;
@@ -34,7 +38,7 @@ class ActionButton extends StatefulWidget {
     this.icon,
     this.bgColor,
     this.borderRadius,
-  })  : height = 24,
+  }) : height = 24,
         width = 24,
         label = null,
         iconSize = 16;
@@ -55,14 +59,10 @@ class _ActionButtonState extends State<ActionButton>
   void initState() {
     super.initState();
 
-    // Safe platform detection
     _isIOS = defaultTargetPlatform == TargetPlatform.iOS;
 
     _controller = AnimationController.unbounded(vsync: this)
-      ..value = _releasedValue
-      ..addListener(() {
-        setState(() {}); // Triggers rebuild for animation frames
-      });
+      ..value = _releasedValue;
   }
 
   @override
@@ -77,23 +77,15 @@ class _ActionButtonState extends State<ActionButton>
       stiffness: _isIOS ? 320 : 180,
       damping: _isIOS ? 32 : 18,
     );
-
     _controller.animateWith(
-      SpringSimulation(
-        spring,
-        _controller.value,
-        target,
-        velocity,
-      ),
+      SpringSimulation(spring, _controller.value, target, velocity),
     );
   }
 
   void _onPointerDown(PointerDownEvent event) {
     if (widget.onTap == null || event.buttons != kPrimaryButton) return;
-
     _animateTo(_pressedValue, velocity: 2);
 
-    // Haptic feedback for mobile
     if (_isIOS || defaultTargetPlatform == TargetPlatform.android) {
       HapticFeedback.selectionClick();
     }
@@ -101,14 +93,12 @@ class _ActionButtonState extends State<ActionButton>
 
   void _onPointerUp(PointerUpEvent event) {
     if (widget.onTap == null) return;
-
     _animateTo(_releasedValue);
     widget.onTap?.call();
   }
 
   void _onPointerCancel(PointerCancelEvent event) {
     if (widget.onTap == null) return;
-
     _animateTo(_releasedValue);
   }
 
@@ -117,27 +107,9 @@ class _ActionButtonState extends State<ActionButton>
     final theme = Theme.of(context);
     final isIconOnly = widget.label == null;
 
-    // Clamp controller value to avoid overshoot crashes
-    final t = _controller.value.clamp(0.0, 1.0);
-
-    final scale = lerpDouble(
-      1.0,
-      _isIOS ? 0.965 : 0.92,
-      t,
-    )!;
-
-    final elevation =
-    _isIOS ? 0.0 : lerpDouble(6, 0, t)!;
-
-    final opacity = lerpDouble(
-      1.0,
-      _isIOS ? 0.97 : 0.94,
-      t,
-    )!;
-
     final content = isIconOnly
-        ? Icon(
-      widget.icon ?? Icons.arrow_back_ios_new_rounded,
+        ? SuperIcon(
+      source: widget.icon ?? SuperIconSource.svgAsset(Assets.iconsArrowLeft),
       size: widget.iconSize ?? 16,
     )
         : Text(
@@ -145,6 +117,10 @@ class _ActionButtonState extends State<ActionButton>
       style: theme.textTheme.titleSmall,
       textAlign: TextAlign.center,
     );
+
+    final borderRadius = widget.borderRadius ??
+        BorderRadius.circular(
+            isIconOnly ? (widget.height ?? 24) / 2 : 999);
 
     return Semantics(
       button: true,
@@ -154,35 +130,42 @@ class _ActionButtonState extends State<ActionButton>
         onPointerDown: _onPointerDown,
         onPointerUp: _onPointerUp,
         onPointerCancel: _onPointerCancel,
-        child: Transform.scale(
-          scale: scale,
-          child: Opacity(
-            opacity: opacity,
-            child: Material(
-              elevation: elevation,
-              shadowColor: _isIOS
-                  ? Colors.transparent
-                  : (widget.bgColor ?? Colors.black).withValues(alpha: 0.25),
-              color: widget.bgColor ??
-                  theme.colorScheme.surfaceContainerHighest,
-              borderRadius: widget.borderRadius ??
-                  BorderRadius.circular(
-                    isIconOnly ? (widget.height ?? 24) / 2 : 999,
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            // Clamp controller value to avoid overshoot
+            final t = _controller.value.clamp(0.0, 1.0);
+
+            final scale = lerpDouble(1.0, _isIOS ? 0.965 : 0.92, t)!;
+            final elevation = _isIOS ? 0.0 : lerpDouble(6, 0, t)!;
+            final opacity = lerpDouble(1.0, _isIOS ? 0.97 : 0.94, t)!;
+            final bgColor = widget.bgColor ?? theme.colorScheme.surfaceContainerHighest;
+
+            return Transform.scale(
+              scale: scale,
+              child: Opacity(
+                opacity: opacity,
+                child: Material(
+                  elevation: elevation,
+                  shadowColor: _isIOS
+                      ? Colors.transparent
+                      : (bgColor).withAlpha((0.25 * 255).round()),
+                  color: bgColor,
+                  borderRadius: borderRadius,
+                  child: Container(
+                    height: widget.height,
+                    width: widget.width,
+                    alignment: Alignment.center,
+                    padding: (widget.height != null || widget.width != null)
+                        ? EdgeInsets.zero
+                        : const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    child: child,
                   ),
-              child: Container(
-                height: widget.height,
-                width: widget.width,
-                alignment: Alignment.center,
-                padding: (widget.height != null || widget.width != null)
-                    ? EdgeInsets.zero
-                    : const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 10,
                 ),
-                child: content,
               ),
-            ),
-          ),
+            );
+          },
+          child: content,
         ),
       ),
     );
