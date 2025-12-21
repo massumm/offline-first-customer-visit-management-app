@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/modules/nutrition_tracker/controllers/nutrition_tracker_controller.dart';
+import '../../../core/values/app_text_styles.dart' as appBarTheme;
+import '../../../core/widgets/action_button.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 
 class NutritionTrackerEntryView
@@ -12,9 +14,16 @@ class NutritionTrackerEntryView
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: const CustomAppBar(
-        title: 'Add New Meal',
-        showBackButton: true,
+      appBar:
+
+      AppBar(
+        title: Text('Add New Meal', style: appBarTheme.titleTextStyle),
+        centerTitle: true,
+
+        leading: Padding(
+          padding: EdgeInsets.all(6),
+          child: ActionButton.compact(onTap: Get.back),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),

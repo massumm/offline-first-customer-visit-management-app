@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
-
+import 'package:flutter/material.dart';
+import 'package:icon/app/core/values/app_text_styles.dart' as appBarTheme;
 import '../../../../generated/assets.dart';
 import '../../../core/enums/fav_enum.dart';
 import '../../../core/extensions/app_extansions.dart';
+import '../../../core/widgets/action_button.dart';
 import '../../../core/widgets/custom_app_bar.dart';
 import '../../../core/widgets/fab_widgets/animated_fab.dart';
 import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
@@ -105,11 +108,22 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
   Widget body(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: const CustomAppBar(
-        title: 'Nutrition Tracker',
-        // showBackButton is true by default, so you can omit it if you want it visible
-        showBackButton: true,
+      appBar: AppBar(
+        title: Text('Activity Tracker', style: appBarTheme.titleTextStyle),
+        centerTitle: true,
+
+        leading: Padding(
+          padding: EdgeInsets.all(6),
+          child: ActionButton.compact(onTap: Get.back),
+        ),
       ),
+
+
+      // const CustomAppBar(
+      //   title: 'Nutrition Tracker',
+      //   // showBackButton is true by default, so you can omit it if you want it visible
+      //   showBackButton: true,
+      // ),
 
       floatingActionButton: AnimatedFab(
         actionType: FabActionType.addMeal,
