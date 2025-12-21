@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 import '../../../../../generated/assets.dart';
 import '../../../../core/widgets/super_widgets/super_icon.dart';
 import '../../../../core/widgets/super_widgets/super_icon_source.dart';
-import '../../controllers/start_workout_controller.dart';
+import '../../controllers/workout_controller.dart';
 import '../../services/start_workout_services_index.dart';
 
-class ExerciseTile extends GetView<StartWorkoutController> {
+class ExerciseTile extends GetView<WorkoutController> {
   final Exercise exercise;
 
   const ExerciseTile({super.key, required this.exercise});

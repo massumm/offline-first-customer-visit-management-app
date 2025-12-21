@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class ActivityRepKeyboard extends StatefulWidget {
   final TextEditingController controller;
@@ -32,13 +31,17 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
 
   void _onKeyPress(String value) {
     final currentText = widget.controller.text;
-    
     if (value == '⌫') {
       if (currentText.isNotEmpty) {
-        widget.controller.text = currentText.substring(0, currentText.length - 1);
+        widget.controller.text = currentText.substring(
+          0,
+          currentText.length - 1,
+        );
       }
-    } else if (value == '.') {
-      if (!currentText.contains('.')) {
+    } else if (value == '.' || value == ',') {
+      // Only add a dot if not already present
+      final hasDot = currentText.contains('.');
+      if (!hasDot) {
         widget.controller.text = currentText.isEmpty ? '0.' : '$currentText.';
       }
     } else {
@@ -69,13 +72,16 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     final bgColor = isDark ? const Color(0xFF1C1C1E) : const Color(0xFF2C2C2E);
-    final keyBgColor = isDark ? const Color(0xFF2C2C2E) : const Color(0xFF3A3A3C);
+    final keyBgColor = isDark
+        ? const Color(0xFF2C2C2E)
+        : const Color(0xFF3A3A3C);
     final keyTextColor = Colors.white;
     final primaryColor = const Color(0xFFE9522B);
 
-    final quickVals = widget.quickValues ?? 
+    final quickVals =
+        widget.quickValues ??
         [6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5];
 
     return Container(
@@ -104,17 +110,21 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.info_outline, color: primaryColor, size: 24),
+                      icon: Icon(
+                        Icons.info_outline,
+                        color: primaryColor,
+                        size: 24,
+                      ),
                       onPressed: () {
                         // Show info dialog
                       },
                     ),
                   );
                 }
-                
+
                 final value = quickVals[index];
                 final isSelected = selectedQuickValue == value;
-                
+
                 return GestureDetector(
                   onTap: () => _onQuickValuePress(value),
                   child: Container(
@@ -139,7 +149,7 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Keyboard grid
           Column(
             children: [
@@ -152,14 +162,19 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
                   const SizedBox(width: 12),
                   _buildKey('3', keyBgColor, keyTextColor),
                   const SizedBox(width: 12),
-                  _buildIconKey(Icons.keyboard_arrow_down, keyBgColor, keyTextColor, () {
-                    Navigator.pop(context);
-                  }),
+                  _buildIconKey(
+                    Icons.keyboard_arrow_down,
+                    keyBgColor,
+                    keyTextColor,
+                    () {
+                      Navigator.pop(context);
+                    },
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
-              
-              // Row 2: 4, 5, 6, - +
+
+              // Row 2: 4, 5, 6, - and + (side by side, no Expanded nesting)
               Row(
                 children: [
                   _buildKey('4', keyBgColor, keyTextColor),
@@ -168,15 +183,27 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
                   const SizedBox(width: 12),
                   _buildKey('6', keyBgColor, keyTextColor),
                   const SizedBox(width: 12),
-                  Expanded(
+                  // - and + as a sub-row, fixed width box
+                  SizedBox(
+                    width: 92, // Enough for two keys + spacing
                     child: Row(
                       children: [
                         Expanded(
-                          child: _buildIconKey(Icons.remove, keyBgColor, keyTextColor, _decrement),
+                          child: _buildIconKey(
+                            Icons.remove,
+                            keyBgColor,
+                            keyTextColor,
+                            _decrement,
+                          ),
                         ),
                         const SizedBox(width: 6),
                         Expanded(
-                          child: _buildIconKey(Icons.add, keyBgColor, keyTextColor, _increment),
+                          child: _buildIconKey(
+                            Icons.add,
+                            keyBgColor,
+                            keyTextColor,
+                            _increment,
+                          ),
                         ),
                       ],
                     ),
@@ -184,7 +211,7 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
                 ],
               ),
               const SizedBox(height: 12),
-              
+
               // Row 3: 7, 8, 9, RPE
               Row(
                 children: [
@@ -194,27 +221,41 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
                   const SizedBox(width: 12),
                   _buildKey('9', keyBgColor, keyTextColor),
                   const SizedBox(width: 12),
-                  _buildActionKey('RPE', primaryColor, keyTextColor, widget.onRPE),
+                  _buildActionKey(
+                    'RPE',
+                    primaryColor,
+                    keyTextColor,
+                    widget.onRPE,
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
-              
-              // Row 4: comma, 0, backspace, NEXT
+
+              // Row 4: dot (.), 0, backspace, NEXT
               Row(
                 children: [
-                  _buildKey(',', keyBgColor, keyTextColor),
+                  _buildKey('.', keyBgColor, keyTextColor),
                   const SizedBox(width: 12),
                   _buildKey('0', keyBgColor, keyTextColor),
                   const SizedBox(width: 12),
-                  _buildIconKey(Icons.backspace_outlined, keyBgColor, keyTextColor, () => _onKeyPress('⌫')),
+                  _buildIconKey(
+                    Icons.backspace_outlined,
+                    keyBgColor,
+                    keyTextColor,
+                    () => _onKeyPress('⌫'),
+                  ),
                   const SizedBox(width: 12),
-                  _buildActionKey('NEXT', primaryColor, keyTextColor, widget.onDone),
+                  _buildActionKey(
+                    'NEXT',
+                    primaryColor,
+                    keyTextColor,
+                    widget.onDone,
+                  ),
                 ],
               ),
             ],
           ),
-          
-          // Bottom padding for safe area
+
           SizedBox(height: MediaQuery.of(context).padding.bottom),
         ],
       ),
@@ -245,28 +286,33 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
     );
   }
 
-  Widget _buildIconKey(IconData icon, Color bgColor, Color iconColor, VoidCallback? onTap) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: 60,
-          decoration: BoxDecoration(
-            color: bgColor,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          alignment: Alignment.center,
-          child: Icon(
-            icon,
-            color: iconColor,
-            size: 28,
-          ),
+  Widget _buildIconKey(
+    IconData icon,
+    Color bgColor,
+    Color iconColor,
+    VoidCallback? onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 60,
+        width: 60,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(8),
         ),
+        alignment: Alignment.center,
+        child: Icon(icon, color: iconColor, size: 28),
       ),
     );
   }
 
-  Widget _buildActionKey(String label, Color bgColor, Color textColor, VoidCallback? onTap) {
+  Widget _buildActionKey(
+    String label,
+    Color bgColor,
+    Color textColor,
+    VoidCallback? onTap,
+  ) {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
@@ -292,7 +338,7 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
   }
 }
 
-// Helper function to show the keyboard
+// Helper function to show the keyboard modal
 void showActivityRepKeyboard(
   BuildContext context, {
   required TextEditingController controller,
@@ -303,7 +349,7 @@ void showActivityRepKeyboard(
 }) {
   // Dismiss system keyboard
   FocusScope.of(context).unfocus();
-  
+
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,

@@ -4,10 +4,11 @@ import 'package:get/get.dart';
 import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/widgets/action_button.dart';
-import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
-import 'package:icon/app/modules/start_workout/services/start_workout_services_index.dart';
 
-class WorkoutSettingsView extends BaseView<StartWorkoutController> {
+import '../controllers/workout_controller.dart';
+import '../services/workout_settings_service.dart';
+
+class WorkoutSettingsView extends BaseView<WorkoutController> {
   const WorkoutSettingsView({super.key});
 
   @override

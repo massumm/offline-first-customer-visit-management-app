@@ -1,62 +1,58 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
-import 'package:icon/app/modules/start_workout/views/widgets/bottom_sheet/show_set_type_bottom_sheet.dart';
+import 'package:vibration/vibration.dart';
 
+import '../controllers/workout_controller.dart';
 import '../models/workout_set_data.dart';
+import '../views/widgets/bottom_sheet/show_set_type_bottom_sheet.dart';
 
 class WorkoutSetService extends GetxService {
   final RxList<WorkoutSetData> workoutSets = [
     WorkoutSetData(
       setType: '1',
       previous: '100 kg x 5',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '5'),
+      kg: '100',
+      reps: '5',
       isComplete: false,
     ),
     WorkoutSetData(
       setType: '2',
       previous: '100 kg x 8',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '8'),
+      kg: '100',
+      reps: '8',
       isComplete: false,
     ),
     WorkoutSetData(
       setType: '3',
       previous: '100 kg x 8',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '8'),
+      kg: '100',
+      reps: '8',
       isComplete: false,
     ),
     WorkoutSetData(
       setType: '4',
       previous: '100 kg x 8',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '8'),
+      kg: '100',
+      reps: '8',
       isComplete: false,
     ),
     WorkoutSetData(
       setType: '5',
       previous: '100 kg x 8',
-      kgController: TextEditingController(text: '100'),
-      repsController: TextEditingController(text: '8'),
+      kg: '100',
+      reps: '8',
       isComplete: false,
     ),
   ].obs;
 
   // Main Controller.
-  StartWorkoutController? _controller;
+  WorkoutController? _controller;
 
-  void attach(StartWorkoutController controller) {
+  void attach(WorkoutController controller) {
     _controller = controller;
   }
 
   void detach() {
     _controller = null;
-    for (var set in workoutSets) {
-      set.kgController.dispose();
-      set.repsController.dispose();
-    }
   }
 
   void addSet() {
@@ -65,8 +61,8 @@ class WorkoutSetService extends GetxService {
         WorkoutSetData(
           setType: '1',
           previous: '',
-          kgController: TextEditingController(text: ''),
-          repsController: TextEditingController(text: ''),
+          kg: '',
+          reps: '',
           isComplete: false,
         ),
       );
@@ -78,10 +74,8 @@ class WorkoutSetService extends GetxService {
       WorkoutSetData(
         setType: '1',
         previous: '',
-        kgController: TextEditingController(text: lastSet.kgController.text),
-        repsController: TextEditingController(
-          text: lastSet.repsController.text,
-        ),
+        kg: lastSet.kg,
+        reps: lastSet.reps,
         isComplete: false,
       ),
     );
@@ -130,8 +124,6 @@ class WorkoutSetService extends GetxService {
         workoutSets[i] = currentSet.copyWith(setType: counter.toString());
         counter++;
       } else {
-        // Other types
-        // They keep their label but consume a number in the sequence.
         counter++;
       }
     }
@@ -144,8 +136,46 @@ class WorkoutSetService extends GetxService {
     workoutSets.refresh();
   }
 
-  void toggleCompletion(int index, bool isCompleted) {
+  void toggleCompletion(int index, bool isCompleted) async {
+    if (isCompleted) {
+      if (await (Vibration.hasVibrator())) {
+        Vibration.vibrate(duration: 140);
+      }
+    }
     workoutSets[index] = workoutSets[index].copyWith(isComplete: isCompleted);
+    workoutSets.refresh();
+  }
+
+  void removeSet(int index) {
+    workoutSets.removeAt(index);
+
+    // Reorder the set type numbers to maintain sequence.
+    int counter = 1;
+    for (int i = 0; i < workoutSets.length; i++) {
+      final currentSet = workoutSets[i];
+      final isNormal = int.tryParse(currentSet.setType) != null;
+
+      if (currentSet.setType == 'F') {
+        // Failure sets are not part of the main numbering, so we skip.
+        continue;
+      } else if (isNormal) {
+        workoutSets[i] = currentSet.copyWith(setType: counter.toString());
+        counter++;
+      } else {
+        counter++;
+      }
+    }
+
+    workoutSets.refresh();
+  }
+
+  void updateKg(int index, String value) {
+    workoutSets[index] = workoutSets[index].copyWith(kg: value);
+    workoutSets.refresh();
+  }
+
+  void updateReps(int index, String value) {
+    workoutSets[index] = workoutSets[index].copyWith(reps: value);
     workoutSets.refresh();
   }
 }

@@ -7,7 +7,6 @@ import 'package:icon/app/core/theme/app_text_theme.dart';
 
 import '../../../../generated/assets.dart';
 import '../../../core/values/app_colors.dart';
-import '../../../routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 import '../widgets/actions_card.dart';
 import '../widgets/goals_card.dart';

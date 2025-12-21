@@ -64,19 +64,19 @@ class IconDarkTheme {
       fontSize: 14,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.5,
-      color: Colors.white.withValues(alpha: 0.9),
+      color:AppColors.darkTextSecondaryColor,
     ),
     bodyMedium: GoogleFonts.inter(
       fontSize: 12,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.25,
-      color: Colors.white.withValues(alpha: 0.9),
+      color: AppColors.darkTextSecondaryColor,
     ),
     bodySmall: GoogleFonts.inter(
       fontSize: 10,
       fontWeight: FontWeight.w400,
       letterSpacing: 0.4,
-      color: Colors.white.withValues(alpha: 0.9),
+      color: AppColors.darkTextSecondaryColor,
     ),
 
     labelLarge: GoogleFonts.inter(

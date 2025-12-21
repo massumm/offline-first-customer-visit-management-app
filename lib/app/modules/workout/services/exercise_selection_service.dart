@@ -1,8 +1,7 @@
 import 'package:get/get.dart';
 
 import 'package:flutter/material.dart';
-
-import '../controllers/start_workout_controller.dart';
+import '../controllers/workout_controller.dart';
 import '../models/index.dart';
 
 class Exercise {
@@ -29,7 +28,7 @@ class ExerciseSelectionService extends GetxService {
       recentExercises.where((e) => e.isSelected.value).length +
       allExercises.where((e) => e.isSelected.value).length;
 
-  StartWorkoutController? controller;
+  WorkoutController? controller;
 
   final RxList<EquipmentItem> equipmentItems = [
     EquipmentItem(image: '', label: 'All Equipment', isSelected: true),
@@ -52,7 +51,7 @@ class ExerciseSelectionService extends GetxService {
 
   final RxList selectedExercise = <Exercise>[].obs;
 
-  void attach(StartWorkoutController controller) {
+  void attach(WorkoutController controller) {
     controller = controller;
   }
 

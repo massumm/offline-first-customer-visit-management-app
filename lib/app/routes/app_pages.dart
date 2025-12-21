@@ -35,8 +35,6 @@ import '../modules/register/views/two_factor_success_page_view.dart';
 import '../modules/register/views/two_factor_verification_page_view.dart';
 import '../modules/splash/bindings/splash_binding.dart';
 import '../modules/splash/views/splash_view.dart';
-import '../modules/start_workout/bindings/start_workout_binding.dart';
-import '../modules/start_workout/views/start_workout_view.dart';
 import '../modules/trainee_onboarding/bindings/trainee_onboarding_binding.dart';
 import '../modules/trainee_onboarding/views/trainee_onboarding_view.dart';
 import '../modules/trainee_onboarding_by_page/bindings/trainee_onboarding_by_page_binding.dart';
@@ -49,6 +47,8 @@ import '../modules/weekly_routine/bindings/weekly_routine_binding.dart';
 import '../modules/weekly_routine/views/add_exercise_to_routine_view.dart';
 import '../modules/weekly_routine/views/explore_view.dart';
 import '../modules/weekly_routine/views/weekly_routine_view.dart';
+import '../modules/workout/bindings/workout_binding.dart';
+import '../modules/workout/views/workout_view.dart';
 import '../modules/workout_history/bindings/workout_history_binding.dart';
 import '../modules/workout_history/views/workout_history_view.dart';
 import '../modules/your_activity_goals/bindings/your_activity_goals_binding.dart';
@@ -212,9 +212,9 @@ class AppPages {
       binding: AppSettingsBinding(),
     ),
     GetPage(
-      name: _Paths.START_WORKOUT,
-      page: () => const StartWorkoutView(),
-      binding: StartWorkoutBinding(),
+      name: _Paths.WORKOUT,
+      page: () => const WorkoutView(),
+      binding: WorkoutBinding(),
     ),
     GetPage(
       name: _Paths.NUTRITION_TRACKER,

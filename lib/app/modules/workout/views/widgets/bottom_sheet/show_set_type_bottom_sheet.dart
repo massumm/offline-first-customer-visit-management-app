@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../core/values/app_colors.dart';
 
 enum SetType { warmUp, normal, failure, drop, remove }
 

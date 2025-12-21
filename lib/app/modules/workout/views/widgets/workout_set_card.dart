@@ -4,13 +4,15 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
-import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
 import 'package:icon/generated/assets.dart';
 
 import '../../../activity_tracker/views/widgets/activity_rep_keyboard_widget.dart';
+import '../../controllers/workout_controller.dart';
 import 'bottom_sheet/show_set_type_bottom_sheet.dart';
+import 'show_delete_confirmation_dialog.dart';
+import 'timer_progress_bar.dart';
 
-class WorkoutSetCard extends GetView<StartWorkoutController> {
+class WorkoutSetCard extends GetView<WorkoutController> {
   const WorkoutSetCard({super.key});
 
   @override
@@ -41,7 +43,6 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               ),
             ],
           ),
-
           const SizedBox(height: 8),
 
           /// Muscle Chips
@@ -52,36 +53,71 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               _MuscleChip(label: 'Glutes'),
             ],
           ),
+          6.height,
 
-          const SizedBox(height: 12),
-
-          /// Rest Timer
-          Row(
-            children: const [
-              Icon(Icons.timer, color: Colors.red, size: 18),
-              SizedBox(width: 6),
-              Text(
-                'Rest Timer',
-                style: TextStyle(color: Colors.red, fontSize: 13),
+          // Rest Timer
+          Obx(() {
+            final isResting =
+                controller.restTimerService.totalRestTimeInSec.value > 0;
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: () => controller.onRestTimerTap(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.timer,
+                        color: AppColors.activityPrimaryColor,
+                        size: 18,
+                      ),
+                      const SizedBox(width: 6),
+                      RichText(
+                        text: TextSpan(
+                          text: 'Rest Timer',
+                          style: TextStyle(
+                            color: AppColors.activityPrimaryColor,
+                            fontSize: 13,
+                          ),
+                          children: [
+                            if (isResting)
+                              TextSpan(
+                                text:
+                                    ' (${controller.restTimerService.readableRestTime})',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
+            );
+          }),
+          6.height,
 
           /// Table Header
           Row(
             children: const [
-              _HeaderCell('SET', flex: 1),
-              _HeaderCell('PREVIOUS', flex: 3),
-              _HeaderCell('KG', flex: 2),
-              _HeaderCell('REPS', flex: 2),
-              _HeaderCell('', flex: 1, showIcon: true),
+              Expanded(flex: 1, child: _HeaderCell('SET')),
+              Expanded(flex: 3, child: _HeaderCell('PREVIOUS')),
+              Expanded(flex: 2, child: _HeaderCell('KG')),
+              Expanded(flex: 2, child: _HeaderCell('REPS')),
+              Expanded(flex: 1, child: _HeaderCell('', showIcon: true)),
             ],
           ),
-
           const SizedBox(height: 8),
 
+          // Main List
           Obx(() {
             return ListView.builder(
               shrinkWrap: true,
@@ -90,26 +126,85 @@ class WorkoutSetCard extends GetView<StartWorkoutController> {
               itemBuilder: (context, index) {
                 final set = controller.workoutSetService.workoutSets[index];
 
-                return _SetRow(
-                  set: set.setType,
-                  previous: set.previous,
-                  kgController: set.kgController,
-                  repsController: set.repsController,
-                  highlightText: '5.00',
-                  completed: set.isComplete,
-                  highlight: true,
-                  onSetTapped: (newSetType) {
-                    controller.workoutSetService.updateSetType(
-                      index,
-                      newSetType,
-                    );
-                  },
-                  onCompleteTap: (isCompleted) {
-                    controller.workoutSetService.toggleCompletion(
-                      index,
-                      isCompleted,
-                    );
-                  },
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Dismissible(
+                      key: ObjectKey(set),
+                      direction: DismissDirection.endToStart,
+                      confirmDismiss: (direction) {
+                        final kgText = set.kg.isNotEmpty ? set.kg : '0';
+                        final repsText = set.reps.isNotEmpty ? set.reps : '0';
+                        final details = '$kgText kg x $repsText reps';
+
+                        return showDeleteConfirmationDialog(
+                          context: context,
+                          title: 'Delete Set ${set.setType} ($details)?',
+                          message:
+                              'Are you sure you want to remove this set? This action cannot be undone.',
+                          onDelete: () =>
+                              controller.workoutSetService.removeSet(index),
+                        );
+                      },
+                      background: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 4),
+                        decoration: BoxDecoration(
+                          color: AppColors.activityPrimaryColor,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: const Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: EdgeInsets.only(right: 16.0),
+                            child: Icon(Icons.delete, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                      child: _SetRow(
+                        set: set.setType,
+                        previous: set.previous,
+                        kg: set.kg,
+                        reps: set.reps,
+                        highlightText: '5.00',
+                        completed: set.isComplete,
+                        highlight: true,
+                        onSetTapped: (newSetType) {
+                          controller.workoutSetService.updateSetType(
+                            index,
+                            newSetType,
+                          );
+                        },
+                        onCompleteTap: (isCompleted) {
+                          controller.workoutSetService.toggleCompletion(
+                            index,
+                            isCompleted,
+                          );
+                        },
+                        onKgChanged: (value) {
+                          controller.workoutSetService.updateKg(index, value);
+                        },
+                        onRepsChanged: (value) {
+                          controller.workoutSetService.updateReps(index, value);
+                        },
+                      ),
+                    ),
+                    // Timer Progress Bar
+                    Obx(() {
+                      final enableTimer =
+                          controller.restTimerService.totalRestTimeInSec.value >
+                              0 &&
+                          set.isComplete;
+                      return Visibility(
+                        visible: enableTimer,
+                        child: TimedProgressBar(
+                          seconds: controller
+                              .restTimerService
+                              .totalRestTimeInSec
+                              .value,
+                        ),
+                      );
+                    }),
+                  ],
                 );
               },
             );
@@ -169,31 +264,27 @@ class _MuscleChip extends StatelessWidget {
 
 class _HeaderCell extends StatelessWidget {
   final String text;
-  final int flex;
   final bool showIcon;
 
-  const _HeaderCell(this.text, {required this.flex, this.showIcon = false});
+  const _HeaderCell(this.text, {this.showIcon = false});
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: flex,
-      child: Center(
-        child: showIcon
-            ? SuperIcon(
-                source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
-                size: 14,
-              )
-            : Text(
-                text,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: Colors.grey,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                ),
+    return Center(
+      child: showIcon
+          ? SuperIcon(
+              source: SuperIconSource.svgAsset(Assets.iconsCheckmarkCircle),
+              size: 14,
+            )
+          : Text(
+              text,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: Colors.grey,
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
               ),
-      ),
+            ),
     );
   }
 }
@@ -201,23 +292,27 @@ class _HeaderCell extends StatelessWidget {
 class _SetRow extends StatelessWidget {
   final String set;
   final String previous;
-  final TextEditingController kgController;
-  final TextEditingController repsController;
+  final String kg;
+  final String reps;
   final String highlightText;
   final bool completed;
   final bool highlight;
   final ValueChanged<SetType> onSetTapped;
   final ValueChanged<bool> onCompleteTap;
+  final ValueChanged<String> onKgChanged;
+  final ValueChanged<String> onRepsChanged;
 
   const _SetRow({
     required this.set,
     required this.previous,
-    required this.kgController,
-    required this.repsController,
+    required this.kg,
+    required this.reps,
     required this.highlightText,
     required this.completed,
     required this.onSetTapped,
     required this.onCompleteTap,
+    required this.onKgChanged,
+    required this.onRepsChanged,
     this.highlight = true,
   });
 
@@ -277,15 +372,14 @@ class _SetRow extends StatelessWidget {
           ),
           Expanded(
             flex: 2,
-            child: _InputBox(controller: kgController, enabled: true),
+            child: _KgInputField(initialValue: kg, onChanged: onKgChanged),
           ),
-          6.width,
+          const SizedBox(width: 6),
           Expanded(
             flex: 2,
-            child: RepsInputField(
-              repsController: repsController,
-              highlightText: highlightText,
-              highlight: highlight,
+            child: _RepsInputField(
+              initialValue: reps,
+              onChanged: onRepsChanged,
             ),
           ),
           const SizedBox(width: 8),
@@ -323,11 +417,39 @@ class _SetRow extends StatelessWidget {
   }
 }
 
-class _InputBox extends StatelessWidget {
-  final TextEditingController controller;
-  final bool enabled;
+class _KgInputField extends StatefulWidget {
+  final String initialValue;
+  final ValueChanged<String> onChanged;
 
-  const _InputBox({required this.controller, this.enabled = true});
+  const _KgInputField({required this.initialValue, required this.onChanged});
+
+  @override
+  State<_KgInputField> createState() => _KgInputFieldState();
+}
+
+class _KgInputFieldState extends State<_KgInputField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController(text: widget.initialValue);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant _KgInputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -335,9 +457,10 @@ class _InputBox extends StatelessWidget {
     return SizedBox(
       height: 34,
       child: TextFormField(
-        controller: controller,
-        enabled: enabled,
+        controller: _controller,
+        enabled: true,
         keyboardType: TextInputType.number,
+        onChanged: widget.onChanged,
         textAlign: TextAlign.center,
         style: const TextStyle(color: Colors.white, fontSize: 14),
         decoration: InputDecoration(
@@ -366,35 +489,57 @@ class _InputBox extends StatelessWidget {
   }
 }
 
-class RepsInputField extends StatelessWidget {
-  final TextEditingController repsController;
-  final String highlightText;
-  final bool highlight;
+class _RepsInputField extends StatefulWidget {
+  const _RepsInputField({required this.initialValue, required this.onChanged});
 
-  const RepsInputField({
-    super.key,
-    required this.repsController,
-    required this.highlightText,
-    this.highlight = false,
-  });
+  final String initialValue;
+  final ValueChanged<String> onChanged;
+
+  @override
+  State<_RepsInputField> createState() => _RepsInputFieldState();
+}
+
+class _RepsInputFieldState extends State<_RepsInputField> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    _controller = TextEditingController(text: widget.initialValue);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant _RepsInputField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue &&
+        widget.initialValue != _controller.text) {
+      _controller.text = widget.initialValue;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return TextFormField(
-      controller: repsController,
+      controller: _controller,
       keyboardType: TextInputType.none,
       onTap: () {
         Get.bottomSheet(
           ActivityRepKeyboard(
-            controller: repsController,
+            controller: _controller,
             onDone: () {
               Get.back();
             },
             onRPE: () {
               Get.back();
             },
-            initialValue: double.tryParse(highlightText),
+            initialValue: double.tryParse(widget.initialValue),
           ),
         );
       },
@@ -404,11 +549,11 @@ class RepsInputField extends StatelessWidget {
         isDense: true,
         filled: true,
         fillColor: theme.scaffoldBackgroundColor,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
         suffix: Text(
-          highlightText,
+          widget.initialValue,
           style: TextStyle(
-            color: highlight ? Colors.orange : Colors.grey,
+            color: Colors.orange,
             fontSize: 12,
             fontWeight: FontWeight.w600,
           ),
