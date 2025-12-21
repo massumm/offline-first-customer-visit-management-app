@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
+import 'package:icon/app/modules/workout/services/save_workout_service.dart';
+import 'package:icon/app/modules/workout/views/save_workout_view.dart';
 import '../services/rest_timer_service.dart';
 import '../services/start_workout_services_index.dart';
 import '../views/index.dart';
@@ -16,10 +18,15 @@ class WorkoutController extends BaseController {
       Get.find<ExerciseSelectionService>();
   final WorkoutSetService workoutSetService = Get.find<WorkoutSetService>();
   final RestTimerService restTimerService = Get.find<RestTimerService>();
+  final SaveWorkoutService saveWorkoutService = Get.find<SaveWorkoutService>();
 
   // ------------- States -------------------
   Timer? _workoutTimer;
   final RxInt _elapsedSeconds = 0.obs;
+
+  Rx<DateTime> loggedAt = DateTime.now().obs;
+
+
 
   double get totalVolume {
     return workoutSetService.workoutSets
@@ -31,11 +38,13 @@ class WorkoutController extends BaseController {
     });
   }
   String get onWorkoutDuration {
-    final int minutes = _elapsedSeconds.value ~/ 60;
+    final int hours = _elapsedSeconds.value ~/ 3600;
+    final int minutes = (_elapsedSeconds.value % 3600) ~/ 60;
     final int seconds = _elapsedSeconds.value % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
+  int get totalSets => workoutSetService.workoutSets.length;
   @override
   void onInit() {
     super.onInit();
@@ -43,6 +52,7 @@ class WorkoutController extends BaseController {
     workoutSetService.attach(this);
     restTimerService.attach(this);
     exerciseSelectionService.attach(this);
+    saveWorkoutService.attach(this);
 
     // Start the workout timer
     _workoutTimer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -57,6 +67,7 @@ class WorkoutController extends BaseController {
     exerciseSelectionService.detach();
     workoutSetService.detach();
     restTimerService.detach();
+    saveWorkoutService.detach();
     super.onClose();
   }
 
@@ -96,5 +107,6 @@ class WorkoutController extends BaseController {
   }
 
   void workoutOnSave() {
+    Get.to(() => SaveWorkoutView());
   }
 }

@@ -100,8 +100,6 @@ class WorkoutView extends BaseView<WorkoutController> {
 
   @override
   Widget? bottomNavigationBar(BuildContext context) {
-    return WorkoutSummaryWidget(
-
-    );
+    return WorkoutSummaryWidget();
   }
 }
