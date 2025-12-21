@@ -56,8 +56,8 @@ class StartWorkoutView extends BaseView<StartWorkoutController> {
                 color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: AppColors.activityPrimaryColor.withValues(alpha: 0.42),
-                  width: 1.3,
+                  color: AppColors.activityPrimaryColor,
+                  width: 2.0,
                 ),
                 boxShadow: [
                   BoxShadow(
