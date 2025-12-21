@@ -96,6 +96,7 @@ class Assets {
   static const String iconsCheckmarkCircle = 'assets/svg/icons/checkmark-circle.svg';
   static const String iconsCheckmarkCircleSelected = 'assets/svg/icons/checkmark-circle-selected.svg';
   static const String iconsCheckmarkSelected = 'assets/svg/icons/checkmark-selected.svg';
+  static const String iconsCloudUpload = 'assets/svg/icons/cloud-upload.svg';
   static const String iconsUpperBody = 'assets/svg/icons/upper_body.svg';
   static const String iconsWorkout = 'assets/svg/icons/workout.svg';
   static const String iconsYoga = 'assets/svg/icons/yoga.svg';
