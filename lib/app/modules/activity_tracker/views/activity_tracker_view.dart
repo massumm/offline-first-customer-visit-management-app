@@ -63,6 +63,7 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
                           borderRadius: BorderRadius.circular(18),
                         ),
                         child: Column(
+                          spacing: 12,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,24 +80,49 @@ class ActivityTrackerView extends BaseView<ActivityTrackerController> {
                                 ),
                               ],
                             ),
-                            12.height,
-                            _ActivityCard(
-                              iconSource: const SuperIconSource.icon(
-                                Icons.directions_run,
-                              ),
-                              title: "Morning Run",
-                              subtitle: "Workout • 25 min • 8:10 am",
-                              theme: theme,
-                            ),
-                            12.height,
-                            _ActivityCard(
-                              iconSource: SuperIconSource.svgAsset(
-                                Assets.iconsUpperBody,
-                              ),
-                              title: "Upper Body Strength",
-                              subtitle: "Cardio • 25 min • 7:30 am",
-                              theme: theme,
-                            ),
+                            Obx(() {
+                              if (controller.isLoading.value) {
+                                return LinearProgressIndicator();
+                              } else {
+                                return Column(
+                                  spacing: 12,
+                                  children: List.generate(
+                                    controller.activityLogs.length,
+                                    (int index) {
+                                      return activityCard(
+                                        controller.activityLogs[index].title ??
+                                            "",
+                                        controller
+                                                .activityLogs[index]
+                                                .description ??
+                                            "",
+                                        theme,
+                                        const SuperIconSource.icon(
+                                          Icons.directions_run,
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
+                            }),
+                            // _ActivityCard(
+                            //   iconSource: const SuperIconSource.icon(
+                            //     Icons.directions_run,
+                            //   ),
+                            //   title: "Morning Run",
+                            //   subtitle: "Workout • 25 min • 8:10 am",
+                            //   theme: theme,
+                            // ),
+                            //
+                            // _ActivityCard(
+                            //   iconSource: SuperIconSource.svgAsset(
+                            //     Assets.iconsUpperBody,
+                            //   ),
+                            //   title: "Upper Body Strength",
+                            //   subtitle: "Cardio • 25 min • 7:30 am",
+                            //   theme: theme,
+                            // ),
                           ],
                         ),
                       ),
@@ -238,7 +264,7 @@ class SubMenuBtn extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         child: Row(
-          mainAxisAlignment: .spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(title),
             SuperIcon(
@@ -252,66 +278,62 @@ class SubMenuBtn extends StatelessWidget {
   }
 }
 
-class _ActivityCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final ThemeData theme;
-  final SuperIconSource iconSource;
+Widget activityCard(
+  final String title,
+  final String subtitle,
+  final ThemeData theme,
+  final SuperIconSource iconSource,
+) {
+  // const _ActivityCard({
+  //   required this.title,
+  //   required this.subtitle,
+  //   required this.theme,
+  //   required this.iconSource,
+  // });
+  final colorScheme = theme.colorScheme;
 
-  const _ActivityCard({
-    required this.title,
-    required this.subtitle,
-    required this.theme,
-    required this.iconSource,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = theme.colorScheme;
-
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: theme.scaffoldBackgroundColor,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: SuperIcon(
-              source: iconSource,
-              size: 26,
-              color: theme.textTheme.titleSmall?.color,
-            ),
+  return Container(
+    padding: const EdgeInsets.all(14),
+    decoration: BoxDecoration(
+      color: theme.scaffoldBackgroundColor,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: colorScheme.surface,
+            borderRadius: BorderRadius.circular(12),
           ),
-          12.width,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: theme.textTheme.titleSmall),
-                4.height,
-                Text(
-                  subtitle,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.hintColor,
-                  ),
+          child: SuperIcon(
+            source: iconSource,
+            size: 26,
+            color: theme.textTheme.titleSmall?.color,
+          ),
+        ),
+        12.width,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: theme.textTheme.titleSmall),
+              4.height,
+              Text(
+                subtitle,
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: theme.hintColor,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-          SuperIcon(
-            source: SuperIconSource.svgAsset(Assets.iconsArrowUpLeft),
-            color: theme.iconTheme.color,
-            size: 20,
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+        SuperIcon(
+          source: SuperIconSource.svgAsset(Assets.iconsArrowUpLeft),
+          color: theme.iconTheme.color,
+          size: 20,
+        ),
+      ],
+    ),
+  );
 }

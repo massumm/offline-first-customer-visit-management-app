@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../core/middlewares/login_middleware.dart';
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
 import '../modules/app_settings/bindings/app_settings_binding.dart';
@@ -74,7 +75,7 @@ class AppPages {
       name: _Paths.HOME,
       page: () => HomeView(),
       binding: HomeBinding(),
-      //middlewares: [LoginMiddleware()],
+      middlewares: [LoginMiddleware()],
     ),
     GetPage(
       name: _Paths.ACTIVITY_TRACKER,
