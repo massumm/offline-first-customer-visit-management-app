@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../../../core/values/app_text_styles.dart' as appBarTheme;
+import '../../../core/widgets/action_button.dart';
 
 class LogRecoveryEntryView extends StatelessWidget {
   const LogRecoveryEntryView({super.key});
@@ -7,18 +11,15 @@ class LogRecoveryEntryView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Log Recovery',
-          style: TextStyle(fontWeight: FontWeight.w600),
-        ),
+      appBar:
+      AppBar(
+        title: Text('Log Recovery', style: appBarTheme.titleTextStyle),
         centerTitle: true,
+
+        leading: Padding(
+          padding: EdgeInsets.all(6),
+          child: ActionButton.compact(onTap: Get.back),
+        ),
       ),
       body: SafeArea(
         child: Padding(
