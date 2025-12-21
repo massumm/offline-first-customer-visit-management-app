@@ -5,13 +5,12 @@ import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/action_button.dart';
-
-import '../controllers/start_workout_controller.dart';
+import '../controllers/workout_controller.dart';
 import 'widgets/workout_set_card.dart';
 import 'widgets/workout_summary_widget.dart';
 
-class StartWorkoutView extends BaseView<StartWorkoutController> {
-  const StartWorkoutView({super.key});
+class WorkoutView extends BaseView<WorkoutController> {
+  const WorkoutView({super.key});
 
   @override
   PreferredSizeWidget? appBar(BuildContext context) => AppBar(

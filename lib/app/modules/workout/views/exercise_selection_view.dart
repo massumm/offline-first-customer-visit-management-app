@@ -7,11 +7,11 @@ import 'package:icon/app/core/widgets/super_image.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
 import '../../../../generated/assets.dart';
-import '../controllers/start_workout_controller.dart';
+import '../controllers/workout_controller.dart';
 import '../services/exercise_selection_service.dart';
 import 'widgets/exercise_tile.dart';
 
-class ExerciseSelectionView extends BaseView<StartWorkoutController> {
+class ExerciseSelectionView extends BaseView<WorkoutController> {
   const ExerciseSelectionView({super.key});
 
   @override

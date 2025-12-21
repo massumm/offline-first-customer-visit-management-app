@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
-import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
-import 'package:icon/app/modules/start_workout/views/widgets/bottom_sheet/show_set_type_bottom_sheet.dart';
 import 'package:vibration/vibration.dart';
 
+import '../controllers/workout_controller.dart';
 import '../models/workout_set_data.dart';
+import '../views/widgets/bottom_sheet/show_set_type_bottom_sheet.dart';
 
 class WorkoutSetService extends GetxService {
   final RxList<WorkoutSetData> workoutSets = [
@@ -45,9 +45,9 @@ class WorkoutSetService extends GetxService {
   ].obs;
 
   // Main Controller.
-  StartWorkoutController? _controller;
+  WorkoutController? _controller;
 
-  void attach(StartWorkoutController controller) {
+  void attach(WorkoutController controller) {
     _controller = controller;
   }
 

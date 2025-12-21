@@ -255,7 +255,7 @@ class NutritionTrackerEntryView
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
-                    controller.quantity.value.toString()+"x",
+                    "${controller.quantity.value}x",
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,

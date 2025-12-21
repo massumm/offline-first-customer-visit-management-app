@@ -1,17 +1,17 @@
 
 import 'package:get/get.dart';
-import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
+import '../controllers/workout_controller.dart';
 
 class RestTimerService extends GetxService {
 
 
   final RxInt selectedMinute = 0.obs;
   final RxInt selectedSecond = 0.obs;
-  StartWorkoutController? _controller;
+ WorkoutController? _controller;
 
   final RxInt totalRestTimeInSec = 0.obs;
 
-  void attach(StartWorkoutController controller){
+  void attach(WorkoutController controller){
     _controller = controller;
   }
 

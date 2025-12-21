@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:icon/app/core/utils/display_awake_util.dart';
-import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
+import '../controllers/workout_controller.dart';
 
 // workout setting business logic.
 class WorkoutSettingsService extends GetxService {
-  StartWorkoutController? _c;
+  WorkoutController? _c;
 
   final RxBool keepAwakeOnWorkout = false.obs;
   final RxBool plateCalculator = false.obs;
@@ -13,7 +13,7 @@ class WorkoutSettingsService extends GetxService {
   final RxBool inlineTimer = false.obs;
   final RxBool personalRecordNotifications = false.obs;
 
-  void attach(StartWorkoutController controller) {
+  void attach(WorkoutController controller) {
     _c = controller;
   }
 

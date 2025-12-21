@@ -68,7 +68,7 @@ abstract class Routes {
   static const DELETE_ACCOUNT = _Paths.DELETE_ACCOUNT;
   static const PRIVACY = _Paths.PRIVACY;
   static const ACTIVITY_TRACKER = _Paths.ACTIVITY_TRACKER;
-  static const START_WORKOUT = _Paths.START_WORKOUT;
+  static const WORKOUT = _Paths.WORKOUT;
   static const NUTRITION_TRACKER = _Paths.NUTRITION_TRACKER;
   static const NUTRITION_TRACKER_ENTRY = _Paths.NUTRITION_TRACKER_ENTRY;
   static const RECOVERY_TRACKER = _Paths.RECOVERY_TRACKER;
@@ -141,7 +141,7 @@ abstract class _Paths {
   static const YOUR_NUTRITION_GOALS = '/your-nutrition-goals';
   static const YOUR_DAILY_GOALS = '/your-daily-goals';
   static const TRAINEE_ONBOARDING_BY_PAGE = '/trainee-onboarding-by-page';
-  static const START_WORKOUT = '/start-workout';
+  static const WORKOUT = '/workout';
   static const NUTRITION_TRACKER = '/nutrition-tracker';
   static const NUTRITION_TRACKER_ENTRY = '/nutrition-tracker-Entry';
   static const RECOVERY_TRACKER = '/recovery-tracker';

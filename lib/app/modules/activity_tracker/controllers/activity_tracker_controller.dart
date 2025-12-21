@@ -51,6 +51,6 @@ class ActivityTrackerController extends BaseController {
   }
 
   void gotoStratWorkOut() {
-    Get.toNamed(Routes.START_WORKOUT);
+    Get.toNamed(Routes.WORKOUT);
   }
 }

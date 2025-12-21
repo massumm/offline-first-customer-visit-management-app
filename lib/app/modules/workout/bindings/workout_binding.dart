@@ -1,17 +1,18 @@
 import 'package:get/get.dart';
-import 'package:icon/app/modules/start_workout/services/index.dart';
+import 'package:icon/app/modules/workout/services/index.dart';
+import '../controllers/workout_controller.dart';
 
-import '../controllers/start_workout_controller.dart';
-import '../services/start_workout_services_index.dart';
-
-class StartWorkoutBinding extends Bindings {
+class WorkoutBinding extends Bindings {
   @override
   void dependencies() {
     // ------------ Services -------------
     Get.lazyPut<WorkoutSettingsService>(() => WorkoutSettingsService());
     Get.lazyPut<ExerciseSelectionService>(() => ExerciseSelectionService());
-    Get.lazyPut<StartWorkoutController>(() => StartWorkoutController());
+
     Get.lazyPut<WorkoutSetService>(() => WorkoutSetService());
     Get.lazyPut<RestTimerService>(() => RestTimerService());
+
+    // --------- Controller -----------------
+    Get.lazyPut<WorkoutController>(() => WorkoutController());
   }
 }

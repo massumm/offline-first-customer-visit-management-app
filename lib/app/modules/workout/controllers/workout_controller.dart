@@ -2,14 +2,13 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/base_controller.dart';
-import 'package:icon/app/modules/start_workout/services/index.dart';
-
+import '../services/rest_timer_service.dart';
 import '../services/start_workout_services_index.dart';
 import '../views/index.dart';
 import '../views/widgets/bottom_sheet/rest_timer_bottom_sheet.dart';
 import '../views/widgets/clock_bottom_sheet.dart';
 
-class StartWorkoutController extends BaseController {
+class WorkoutController extends BaseController {
   // ---------- Services ---------------
   final WorkoutSettingsService settingsService =
       Get.find<WorkoutSettingsService>();

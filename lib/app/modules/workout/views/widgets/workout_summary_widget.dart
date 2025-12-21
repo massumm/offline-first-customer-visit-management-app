@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
 
-class WorkoutSummaryWidget extends GetView<StartWorkoutController> {
+import '../../controllers/workout_controller.dart';
+
+class WorkoutSummaryWidget extends GetView<WorkoutController> {
   final int totalVolume;
   final VoidCallback onDiscard;
   final VoidCallback onSave;

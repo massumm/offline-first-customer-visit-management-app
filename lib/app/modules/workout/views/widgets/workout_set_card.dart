@@ -4,15 +4,15 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
-import 'package:icon/app/modules/start_workout/controllers/start_workout_controller.dart';
-import 'package:icon/app/modules/start_workout/views/widgets/set_delete_dialog.dart';
 import 'package:icon/generated/assets.dart';
 
 import '../../../activity_tracker/views/widgets/activity_rep_keyboard_widget.dart';
+import '../../controllers/workout_controller.dart';
 import 'bottom_sheet/show_set_type_bottom_sheet.dart';
+import 'show_delete_confirmation_dialog.dart';
 import 'timer_progress_bar.dart';
 
-class WorkoutSetCard extends GetView<StartWorkoutController> {
+class WorkoutSetCard extends GetView<WorkoutController> {
   const WorkoutSetCard({super.key});
 
   @override

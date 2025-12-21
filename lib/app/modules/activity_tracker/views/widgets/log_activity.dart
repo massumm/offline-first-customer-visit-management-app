@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/routes/app_pages.dart';
 
 import '../../../../core/extensions/app_extansions.dart';
@@ -238,7 +237,7 @@ class WorkoutSection extends StatelessWidget {
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: () {
-              Get.toNamed(Routes.START_WORKOUT);
+              Get.toNamed(Routes.WORKOUT);
             },
             child: Container(
               padding: const EdgeInsets.all(14),
@@ -283,59 +282,6 @@ class WorkoutSection extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _LogActivityButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final ThemeData theme;
-  final bool isSelected;
-  final void Function() onTap;
-
-  const _LogActivityButton({
-    required this.label,
-    required this.icon,
-    required this.theme,
-    required this.onTap,
-    this.isSelected = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = theme.colorScheme;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(16),
-      child: Material(
-        color: isSelected
-            ? colorScheme.secondary
-            : theme.scaffoldBackgroundColor,
-        child: InkWell(
-          onTap: onTap,
-          child: SizedBox(
-            width: 95,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Column(
-                children: [
-                  Icon(icon, size: 28, color: colorScheme.primary),
-                  6.height,
-                  Text(
-                    label,
-                    style: theme.textTheme.titleSmall!.copyWith(
-                      color: isSelected
-                          ? AppColors.lightShapeColor
-                          : Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
