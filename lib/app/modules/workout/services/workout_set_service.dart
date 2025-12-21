@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:vibration/vibration.dart';
 
 import '../controllers/workout_controller.dart';
+import '../models/workout_model.dart';
 import '../models/workout_set_data.dart';
 import '../views/widgets/bottom_sheet/show_set_type_bottom_sheet.dart';
 
@@ -43,6 +44,8 @@ class WorkoutSetService extends GetxService {
       isComplete: false,
     ),
   ].obs;
+
+  final RxList<WorkoutModel> workoutData = <WorkoutModel>[].obs;
 
   // Main Controller.
   WorkoutController? _controller;
