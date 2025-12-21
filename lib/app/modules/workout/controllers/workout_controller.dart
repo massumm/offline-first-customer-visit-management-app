@@ -23,20 +23,21 @@ class WorkoutController extends BaseController {
   // ------------- States -------------------
   Timer? _workoutTimer;
   final RxInt _elapsedSeconds = 0.obs;
+  final RxInt _finalElapsedSeconds = 0.obs;
 
   Rx<DateTime> loggedAt = DateTime.now().obs;
 
-
-
   double get totalVolume {
-    return workoutSetService.workoutSets
-        .where((set) => set.isComplete)
-        .fold(0.0, (previousValue, set) {
-      final reps = double.tryParse(set.reps) ?? 0;
-      final kg = double.tryParse(set.kg) ?? 0;
-      return previousValue + (reps * kg);
-    });
+    return workoutSetService.workoutSets.where((set) => set.isComplete).fold(
+      0.0,
+      (previousValue, set) {
+        final reps = double.tryParse(set.reps) ?? 0;
+        final kg = double.tryParse(set.kg) ?? 0;
+        return previousValue + (reps * kg);
+      },
+    );
   }
+
   String get onWorkoutDuration {
     final int hours = _elapsedSeconds.value ~/ 3600;
     final int minutes = (_elapsedSeconds.value % 3600) ~/ 60;
@@ -44,7 +45,15 @@ class WorkoutController extends BaseController {
     return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
+  String get totalWorkoutDurations {
+    final int hours = _finalElapsedSeconds.value ~/ 3600;
+    final int minutes = (_finalElapsedSeconds.value % 3600) ~/ 60;
+    final int seconds = _finalElapsedSeconds.value % 60;
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+  }
+
   int get totalSets => workoutSetService.workoutSets.length;
+
   @override
   void onInit() {
     super.onInit();
@@ -103,10 +112,11 @@ class WorkoutController extends BaseController {
     );
   }
 
-  void workoutOnDiscard() {
-  }
+  void workoutOnDiscard() {}
 
   void workoutOnSave() {
+    _workoutTimer?.cancel();
+    _finalElapsedSeconds.value = _elapsedSeconds.value;
     Get.to(() => SaveWorkoutView());
   }
 }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import '../../../../core/widgets/action_button.dart';
+import '../../../../core/widgets/super_widgets/super_icon_source.dart';
 import '../../controllers/trainee_onboarding_controller.dart';
 import 'animated_onboarding_stepper.dart';
 
@@ -57,7 +58,7 @@ class OnboardingHeader extends StatelessWidget {
                           height: 32.0,
                           child: ActionButton(
                             onTap: controller.goBack,
-                            icon: Icons.undo,
+                            icon:  SuperIconSource.icon(Icons.undo),
                           ),
                         ),
                       )
