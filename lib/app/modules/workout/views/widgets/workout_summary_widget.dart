@@ -5,16 +5,7 @@ import 'package:icon/app/core/values/app_colors.dart';
 import '../../controllers/workout_controller.dart';
 
 class WorkoutSummaryWidget extends GetView<WorkoutController> {
-  final int totalVolume;
-  final VoidCallback onDiscard;
-  final VoidCallback onSave;
-
-  const WorkoutSummaryWidget({
-    super.key,
-    required this.totalVolume,
-    required this.onDiscard,
-    required this.onSave,
-  });
+  const WorkoutSummaryWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -32,11 +23,13 @@ class WorkoutSummaryWidget extends GetView<WorkoutController> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _SummaryValue(
-                label: 'Total Volume',
-                value: '$totalVolume kg',
-                theme: theme,
-              ),
+              Obx(() {
+                return _SummaryValue(
+                  label: 'Total Volume',
+                  value: '${controller.totalVolume.toStringAsFixed(1)} kg',
+                  theme: theme,
+                );
+              }),
               Obx(() {
                 return _SummaryValue(
                   label: 'Duration',
@@ -51,7 +44,7 @@ class WorkoutSummaryWidget extends GetView<WorkoutController> {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: onDiscard,
+                  onPressed: controller.workoutOnDiscard,
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(
                       color: theme.colorScheme.outline,
@@ -73,7 +66,7 @@ class WorkoutSummaryWidget extends GetView<WorkoutController> {
               const SizedBox(width: 22),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: onSave,
+                  onPressed: controller.workoutOnSave,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.activityPrimaryColor,
                     textStyle: theme.textTheme.titleSmall,

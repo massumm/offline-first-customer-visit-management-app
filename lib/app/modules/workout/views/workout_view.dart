@@ -101,9 +101,7 @@ class WorkoutView extends BaseView<WorkoutController> {
   @override
   Widget? bottomNavigationBar(BuildContext context) {
     return WorkoutSummaryWidget(
-      totalVolume: 50,
-      onDiscard: () {},
-      onSave: () {},
+
     );
   }
 }

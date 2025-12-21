@@ -21,6 +21,15 @@ class WorkoutController extends BaseController {
   Timer? _workoutTimer;
   final RxInt _elapsedSeconds = 0.obs;
 
+  double get totalVolume {
+    return workoutSetService.workoutSets
+        .where((set) => set.isComplete)
+        .fold(0.0, (previousValue, set) {
+      final reps = double.tryParse(set.reps) ?? 0;
+      final kg = double.tryParse(set.kg) ?? 0;
+      return previousValue + (reps * kg);
+    });
+  }
   String get onWorkoutDuration {
     final int minutes = _elapsedSeconds.value ~/ 60;
     final int seconds = _elapsedSeconds.value % 60;
@@ -81,5 +90,11 @@ class WorkoutController extends BaseController {
         },
       ),
     );
+  }
+
+  void workoutOnDiscard() {
+  }
+
+  void workoutOnSave() {
   }
 }
