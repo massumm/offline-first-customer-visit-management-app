@@ -11,6 +11,7 @@ import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
 import '../../../core/widgets/fab_widgets/fab_card_item.dart';
 import '../../../core/widgets/super_widgets/super_icon_source.dart';
 import '../controllers/nutrition_tracker_controller.dart';
+import '../models/meal_item.dart';
 
 class NutritionTrackerView extends BaseView<NutritionTrackerController> {
   const NutritionTrackerView({super.key});
@@ -43,18 +44,49 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
             ],
           ),
           const SizedBox(height: 12),
-
-          _mealTile(title: 'Meal 1', subtitle: '350 kcal • 8:10 am'),
-          const SizedBox(height: 8),
-          _mealTile(title: 'Meal 2', subtitle: '350 kcal • 8:10 am'),
+          Obx(
+                () {
+              if (controller.isLoading.value) { // Assuming you have an isLoading RxBool
+                return const Center(child: CircularProgressIndicator());
+              }
+              return _mealList(controller.allMeals);
+            },
+          ),
         ],
       ),
     );
   }
+  Widget _mealList(List<Meal> meals) {
+    if (meals.isEmpty) {
+      return const Center(
+        child: Text(
+          'No meals logged yet!',
+          style: TextStyle(color: Colors.white70),
+        ),
+      );
+    }
+    return Column(
+      children: meals.map((meal) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8.0), // Add spacing between tiles
+          child: _mealTile(meal: meal),
+        );
+      }).toList(),
+    );
+  }
+  Widget _mealTile({required Meal meal}) {
+    final DateTime createdAt = meal.createdAt;
 
-  Widget _mealTile({required String title, required String subtitle}) {
+    // Format hour to 12-hour format
+    final int hour = createdAt.hour % 12 == 0 ? 12 : createdAt.hour % 12;
+    // Pad minute with leading zero if single digit
+    final String minute = createdAt.minute.toString().padLeft(2, '0');
+    // Determine AM or PM
+    final String ampm = createdAt.hour < 12 ? 'AM' : 'PM';
+
+    final String formattedTime = '$hour:$minute $ampm';
     return Container(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(12),
@@ -76,7 +108,7 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  meal.name, // Use meal.name
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -84,18 +116,17 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  subtitle,
+                  '${meal.calorieCount} kcal • $formattedTime',
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
               ],
             ),
           ),
-
           Image.asset(
             Assets.imagesArrowUpLeft,
-            width: 24, // Set the size to match the previous icon
-            height: 24,
-            color: Colors.white, // Apply a color tint if needed
+            width: 20,
+            height: 20,
+            color: Colors.white,
           ),
         ],
       ),
