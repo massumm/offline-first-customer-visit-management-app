@@ -1,3 +1,6 @@
+import 'equipment_model.dart';
+import 'muscle_group_model.dart';
+
 class ExercisesResponseModel {
   final String? message;
   final int? count;
@@ -50,8 +53,8 @@ class ExercisesResponseModel {
 class Exercise {
   final int? id;
   final String? name;
-  final List<ExerciseEquipment>? muscleGroup;
-  final List<ExerciseEquipment>? equipment;
+  final List<MuscleGroupModel>? muscleGroup;
+  final List<EquipmentModel>? equipment;
   final bool? isPopular;
   final String? exerciseImage;
   final bool? supportsWeight;
@@ -77,13 +80,13 @@ class Exercise {
     name: json["name"],
     muscleGroup: json["muscle_group"] == null
         ? []
-        : List<ExerciseEquipment>.from(
-            json["muscle_group"]!.map((x) => ExerciseEquipment.fromJson(x)),
+        : List<MuscleGroupModel>.from(
+            json["muscle_group"]!.map((x) => MuscleGroupModel.fromJson(x)),
           ),
     equipment: json["equipment"] == null
         ? []
-        : List<ExerciseEquipment>.from(
-            json["equipment"]!.map((x) => ExerciseEquipment.fromJson(x)),
+        : List<EquipmentModel>.from(
+            json["equipment"]!.map((x) => EquipmentModel.fromJson(x)),
           ),
     isPopular: json["is_popular"],
     exerciseImage: json["exercise_image"],
@@ -108,29 +111,5 @@ class Exercise {
     "supports_reps": supportsReps,
     "supports_distance": supportsDistance,
     "supports_time": supportsTime,
-  };
-}
-
-class ExerciseEquipment {
-  final int? id;
-  final String? name;
-  final dynamic iconImage;
-  final String? iconText;
-
-  ExerciseEquipment({this.id, this.name, this.iconImage, this.iconText});
-
-  factory ExerciseEquipment.fromJson(Map<String, dynamic> json) =>
-      ExerciseEquipment(
-        id: json["id"],
-        name: json["name"],
-        iconImage: json["icon_image"],
-        iconText: json["icon_text"],
-      );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "icon_image": iconImage,
-    "icon_text": iconText,
   };
 }

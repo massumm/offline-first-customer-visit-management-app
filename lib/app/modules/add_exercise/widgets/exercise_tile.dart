@@ -6,10 +6,10 @@ import '../../../../../generated/assets.dart';
 import '../../../core/widgets/super_image.dart';
 import '../../../core/widgets/super_widgets/super_icon.dart';
 import '../../../core/widgets/super_widgets/super_icon_source.dart';
-import '../controllers/workout_controller.dart';
+import '../controllers/add_exercise_controller.dart';
 import '../models/exercises_response_model.dart';
 
-class ExerciseTile extends GetView<WorkoutController> {
+class ExerciseTile extends GetView<AddExerciseController> {
   final Exercise exercise;
 
   const ExerciseTile({super.key, required this.exercise});

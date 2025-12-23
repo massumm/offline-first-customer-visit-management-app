@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../core/middlewares/login_middleware.dart';
 import '../modules/activity_tracker/bindings/activity_tracker_binding.dart';
 import '../modules/activity_tracker/views/activity_tracker_view.dart';
+import '../modules/add_exercise/index.dart';
 import '../modules/app_settings/bindings/app_settings_binding.dart';
 import '../modules/app_settings/views/app_settings_view.dart';
 import '../modules/fitness_report/bindings/fitness_report_binding.dart';
@@ -236,6 +237,11 @@ class AppPages {
       name: _Paths.NUTRITION_TRACKER_ENTRY,
       page: () => const NutritionTrackerEntryView(),
       binding: NutritionTrackerBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_EXERCISE,
+      page: () => const AddExerciseView(),
+      binding: AddExerciseBinding(),
     ),
   ];
 }

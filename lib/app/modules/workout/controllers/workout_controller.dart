@@ -4,10 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import '../../../base/base_controller.dart';
+import '../../../routes/app_pages.dart';
 import '../index.dart';
-import '../models/equipments_response_model.dart';
-import '../models/exercises_response_model.dart';
-import '../models/muscle_group_response_model.dart';
 import '../repository/workout_repository.dart';
 import '../services/rest_timer_service.dart';
 import '../services/save_workout_service.dart';
@@ -19,7 +17,6 @@ import '../widgets/clock_bottom_sheet.dart';
 class WorkoutController extends BaseController {
   final WorkoutSettingsService settingsService =
       Get.find<WorkoutSettingsService>();
-
   final WorkoutSetService workoutSetService = Get.find<WorkoutSetService>();
   final RestTimerService restTimerService = Get.find<RestTimerService>();
   final SaveWorkoutService saveWorkoutService = Get.find<SaveWorkoutService>();
@@ -34,16 +31,6 @@ class WorkoutController extends BaseController {
     tag: (WorkoutRepository).toString(),
   );
 
-  final RxList<Exercise> recentExercises = <Exercise>[].obs;
-  final RxList<Exercise> allExercises = <Exercise>[].obs;
-  final RxList<Exercise> selectedExercise = <Exercise>[].obs;
-  final RxList<Muscle> musclesItems = <Muscle>[].obs;
-  final RxList<Equipment> equipmentItems = <Equipment>[].obs;
-  final Rx<Muscle> selectedMuscle = Muscle().obs;
-  final Rx<Equipment> selectedEquipment = Equipment().obs;
-
-  final RxBool isLoading = true.obs;
-
   @override
   void onInit() {
     super.onInit();
@@ -53,34 +40,11 @@ class WorkoutController extends BaseController {
 
     saveWorkoutService.attach(this);
 
-    // Start the workout timer
+    /// Start the workout timer
     _workoutTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       _elapsedSeconds.value++;
     });
-    _workoutRepository.getMusclesGroups().then((MuscleGroupResponseModel data) {
-      musclesItems.value = data.results!;
-    });
-    _workoutRepository.getEquipments().then((EquipmentResponseModel data) {
-      equipmentItems.value = data.results!;
-    });
-
-    _workoutRepository.getExercises().then((ExercisesResponseModel data) {
-      recentExercises.value = data.recent!;
-      allExercises.value = data.results!;
-      isLoading.value = false;
-    });
   }
-
-  void toggleExercise(Exercise exercise) {
-    if (!selectedExercise.contains(exercise)) {
-      selectedExercise.add(exercise);
-    } else {
-      selectedExercise.remove(exercise);
-    }
-  }
-
-  bool isExerciseSelected(Exercise exercise) =>
-      selectedExercise.contains(exercise);
 
   double get totalVolume {
     return workoutSetService.workoutSets.where((set) => set.isComplete).fold(
@@ -128,7 +92,7 @@ class WorkoutController extends BaseController {
   }
 
   void onAddExerciseTap() {
-    Get.to(() => ExerciseSelectionView());
+    Get.toNamed(Routes.ADD_EXERCISE);
   }
 
   void onRestTimerTap() {

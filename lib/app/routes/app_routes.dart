@@ -73,6 +73,7 @@ abstract class Routes {
   static const NUTRITION_TRACKER_ENTRY = _Paths.NUTRITION_TRACKER_ENTRY;
   static const RECOVERY_TRACKER = _Paths.RECOVERY_TRACKER;
   static const RECOVERY_TRACKER_ENTRY = _Paths.RECOVERY_TRACKER_ENTRY;
+  static const ADD_EXERCISE = _Paths.ADD_EXERCISE;
 }
 
 abstract class _Paths {
@@ -146,4 +147,5 @@ abstract class _Paths {
   static const NUTRITION_TRACKER_ENTRY = '/nutrition-tracker-Entry';
   static const RECOVERY_TRACKER = '/recovery-tracker';
   static const RECOVERY_TRACKER_ENTRY = '/recovery-tracker-entry';
+  static const ADD_EXERCISE = '/add-exercise';
 }
