@@ -128,7 +128,7 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
             physics: const NeverScrollableScrollPhysics(),
             itemCount: exercise.sets?.length ?? 0,
             itemBuilder: (context, index) {
-              final Set? set = exercise.sets?[index];
+              final SetModel? set = exercise.sets?[index];
 
               if (set == null) return SizedBox.shrink();
 
