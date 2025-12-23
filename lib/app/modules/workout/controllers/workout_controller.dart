@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/base/network/exceptions/api_exception.dart';
+import 'package:icon/app/base/widgets/custom_toast.dart';
+import 'package:icon/app/core/extensions/firebase_crashlytics.dart';
 
 import '../../../base/base_controller.dart';
 import '../../../routes/app_pages.dart';
@@ -18,7 +21,7 @@ import '../widgets/clock_bottom_sheet.dart';
 class WorkoutController extends BaseController {
   final WorkoutSettingsService settingsService =
       Get.find<WorkoutSettingsService>();
-  final WorkoutSetService workoutSetService = Get.find<WorkoutSetService>();
+  final WorkoutService workoutService = Get.find<WorkoutService>();
   final RestTimerService restTimerService = Get.find<RestTimerService>();
   final SaveWorkoutService saveWorkoutService = Get.find<SaveWorkoutService>();
 
@@ -36,7 +39,7 @@ class WorkoutController extends BaseController {
   void onInit() {
     super.onInit();
     settingsService.attach(this);
-    workoutSetService.attach(this);
+    workoutService.attach(this);
     restTimerService.attach(this);
 
     saveWorkoutService.attach(this);
@@ -48,14 +51,14 @@ class WorkoutController extends BaseController {
   }
 
   double get totalVolume {
-    return workoutSetService.workoutSets.where((set) => set.isComplete).fold(
-      0.0,
-      (previousValue, set) {
-        final reps = double.tryParse(set.reps) ?? 0;
-        final kg = double.tryParse(set.kg) ?? 0;
-        return previousValue + (reps * kg);
-      },
-    );
+    return workoutService.workoutSets.where((set) => set.isComplete).fold(0.0, (
+      previousValue,
+      set,
+    ) {
+      final reps = double.tryParse(set.reps) ?? 0;
+      final kg = double.tryParse(set.kg) ?? 0;
+      return previousValue + (reps * kg);
+    });
   }
 
   String get onWorkoutDuration {
@@ -72,13 +75,13 @@ class WorkoutController extends BaseController {
     return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
-  int get totalSets => workoutSetService.workoutSets.length;
+  int get totalSets => workoutService.workoutSets.length;
 
   @override
   void onClose() {
     _workoutTimer?.cancel();
     settingsService.detach();
-    workoutSetService.detach();
+    workoutService.detach();
     restTimerService.detach();
     saveWorkoutService.detach();
     super.onClose();
@@ -92,14 +95,36 @@ class WorkoutController extends BaseController {
     showClockBottomSheet(context);
   }
 
-  void onAddExerciseTap()  async {
-    final result  = await  Get.toNamed(Routes.ADD_EXERCISE);
+  void onAddExerciseTap() async {
+    final result = await Get.toNamed(Routes.ADD_EXERCISE);
 
-    if(result != null){
-      final List<Exercise> exerciseList = result as List<Exercise>;
+    if (result != null) {
+      // Create Workout
+      final List<Exercise> selectedExercises = result as List<Exercise>;
 
+      final body = {
+        'title': '',
+        'description': '',
+        'visibility': 'public', //public, private, friends_only
+        'exercises': selectedExercises.map((e) => e.toJson()).toList(),
+      };
+      _workoutRepository
+          .createWorkout(body)
+          .then(
+            (value) {
+              if (value.success == true) {
+                workoutService.exerciseData.addAll(
+                  value.workout?.exercises ?? [],
+                );
+              }
+            },
+            onError: (e, s) {
+              e.logToCrashlytics(s);
 
-
+              final errorMessage = e is ApiException ? e.message : e.toString();
+              CustomToast.showErrorToast(errorMessage);
+            },
+          );
     }
   }
 

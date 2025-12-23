@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:icon/app/modules/activity_tracker/models/workout_response_model.dart';
 import 'package:vibration/vibration.dart';
 
 import '../controllers/workout_controller.dart';
@@ -6,7 +7,7 @@ import '../models/workout_model.dart';
 import '../models/workout_set_data.dart';
 import '../widgets/bottom_sheet/show_set_type_bottom_sheet.dart';
 
-class WorkoutSetService extends GetxService {
+class WorkoutService extends GetxService {
   final RxList<WorkoutSetData> workoutSets = [
     WorkoutSetData(
       setType: '1',
@@ -45,7 +46,7 @@ class WorkoutSetService extends GetxService {
     ),
   ].obs;
 
-  final RxList<WorkoutModel> workoutData = <WorkoutModel>[].obs;
+  final RxList<ExerciseElement> exerciseData = <ExerciseElement>[].obs;
 
   // Main Controller.
   WorkoutController? _controller;

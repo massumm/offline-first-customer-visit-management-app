@@ -122,9 +122,9 @@ class WorkoutSetCard extends GetView<WorkoutController> {
             return ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.workoutSetService.workoutSets.length,
+              itemCount: controller.workoutService.workoutSets.length,
               itemBuilder: (context, index) {
-                final set = controller.workoutSetService.workoutSets[index];
+                final set = controller.workoutService.workoutSets[index];
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -143,7 +143,7 @@ class WorkoutSetCard extends GetView<WorkoutController> {
                           message:
                               'Are you sure you want to remove this set? This action cannot be undone.',
                           onDelete: () =>
-                              controller.workoutSetService.removeSet(index),
+                              controller.workoutService.removeSet(index),
                         );
                       },
                       background: Container(
@@ -169,22 +169,22 @@ class WorkoutSetCard extends GetView<WorkoutController> {
                         completed: set.isComplete,
                         highlight: true,
                         onSetTapped: (newSetType) {
-                          controller.workoutSetService.updateSetType(
+                          controller.workoutService.updateSetType(
                             index,
                             newSetType,
                           );
                         },
                         onCompleteTap: (isCompleted) {
-                          controller.workoutSetService.toggleCompletion(
+                          controller.workoutService.toggleCompletion(
                             index,
                             isCompleted,
                           );
                         },
                         onKgChanged: (value) {
-                          controller.workoutSetService.updateKg(index, value);
+                          controller.workoutService.updateKg(index, value);
                         },
                         onRepsChanged: (value) {
-                          controller.workoutSetService.updateReps(index, value);
+                          controller.workoutService.updateReps(index, value);
                         },
                       ),
                     ),
@@ -214,7 +214,7 @@ class WorkoutSetCard extends GetView<WorkoutController> {
           Center(
             child: TextButton(
               onPressed: () {
-                controller.workoutSetService.addSet();
+                controller.workoutService.addSet();
               },
               style: TextButton.styleFrom(
                 foregroundColor: theme.colorScheme.secondary,
