@@ -147,7 +147,7 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('Activity Tracker', style: appBarTheme.titleTextStyle),
+        title: Text('Nutrition Tracker', style: appBarTheme.titleTextStyle),
         centerTitle: true,
 
         leading: Padding(
@@ -170,9 +170,11 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
 
       body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(children: [_nutritionLogCard()]),
+          SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(children: [_nutritionLogCard()]),
+            ),
           ),
           AnimatedFabCard(
             height: controller.height,

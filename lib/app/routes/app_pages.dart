@@ -21,6 +21,7 @@ import '../modules/icon_profile/views/icon_profile_view.dart';
 import '../modules/login/bindings/login_binding.dart';
 import '../modules/login/views/login_view.dart';
 import '../modules/nutrition_tracker/bindings/nutrition_tracker_binding.dart';
+import '../modules/nutrition_tracker/bindings/nutrition_tracker_entry_binding.dart';
 import '../modules/nutrition_tracker/views/nutrition_tracker_entry_view.dart';
 import '../modules/nutrition_tracker/views/nutrition_tracker_view.dart';
 import '../modules/onboarding/bindings/onboarding_binding.dart';
@@ -236,7 +237,7 @@ class AppPages {
     GetPage(
       name: _Paths.NUTRITION_TRACKER_ENTRY,
       page: () => const NutritionTrackerEntryView(),
-      binding: NutritionTrackerBinding(),
+      binding: NutritionTrackerEntryBinding(),
     ),
     GetPage(
       name: _Paths.ADD_EXERCISE,
