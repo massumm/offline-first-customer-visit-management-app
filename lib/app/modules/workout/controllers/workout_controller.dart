@@ -19,6 +19,7 @@ class WorkoutController extends BaseController {
   double? selectedQuickValue;
   final RxDouble repSectionHeight = 0.0.obs;
   final RxDouble keyboardHeight = 380.0.obs;
+  final RxDouble repValue = 6.0.obs;
 
   final WorkoutSettingsService settingsService =
       Get.find<WorkoutSettingsService>();

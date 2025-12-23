@@ -39,12 +39,9 @@ class ActivityRepKeyboard extends BaseView<WorkoutController> {
     // }
   }
 
-  // void _onQuickValuePress(double value) {
-  //   setState(() {
-  //     selectedQuickValue = value;
-  //     widget.controller.text = value.toString();
-  //   });
-  // }
+  void _onQuickValuePress(double value) {
+    controller.repValue.value = value;
+  }
 
   void _increment() {
     final int currentValue = int.tryParse(textEditingCtl.text) ?? 0;
@@ -115,9 +112,7 @@ class ActivityRepKeyboard extends BaseView<WorkoutController> {
                   final isSelected = controller.selectedQuickValue == value;
 
                   return GestureDetector(
-                    onTap: () => {
-                      // _onQuickValuePress(value)
-                    },
+                    onTap: () => {_onQuickValuePress(value)},
                     child: Container(
                       width: 40,
                       margin: EdgeInsets.only(left: index == 0 ? 0 : 8),

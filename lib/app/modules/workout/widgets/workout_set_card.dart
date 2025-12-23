@@ -549,7 +549,6 @@ class _RepsInputFieldState extends State<_RepsInputField> {
                 onRPE: () {
                   widget.workoutCtl.keyboardHeight.value = 425;
                   widget.workoutCtl.repSectionHeight.value = 50;
-                  // Get.back();
                 },
                 initialValue: double.tryParse(widget.initialValue),
               ),
@@ -565,14 +564,16 @@ class _RepsInputFieldState extends State<_RepsInputField> {
         filled: true,
         fillColor: theme.scaffoldBackgroundColor,
         contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-        suffix: Text(
-          widget.initialValue,
-          style: TextStyle(
-            color: Colors.orange,
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+        suffix: Obx(() {
+          return Text(
+            widget.workoutCtl.repValue.value.toString(),
+            style: TextStyle(
+              color: Colors.orange,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          );
+        }),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
