@@ -155,6 +155,7 @@ class IconDarkTheme {
       primary: AppColors.colorPrimary,
       onPrimaryContainer: AppColors.darkShapeColor,
       secondary: AppColors.activityPrimaryColor,
+      onSecondary: AppColors.darkTextPrimaryColor,
       secondaryContainer: AppColors.activitySecondaryColor,
       onSecondaryContainer: AppColors.darkTextPrimaryColor,
 

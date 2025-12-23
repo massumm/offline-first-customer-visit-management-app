@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import '../../../base/base_controller.dart';
 import '../models/equipment_model.dart';
@@ -135,5 +136,9 @@ class AddExerciseController extends BaseController {
       allExercises.value = data.results!;
       isLoading.value = false;
     });
+  }
+
+  void onAddTap() {
+    Get.back(result: selectedExercise);
   }
 }
