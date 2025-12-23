@@ -97,7 +97,7 @@ class Exercise {
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "exercise_id": id, // important for create exercise
     "name": name,
     "muscle_group": muscleGroup == null
         ? []

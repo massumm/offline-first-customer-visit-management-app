@@ -4,16 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
-import 'package:icon/app/core/extensions/firebase_crashlytics.dart';
 
 import '../../../base/base_controller.dart';
 import '../../../routes/app_pages.dart';
 import '../../add_exercise/models/exercises_response_model.dart';
 import '../index.dart';
 import '../repository/workout_repository.dart';
-import '../services/rest_timer_service.dart';
+import '../services/index.dart';
 import '../services/save_workout_service.dart';
-import '../services/start_workout_services_index.dart';
 import '../views/save_workout_view.dart';
 import '../widgets/bottom_sheet/rest_timer_bottom_sheet.dart';
 import '../widgets/clock_bottom_sheet.dart';
@@ -100,6 +98,7 @@ class WorkoutController extends BaseController {
 
     if (result != null) {
       // Create Workout
+      workoutService.isLoading.value = true;
       final List<Exercise> selectedExercises = result as List<Exercise>;
 
       final body = {
@@ -124,7 +123,8 @@ class WorkoutController extends BaseController {
               final errorMessage = e is ApiException ? e.message : e.toString();
               CustomToast.showErrorToast(errorMessage);
             },
-          );
+          )
+          .whenComplete(() => workoutService.isLoading(false));
     }
   }
 

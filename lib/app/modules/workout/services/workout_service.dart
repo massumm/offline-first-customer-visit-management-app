@@ -48,8 +48,12 @@ class WorkoutService extends GetxService {
 
   final RxList<ExerciseElement> exerciseData = <ExerciseElement>[].obs;
 
+  final RxBool isLoading = false.obs;
+
   // Main Controller.
   WorkoutController? _controller;
+
+
 
   void attach(WorkoutController controller) {
     _controller = controller;

@@ -13,7 +13,7 @@ class WorkoutRepositoryImpl extends BaseRemoteSource
   Future<WorkoutCreateResponseModel> createWorkout(Map<String, dynamic> body) {
     final String endpoint =
         "${DioProvider.baseUrl}/api/v1/activity-tracking/workouts/create/";
-    Future<Response<dynamic>> dioCall = dioClient.get(endpoint);
+    Future<Response<dynamic>> dioCall = dioClient.post(endpoint, data: body);
 
     try {
       return callApiWithErrorParser(

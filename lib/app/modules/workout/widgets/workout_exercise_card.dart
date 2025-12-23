@@ -6,20 +6,23 @@ import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
 import 'package:icon/generated/assets.dart';
 
+import '../../activity_tracker/models/workout_response_model.dart';
 import '../../activity_tracker/views/widgets/activity_rep_keyboard_widget.dart';
 import '../controllers/workout_controller.dart';
 import 'bottom_sheet/show_set_type_bottom_sheet.dart';
 import 'show_delete_confirmation_dialog.dart';
 import 'timer_progress_bar.dart';
 
-class WorkoutSetCard extends GetView<WorkoutController> {
-  const WorkoutSetCard({super.key});
+class WorkoutExerciseCard extends GetView<WorkoutController> {
+  const WorkoutExerciseCard({super.key, required this.exercise});
+
+  final ExerciseElement exercise;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(16).copyWith(bottom: 0),
       padding: const EdgeInsets.all(16).copyWith(bottom: 0),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
