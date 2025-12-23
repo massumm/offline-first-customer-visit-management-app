@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
@@ -21,6 +23,12 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final bool supportWeight = exercise.exercise?.supportsWeight ?? false;
+    final bool supportReps = exercise.exercise?.supportsReps ?? false;
+    final bool supportDistance = exercise.exercise?.supportsDistance ?? false;
+    final bool supportTime = exercise.exercise?.supportsTime ?? false;
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16).copyWith(bottom: 0),
@@ -60,13 +68,13 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
 
           // Rest Timer
           Obx(() {
-            final isResting =
-                controller.restTimerService.totalRestTimeInSec.value > 0;
+            final isResting = (exercise.restTimeSeconds ?? 0) > 0;
+            // controller.restTimerService.totalRestTimeInSec.value > 0;
             return Material(
               color: Colors.transparent,
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
-                onTap: () => controller.onRestTimerTap(),
+                onTap: () => controller.onRestTimerTap(exercise),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
@@ -91,8 +99,7 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
                           children: [
                             if (isResting)
                               TextSpan(
-                                text:
-                                    ' (${controller.restTimerService.readableRestTime})',
+                                text: ' (${exercise.restTimeSeconds ?? 0})',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -110,11 +117,13 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
 
           /// Table Header
           Row(
-            children: const [
+            children: [
               Expanded(flex: 1, child: _HeaderCell('SET')),
               Expanded(flex: 3, child: _HeaderCell('PREVIOUS')),
-              Expanded(flex: 2, child: _HeaderCell('KG')),
-              Expanded(flex: 2, child: _HeaderCell('REPS')),
+              if (supportWeight) Expanded(flex: 2, child: _HeaderCell('KG')),
+              if (supportReps) Expanded(flex: 2, child: _HeaderCell('REPS')),
+              if (supportDistance) Expanded(flex: 2, child: _HeaderCell('KM')),
+              if (supportTime) Expanded(flex: 2, child: _HeaderCell('TIME')),
               Expanded(flex: 1, child: _HeaderCell('', showIcon: true)),
             ],
           ),
@@ -125,9 +134,11 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
             return ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: controller.workoutService.workoutSets.length,
+              itemCount: exercise.sets?.length ?? 0,
               itemBuilder: (context, index) {
-                final set = controller.workoutService.workoutSets[index];
+                final Set? set = exercise.sets?[index];
+
+                if (set == null) return SizedBox.shrink();
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -136,8 +147,10 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
                       key: ObjectKey(set),
                       direction: DismissDirection.endToStart,
                       confirmDismiss: (direction) {
-                        final kgText = set.kg.isNotEmpty ? set.kg : '0';
-                        final repsText = set.reps.isNotEmpty ? set.reps : '0';
+                        final kgText = set.weightKg.isNotEmpty
+                            ? set.weightKg
+                            : '0';
+                        final repsText = set.reps ?? '0';
                         final details = '$kgText kg x $repsText reps';
 
                         return showDeleteConfirmationDialog(
@@ -164,13 +177,21 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
                         ),
                       ),
                       child: _SetRow(
-                        set: set.setType,
+                        set: set.setType ?? '',
                         previous: set.previous,
-                        kg: set.kg,
-                        reps: set.reps,
+                        kg: set.weightKg ?? '',
+                        reps: (set.reps ?? 0).toString(),
                         highlightText: '5.00',
-                        completed: set.isComplete,
+                        completed: set.isCompleted ?? false,
                         highlight: true,
+                        supportWeight: supportWeight,
+                        supportReps: supportReps,
+                        supportDistance: supportDistance,
+                        supportTime: supportTime,
+                        distance: '',
+                        time: '',
+                        onDistanceChange: (value) {},
+                        onTimeChange: (value) {},
                         onSetTapped: (newSetType) {
                           controller.workoutService.updateSetType(
                             index,
@@ -194,16 +215,17 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
                     // Timer Progress Bar
                     Obx(() {
                       final enableTimer =
-                          controller.restTimerService.totalRestTimeInSec.value >
-                              0 &&
-                          set.isComplete;
+                          // controller.restTimerService.totalRestTimeInSec.value > 0
+                          (exercise.restTimeSeconds ?? 0) > 0 &&
+                          (set.isCompleted ?? false);
                       return Visibility(
                         visible: enableTimer,
                         child: TimedProgressBar(
-                          seconds: controller
-                              .restTimerService
-                              .totalRestTimeInSec
-                              .value,
+                          seconds: exercise.restTimeSeconds ?? 0,
+                          // controller
+                          //     .restTimerService
+                          //     .totalRestTimeInSec
+                          //     .value,
                         ),
                       );
                     }),
@@ -296,14 +318,22 @@ class _SetRow extends StatelessWidget {
   final String set;
   final String previous;
   final String kg;
+  final String distance;
   final String reps;
+  final String time;
   final String highlightText;
+  final bool supportWeight;
+  final bool supportReps;
+  final bool supportDistance;
+  final bool supportTime;
   final bool completed;
   final bool highlight;
   final ValueChanged<SetType> onSetTapped;
   final ValueChanged<bool> onCompleteTap;
   final ValueChanged<String> onKgChanged;
   final ValueChanged<String> onRepsChanged;
+  final ValueChanged<String> onDistanceChange;
+  final ValueChanged<String> onTimeChange;
 
   const _SetRow({
     required this.set,
@@ -317,6 +347,14 @@ class _SetRow extends StatelessWidget {
     required this.onKgChanged,
     required this.onRepsChanged,
     this.highlight = true,
+    required this.supportWeight,
+    required this.supportReps,
+    required this.supportDistance,
+    required this.supportTime,
+    required this.distance,
+    required this.time,
+    required this.onDistanceChange,
+    required this.onTimeChange,
   });
 
   Color _getSetColor() {
@@ -373,18 +411,41 @@ class _SetRow extends StatelessWidget {
               style: const TextStyle(color: Colors.grey),
             ),
           ),
-          Expanded(
-            flex: 2,
-            child: _KgInputField(initialValue: kg, onChanged: onKgChanged),
-          ),
-          const SizedBox(width: 6),
-          Expanded(
-            flex: 2,
-            child: _RepsInputField(
-              initialValue: reps,
-              onChanged: onRepsChanged,
+          // Weight Input Field
+          if (supportWeight) ...[
+            Expanded(
+              flex: 2,
+              child: _KgInputField(initialValue: kg, onChanged: onKgChanged),
             ),
-          ),
+            const SizedBox(width: 6),
+          ],
+
+          if (supportDistance) ...[
+            Expanded(
+              flex: 2,
+              child: _KgInputField(
+                initialValue: distance,
+                onChanged: onDistanceChange,
+              ),
+            ),
+          ],
+
+          if (supportTime) ...[
+            Expanded(
+              child: _KgInputField(initialValue: time, onChanged: onTimeChange),
+            ),
+          ],
+
+          if (supportReps) ...[
+            Expanded(
+              flex: 2,
+              child: _RepsInputField(
+                initialValue: reps,
+                onChanged: onRepsChanged,
+              ),
+            ),
+          ],
+
           const SizedBox(width: 8),
           InkWell(
             onTap: () => onCompleteTap(!completed),

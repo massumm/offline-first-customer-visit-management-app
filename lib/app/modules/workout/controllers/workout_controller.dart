@@ -8,6 +8,7 @@ import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import '../../../base/base_controller.dart';
 import '../../../routes/app_pages.dart';
+import '../../activity_tracker/models/workout_response_model.dart';
 import '../../add_exercise/models/exercises_response_model.dart';
 import '../index.dart';
 import '../repository/workout_repository.dart';
@@ -113,6 +114,7 @@ class WorkoutController extends BaseController {
           .then(
             (value) {
               if (value.success == true) {
+                // Store all the exercises in the workout service.
                 workoutService.exerciseData.addAll(
                   value.workout?.exercises ?? [],
                 );
@@ -130,7 +132,7 @@ class WorkoutController extends BaseController {
     }
   }
 
-  void onRestTimerTap() {
+  void onRestTimerTap(ExerciseElement exercise) {
     Get.bottomSheet(
       RestTimerBottomSheet(
         selectedMinute: restTimerService.selectedMinute.value,
@@ -142,9 +144,21 @@ class WorkoutController extends BaseController {
           restTimerService.selectedSecond.value = value;
         },
         onStart: () {
-          restTimerService.totalRestTimeInSec.value =
-              restTimerService.selectedMinute.value * 60 +
-              restTimerService.selectedSecond.value;
+          final index = workoutService.exerciseData.indexOf(exercise);
+
+          if (index < 0) {
+            return;
+          }
+
+          workoutService.exerciseData[index].copyWith(
+            restTimeSeconds:
+                restTimerService.selectedMinute.value * 60 +
+                restTimerService.selectedSecond.value,
+          );
+          workoutService.exerciseData.refresh();
+          // restTimerService.totalRestTimeInSec.value =
+          //     restTimerService.selectedMinute.value * 60 +
+          //     restTimerService.selectedSecond.value;
         },
       ),
     );
