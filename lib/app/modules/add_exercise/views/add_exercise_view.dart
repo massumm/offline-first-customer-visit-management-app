@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:icon/app/core/extensions/app_extansions.dart';
-import 'package:icon/app/core/widgets/action_button.dart';
-import 'package:icon/app/core/widgets/super_image.dart';
-import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
-import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+import 'package:icon/app/base/base_view.dart';
 
 import '../../../../generated/assets.dart';
-import '../../../base/base_view.dart';
-import '../controllers/workout_controller.dart';
-import '../models/exercises_response_model.dart';
-import '../models/muscle_group_response_model.dart';
+import '../../../core/extensions/app_extansions.dart';
+import '../../../core/widgets/action_button.dart';
+import '../../../core/widgets/super_image.dart';
+import '../../../core/widgets/super_widgets/super_icon.dart';
+import '../../../core/widgets/super_widgets/super_icon_source.dart';
+import '../controllers/add_exercise_controller.dart';
+import '../models/muscle_group_model.dart';
 import '../widgets/exercise_tile.dart';
 
-class ExerciseSelectionView extends BaseView<WorkoutController> {
-  const ExerciseSelectionView({super.key});
-
+class AddExerciseView extends BaseView<AddExerciseController> {
+  const AddExerciseView({super.key});
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
     final theme = Theme.of(context);
@@ -38,7 +36,7 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
       child: CustomScrollView(
         slivers: [
           _searchBar(),
-          space,
+          SliverToBoxAdapter(child: 12.height),
           _filters(theme, context),
           _sectionTitle('Recent Exercises'),
           Obx(
@@ -46,7 +44,7 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                 ? SliverToBoxAdapter(
                     child: Center(child: CircularProgressIndicator()),
                   )
-                : _exerciseList(controller.recentExercises),
+                : _exerciseListRecent(),
           ),
           _sectionTitle('All Exercises'),
           Obx(
@@ -54,24 +52,14 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                 ? SliverToBoxAdapter(
                     child: Center(child: CircularProgressIndicator()),
                   )
-                : _exerciseList(controller.allExercises),
+                : _exerciseListAll(),
           ),
-          space,
+          SliverToBoxAdapter(child: 12.height),
           _bottomButton(context),
         ],
       ),
     );
   }
-
-  SliverList _exerciseList(List<Exercise> exercises) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate((context, index) {
-        return ExerciseTile(exercise: exercises[index]);
-      }, childCount: exercises.length),
-    );
-  }
-
-  SliverToBoxAdapter get space => SliverToBoxAdapter(child: 12.height);
 
   //  Search
   SliverToBoxAdapter _searchBar() {
@@ -95,7 +83,7 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
     );
   }
 
-  //  Filters
+  // //  Filters
   SliverToBoxAdapter _filters(ThemeData theme, BuildContext context) {
     return SliverToBoxAdapter(
       child: Container(
@@ -107,25 +95,29 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
         child: Row(
           children: [
             Expanded(
-              child: ActionButton(
-                label: 'All Equipment',
-                bgColor: theme.scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(6),
-                onTap: () {
-                  equipmentBottomSheet(context, theme);
-                },
-              ),
+              child: Obx(() {
+                return ActionButton(
+                  label: controller.selectedEquipment.value.name,
+                  bgColor: theme.scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(6),
+                  onTap: () {
+                    equipmentBottomSheet(context, theme);
+                  },
+                );
+              }),
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: ActionButton(
-                label: 'All Muscles',
-                bgColor: theme.scaffoldBackgroundColor,
-                borderRadius: BorderRadius.circular(6),
-                onTap: () {
-                  musclesBottomSheet(context, theme);
-                },
-              ),
+              child: Obx(() {
+                return ActionButton(
+                  label: controller.selectedMuscle.value.name,
+                  bgColor: theme.scaffoldBackgroundColor,
+                  borderRadius: BorderRadius.circular(6),
+                  onTap: () {
+                    musclesBottomSheet(context, theme);
+                  },
+                );
+              }),
             ),
           ],
         ),
@@ -133,6 +125,7 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
     );
   }
 
+  //
   Future<dynamic> equipmentBottomSheet(BuildContext context, ThemeData theme) {
     return Get.bottomSheet(
       isScrollControlled: true,
@@ -157,9 +150,12 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        'All Equipment',
-                        style: Theme.of(context).textTheme.titleMedium,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: Text(
+                          'All Equipment',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                       ),
                       IconButton(
                         onPressed: () => Navigator.of(context).pop(),
@@ -192,23 +188,20 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                               ),
                               onTap: () {
                                 controller.selectedEquipment.value = item;
+                                controller.filterExercises();
                               },
 
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: 8,
                               ),
-                              leading: Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color:
-                                      theme.colorScheme.surfaceContainerHighest,
-                                  shape: BoxShape.circle,
-                                ),
+                              leading: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
                                 child: SuperImage(
                                   controller.equipmentItems[index].iconImage,
                                   width: 40,
                                   height: 40,
+                                  fit: BoxFit.fill,
                                 ),
                               ),
                               title: Text(
@@ -240,6 +233,7 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
     );
   }
 
+  //
   Future<dynamic> musclesBottomSheet(BuildContext context, ThemeData theme) {
     return Get.bottomSheet(
       isScrollControlled: true,
@@ -281,11 +275,13 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                       controller: scrollController,
                       physics: const ClampingScrollPhysics(),
                       itemCount: controller.musclesItems.length,
-                      separatorBuilder: (_, _) => const SizedBox(height: 8),
-                      itemBuilder: (context, index) {
-                        return Obx(() {
-                          final Muscle item = controller.musclesItems[index];
+                      separatorBuilder: (BuildContext _, int _) =>
+                          const SizedBox(height: 8),
+                      itemBuilder: (BuildContext context, int index) {
+                        final MuscleGroupModel item =
+                            controller.musclesItems[index];
 
+                        return Obx(() {
                           return Card(
                             color: theme.scaffoldBackgroundColor,
                             shape: RoundedRectangleBorder(
@@ -298,6 +294,7 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
                               ),
                               onTap: () {
                                 controller.selectedMuscle.value = item;
+                                controller.filterExercises();
                               },
 
                               contentPadding: const EdgeInsets.symmetric(
@@ -345,7 +342,39 @@ class ExerciseSelectionView extends BaseView<WorkoutController> {
     );
   }
 
-  //  Section title
+  Widget _exerciseListRecent() {
+    return Obx(() {
+      final exercises =
+          (controller.isMuscleSelected.value ||
+              controller.isEquipmentSelected.value)
+          ? controller.filteredRecentExercises
+          : controller.recentExercises;
+      return SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return ExerciseTile(exercise: exercises[index]);
+        }, childCount: exercises.length),
+      );
+    });
+  }
+
+  Widget _exerciseListAll() {
+    return Obx(() {
+      final exercises =
+          (controller.isMuscleSelected.value ||
+              controller.isEquipmentSelected.value)
+          ? controller.filteredAllExercises
+          : controller.allExercises;
+      return SliverList(
+        delegate: SliverChildBuilderDelegate((context, index) {
+          return ExerciseTile(exercise: exercises[index]);
+        }, childCount: exercises.length),
+      );
+    });
+  }
+
+  //
+
+  // //  Section title
   SliverToBoxAdapter _sectionTitle(String text) {
     return SliverToBoxAdapter(
       child: Padding(

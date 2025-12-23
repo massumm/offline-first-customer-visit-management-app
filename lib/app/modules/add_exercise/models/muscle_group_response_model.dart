@@ -1,9 +1,11 @@
+import 'muscle_group_model.dart';
+
 class MuscleGroupResponseModel {
   final String? message;
   final int? count;
   final dynamic next;
   final dynamic previous;
-  final List<Muscle>? results;
+  final List<MuscleGroupModel>? results;
 
   MuscleGroupResponseModel({
     this.message,
@@ -21,8 +23,8 @@ class MuscleGroupResponseModel {
         previous: json["previous"],
         results: json["results"] == null
             ? []
-            : List<Muscle>.from(
-                json["results"]!.map((x) => Muscle.fromJson(x)),
+            : List<MuscleGroupModel>.from(
+                json["results"]!.map((x) => MuscleGroupModel.fromJson(x)),
               ),
       );
 
@@ -34,28 +36,5 @@ class MuscleGroupResponseModel {
     "results": results == null
         ? []
         : List<dynamic>.from(results!.map((x) => x.toJson())),
-  };
-}
-
-class Muscle {
-  final int? id;
-  final String? name;
-  final dynamic iconImage;
-  final String? iconText;
-
-  Muscle({this.id, this.name, this.iconImage, this.iconText});
-
-  factory Muscle.fromJson(Map<String, dynamic> json) => Muscle(
-    id: json["id"],
-    name: json["name"],
-    iconImage: json["icon_image"],
-    iconText: json["icon_text"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "icon_image": iconImage,
-    "icon_text": iconText,
   };
 }
