@@ -14,12 +14,14 @@ import '../widgets/exercise_tile.dart';
 
 class AddExerciseView extends BaseView<AddExerciseController> {
   const AddExerciseView({super.key});
+
   @override
   PreferredSizeWidget? appBar(BuildContext context) {
     final theme = Theme.of(context);
     return AppBar(
       title: Text('Add Exercise', style: theme.textTheme.titleMedium),
       centerTitle: true,
+      surfaceTintColor: theme.appBarTheme.backgroundColor,
       leading: Padding(
         padding: const EdgeInsets.all(6.0),
         child: ActionButton.compact(onTap: Get.back),
@@ -398,26 +400,30 @@ class AddExerciseView extends BaseView<AddExerciseController> {
       hasScrollBody: false,
       child: Align(
         alignment: Alignment.bottomCenter,
-        child: SizedBox(
-          width: double.infinity,
-          height: 52,
-          child: ElevatedButton(
-            // onPressed: service.selectedCount == 0 ? null : () {},
-            onPressed: () {},
+        child: Obx(() {
+          final selectedCount = controller.selectedExercise.length;
+          final isButtonEnabled = selectedCount > 0;
+
+          return ElevatedButton(
+            onPressed: isButtonEnabled ? controller.onAddTap : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: theme.colorScheme.secondary,
+              disabledBackgroundColor: theme.colorScheme.onSurface.withValues(
+                alpha: 0.12,
+              ),
+              foregroundColor: theme.colorScheme.onSecondary,
+              disabledForegroundColor: theme.colorScheme.onSurface.withValues(
+                alpha: 0.38,
+              ),
             ),
-            child: Obx(() {
-              return Text(
-                'Added ${controller.selectedExercise.length} Workout',
-
-                style: const TextStyle(fontSize: 16),
-              );
-            }),
-          ),
-        ),
-
-        // Obx(() =>),
+            child: Text(
+              isButtonEnabled
+                  ? 'Add $selectedCount Exercise${selectedCount == 1 ? '' : 's'}'
+                  : 'Add Exercise',
+              style: const TextStyle(fontSize: 16),
+            ),
+          );
+        }),
       ),
     );
   }

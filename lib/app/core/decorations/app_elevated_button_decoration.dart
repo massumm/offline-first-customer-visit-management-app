@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../values/app_colors.dart';
 
-Size get buttonFixedSize => const Size(double.maxFinite, 44);
+Size get buttonFixedSize => const Size(double.maxFinite, 52);
 final BorderRadius borderRadius = BorderRadius.circular(12);
 
 TextStyle get btnTextStyle {
