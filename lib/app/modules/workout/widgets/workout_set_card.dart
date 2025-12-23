@@ -378,6 +378,7 @@ class _SetRow extends StatelessWidget {
           Expanded(
             flex: 2,
             child: _RepsInputField(
+              workoutCtl: Get.find<WorkoutController>(),
               initialValue: reps,
               onChanged: onRepsChanged,
             ),
@@ -490,10 +491,15 @@ class _KgInputFieldState extends State<_KgInputField> {
 }
 
 class _RepsInputField extends StatefulWidget {
-  const _RepsInputField({required this.initialValue, required this.onChanged});
-
+  final WorkoutController workoutCtl;
   final String initialValue;
   final ValueChanged<String> onChanged;
+
+  const _RepsInputField({
+    required this.initialValue,
+    required this.onChanged,
+    required this.workoutCtl,
+  });
 
   @override
   State<_RepsInputField> createState() => _RepsInputFieldState();
@@ -531,16 +537,25 @@ class _RepsInputFieldState extends State<_RepsInputField> {
       keyboardType: TextInputType.none,
       onTap: () {
         Get.bottomSheet(
-          ActivityRepKeyboard(
-            controller: _controller,
-            onDone: () {
-              Get.back();
-            },
-            onRPE: () {
-              Get.back();
-            },
-            initialValue: double.tryParse(widget.initialValue),
-          ),
+          Obx(() {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              height: widget.workoutCtl.keyboardHeight.value,
+              child: ActivityRepKeyboard(
+                textEditingCtl: _controller,
+                onDone: () {
+                  Get.back();
+                },
+                onRPE: () {
+                  widget.workoutCtl.keyboardHeight.value = 425;
+                  widget.workoutCtl.repSectionHeight.value = 50;
+                  // Get.back();
+                },
+                initialValue: double.tryParse(widget.initialValue),
+              ),
+            );
+          }),
+          enableDrag: false,
         );
       },
       textAlign: TextAlign.center,

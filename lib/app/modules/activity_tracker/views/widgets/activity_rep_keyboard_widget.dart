@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class ActivityRepKeyboard extends StatefulWidget {
-  final TextEditingController controller;
+import '../../../../base/base_view.dart';
+import '../../../workout/controllers/workout_controller.dart';
+
+class ActivityRepKeyboard extends BaseView<WorkoutController> {
+  final TextEditingController textEditingCtl;
   final VoidCallback? onDone;
   final VoidCallback? onRPE;
   final double? initialValue;
@@ -9,80 +13,65 @@ class ActivityRepKeyboard extends StatefulWidget {
 
   const ActivityRepKeyboard({
     super.key,
-    required this.controller,
+    required this.textEditingCtl,
     this.onDone,
     this.onRPE,
     this.initialValue,
     this.quickValues,
   });
 
-  @override
-  State<ActivityRepKeyboard> createState() => _ActivityRepKeyboardState();
-}
-
-class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
-  double? selectedQuickValue;
-
-  @override
-  void initState() {
-    super.initState();
-    selectedQuickValue = widget.initialValue;
-  }
-
   void _onKeyPress(String value) {
-    final currentText = widget.controller.text;
+    final currentText = textEditingCtl.text;
     if (value == '⌫') {
       if (currentText.isNotEmpty) {
-        widget.controller.text = currentText.substring(
-          0,
-          currentText.length - 1,
-        );
-      }
-    } else if (value == '.' || value == ',') {
-      // Only add a dot if not already present
-      final hasDot = currentText.contains('.');
-      if (!hasDot) {
-        widget.controller.text = currentText.isEmpty ? '0.' : '$currentText.';
+        textEditingCtl.text = currentText.substring(0, currentText.length - 1);
       }
     } else {
-      widget.controller.text = currentText + value;
+      textEditingCtl.text = currentText + value;
     }
+
+    // else if (value == ',') {
+    //   // Only add a dot if not already present
+    //   final hasDot = currentText.contains('.');
+    //   if (!hasDot) {
+    //     textEditingCtl.text = currentText.isEmpty ? '0.' : '$currentText.';
+    //   }
+    // }
   }
 
-  void _onQuickValuePress(double value) {
-    setState(() {
-      selectedQuickValue = value;
-      widget.controller.text = value.toString();
-    });
-  }
+  // void _onQuickValuePress(double value) {
+  //   setState(() {
+  //     selectedQuickValue = value;
+  //     widget.controller.text = value.toString();
+  //   });
+  // }
 
   void _increment() {
-    final currentValue = double.tryParse(widget.controller.text) ?? 0;
-    widget.controller.text = (currentValue + 1).toString();
+    final int currentValue = int.tryParse(textEditingCtl.text) ?? 0;
+    textEditingCtl.text = (currentValue + 1).toString();
   }
 
   void _decrement() {
-    final currentValue = double.tryParse(widget.controller.text) ?? 0;
+    final int currentValue = int.tryParse(textEditingCtl.text) ?? 0;
     if (currentValue > 0) {
-      widget.controller.text = (currentValue - 1).toString();
+      textEditingCtl.text = (currentValue - 1).toString();
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget body(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final bgColor = isDark ? const Color(0xFF1C1C1E) : const Color(0xFF2C2C2E);
+    final Color bgColor = Colors.black;
     final keyBgColor = isDark
         ? const Color(0xFF2C2C2E)
         : const Color(0xFF3A3A3C);
     final keyTextColor = Colors.white;
     final primaryColor = const Color(0xFFE9522B);
 
-    final quickVals =
-        widget.quickValues ??
-        [6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5];
+    final List<double> quickVals =
+        quickValues ?? [6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0, 10.5];
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -91,63 +80,66 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
         borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           // Quick value selector
-          SizedBox(
-            height: 50,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: quickVals.length + 1,
-              itemBuilder: (context, index) {
-                if (index == quickVals.length) {
-                  // Info button
-                  return Container(
-                    width: 50,
-                    margin: const EdgeInsets.only(left: 8),
-                    decoration: BoxDecoration(
-                      color: keyBgColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.info_outline,
-                        color: primaryColor,
-                        size: 24,
+          Obx(() {
+            return AnimatedContainer(
+              duration: const Duration(milliseconds: 280),
+              curve: Curves.easeInOut,
+              height: controller.repSectionHeight.value,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: quickVals.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == quickVals.length) {
+                    // Info button
+                    return Container(
+                      width: 30,
+                      margin: const EdgeInsets.only(left: 8),
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.info_outline,
+                          color: primaryColor,
+                          size: 24,
+                        ),
+                        onPressed: () {
+                          // Show info dialog
+                        },
                       ),
-                      onPressed: () {
-                        // Show info dialog
-                      },
+                    );
+                  }
+
+                  final value = quickVals[index];
+                  final isSelected = controller.selectedQuickValue == value;
+
+                  return GestureDetector(
+                    onTap: () => {
+                      // _onQuickValuePress(value)
+                    },
+                    child: Container(
+                      width: 40,
+                      margin: EdgeInsets.only(left: index == 0 ? 0 : 8),
+                      decoration: BoxDecoration(
+                        color: isSelected ? primaryColor : Colors.transparent,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        value.toString(),
+                        style: TextStyle(
+                          color: keyTextColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   );
-                }
-
-                final value = quickVals[index];
-                final isSelected = selectedQuickValue == value;
-
-                return GestureDetector(
-                  onTap: () => _onQuickValuePress(value),
-                  child: Container(
-                    width: 60,
-                    margin: EdgeInsets.only(left: index == 0 ? 0 : 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? primaryColor : keyBgColor,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      value.toString(),
-                      style: TextStyle(
-                        color: keyTextColor,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
+                },
+              ),
+            );
+          }),
           const SizedBox(height: 16),
 
           // Keyboard grid
@@ -185,7 +177,7 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
                   const SizedBox(width: 12),
                   // - and + as a sub-row, fixed width box
                   SizedBox(
-                    width: 92, // Enough for two keys + spacing
+                    width: 95,
                     child: Row(
                       children: [
                         Expanded(
@@ -221,21 +213,14 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
                   const SizedBox(width: 12),
                   _buildKey('9', keyBgColor, keyTextColor),
                   const SizedBox(width: 12),
-                  _buildActionKey(
-                    'RPE',
-                    primaryColor,
-                    keyTextColor,
-                    widget.onRPE,
-                  ),
+                  _buildActionKey('RPE', primaryColor, keyTextColor, onRPE),
                 ],
               ),
               const SizedBox(height: 12),
 
-              // Row 4: dot (.), 0, backspace, NEXT
+              // Row 4: comma (,), 0, backspace, NEXT
               Row(
                 children: [
-                  _buildKey('.', keyBgColor, keyTextColor),
-                  const SizedBox(width: 12),
                   _buildKey('0', keyBgColor, keyTextColor),
                   const SizedBox(width: 12),
                   _buildIconKey(
@@ -245,12 +230,7 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
                     () => _onKeyPress('⌫'),
                   ),
                   const SizedBox(width: 12),
-                  _buildActionKey(
-                    'NEXT',
-                    primaryColor,
-                    keyTextColor,
-                    widget.onDone,
-                  ),
+                  _buildActionKey('NEXT', primaryColor, keyTextColor, onDone),
                 ],
               ),
             ],
@@ -265,7 +245,7 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
   Widget _buildKey(String label, Color bgColor, Color textColor) {
     return Expanded(
       child: GestureDetector(
-        onTap: () => _onKeyPress(label),
+        // onTap: () => _onKeyPress(label),
         child: Container(
           height: 60,
           decoration: BoxDecoration(
@@ -296,7 +276,7 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
       onTap: onTap,
       child: Container(
         height: 60,
-        width: 60,
+        width: 95,
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(8),
@@ -336,36 +316,4 @@ class _ActivityRepKeyboardState extends State<ActivityRepKeyboard> {
       ),
     );
   }
-}
-
-// Helper function to show the keyboard modal
-void showActivityRepKeyboard(
-  BuildContext context, {
-  required TextEditingController controller,
-  VoidCallback? onDone,
-  VoidCallback? onRPE,
-  double? initialValue,
-  List<double>? quickValues,
-}) {
-  // Dismiss system keyboard
-  FocusScope.of(context).unfocus();
-
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.transparent,
-    builder: (context) => ActivityRepKeyboard(
-      controller: controller,
-      onDone: () {
-        Navigator.pop(context);
-        onDone?.call();
-      },
-      onRPE: () {
-        Navigator.pop(context);
-        onRPE?.call();
-      },
-      initialValue: initialValue,
-      quickValues: quickValues,
-    ),
-  );
 }

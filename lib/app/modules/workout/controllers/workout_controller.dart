@@ -15,6 +15,11 @@ import '../widgets/bottom_sheet/rest_timer_bottom_sheet.dart';
 import '../widgets/clock_bottom_sheet.dart';
 
 class WorkoutController extends BaseController {
+  /// Keyboard Related Variables
+  double? selectedQuickValue;
+  final RxDouble repSectionHeight = 0.0.obs;
+  final RxDouble keyboardHeight = 380.0.obs;
+
   final WorkoutSettingsService settingsService =
       Get.find<WorkoutSettingsService>();
   final WorkoutSetService workoutSetService = Get.find<WorkoutSetService>();
