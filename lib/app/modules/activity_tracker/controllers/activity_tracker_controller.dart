@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../../../base/base_controller.dart';
 import '../../../routes/app_pages.dart';
 import '../models/activity_logs_response_model.dart';
+import '../models/workout_response_model.dart';
 import '../repository/activity_tracker_repository.dart';
 
 enum ActionType { workout, cardio, repair }
