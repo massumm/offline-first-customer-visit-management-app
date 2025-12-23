@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../../../base/base_controller.dart';
 import '../../../routes/app_pages.dart';
+import '../../add_exercise/models/exercises_response_model.dart';
 import '../index.dart';
 import '../repository/workout_repository.dart';
 import '../services/rest_timer_service.dart';
@@ -91,8 +92,15 @@ class WorkoutController extends BaseController {
     showClockBottomSheet(context);
   }
 
-  void onAddExerciseTap() {
-    Get.toNamed(Routes.ADD_EXERCISE);
+  void onAddExerciseTap()  async {
+    final result  = await  Get.toNamed(Routes.ADD_EXERCISE);
+
+    if(result != null){
+      final List<Exercise> exerciseList = result as List<Exercise>;
+
+
+
+    }
   }
 
   void onRestTimerTap() {
