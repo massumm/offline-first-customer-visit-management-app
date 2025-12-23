@@ -16,6 +16,7 @@ class ApiErrorResponse {
   final String? error;
   final String? description;
   final Map<String, dynamic>? errors;
+  final int? activeWorkoutId;
 
   ApiErrorResponse({
     this.status,
@@ -23,6 +24,7 @@ class ApiErrorResponse {
     this.error,
     this.description,
     this.errors,
+    this.activeWorkoutId,
   });
 
   factory ApiErrorResponse.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,7 @@ class ApiErrorResponse {
       error: json['error'] as String?,
       description: json['description'] as String? ?? json['detail'] as String?,
       errors: json,
+      activeWorkoutId: json['active_workout_id'] as int?,
     );
   }
 }

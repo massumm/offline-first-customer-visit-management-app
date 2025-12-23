@@ -121,7 +121,7 @@ class WorkoutController extends BaseController {
             onError: (e, s) {
               //e.logToCrashlytics(s);
 
-              final errorMessage = e is ApiException ? e.description : e.toString();
+              final errorMessage = e is ApiException ? e.message : e.toString();
               "Error Message: $errorMessage".log();
               CustomToast.showErrorToast(errorMessage);
             },
