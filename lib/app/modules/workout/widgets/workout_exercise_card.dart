@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
@@ -28,6 +26,8 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
     final bool supportReps = exercise.exercise?.supportsReps ?? false;
     final bool supportDistance = exercise.exercise?.supportsDistance ?? false;
     final bool supportTime = exercise.exercise?.supportsTime ?? false;
+
+    final isResting = (exercise.restTimeSeconds ?? 0) > 0;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -67,52 +67,45 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
           6.height,
 
           // Rest Timer
-          Obx(() {
-            final isResting = (exercise.restTimeSeconds ?? 0) > 0;
-            // controller.restTimerService.totalRestTimeInSec.value > 0;
-            return Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () => controller.onRestTimerTap(exercise),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.timer,
-                        color: AppColors.activityPrimaryColor,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 6),
-                      RichText(
-                        text: TextSpan(
-                          text: 'Rest Timer',
-                          style: TextStyle(
-                            color: AppColors.activityPrimaryColor,
-                            fontSize: 13,
-                          ),
-                          children: [
-                            if (isResting)
-                              TextSpan(
-                                text: ' (${exercise.restTimeSeconds ?? 0})',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                          ],
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () => controller.onRestTimerTap(exercise),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.timer,
+                      color: AppColors.activityPrimaryColor,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 6),
+                    RichText(
+                      text: TextSpan(
+                        text: 'Rest Timer',
+                        style: TextStyle(
+                          color: AppColors.activityPrimaryColor,
+                          fontSize: 13,
                         ),
+                        children: [
+                          if (isResting)
+                            TextSpan(
+                              text: ' (${exercise.restTimeSeconds ?? 0})',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-            );
-          }),
+            ),
+          ),
           6.height,
 
           /// Table Header
@@ -130,110 +123,108 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
           const SizedBox(height: 8),
 
           // Main List
-          Obx(() {
-            return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: exercise.sets?.length ?? 0,
-              itemBuilder: (context, index) {
-                final Set? set = exercise.sets?[index];
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: exercise.sets?.length ?? 0,
+            itemBuilder: (context, index) {
+              final Set? set = exercise.sets?[index];
 
-                if (set == null) return SizedBox.shrink();
+              if (set == null) return SizedBox.shrink();
 
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Dismissible(
-                      key: ObjectKey(set),
-                      direction: DismissDirection.endToStart,
-                      confirmDismiss: (direction) {
-                        final kgText = set.weightKg.isNotEmpty
-                            ? set.weightKg
-                            : '0';
-                        final repsText = set.reps ?? '0';
-                        final details = '$kgText kg x $repsText reps';
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Dismissible(
+                    key: ObjectKey(set),
+                    direction: DismissDirection.endToStart,
+                    confirmDismiss: (direction) {
+                      final kgText = set.weightKg.isNotEmpty
+                          ? set.weightKg
+                          : '0';
+                      final repsText = set.reps ?? '0';
+                      final details = '$kgText kg x $repsText reps';
 
-                        return showDeleteConfirmationDialog(
-                          context: context,
-                          title: 'Delete Set ${set.setType} ($details)?',
-                          message:
-                              'Are you sure you want to remove this set? This action cannot be undone.',
-                          onDelete: () =>
-                              controller.workoutService.removeSet(index),
-                        );
-                      },
-                      background: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        decoration: BoxDecoration(
-                          color: AppColors.activityPrimaryColor,
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: const Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 16.0),
-                            child: Icon(Icons.delete, color: Colors.white),
-                          ),
-                        ),
+                      return showDeleteConfirmationDialog(
+                        context: context,
+                        title: 'Delete Set ${set.setType} ($details)?',
+                        message:
+                            'Are you sure you want to remove this set? This action cannot be undone.',
+                        onDelete: () =>
+                            controller.workoutService.removeSet(index),
+                      );
+                    },
+                    background: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.activityPrimaryColor,
+                        borderRadius: BorderRadius.circular(6),
                       ),
-                      child: _SetRow(
-                        set: set.setType ?? '',
-                        previous: set.previous,
-                        kg: set.weightKg ?? '',
-                        reps: (set.reps ?? 0).toString(),
-                        highlightText: '5.00',
-                        completed: set.isCompleted ?? false,
-                        highlight: true,
-                        supportWeight: supportWeight,
-                        supportReps: supportReps,
-                        supportDistance: supportDistance,
-                        supportTime: supportTime,
-                        distance: '',
-                        time: '',
-                        onDistanceChange: (value) {},
-                        onTimeChange: (value) {},
-                        onSetTapped: (newSetType) {
-                          controller.workoutService.updateSetType(
-                            index,
-                            newSetType,
-                          );
-                        },
-                        onCompleteTap: (isCompleted) {
-                          controller.workoutService.toggleCompletion(
-                            index,
-                            isCompleted,
-                          );
-                        },
-                        onKgChanged: (value) {
-                          controller.workoutService.updateKg(index, value);
-                        },
-                        onRepsChanged: (value) {
-                          controller.workoutService.updateReps(index, value);
-                        },
+                      child: const Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 16.0),
+                          child: Icon(Icons.delete, color: Colors.white),
+                        ),
                       ),
                     ),
-                    // Timer Progress Bar
-                    Obx(() {
-                      final enableTimer =
-                          // controller.restTimerService.totalRestTimeInSec.value > 0
-                          (exercise.restTimeSeconds ?? 0) > 0 &&
-                          (set.isCompleted ?? false);
-                      return Visibility(
-                        visible: enableTimer,
-                        child: TimedProgressBar(
-                          seconds: exercise.restTimeSeconds ?? 0,
-                          // controller
-                          //     .restTimerService
-                          //     .totalRestTimeInSec
-                          //     .value,
-                        ),
-                      );
-                    }),
-                  ],
-                );
-              },
-            );
-          }),
+                    child: _SetRow(
+                      set: set.setType ?? '',
+                      previous: set.previous,
+                      kg: set.weightKg ?? '',
+                      reps: (set.reps ?? 0).toString(),
+                      highlightText: '5.00',
+                      completed: set.isCompleted ?? false,
+                      highlight: true,
+                      supportWeight: supportWeight,
+                      supportReps: supportReps,
+                      supportDistance: supportDistance,
+                      supportTime: supportTime,
+                      distance: '',
+                      time: '',
+                      onDistanceChange: (value) {},
+                      onTimeChange: (value) {},
+                      onSetTapped: (newSetType) {
+                        controller.workoutService.updateSetType(
+                          index,
+                          newSetType,
+                        );
+                      },
+                      onCompleteTap: (isCompleted) {
+                        controller.workoutService.toggleCompletion(
+                          index,
+                          isCompleted,
+                        );
+                      },
+                      onKgChanged: (value) {
+                        controller.workoutService.updateKg(index, value);
+                      },
+                      onRepsChanged: (value) {
+                        controller.workoutService.updateReps(index, value);
+                      },
+                    ),
+                  ),
+                  // Timer Progress Bar
+                  Obx(() {
+                    final enableTimer =
+                        // controller.restTimerService.totalRestTimeInSec.value > 0
+                        (exercise.restTimeSeconds ?? 0) > 0 &&
+                        (set.isCompleted ?? false);
+                    return Visibility(
+                      visible: enableTimer,
+                      child: TimedProgressBar(
+                        seconds: exercise.restTimeSeconds ?? 0,
+                        // controller
+                        //     .restTimerService
+                        //     .totalRestTimeInSec
+                        //     .value,
+                      ),
+                    );
+                  }),
+                ],
+              );
+            },
+          ),
 
           /// Add Set
           Center(
