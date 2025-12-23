@@ -4,7 +4,9 @@ import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/extensions/app_extansions.dart';
 import 'package:icon/app/core/values/app_colors.dart';
 import 'package:icon/app/core/widgets/action_button.dart';
+import 'package:icon/app/core/widgets/super_widgets/super_icon.dart';
 import 'package:icon/app/core/widgets/super_widgets/super_icon_source.dart';
+import 'package:icon/generated/assets.dart';
 
 import '../../activity_tracker/models/workout_response_model.dart';
 import '../controllers/workout_controller.dart';
@@ -83,10 +85,11 @@ class WorkoutView extends BaseView<WorkoutController> {
                 child: Center(
                   child: Column(
                     children: [
-                      Icon(
-                        Icons.fitness_center,
+                      SuperIcon(
+                        source: SuperIconSource.imageAsset(
+                          Assets.activityTrackerWorkout,
+                        ),
                         size: 56,
-                        color: theme.disabledColor.withValues(alpha: 0.45),
                       ),
                       const SizedBox(height: 18),
                       Text(

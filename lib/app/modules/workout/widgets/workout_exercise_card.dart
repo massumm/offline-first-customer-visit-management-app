@@ -22,7 +22,7 @@ class WorkoutExerciseCard extends GetView<WorkoutController> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.all(16).copyWith(bottom: 0),
+      margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16).copyWith(bottom: 0),
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
