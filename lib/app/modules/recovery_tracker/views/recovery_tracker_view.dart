@@ -14,6 +14,8 @@ import '../../../core/widgets/fab_widgets/fab_card_item.dart';
 import '../../../core/widgets/super_widgets/super_icon_source.dart';
 import '../../activity_tracker/views/activity_tracker_view.dart';
 import '../controllers/recovery_tracker_controller.dart';
+import '../models/recovery_entry_model.dart';
+import '../models/recovery_response_model.dart';
 
 class RecoveryTrackerView extends BaseView<RecoveryTrackerController> {
   const RecoveryTrackerView({super.key});
@@ -46,16 +48,44 @@ class RecoveryTrackerView extends BaseView<RecoveryTrackerController> {
             ],
           ),
           const SizedBox(height: 12),
+          Obx(() {
+            if (controller.isLoading.value) {
+              return   LinearProgressIndicator();
+            }
 
-          _mealTile(title: 'Meal 1', subtitle: '350 kcal • 8:10 am'),
-          const SizedBox(height: 8),
-          _mealTile(title: 'Meal 2', subtitle: '350 kcal • 8:10 am'),
+            if (controller.allRecoveryEntries.isEmpty) {
+              return const Padding(
+                padding: EdgeInsets.symmetric(vertical: 24),
+                child: Center(
+                  child: Text(
+                    'No recovery entries yet',
+                    style: TextStyle(color: Colors.white70),
+                  ),
+                ),
+              );
+            }
+
+            return _recoveryEntryList(controller.allRecoveryEntries);
+          }),
+
         ],
+
       ),
     );
   }
+  // NEW: Widget to build the list of recovery entry tiles
+  Widget _recoveryEntryList(List<RecoveryEntry> entries) {
+    return Column(
+      children: entries.map((entry) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: _recoveryEntryTile(entry),
+        );
+      }).toList(),
+    );
+  }
 
-  Widget _mealTile({required String title, required String subtitle}) {
+  Widget _recoveryEntryTile(RecoveryEntry entry) {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -71,15 +101,19 @@ class RecoveryTrackerView extends BaseView<RecoveryTrackerController> {
               color: Colors.grey.shade800,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.fastfood, color: Colors.white),
+            child: const Icon(
+              Icons.self_improvement,
+              color: Colors.white,
+            ),
           ),
           const SizedBox(width: 12),
+
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  entry.activityName,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -87,14 +121,22 @@ class RecoveryTrackerView extends BaseView<RecoveryTrackerController> {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  subtitle,
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  '${entry.activityType.name} • ${entry.formattedTime}',
+                  style: const TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
                 ),
               ],
             ),
           ),
 
-          const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.white),
+          Image.asset(
+            Assets.imagesArrowUpLeft,
+            width: 20,
+            height: 20,
+            color: Colors.white,
+          ),
         ],
       ),
     );
@@ -206,9 +248,9 @@ class RecoveryTrackerView extends BaseView<RecoveryTrackerController> {
       spacing: 10,
       children: [
         12.height,
-        SubMenuBtn(title: "Quick Add", onTap: controller.gotoQuickAddPage),
-        SubMenuBtn(title: "Start Live Tracking", onTap: () {}),
-      ],
+
+
+            ],
     );
   }
 }
