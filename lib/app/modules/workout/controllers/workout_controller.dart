@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:icon/app/base/network/exceptions/api_exception.dart';
 import 'package:icon/app/base/widgets/custom_toast.dart';
+import 'package:icon/app/core/extensions/app_extansions.dart';
 
 import '../../../base/base_controller.dart';
 import '../../../routes/app_pages.dart';
@@ -118,9 +119,10 @@ class WorkoutController extends BaseController {
               }
             },
             onError: (e, s) {
-              e.logToCrashlytics(s);
+              //e.logToCrashlytics(s);
 
-              final errorMessage = e is ApiException ? e.message : e.toString();
+              final errorMessage = e is ApiException ? e.description : e.toString();
+              "Error Message: $errorMessage".log();
               CustomToast.showErrorToast(errorMessage);
             },
           )

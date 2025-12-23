@@ -13,18 +13,25 @@ import 'exceptions/timeout_exception.dart';
 class ApiErrorResponse {
   final String? status;
   final String? message;
+  final String? error;
   final String? description;
-  final Map<String, dynamic>? errors; // For detailed validation errors
+  final Map<String, dynamic>? errors;
 
-  ApiErrorResponse({this.status, this.message, this.description, this.errors});
+  ApiErrorResponse({
+    this.status,
+    this.message,
+    this.error,
+    this.description,
+    this.errors,
+  });
 
   factory ApiErrorResponse.fromJson(Map<String, dynamic> json) {
     return ApiErrorResponse(
       status: json['status'] as String?,
       message: json['message'] as String?,
-      // Prefer 'description', but fall back to 'detail' if it's not available.
+      error: json['error'] as String?,
       description: json['description'] as String? ?? json['detail'] as String?,
-      errors: json, // Keep the full map for detailed error parsing
+      errors: json,
     );
   }
 }
@@ -109,10 +116,16 @@ Exception _parseDioErrorResponse(DioException dioError) {
       );
     case HttpStatus.badRequest: // 400
       final detailedErrors = _parseValidationErrors(apiError?.errors);
+
+      String errorMessage = [
+        apiError?.error,
+        apiError?.message,
+      ].where((s) => s?.isNotEmpty ?? false).join('\n');
+
       return ApiException(
         httpCode: statusCode,
         status: apiError?.status ?? "Bad Request",
-        message: apiError?.message ?? "Invalid request.",
+        message: errorMessage.isNotEmpty ? errorMessage : "Invalid request.",
         description:
             detailedErrors ??
             apiError?.description ??
