@@ -52,10 +52,10 @@ class ChartsView extends StatelessWidget {
                   isExpanded: true,
                   underline: SizedBox(),
                   items: [
-                    DropdownMenuItem(value: 'Weekly', child: Text('Weekly', style: AppTextTheme.bodyMediumRegular.copyWith(color: ThemeHelpers.primaryTextColor))),
-                    DropdownMenuItem(value: 'Daily', child: Text('Daily', style: AppTextTheme.bodyMediumRegular.copyWith(color: ThemeHelpers.primaryTextColor))),
-                    DropdownMenuItem(value: 'Monthly', child: Text('Monthly', style: AppTextTheme.bodyMediumRegular.copyWith(color: ThemeHelpers.primaryTextColor))),
-                    DropdownMenuItem(value: 'Yearly', child: Text('Yearly', style: AppTextTheme.bodyMediumRegular.copyWith(color: ThemeHelpers.primaryTextColor))),
+                    DropdownMenuItem<String>(value: 'Weekly', child: Text('Weekly', style: AppTextTheme.bodyMediumRegular.copyWith(color: ThemeHelpers.primaryTextColor))),
+                    DropdownMenuItem<String>(value: 'Daily', child: Text('Daily', style: AppTextTheme.bodyMediumRegular.copyWith(color: ThemeHelpers.primaryTextColor))),
+                    DropdownMenuItem<String>(value: 'Monthly', child: Text('Monthly', style: AppTextTheme.bodyMediumRegular.copyWith(color: ThemeHelpers.primaryTextColor))),
+                    DropdownMenuItem<String>(value: 'Yearly', child: Text('Yearly', style: AppTextTheme.bodyMediumRegular.copyWith(color: ThemeHelpers.primaryTextColor))),
                   ],
                   onChanged: (value) {
                     // Handle dropdown change
