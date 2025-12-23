@@ -11,7 +11,7 @@ class WorkoutBinding extends Bindings {
   void dependencies() {
     // ------------ Services -------------
     Get.lazyPut<WorkoutSettingsService>(() => WorkoutSettingsService());
-    Get.lazyPut<WorkoutSetService>(() => WorkoutSetService());
+    Get.lazyPut<WorkoutService>(() => WorkoutService());
     Get.lazyPut<RestTimerService>(() => RestTimerService());
     Get.lazyPut<SaveWorkoutService>(() => SaveWorkoutService());
 
