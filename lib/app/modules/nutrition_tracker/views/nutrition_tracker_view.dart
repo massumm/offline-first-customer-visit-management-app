@@ -10,6 +10,7 @@ import '../../../core/widgets/fab_widgets/animated_fab.dart';
 import '../../../core/widgets/fab_widgets/animated_fab_card.dart';
 import '../../../core/widgets/fab_widgets/fab_card_item.dart';
 import '../../../core/widgets/super_widgets/super_icon_source.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/nutrition_tracker_controller.dart';
 import '../models/meal_item.dart';
 
@@ -47,7 +48,7 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
           Obx(
                 () {
               if (controller.isLoading.value) { // Assuming you have an isLoading RxBool
-                return const Center(child: CircularProgressIndicator());
+                return LinearProgressIndicator();
               }
               return _mealList(controller.allMeals);
             },
@@ -85,50 +86,58 @@ class NutritionTrackerView extends BaseView<NutritionTrackerController> {
     final String ampm = createdAt.hour < 12 ? 'AM' : 'PM';
 
     final String formattedTime = '$hour:$minute $ampm';
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Row(
-        children: [
-          Container(
-            height: 42,
-            width: 42,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade800,
-              borderRadius: BorderRadius.circular(8),
+    return InkWell(
+      onTap: () {
+        Get.toNamed(
+          Routes.NUTRITION_TRACKER_ENTRY,
+          arguments: meal,
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Row(
+          children: [
+            Container(
+              height: 42,
+              width: 42,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade800,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.fastfood, color: Colors.white),
             ),
-            child: const Icon(Icons.fastfood, color: Colors.white),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  meal.name, // Use meal.name
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    meal.name, // Use meal.name
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${meal.calorieCount} kcal • $formattedTime',
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    '${meal.calorieCount} kcal • $formattedTime',
+                    style: const TextStyle(color: Colors.grey, fontSize: 12),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Image.asset(
-            Assets.imagesArrowUpLeft,
-            width: 20,
-            height: 20,
-            color: Colors.white,
-          ),
-        ],
+            Image.asset(
+              Assets.imagesArrowUpLeft,
+              width: 20,
+              height: 20,
+              color: Colors.white,
+            ),
+          ],
+        ),
       ),
     );
   }
