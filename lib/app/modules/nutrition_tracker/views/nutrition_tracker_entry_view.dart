@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:icon/app/base/base_view.dart';
 import 'package:icon/app/core/values/app_colors.dart';
-import 'package:icon/app/modules/nutrition_tracker/controllers/nutrition_tracker_controller.dart';
+import 'package:icon/app/modules/nutrition_tracker/controllers/nutrition_tracker_entry_controller.dart'; // CHANGE Import
 import '../../../core/values/app_text_styles.dart' as appBarTheme;
 import '../../../core/widgets/action_button.dart';
 
 
 class NutritionTrackerEntryView
-    extends GetView<NutritionTrackerController> {
+    extends BaseView<NutritionTrackerEntryController> { // CHANGE Controller Type
   const NutritionTrackerEntryView({super.key});
-
   @override
-  Widget build(BuildContext context) {
+  Widget body(BuildContext context) {
+    // TODO: implement body
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar:
-
-      AppBar(
-        title: Text('Add New Meal', style: appBarTheme.titleTextStyle),
+      appBar: AppBar(
+        // Dynamic title based on edit mode
+        title: Obx(() => Text(
+          controller.isEditMode.value ? 'Edit Meal' : 'Add New Meal',
+          style: appBarTheme.titleTextStyle,
+        )),
         centerTitle: true,
 
         leading: Padding(
@@ -25,7 +28,7 @@ class NutritionTrackerEntryView
           child: ActionButton.compact(onTap: Get.back),
         ),
       ),
-      body: Padding(
+      body: Obx(() => Padding( // Wrap with Obx to react to isLoading and isEditMode changes
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,6 +37,7 @@ class NutritionTrackerEntryView
             _input(
               controller.mealNameController,
               hint: 'e.g. Protein Smoothie Bowl',
+              keyboardType: TextInputType.text, // Specify keyboard type for meal name
             ),
             const SizedBox(height: 24),
             Container(
@@ -43,55 +47,58 @@ class NutritionTrackerEntryView
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildCaloriesCard(
-                    title: 'Calories',
-                    controller: controller.caloriesController,
-                    hint: '548',
-                    subtitle: 'Per meal',
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildMacroCard(
-                          title: 'Protein',
-                          controller: controller.proteinController,
-                          hint: '27g',
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildCaloriesCard(
+                      title: 'Calories',
+                      controller: controller.caloriesController,
+                      hint: '0',
+                      subtitle: 'Per meal',
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildMacroCard(
+                            title: 'Protein',
+                            controller: controller.proteinController,
+                            hint: '0',
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildMacroCard(
-                          title: 'Fats',
-                          controller: controller.fatsController,
-                          hint: '3g',
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildMacroCard(
+                            title: 'Fats',
+                            controller: controller.fatsController,
+                            hint: '0',
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: _buildMacroCard(
-                          title: 'Carbs',
-                          controller: controller.carbsController,
-                          hint: '32g',
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildMacroCard(
+                            title: 'Carbs',
+                            controller: controller.carbsController,
+                            hint: '0',
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ]
-            ),
+                      ],
+                    ),
+                  ]
+              ),
             ),
             const Spacer(),
             _quantitySelector(),
             const SizedBox(height: 16),
             _saveButton(),
 
+            if (controller.isLoading.value) // Show a loading indicator at the bottom
+              const LinearProgressIndicator(color: AppColors.deepGreenFavBgColor),
           ],
         ),
-      ),
+      )),
     );
   }
+
 
   // 2. Added the _label helper widget
   Widget _label(String text) {
@@ -113,10 +120,12 @@ class NutritionTrackerEntryView
       TextEditingController controller, {
         String? hint,
         String? suffix,
+        TextInputType keyboardType = TextInputType.text, // Added keyboardType
       }) {
     return TextField(
       controller: controller,
       style: const TextStyle(color: Colors.white),
+      keyboardType: keyboardType, // Use provided keyboardType
       decoration: InputDecoration(
         hintText: hint,
         hintStyle: TextStyle(color: Colors.grey.shade600),
@@ -219,20 +228,33 @@ class NutritionTrackerEntryView
             ],
           ),
           const SizedBox(height: 4),
-          // Use a TextField that looks like simple text
-          TextField(
-            controller: controller,
-            style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              hintText: hint,
-              hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 22, fontWeight: FontWeight.bold),
-              border: InputBorder.none,
-              isDense: true,
-              contentPadding: EdgeInsets.zero,
-              suffixText: 'g', // Add the 'g' unit here
-              suffixStyle: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
-            ),
+          // MODIFIED: Wrap TextField and 'g' text in a Row
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end, // Align 'g' with the bottom of the text field
+            children: [
+              IntrinsicWidth(
+                child: TextField(
+                  controller: controller,
+                  style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: hint,
+                    hintStyle: TextStyle(color: Colors.grey.shade700, fontSize: 22, fontWeight: FontWeight.bold),
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 4), // Small spacing between text field and 'g'
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2), // Adjust padding to visually align 'g'
+                child: Text(
+                  'g',
+                  style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -303,16 +325,19 @@ class NutritionTrackerEntryView
       width: double.infinity,
       height: 50,
       child: ElevatedButton(
-        onPressed: controller.saveMeal,
+        // Disable button while loading
+        onPressed: controller.isLoading.value ? null : controller.saveOrUpdateMeal,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.deepGreenFavBgColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
         ),
-        child: const Text(
-          'Save Meal',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+        child: controller.isLoading.value
+            ? const CircularProgressIndicator(color: Colors.white) // Show loader in button
+            : Text(
+          controller.isEditMode.value ? 'Update Meal' : 'Save Meal', // Dynamic button text
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ),
     );

@@ -14,10 +14,10 @@ class NutritionTrackerController extends BaseController {
   final RxDouble cardContainerHeight = 0.0.obs;
 
   final mealNameController = TextEditingController();
-  final caloriesController = TextEditingController(text: '0');
-  final proteinController = TextEditingController(text: '0');
-  final fatsController = TextEditingController(text: '0');
-  final carbsController = TextEditingController(text: '0');
+  final caloriesController = TextEditingController();
+  final proteinController = TextEditingController();
+  final fatsController = TextEditingController();
+  final carbsController = TextEditingController();
 
   final RxList<Meal> allMeals = <Meal>[].obs;
   final RxBool isLoading = false.obs;
@@ -41,7 +41,7 @@ class NutritionTrackerController extends BaseController {
       height.value = opened ? openedHeight : 0.0;
       cardContainerHeight.value = opened ? 290 : 0.0;
     });
-
+    print("NutritionTrackerController.onInit()");
     _checkEditMode();
     fetchMeals();
   }
@@ -53,6 +53,7 @@ class NutritionTrackerController extends BaseController {
       isLoading.value = true;
       final MealsResponse data = await _mealRepository.getMeals();
       allMeals.value = data.results ?? [];
+
     } catch (e) {
       Get.snackbar(
         'Error',
@@ -92,53 +93,6 @@ class NutritionTrackerController extends BaseController {
     if (quantity.value > 1) quantity.value--;
   }
 
-  // -------------------- SAVE --------------------
-
-  Future<void> saveMeal() async {
-    try {
-      isLoading.value = true;
-
-      if (isEditMode.value && editingMeal != null) {
-        await _mealRepository.updateMeal(
-          mealId: editingMeal!.id,
-          name: mealNameController.text.trim(),
-          calories: int.parse(caloriesController.text),
-          protein: int.parse(proteinController.text),
-          fats: int.parse(fatsController.text),
-          carbs: int.parse(carbsController.text),
-        );
-      } else {
-        await _mealRepository.createMeal(
-          name: mealNameController.text.trim(),
-          calories: int.parse(caloriesController.text),
-          protein: int.parse(proteinController.text),
-          fats: int.parse(fatsController.text),
-          carbs: int.parse(carbsController.text),
-        );
-      }
-
-      await fetchMeals();
-      Get.back();
-
-      Get.snackbar(
-        'Success',
-        isEditMode.value
-            ? 'Meal updated successfully'
-            : 'Meal saved successfully',
-        backgroundColor: Colors.green.shade700,
-        colorText: Colors.white,
-      );
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Something went wrong',
-        backgroundColor: Colors.red.shade700,
-        colorText: Colors.white,
-      );
-    } finally {
-      isLoading.value = false;
-    }
-  }
 
   // -------------------- DISPOSE --------------------
 

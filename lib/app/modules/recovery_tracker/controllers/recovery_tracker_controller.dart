@@ -4,6 +4,8 @@ import 'package:icon/app/modules/recovery_tracker/models/activity_types_response
 
 import '../../../routes/app_pages.dart';
 import '../models/activity_type_model.dart';
+import '../models/recovery_entry_model.dart';
+import '../models/recovery_response_model.dart';
 import '../repository/recovery_tracker_repository.dart';
 
 enum RecoveryType { repair, sleep, wellbeing }
@@ -23,6 +25,9 @@ class RecoveryTrackerController extends BaseController {
   final RxBool isWellbeingBtnSelected = false.obs;
   final RxList<ActivityTypeModel> activityTypes = <ActivityTypeModel>[].obs;
   final Rxn<String> selectedActivityType = Rxn<String>();
+  final RxBool isLoading = true.obs;
+
+  final RxList<RecoveryEntry> allRecoveryEntries = <RecoveryEntry>[].obs; // NEW
 
   @override
   void onInit() {
@@ -38,12 +43,15 @@ class RecoveryTrackerController extends BaseController {
       }
     });
 
-    _recoveryTrackerRepository.getActivityTypes().then((
-      ActivityTypesResponseModel data,
-    ) {
-      activityTypes.addAll(data.results!);
+    // Fetch activity types
+    _recoveryTrackerRepository.getActivityTypes().then((data) {
+      activityTypes.addAll(data.results ?? []);
     });
+
+    // Fetch recovery entries
+    fetchRecoveryEntries();
   }
+
 
   void recoveryTypeSelected(RecoveryType recoveryType) {
     switch (recoveryType) {
@@ -65,6 +73,22 @@ class RecoveryTrackerController extends BaseController {
     }
 
     cardContainerHeight.value = 290;
+  }
+  void fetchRecoveryEntries() {
+    isLoading.value = true;
+
+    _recoveryTrackerRepository.getRecoveryLists().then((data) {
+      allRecoveryEntries.value = data.results ?? [];
+      print('Fetched ${allRecoveryEntries.length} recovery entries.'); // Debug print
+    }).catchError((e) {
+      Get.snackbar(
+        'Error',
+        'Failed to load recovery entries: ${e.toString()}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }).whenComplete(() {
+      isLoading.value = false;
+    });
   }
 
   void gotoQuickAddPage() {
