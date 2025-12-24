@@ -103,7 +103,7 @@ class ExerciseElement {
   final int? order;
   final int? restTimeSeconds;
   final ExerciseExercise? exercise;
-  final List<Set>? sets;
+  final List<SetModel>? sets;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -127,7 +127,7 @@ class ExerciseElement {
             : ExerciseExercise.fromJson(json["exercise"]),
         sets: json["sets"] == null
             ? []
-            : List<Set>.from(json["sets"]!.map((x) => Set.fromJson(x))),
+            : List<SetModel>.from(json["sets"]!.map((x) => SetModel.fromJson(x))),
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
@@ -142,7 +142,7 @@ class ExerciseElement {
     int? order,
     int? restTimeSeconds,
     ExerciseExercise? exercise,
-    List<Set>? sets,
+    List<SetModel>? sets,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
@@ -231,7 +231,7 @@ class ExerciseExercise {
   };
 }
 
-class Set {
+class SetModel {
   final int? id;
   final int? setNumber;
   final String? setType;
@@ -247,7 +247,7 @@ class Set {
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
-  Set({
+  SetModel({
     this.id,
     this.setNumber,
     this.setType,
@@ -264,7 +264,7 @@ class Set {
     this.updatedAt,
   });
 
-  factory Set.fromJson(Map<String, dynamic> json) => Set(
+  factory SetModel.fromJson(Map<String, dynamic> json) => SetModel(
     id: json["id"],
     setNumber: json["set_number"],
     setType: json["set_type"],
