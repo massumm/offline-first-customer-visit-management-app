@@ -1,0 +1,3 @@
+{
+  "/customers/:id/visit-status": "/customers/:id"
+}

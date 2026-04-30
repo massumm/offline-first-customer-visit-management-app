@@ -1,0 +1,69 @@
+{
+  "customers": [
+    {
+      "id": "1",
+      "name": "Rahim Traders",
+      "phone": "01700000001",
+      "email": "rahim@example.com",
+      "address": "Banani, Dhaka",
+      "lastVisitDate": "2026-04-20",
+      "visitStatus": "pending",
+      "notes": "",
+      "updatedAt": "2026-04-20T10:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Karim Enterprise",
+      "phone": "01800000002",
+      "email": "karim@example.com",
+      "address": "Mirpur, Dhaka",
+      "lastVisitDate": "2026-04-22",
+      "visitStatus": "visited",
+      "notes": "Met with owner, interested in bulk deal",
+      "updatedAt": "2026-04-22T14:00:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Hasan & Sons",
+      "phone": "01900000003",
+      "email": "hasan@example.com",
+      "address": "Gulshan, Dhaka",
+      "lastVisitDate": "2026-04-30T10:49:29.827375",
+      "visitStatus": "pending",
+      "notes": "Shop was closed by masum",
+      "updatedAt": "2026-04-18T09:30:00Z"
+    },
+    {
+      "id": "4",
+      "name": "Noor Distributors",
+      "phone": "01700000004",
+      "email": "noor@example.com",
+      "address": "Uttara, Dhaka",
+      "lastVisitDate": "2026-04-15",
+      "visitStatus": "pending",
+      "notes": "",
+      "updatedAt": "2026-04-15T11:00:00Z"
+    },
+    {
+      "id": "5",
+      "name": "Salam Store",
+      "phone": "01800000005",
+      "email": "salam@example.com",
+      "address": "Dhanmondi, Dhaka",
+      "lastVisitDate": "2026-04-25",
+      "visitStatus": "visited",
+      "notes": "Placed order for 50 units",
+      "updatedAt": "2026-04-25T16:00:00Z"
+    }
+  ],
+  "visits": [
+    {
+      "customerId": 3,
+      "visitDate": "2026-04-30T10:49:34.277070",
+      "status": "pending",
+      "notes": "Shop was closed by masum",
+      "id": "0zsxOW0PJPc"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
